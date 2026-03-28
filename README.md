@@ -32,11 +32,16 @@
 - Refresh token rotation
 - CapacitorHttp para versión nativa.
 - Cors: https prod, https desa, capacitor://localhost para ios y http://localhost para android
+- Login: user y pass, red social. 3 formas distintas para user y pass, red social web y red social nativo. En red social no siempre hay email. Strategy pattern?
 - Pagos: PagosWeb o bamboopayments
 - CDN para imágenes. (upload desde angular?)
 - Concurrencia al comprar últimos productos del stock.
 - Devops para generar todos los builds.
 - Considerar monedas
-- Considerar lenguajes.
+- Considerar lenguajes?
+- Websockets para actualizar listado de productos, stock y mensajes
+
+- En vez de descripción biografía ? Biografía de "fulano tal".
+- Agregar username al proveedor? O en el proveedor no es necesario nombre y apellido?
 
 - Escribir la semana del 14.
