@@ -6,21 +6,23 @@ services:
       context: ./front
       target: development
     restart: unless-stopped
-    user: node
-    command: sh -c "npm i && npm start"
+    user: 1000:1000
+    # command: sh -c "npm i && npm start"
     tty: true
     volumes:
-      - ./:/front
+      - ./front:/front
       - deaca.front.node_modules:/front/node_modules
       - deaca.front.angular:/front/.angular
+    ports:
+      - 0.0.0.0:${FRONT_PORT}:${FRONT_PORT}
   api:
     build:
       context: ./api
       target: development
     container_name: deacaapi
-    user: node:node
+    user: 1000:1000
     tty: true
-    command: sh -c "npm install  && npm run dev"
+    # command: sh -c "npm install  && npm run dev"
     environment:
       - ${PGHOST}:${PGHOST}
       - ${PGPORT}:${PGPORT}
@@ -32,11 +34,11 @@ services:
         condition: service_healthy
     volumes:
       # todo el proyecto al volumen para poder usar git dentro del contenedor.
-      - ./:/api
       - deaca.api.node_modules:/api/node_modules
+      - ./api:/api
     restart: unless-stopped
     ports:
-      - 3000:3000
+      - 0.0.0.0:${API_PORT}:${API_PORT}
   db:
     image: postgres:17-alpine
     container_name: deacadb
@@ -47,9 +49,10 @@ services:
       POSTGRES_PASSWORD: ${PGPASSWORD}
       POSTGRES_DB: ${PGDATABASE}
     ports:
-      - ${PGPORT}:${PGPORT}
+      - 0.0.0.0:${PGPORT}:${PGPORT}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${PGUSER} -d $${PGDATABASE}"]
+      test:
+        ["CMD-SHELL", "pg_isready -U ${PGUSER} -d ${PGDATABASE} -p ${PGPORT}"]
       interval: 5s
       timeout: 5s
       retries: 5

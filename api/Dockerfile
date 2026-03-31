@@ -1,5 +1,9 @@
 FROM node:24-alpine as base
+# Creamos la carpeta y le damos permisos al usuario node
+RUN mkdir -p /api/node_modules /api/.angular && chown -R node:node /api
 
-USER node:node
+# Obligamos a que inicie con usuario node
+USER node
+WORKDIR /api
 
 FROM base as development
