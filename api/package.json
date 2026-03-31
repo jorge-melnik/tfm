@@ -1,0 +1,33 @@
+{
+  "type": "module",
+  "name": "deaca",
+  "version": "1.0.0",
+  "description": "Api para App De Acá!.",
+  "main": "app.ts",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "dev": "node --watch src/server.ts",
+    "test": "npm run build && tsc -p test/tsconfig.json && node --no-warnings --test --experimental-test-coverage --loader ts-node/esm test/**/*.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "keywords": [
+    ""
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/autoload": "^6.0.0",
+    "close-with-grace": "^2.5.0",
+    "fastify": "^5.0.0",
+    "fastify-plugin": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "fastify-tsconfig": "^3.0.0",
+    "ts-node": "^10.4.0",
+    "typescript": "~5.9.2"
+  }
+}
