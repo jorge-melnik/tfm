@@ -48,3 +48,5 @@
 - RF-PA-01: El sistema debe permitir al usuario administrador gestionar las etiquetas.
 - RF-PA-02: El sistema debe permitir al usuario administrador gestionar las categorías ingresando nombre de la categoría y subcategorías asociadas.
 - RF-PA-03: El sistema debe permitir al usuario administrador gestionar las subcategorías, ingresando nombre de la subcategoría, categoría a la que pertenece y etiquetas válidas en dicha subcategoría.
+
+Si el productor marca el pedido en camino, se podría compartir la ubicación en tiempo real.

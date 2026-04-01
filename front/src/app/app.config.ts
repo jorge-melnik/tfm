@@ -19,7 +19,7 @@ export const appConfig: ApplicationConfig = {
         preset: Aura,
       },
     }),
-    MessageService,
-    ConfirmationService,
+    // MessageService, //FIXME: Revisar si es necesario aca.
+    // ConfirmationService, //FIXME: Revisar si es necesario aca.
   ],
 };

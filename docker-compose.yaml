@@ -40,7 +40,7 @@ services:
     ports:
       - 0.0.0.0:${API_PORT}:${API_PORT}
   db:
-    image: postgres:17-alpine
+    image: postgis/postgis:18-3.6-alpine
     container_name: deacadb
     restart: unless-stopped
     command: postgres -p ${PGPORT}
@@ -57,7 +57,8 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - ./db:/docker-entrypoint-initdb.d
+      - ./db/init:/docker-entrypoint-initdb.d
+      - deaca.db.data:/var/lib/postgresql
 
 # Hacemos volumenes nombrados para que las dependencias no se almacenen en local
 # No se creen nuevos volumenes cada vez que levantamos los contenedoresPero que los podemos
@@ -68,5 +69,6 @@ volumes:
   deaca.api.node_modules:
   deaca.front.node_modules:
   deaca.front.angular:
+  deaca.db.data:
 
 # TODO: Definir networks separadas?
