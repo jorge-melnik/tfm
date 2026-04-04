@@ -1,6 +1,6 @@
 // Require the framework
 import Fastify from "fastify";
-import { app, options } from "./app.ts";
+import { app, options } from "./app.js";
 
 // Require library to exit fastify process, gracefully (if possible)
 import closeWithGrace from "close-with-grace";
@@ -20,7 +20,7 @@ myServer.register(app, options);
 
 // delay is the number of milliseconds for the graceful close to finish
 closeWithGrace(
-  { delay: parseInt(process.env.API_CLOSE_GRACE_DELAY) || 500 },
+  { delay: Number(process.env.API_CLOSE_GRACE_DELAY) || 500 },
   async function ({ signal, err, manual }) {
     if (err) {
       myServer.log.error(err);
@@ -31,7 +31,7 @@ closeWithGrace(
 
 // Start listening
 myServer.listen(
-  { port: parseInt(process.env.API_PORT) || 3000 },
+  { port: Number(process.env.API_PORT) || 3000, host: "::" },
   (err: any) => {
     if (err) {
       myServer.log.error(err);

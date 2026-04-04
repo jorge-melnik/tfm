@@ -1,27 +1,25 @@
 {
-  "name": "deaca api",
+  "name": "De Aca! Api",
   "dockerComposeFile": ["../../docker-compose.yaml"],
   "service": "api",
-  "workspaceFolder": "/deaca/api",
-  "remoteUser": "laravel",
-  "shutdownAction": "none",
+  "workspaceFolder": "/api",
+  "remoteUser": "node",
+  "postCreateCommand": "npm install",
+  "shutdownAction": "stopCompose",
   "customizations": {
     "vscode": {
-      "extensions": ["esbenp.prettier-vscode"],
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-typescript-next",
+        "ms-azuretools.vscode-docker",
+        "eamodio.gitlens"
+      ],
       "settings": {
+        "js.tsdk": "node_modules/typescript/lib",
         "git.openRepositoryInParentFolders": "always",
-        "git.config": {
-          "safe.directory": "tfm"
-        },
-        "[json]": {
-          "editor.defaultFormatter": "esbenp.prettier-vscode",
-          "editor.formatOnSave": true
-        },
-        "[jsonc]": {
-          "editor.defaultFormatter": "esbenp.prettier-vscode",
-          "editor.formatOnSave": true
-        },
-        "intelephense.files.exclude": ["**/.git/**", "**/node_modules/**"]
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
       }
     }
   }

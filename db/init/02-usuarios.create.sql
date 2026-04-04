@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS datos_personales (
     nombres VARCHAR(100),
     apellidos VARCHAR(100),
     email VARCHAR(255) UNIQUE,
+    username VARCHAR(30) UNIQUE,
     celular VARCHAR(20) UNIQUE,
     foto_url TEXT
 );
