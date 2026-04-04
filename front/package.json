@@ -3,9 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "dev": "ng serve --host=0.0.0.0 --port=${FRONT_PORT} --allowed-hosts=true",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:de_aca": "node dist/de_aca/server/server.mjs"
   },
@@ -22,6 +21,8 @@
     "@angular/ssr": "^21.2.4",
     "@primeuix/themes": "^2.0.3",
     "express": "^5.1.0",
+    "primeflex": "^4.0.0",
+    "primeicons": "^7.0.0",
     "primeng": "^21.1.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"

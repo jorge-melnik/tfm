@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS usuarios (
     id_usuario UUID PRIMARY KEY DEFAULT uuidv7(),
+    rol_actual ROL NOT NULL,                        -- Para guardar el último rol usado por el usuario
     roles ROL[] NOT NULL DEFAULT '{}',              -- Cuando se hace insert/update sobre productor/consumidor se agrega/quita el rol según el campo activo.
     activo BOOLEAN NOT NULL DEFAULT TRUE,           -- SOFT DELETE
     creado TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
