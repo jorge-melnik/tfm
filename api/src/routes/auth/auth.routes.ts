@@ -1,42 +1,49 @@
-import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import authRepository from "@repositories/auth.repository.js";
-import { LoginEmailSchema, LoginUsernameSchema } from "@schemas/auth.schema.js";
+import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
+import authRepository from '@repositories/auth.repository.js';
+import { LoginEmailSchema, LoginUsernameSchema } from '@schemas/auth.schema.js';
 
 //Para manejar las mismas opciones en ambas rutas
 const options = {
-  expiresIn: "2h",
+  expiresIn: '2h',
 };
 
 const root: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
-  fastify.post("/login/email", {
+  fastify.post('/login/email', {
     schema: {
-      tags: ["auth"],
-      summary: "Email login",
-      description: "Realizar login con email y contraseña.",
+      tags: ['auth'],
+      summary: 'Email login',
+      description: 'Realizar login con email y contraseña.',
       body: LoginEmailSchema,
     },
     handler: async function (req, rep) {
-      const payload = await authRepository.emailLogin(
-        req.body.email,
-        req.body.password,
-      );
+      const payload = await authRepository.emailLogin(req.body.email, req.body.password);
       const token = fastify.jwt.sign(payload, options);
       return { token };
     },
   });
 
-  fastify.post("/login/username", {
+  fastify.post('/login/username', {
     schema: {
-      tags: ["auth"],
-      summary: "Username login",
-      description: "Realizar login con username y contraseña.",
+      tags: ['auth'],
+      summary: 'Username login',
+      description: 'Realizar login con username y contraseña.',
       body: LoginUsernameSchema,
     },
     handler: async function (req, rep) {
-      const payload = await authRepository.usernameLogin(
-        req.body.username,
-        req.body.password,
-      );
+      const payload = await authRepository.usernameLogin(req.body.username, req.body.password);
+      const token = fastify.jwt.sign(payload, options);
+      return { token };
+    },
+  });
+
+  fastify.get('/profile', {
+    schema: {
+      tags: ['auth'],
+      summary: 'User Profile',
+      description: 'Obtener el usuario propietario del token recibido.',
+    },
+    handler: async function (req, rep) {
+      const payload = await authRepository.getUserById(req.user.id_usuario);
       const token = fastify.jwt.sign(payload, options);
       return { token };
     },

@@ -1,7 +1,7 @@
-import { myPool } from "@database/pool.js";
-import type { QueryResult } from "pg";
-import { AuthUser } from "../schemas/auth.schema.js";
-import { UnAuthenticated } from "@errors/response.errors.js";
+import { myPool } from '@database/pool.js';
+import type { QueryResult } from 'pg';
+import { AuthUser } from '../schemas/auth.schema.js';
+import { UnAuthenticated } from '@errors/response.errors.js';
 
 class AuthRepositoryClass {
   /**
@@ -16,10 +16,7 @@ class AuthRepositoryClass {
       WHERE email = $1 AND password_hash = crypt($2, C.password_hash)
     `;
 
-    const { rows }: QueryResult<AuthUser> = await myPool.query(query, [
-      email,
-      password,
-    ]);
+    const { rows }: QueryResult<AuthUser> = await myPool.query(query, [email, password]);
     if (!rows[0] || rows.length > 1) {
       throw new UnAuthenticated();
     }
@@ -38,11 +35,23 @@ class AuthRepositoryClass {
       WHERE username = $1 AND password_hash = crypt($2, C.password_hash)
     `;
 
-    const { rows }: QueryResult<AuthUser> = await myPool.query(query, [
-      username,
-      password,
-    ]);
+    const { rows }: QueryResult<AuthUser> = await myPool.query(query, [username, password]);
 
+    if (!rows[0] || rows.length > 1) {
+      throw new UnAuthenticated();
+    }
+    return rows[0];
+  }
+
+  async getUserById(id_usuario: number) {
+    const query = `
+      SELECT DP.*, U.roles, U.rol_actual
+      FROM public.usuarios U
+      JOIN public.datos_personales DP ON DP.id_usuario = U.id_usuario
+      WHERE id_usuario=$1
+    `;
+
+    const { rows }: QueryResult<AuthUser> = await myPool.query(query, [id_usuario]);
     if (!rows[0] || rows.length > 1) {
       throw new UnAuthenticated();
     }

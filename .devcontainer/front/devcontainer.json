@@ -2,7 +2,7 @@
   "name": "De Aca! Front",
   "dockerComposeFile": ["../../docker-compose.yaml"],
   "service": "front",
-  "workspaceFolder": "/front",
+  "workspaceFolder": "/deaca/front",
   "remoteUser": "node",
   "postCreateCommand": "npm install",
   "shutdownAction": "stopCompose",

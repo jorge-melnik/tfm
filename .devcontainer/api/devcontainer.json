@@ -2,7 +2,7 @@
   "name": "De Aca! Api",
   "dockerComposeFile": ["../../docker-compose.yaml"],
   "service": "api",
-  "workspaceFolder": "/api",
+  "workspaceFolder": "/deaca/api",
   "remoteUser": "node",
   "postCreateCommand": "npm install",
   "shutdownAction": "stopCompose",
