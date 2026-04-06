@@ -13,6 +13,8 @@ import {
 } from '@schemas/auth.schema.js';
 import { ErrorResponseSchema } from '@schemas/core.schemas.js';
 import { FastifyReply } from 'fastify';
+import { REPL_MODE_SLOPPY } from 'node:repl';
+import { CookieSerializeOptions } from '@fastify/cookie';
 
 //Para manejar las mismas opciones en ambas rutas
 const accessTokenOptions = {
@@ -24,7 +26,13 @@ const refreshTokenOptions = {
 };
 
 const refreshPath = `/${process.env.API_PREFIX || 'api'}/auth/refresh`;
-
+const cookieOptions: CookieSerializeOptions = {
+  path: refreshPath,
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production', // Solo HTTPS en prod
+  sameSite: 'strict',
+  maxAge: 60 * 60 * 24 * 7, // 7 días en segundos
+};
 const root: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
   async function generarTokens(payload: TokenPayload, reply: FastifyReply) {
     payload.jti = randomUUID(); //Generamos un nuevo id random
@@ -35,13 +43,7 @@ const root: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
 
     await authRepository.addRefreshToken(user, refreshToken);
 
-    reply.setCookie('refreshToken', refreshToken, {
-      path: refreshPath,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Solo HTTPS en prod
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 7, // 7 días en segundos
-    });
+    reply.setCookie('refreshToken', refreshToken, cookieOptions);
     return { token: accessToken };
   }
 
@@ -109,44 +111,40 @@ const root: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
         200: TokenSchema,
         401: ErrorResponseSchema,
       },
+      security: [{ cookieAuth: [] }],
     },
     onRequest: async function (req, rep) {
       try {
         await req.jwtVerify({ onlyCookie: true });
         const oldToken = req.cookies.refreshToken;
+        fastify.log.info({ oldToken });
         if (!oldToken) throw new DeAcaUnAuthenticated('No hay refresh token.');
         await authRepository.verifyRefreshToken(req.user, oldToken);
         await authRepository.removeRefreshToken(req.user); //Si es válido una vez hay que borrarlo! Solo se usa una vez.
       } catch (error) {
-        rep.setCookie('refreshToken', '', {
-          domain: process.env.FASTIFY_HOST || 'localhost',
-          path: refreshPath,
-          secure: true,
-          httpOnly: true,
-          sameSite: 'lax',
-        });
+        rep.clearCookie('refreshToken', cookieOptions);
         throw error;
       }
     }, //Acá debería verificar la cookie y no el header authorization.
     handler: async function (req, rep) {
-      //Si llegué acá es porque el refreshToken existe y es valido
-      const oldToken = req.cookies.refreshToken;
-      if (!oldToken) {
-        throw new DeAcaUnAuthenticated('No hay refresh token.');
-      }
       return generarTokens(req.user, rep);
     },
   });
 
-  // fastify.post('/logout', async (req, rep) => {
-  //   const token = req.cookies.refreshToken;
-  //   if (token) {
-  //     const decoded: any = fastify.jwt.decode(token);
-  //     await authRepository.consumeRefreshToken(decoded.id_usuario, token);
-  //   }
-  //   rep.clearCookie('refreshToken');
-  //   return { message: 'Sesión cerrada' };
-  // });
+  fastify.post('/logout', {
+    schema: {
+      summary: 'Logout',
+      description: 'Hacer logout e invalidar el refresh token.',
+      tags: ['auth'],
+      security: [{ bearerAuth: [] }],
+    },
+    onRequest: [fastify.authenticate],
+    handler: async (req, rep) => {
+      await authRepository.removeRefreshToken(req.user); //Aunque el user es del access token, el jti es el mismo.
+      rep.clearCookie('refreshToken', cookieOptions);
+      rep.code(204);
+    },
+  });
 };
 
 export default root;

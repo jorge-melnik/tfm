@@ -84,7 +84,7 @@ class AuthRepositoryClass {
     ]);
 
     //TODO: Si no existe refresh token, hay que borrar todas las sesiones por seguridad
-    if (rows.length === 0) throw new DeAcaNotAuthorized('Se uso un RT válido pero inexistente');
+    if (rows.length === 0) throw new DeAcaUnAuthenticated('RT no valido.');
   }
 
   /**
