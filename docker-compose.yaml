@@ -1,5 +1,19 @@
 name: deaca
 services:
+  proxy:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./proxy/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
+    environment:
+      - FRONT_HOST=${FRONT_HOST}
+      - FRONT_PORT=${FRONT_PORT}
+      - API_PORT=${API_PORT}
+    depends_on:
+      - front
+      - api
   front:
     container_name: deacafront
     build:
@@ -7,16 +21,15 @@ services:
       target: development
     restart: unless-stopped
     user: 1000:1000
-    # command: sh -c "npm i && npm start"
+    # command: sh -c "npm i && npm run dev"
     tty: true
     environment:
       - FRONT_PORT=${FRONT_PORT}
+      - API_HOST=${API_HOST}
     volumes:
       - ./:/deaca
       - deaca_front_node_modules:/deaca/front/node_modules
       - deaca_front_angular:/deaca/front/.angular
-    ports:
-      - 0.0.0.0:${FRONT_PORT}:${FRONT_PORT}
   api:
     build:
       context: ./api
@@ -31,6 +44,10 @@ services:
       PGDATABASE: ${PGDATABASE}
       PGUSER: ${PGUSER}
       PGPASSWORD: ${PGPASSWORD}
+      API_PORT: ${API_PORT}
+      API_COOKIE_SECRET: ${API_COOKIE_SECRET}
+      API_JWT_SECRET: ${API_JWT_SECRET}
+      FRONT_HOST: ${FRONT_HOST}
     depends_on:
       db:
         condition: service_healthy
@@ -39,8 +56,6 @@ services:
       - ./:/deaca
       - deaca_api_node_modules:/deaca/api/node_modules
     restart: unless-stopped
-    ports:
-      - 0.0.0.0:${API_PORT}:${API_PORT}
   db:
     image: postgis/postgis:18-3.6-alpine
     container_name: deacadb

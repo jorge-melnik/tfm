@@ -1,4 +1,4 @@
-import { Pool, PoolConfig } from "pg";
+import { Pool, PoolConfig } from 'pg';
 
 const pgConfig: PoolConfig = {
   database: process.env.PGDATABASE,

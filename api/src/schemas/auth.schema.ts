@@ -9,6 +9,7 @@ export const LoginSchema = Type.Object({
 });
 
 export const LoginEmailSchema = Type.Omit(LoginSchema, ['username'], {
+  $id: 'LoginEmail',
   examples: [
     {
       email: 'admin@deaca.com',
@@ -26,6 +27,7 @@ export const LoginEmailSchema = Type.Omit(LoginSchema, ['username'], {
 });
 
 export const LoginUsernameSchema = Type.Omit(LoginSchema, ['email'], {
+  $id: 'LoginUsername',
   examples: [
     {
       username: 'admin',
@@ -42,13 +44,25 @@ export const LoginUsernameSchema = Type.Omit(LoginSchema, ['email'], {
   ],
 });
 
-export const AuthUserSchema = Type.Object({
-  id_usuario: Type.Integer(),
-  roles: Type.Array(RolLiteral, { minItems: 1 }),
+export const TokenSchema = Type.Object({
+  token: Type.String(),
 });
 
+export const TokenPayloadSchema = Type.Object({
+  id_usuario: Type.String(),
+  jti: Type.String(),
+  roles: Type.Array(RolLiteral, { minItems: 1 }),
+});
 export const UserSchema = Type.Object({
-  id_usuario: Type.Integer(),
+  id_usuario: Type.String(),
+  jti: Type.String(),
+  roles: Type.Array(RolLiteral, { minItems: 1 }),
+  iat: Type.Integer(),
+  exp: Type.Integer(),
+});
+
+export const ProfileSchema = Type.Object({
+  id_usuario: Type.String(),
   rol_actual: RolLiteral,
   roles: Type.Array(RolLiteral, { minItems: 1 }),
   username: Type.String(),
@@ -61,5 +75,15 @@ export const UserSchema = Type.Object({
 
 export type LoginEmailType = Static<typeof LoginEmailSchema>;
 export type LoginUsernameType = Static<typeof LoginUsernameSchema>;
-export type AuthUser = Static<typeof AuthUserSchema>;
+export type TokenPayload = Static<typeof TokenPayloadSchema>;
 export type User = Static<typeof UserSchema>;
+export type Profile = Static<typeof ProfileSchema>;
+export type Token = Static<typeof TokenSchema>;
+
+// export default fp(async (fastify: FastifyInstance) => {
+//   fastify.addSchema(LoginEmailSchema);
+//   fastify.addSchema(LoginUsernameSchema);
+//   fastify.addSchema(TokenSchema);
+//   fastify.addSchema(AuthUserSchema);
+//   fastify.addSchema(UserSchema);
+// });

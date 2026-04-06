@@ -16,5 +16,13 @@ CREATE TABLE IF NOT EXISTS cuenta_externa (
     UNIQUE(id_externo, servidor)    -- No se permite que se repita el id_externo para un mismo proveedor. No debería pasar, pero por las dudas.
 );
 
--- tabla para refresh tokens
--- tabla para invalidar access_token ?
+CREATE TABLE public.refresh_tokens (
+    jti UUID PRIMARY KEY, -- Esto es el randomUUID() que generaste
+    id_usuario UUID NOT NULL REFERENCES public.usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE,
+    token_hash TEXT NOT NULL,
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- //TODO: tabla para invalidar access_token ?
