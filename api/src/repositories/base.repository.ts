@@ -66,11 +66,11 @@ export abstract class BaseRepository<T> {
   }
 
   async update(id: string | number, data: Partial<T>): Promise<T> {
-    const keys = Object.keys(data);
+    const keys = Object.keys(data).filter((key) => key != this.idName); //Los idName no se actualizan. //FIXME: Esto puede traer problemas
     if (keys.length === 0) throw new DeAcaInternal('No hay datos para actualizar');
 
     const sets = keys.map((key, i) => `${key} = $${i + 1}`).join(', ');
-    const values = Object.values(data);
+    const values = keys.map((key) => (data as any)[key]); // 👈 importante
 
     const query = `
       UPDATE ${this.tableName} 
@@ -89,12 +89,8 @@ export abstract class BaseRepository<T> {
   }
 
   async exists(id: string | number): Promise<boolean> {
-    if (!id) throw new DeAcaInternal('No se proporcionó un ID para verificar existencia');
-
     const query = `SELECT 1 FROM ${this.tableName} WHERE ${this.idName} = $1`;
-
     const res = await myPool.query(query, [id]);
-
     return res.rows.length === 1;
   }
 }
