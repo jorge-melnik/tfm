@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS datos_personales (
         username ~ '^[a-zA-Z0-9._]+$' 
     ),
     celular VARCHAR(20) UNIQUE CHECK (celular ~ '^\+[1-9]\d{6,14}$'),
-    foto_url TEXT
+    foto_url TEXT,
     email_validado BOOLEAN NOT NULL DEFAULT false,
     celular_validado BOOLEAN NOT NULL DEFAULT false
 );
@@ -52,8 +52,8 @@ CREATE TABLE IF NOT EXISTS ubicaciones (
     
     nombre CITEXT NOT NULL CHECK (
         char_length(nombre) >= 2 AND 
-        char_length(nombre) <= 50 AND
-    )
+        char_length(nombre) <= 50
+    ),
     direccion TEXT NOT NULL,    -- Calle, número, entre calles, lo que quieran
     comentarios TEXT,
     punto GEOMETRY(Point, 4326),
@@ -64,5 +64,5 @@ CREATE TABLE IF NOT EXISTS ubicaciones (
     UNIQUE(nombre, id_usuario) -- Nombre no diferencia el case porque es tipo CITEXT
 );
 
-CREATE INDEX IF NOT EXISTS idx_ubicaciones_point ON ubicaciones USING GIST (point);
+CREATE INDEX IF NOT EXISTS idx_ubicaciones_punto ON ubicaciones USING GIST (punto);
 CREATE INDEX IF NOT EXISTS idx_usuarios_roles ON usuarios USING GIN (roles);
