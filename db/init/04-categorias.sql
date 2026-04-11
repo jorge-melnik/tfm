@@ -1,6 +1,9 @@
 CREATE TABLE IF NOT EXISTS categorias (
     id_categoria SMALLINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL UNIQUE,
+    nombre CITEXT NOT NULL UNIQUE CHECK (
+        char_length(nombre) >= 3 AND 
+        char_length(nombre) <= 25 AND
+    ),
     descripcion TEXT,
     activo BOOLEAN NOT NULL DEFAULT TRUE
 );
@@ -8,14 +11,20 @@ CREATE TABLE IF NOT EXISTS categorias (
 CREATE TABLE IF NOT EXISTS subcategorias (
     id_subcategoria INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     id_categoria SMALLINT NOT NULL REFERENCES categorias(id_categoria) ON DELETE CASCADE ON UPDATE CASCADE,
-    nombre VARCHAR(50) NOT NULL,
+    nombre CITEXT NOT NULL CHECK (
+        char_length(nombre) >= 3 AND 
+        char_length(nombre) <= 25 AND
+    ),
     activo BOOLEAN NOT NULL DEFAULT TRUE,
     UNIQUE(id_categoria, nombre)
 );
 
 CREATE TABLE IF NOT EXISTS etiquetas (
     id_etiqueta INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    nombre VARCHAR(30) NOT NULL UNIQUE
+    nombre CITEXT NOT NULL UNIQUE CHECK (
+        char_length(nombre) >= 3 AND 
+        char_length(nombre) <= 30 AND
+    ),
 );
 
 CREATE TABLE IF NOT EXISTS subcategoria_etiquetas (

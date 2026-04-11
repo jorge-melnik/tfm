@@ -1,11 +1,6 @@
 import { myPool } from '@database/pool.js';
 import type { QueryResult } from 'pg';
-import {
-  DeAcaInternal,
-  DeAcaNotAuthorized,
-  DeAcaNotFound,
-  DeAcaUnAuthenticated,
-} from '@errors/response.errors.js';
+import { DeAcaInternal, DeAcaNotFound, DeAcaUnAuthenticated } from '@errors/response.errors.js';
 import { Profile, TokenPayload, User } from '@schemas/auth.schema.js';
 
 class AuthRepositoryClass {

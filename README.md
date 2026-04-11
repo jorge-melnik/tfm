@@ -62,3 +62,5 @@
 - La primera vez que quieras vender se activa el perfil vendedor para siempre.
 - Productor que marque que días envía (si realiza envíos). O que días (y horario) se puede pasar a levantar.
 - Para departamentos, direcciones y localidades, usar ideuy?
+
+-- Podemos usar CITEXT cuando son textos UNIQUE

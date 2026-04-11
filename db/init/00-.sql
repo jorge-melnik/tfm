@@ -1,5 +1,7 @@
-CREATE EXTENSION IF NOT EXISTS postgis;
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+CREATE EXTENSION IF NOT EXISTS postgis; -- para poder guardar un geometry POINT
+CREATE EXTENSION IF NOT EXISTS pgcrypto;-- para generar los hash de tokens y contraseñas
+CREATE EXTENSION IF NOT EXISTS citext;  -- para campos que deben ser no sensibles al "case"
 
 DO $$
 BEGIN

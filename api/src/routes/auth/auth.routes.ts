@@ -145,6 +145,29 @@ const root: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
       rep.code(204);
     },
   });
+
+  //TODO: Seguir aca.
+  fastify.post('/register', {
+    schema: {
+      tags: ['auth'],
+      summary: 'Registrarse',
+      description: `
+        - Endpoint para registrar un nuevo usuario consumidor y/o productor. 
+        - Si se selecciona la opción productor, se registra sin los datos de productor y al intentar vender se le pedirán los datos específicos de productor. 
+        - Idem para consumidor.
+      `,
+      body: LoginEmailSchema,
+      response: {
+        200: TokenSchema,
+        401: ErrorResponseSchema,
+        500: ErrorResponseSchema,
+      },
+    },
+    handler: async function (req, rep) {
+      const payload = await authRepository.emailLogin(req.body.email, req.body.password);
+      return generarTokens(payload, rep);
+    },
+  });
 };
 
 export default root;
