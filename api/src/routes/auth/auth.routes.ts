@@ -1,20 +1,22 @@
 import { DeAcaInternal, DeAcaUnAuthenticated } from '@errors/response.errors.js';
-import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
+import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import authRepository from '@repositories/auth.repository.js';
 import { randomUUID } from 'node:crypto';
 
 import {
   LoginEmailSchema,
+  LoginSchema,
   LoginUsernameSchema,
   ProfileSchema,
+  RolLiteral,
   TokenPayload,
   TokenSchema,
   User,
 } from '@schemas/auth.schema.js';
 import { ErrorResponseSchema } from '@schemas/core.schemas.js';
 import { FastifyReply } from 'fastify';
-import { REPL_MODE_SLOPPY } from 'node:repl';
 import { CookieSerializeOptions } from '@fastify/cookie';
+import { DatosPersonales } from '@schemas/usuarios.schema.js';
 
 //Para manejar las mismas opciones en ambas rutas
 const accessTokenOptions = {
@@ -146,7 +148,6 @@ const root: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
     },
   });
 
-  //TODO: Seguir aca.
   fastify.post('/register', {
     schema: {
       tags: ['auth'],
@@ -156,7 +157,14 @@ const root: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
         - Si se selecciona la opción productor, se registra sin los datos de productor y al intentar vender se le pedirán los datos específicos de productor. 
         - Idem para consumidor.
       `,
-      body: LoginEmailSchema,
+      body: Type.Intersect([
+        DatosPersonales,
+        Type.Object({
+          password: Type.String(),
+          password2: Type.String(),
+          roles: Type.Array(RolLiteral, { minItems: 1 }),
+        }),
+      ]),
       response: {
         200: TokenSchema,
         401: ErrorResponseSchema,
@@ -164,6 +172,8 @@ const root: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
       },
     },
     handler: async function (req, rep) {
+      //TODO: Seguir aca.
+
       const payload = await authRepository.emailLogin(req.body.email, req.body.password);
       return generarTokens(payload, rep);
     },

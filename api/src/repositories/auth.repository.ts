@@ -1,7 +1,8 @@
 import { myPool } from '@database/pool.js';
 import type { QueryResult } from 'pg';
 import { DeAcaInternal, DeAcaNotFound, DeAcaUnAuthenticated } from '@errors/response.errors.js';
-import { Profile, TokenPayload, User } from '@schemas/auth.schema.js';
+import { Profile, Rol, TokenPayload, User } from '@schemas/auth.schema.js';
+import { DatosPersonales } from '@schemas/usuarios.schema.js';
 
 class AuthRepositoryClass {
   /**
@@ -105,6 +106,32 @@ class AuthRepositoryClass {
       -- no es necesario incluir el usuario.
     `;
     await myPool.query(query, [decoded.jti]);
+  }
+
+  /**
+   * Registrar un nuevo usuario como consumidor y/o productor.
+   * @param dp
+   */
+  async register(dp: DatosPersonales, roles: Rol[]): Promise<void> {
+    // const queryUsuario = 'INSERT INTO usuarios (rol_actual, roles) VALUES ($1, $2) RETURNING *';
+    // const queryDP = `
+    //     INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username,celular,fotoUrl) VALUES ($1, $2, $3, $4,$5, $6,$7);
+    //   `;
+    // try {
+    //   await myPool.query('BEGIN;');
+    //   const { rows: rows }: QueryResult<{ id_usuario: string }> = await myPool.query(queryUsuario, [
+    //     roles[0],
+    //     roles,
+    //   ]);
+    //   await myPool.query(queryDP, [usuario.]);
+    //   const queryConsumidor = `
+    //   INSERT INTO productores (id_usuario, presentación) VALUES (id_productor, 'Productor de hortalizas orgánicas y miel pura de campo.');
+    // `;
+    //   const queryProductor = `
+    //   INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_productor, crypt('Contraseña', gen_salt('bf', 10)));
+    // `;
+    //   await myPool.query(query, [decoded.jti]);
+    // } catch (error) {}
   }
 }
 
