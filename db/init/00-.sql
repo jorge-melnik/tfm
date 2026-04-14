@@ -9,9 +9,21 @@ BEGIN
         CREATE TYPE ROL AS ENUM ('CONSUMIDOR', 'PRODUCTOR', 'ADMIN');
     END IF;
 
-    -- Verificar y crear el tipo AUTH_SERVER
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'auth_server') THEN
         CREATE TYPE AUTH_SERVER AS ENUM ('GOOGLE', 'FACEBOOK', 'WHATSAPP');
+    END IF;
+
+
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'estado_pedido') THEN
+        CREATE TYPE ESTADO_PEDIDO AS ENUM ('PAGANDO', 'PAGADO', 'LISTO PARA ENTREGA','ENTREGADO','CANCELADO');
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'estado_pago') THEN
+        CREATE TYPE ESTADO_PAGO AS ENUM ('PENDIENTE',  'APROBADO','RECHAZADO', 'CANCELADO');
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'estado_compra') THEN
+        CREATE TYPE ESTADO_COMPRA AS ENUM ('PAGANDO',  'PAGADA');
     END IF;
 END
 $$;

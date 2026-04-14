@@ -23,11 +23,11 @@
 - RF-GUP-18: El sistema debe permitir al usuario darse de baja del sistema borrando todos sus datos personales en cumplimiento de la ley 18331 de Uruguay.
 - RF-GUP-19: El sistema debe permitir al usuario descargarse toda la información relacionada a su usuario en formato xlsx y ods.
 - RF-GUP-20: El sistema debe permitir al usuario recuperar su contraseña.
-- cancelar venta. y la plata?
 
 ## Panel del productor (PP)
 
-- RF-PP-01: El sistema debe permitir al usuario gestionar su catálogo de productos ingresando nombre del producto, presentacion, precio, cantidad disponible y entre 1 y 5 fotos del producto, un video opcional ubicación de producción.
+- RF-PP-01: El sistema debe permitir al usuario gestionar su catálogo de productos con nombre del producto, descripcion, precio, cantidad disponible y entre 1 y 5 fotos del producto, un video opcional ubicación de producción.
+- RF-PP-XX: El sistema no debe permitir que se borre un producto que ya fue comprado.
 - RF-PP-02: El sistema debe gestionar el stock del producto para cada venta realizada.
 - RF-PP-03: El sistema debe gestionar el stock de los productos para cada venta en proceso de pago. (Descuenta stock, si se confirma el pago listo, sino se vuelve a sumar el stock). REPETIDO CON ANTERIOR
 - RF-PP-04: El sistema debe permitir al productor gestionar los pedidos recibidos.
@@ -41,7 +41,11 @@
 - RF-PP-12: El sistema debe permitir al productor reportar una pregunta que no cumple los términos y condiciones.
 - RF-PP-13: El sistema debe calcular la calificación del productor tomando el promedio de calificaciones de todos sus ventas realizadas.
 - RF-PP-14: El sistema debe permitir al productor ver su calificación.
-  -- En catalogo de productos mostrar cantidad vendida los últimos 6 meses para cada producto.
+- RF-PP-15: El sistema debe proporcionar al productor un mecanismo para visualizar las ventas de sus productos.
+- RF-PP-16: El sistema debe calcular la cantidad vendida el útlimo mes para cada producto del productor.
+- RF-PP-16: El sistema debe calcular la cantidad vendida los últimos 6 meses para cada producto del productor.
+- RF-PP-16: El sistema debe permitir al productor ordenar su catálogo por cantidad vendida en un período seleccionado.
+  -- En catalogo de productos mostrar cantidad vendida los últimos 12 meses para cada producto del productor.
   -- En catalogo de productos mostrar cantidad vendida último año de cada producto.
   -- Permitir ordenar por cantidad vendida
   -- Grafica Evolución de las ventas el último año en pesos. Mes a mes. También mostrar total.
@@ -58,8 +62,8 @@
 - RF-PC-07: El sistema debe permitir al consumidor contactar al productor de una compra finalizada mediante un chat.
 - RF-PC-08: El sistema NO debe permitir que se finalice una compra con envío al domicilio del usuario, sin que el usuario tengo una ubicación asociada.
 - RF-PC-09: El sistema debe permitir al usuario consumidor realizar preguntas en los productos.
-- RF-PC-10: El sistema debe permitir al usuario consumidor calificar el producto en una escala del 1 al 5 y dejar un comentario. Se califica al pedido de un productor (varios en una compra).
-- RF-PC-11: El sistema debe permitir al usuario consumidor ver las calificaciones y comentarios que recibió un productor.
+- RF-PC-10: El sistema debe permitir al usuario consumidor calificar los productos comprados en una escala del 1 al 5 y dejar un comentario.
+- RF-PC-11: El sistema debe permitir al usuario consumidor ver las calificaciones y comentarios que recibió un producto.
 - RF-PC-12: El sistema debe proporcionar al usuario consumidor una interfaz con nombre, ubicación, entrega/retiro, horarios de entrega/retiro para ver los datos del productor.
 - RF-PC-13: El sistema debe proporcionar al usuario consumidor una interfaz para realizar el seguimiento de su pedido, mostrando fecha del pedido, producto, ubicación, entrega/retiro.
 - RF-PC-14: El sistema debe permitir al consumidor marcar productos o productores como favoritos para acceso rápido.
@@ -76,9 +80,11 @@
 Si el productor marca el pedido en camino, se podría compartir la ubicación en tiempo real.
 , tiempo de entrega capaz es asociado a la publicación.
 
-Falta especificar el tema de pagos.
+Falta especificar el tema de pagos. Bamboo payments o Stripe?
 
 ver donde mostrar un mapa
 
 - Acordarse que un usuario compra a varios productores. Compra tiene varios pedidos
 - Calificación del producto. Solo califica el producto una única vez (se puede modificar) por usuario.
+
+- cancelar venta. y la plata?
