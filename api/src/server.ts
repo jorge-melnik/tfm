@@ -27,8 +27,8 @@ const myServer = Fastify({
         },
       }
     : true, // en prod usamos log standard
-}).withTypeProvider<TypeBoxTypeProvider>();
-
+});
+// .withTypeProvider<TypeBoxTypeProvider>()
 // Register your application as a normal plugin
 myServer.register(app, options);
 

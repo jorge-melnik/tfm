@@ -82,7 +82,7 @@ export const UserSchema = Type.Object(
     iat: Type.Integer(),
     exp: Type.Integer(),
   },
-  { description: 'Esquema para definir el usuario de request.user' },
+  { description: 'Esquema para definir el usuario de req.user' },
 );
 
 export const ProfileSchema = Type.Intersect(
