@@ -64,3 +64,24 @@
 - Para departamentos, direcciones y localidades, usar ideuy?
 
 -- Podemos usar CITEXT cuando son textos UNIQUE
+
+Reunión 15/4:
+Clasificar los requerimientos según prioridad.
+Alta Indispensables para el MVP
+Media Deseables para el MVP
+Baja Puede quedar para más adelante.
+
+Redactar los requisitos no funcionales.
+
+Considerar validar el productor. ¿Para que tenga un tick?
+
+Dejar pagos para último. Considerar simular el pago.
+
+Revisar calificaciones (clasificar prioridad baja igual):
+
+- Evaluar producto. Unica evaluación que puede cambiar. Esta así.
+- Evaluar proveedor al q le compre alguna vez. Única evaluación que puede cambiar. ¿mejor que evaluar pedido y promediar?
+- ¿Evaluar consumidor?
+
+- Falta ver pedidos realizados a un productor (siendo consumidor) cuando ve la info del productor
+- No olvidarse del checklist de OWASP
