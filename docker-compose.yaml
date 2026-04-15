@@ -1,0 +1,91 @@
+name: deaca
+services:
+  proxy:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./proxy/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
+    environment:
+      - FRONT_HOST=${FRONT_HOST}
+      - FRONT_PORT=${FRONT_PORT}
+      - API_PORT=${API_PORT}
+    depends_on:
+      - front
+      - api
+  front:
+    container_name: deacafront
+    build:
+      context: ./front
+      target: development
+    restart: unless-stopped
+    user: 1000:1000
+    # command: sh -c "npm i && npm run dev"
+    tty: true
+    environment:
+      - FRONT_PORT=${FRONT_PORT}
+      - API_HOST=${API_HOST}
+    volumes:
+      - ./:/deaca
+      - deaca_front_node_modules:/deaca/front/node_modules
+      - deaca_front_angular:/deaca/front/.angular
+  api:
+    build:
+      context: ./api
+      target: development
+    container_name: deacaapi
+    user: 1000:1000
+    tty: true
+    # command: sh -c "npm install  && npm run dev"
+    environment:
+      PGHOST: ${PGHOST}
+      PGPORT: ${PGPORT}
+      PGDATABASE: ${PGDATABASE}
+      PGUSER: ${PGUSER}
+      PGPASSWORD: ${PGPASSWORD}
+      API_PORT: ${API_PORT}
+      API_COOKIE_SECRET: ${API_COOKIE_SECRET}
+      API_JWT_SECRET: ${API_JWT_SECRET}
+      FRONT_HOST: ${FRONT_HOST}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      # todo el proyecto al volumen para poder usar git dentro del contenedor.
+      - ./:/deaca
+      - deaca_api_node_modules:/deaca/api/node_modules
+    restart: unless-stopped
+  db:
+    image: postgis/postgis:18-3.6-alpine
+    container_name: deacadb
+    restart: unless-stopped
+    command: postgres -p ${PGPORT}
+    environment:
+      POSTGRES_USER: ${PGUSER}
+      POSTGRES_PASSWORD: ${PGPASSWORD}
+      POSTGRES_DB: ${PGDATABASE}
+    ports:
+      - 0.0.0.0:${PGPORT}:${PGPORT}
+    healthcheck:
+      test:
+        ["CMD-SHELL", "pg_isready -U ${PGUSER} -d ${PGDATABASE} -p ${PGPORT}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d
+      - deaca_db_data:/var/lib/postgresql
+
+# Hacemos volumenes nombrados para que las dependencias no se almacenen en local
+# No se creen nuevos volumenes cada vez que levantamos los contenedoresPero que los podemos
+# Pero que los podamos borrar con docker volume prune (borra todos los volumenes que haya)
+# Esta forma es más eficiente que tener node_modules en el host, sobre todo si es una carpeta
+# en el sistema de archivos de windows.
+volumes:
+  deaca_api_node_modules:
+  deaca_front_node_modules:
+  deaca_front_angular:
+  deaca_db_data:
+
+# TODO: Definir networks separadas?

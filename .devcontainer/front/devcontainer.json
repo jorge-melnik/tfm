@@ -1,0 +1,26 @@
+{
+  "name": "De Aca! Front",
+  "dockerComposeFile": ["../../docker-compose.yaml"],
+  "service": "front",
+  "workspaceFolder": "/deaca/front",
+  "remoteUser": "node",
+  "postCreateCommand": "npm install",
+  "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "angular.ng-template",
+        "ms-vscode.vscode-typescript-next",
+        "ms-azuretools.vscode-docker",
+        "eamodio.gitlens"
+      ],
+      "settings": {
+        "git.openRepositoryInParentFolders": "always",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      }
+    }
+  }
+}

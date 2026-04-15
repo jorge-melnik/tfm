@@ -1,0 +1,80 @@
+<div class="flex align-items-center justify-content-center min-h-screen bg-surface-ground p-4">
+  <p-card class="shadow-4 border-round-xl w-full md:w-30rem">
+    <ng-template #header>
+      <div class="flex justify-content-center pt-6">
+        <i class="pi pi-shopping-bag text-primary text-6xl"></i>
+      </div>
+    </ng-template>
+
+    <ng-template #title>
+      <div class="text-center text-900 text-3xl font-medium mb-1">Bienvenido</div>
+    </ng-template>
+
+    <ng-template #subtitle>
+      <div class="text-center text-600 mb-5">Inicia sesión en De Acá</div>
+    </ng-template>
+
+    <form class="flex flex-column gap-4">
+      <div class="flex justify-content-center mb-2">
+        <p-selectButton
+          [options]="this.loginOptions"
+          [(ngModel)]="this.selectedMethod"
+          optionLabel="label"
+          optionValue="value"
+          name="methodSelector"
+          allowEmpty="false"
+        >
+          <ng-template let-item pTemplate="item">
+            <i [class]="item.icon" class="mr-2"></i>
+            <span>{{ item.label }}</span>
+          </ng-template>
+        </p-selectButton>
+      </div>
+      @if (this.selectedMethod() === 'email') {
+        <p-floatlabel variant="on">
+          <p-iconfield iconPosition="right">
+            <p-inputicon class="pi pi-envelope" />
+            <input pInputText name="email" autocomplete="off" class="w-full" />
+            <label for="email">Email</label>
+          </p-iconfield>
+        </p-floatlabel>
+      }
+      @if (this.selectedMethod() === 'username') {
+        <p-floatlabel variant="on">
+          <p-iconfield iconPosition="right">
+            <p-inputicon class="pi pi-user" />
+            <input pInputText name="username" autocomplete="off" class="w-full" />
+            <label for="username">Username</label>
+          </p-iconfield>
+        </p-floatlabel>
+      }
+
+      <p-floatlabel variant="on">
+        <p-iconfield iconPosition="right">
+          <p-inputicon class="pi pi-key" />
+          <p-password
+            id="password"
+            name="password"
+            [(ngModel)]="this.password"
+            [feedback]="false"
+            [toggleMask]="true"
+            [fluid]="true"
+            autocomplete="off"
+          />
+          <label for="password">Contraseña</label>
+        </p-iconfield>
+      </p-floatlabel>
+
+      <p-button label="Ingresar" styleClass="w-full" />
+    </form>
+
+    <ng-template #footer>
+      <p class="text-center text-600 mt-2">
+        ¿Aún no tienes cuenta?
+        <a routerLink="/auth/register" class="text-primary font-bold cursor-pointer no-underline"
+          >Regístrate</a
+        >
+      </p>
+    </ng-template>
+  </p-card>
+</div>
