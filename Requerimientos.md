@@ -61,7 +61,7 @@
 - RF-PC-02: El sistema debe permitir al consumidor buscar productos por su nombre.
 - RF-PC-03: El sistema debe permitir al consumidor gestionar su carrito de compras.
 - RF-PC-04: El sistema debe permitir al consumidor finalizar una compra con los productos del carrito seleccionando envío o retiro y medio de pago.
-- RF-PC-05: El sistema debe permitir al consumidor visualizar nombre de usuario, presentacion, foto y calificación del productor.
+- RF-PC-05: El sistema debe permitir al consumidor visualizar nombre de usuario, presentacion, foto, calificación del productor y pedidos realizados a dicho productor.
 - RF-PC-06: El sistema debe proporcionar al consumidor un mecanismo para consultar el historial de compras.
 - RF-PC-07: El sistema debe permitir al consumidor contactar al productor de una compra finalizada mediante un chat.
 - RF-PC-08: El sistema NO debe permitir que se finalice una compra con envío al domicilio del usuario, sin que el usuario tengo una ubicación asociada.
