@@ -5,7 +5,6 @@ import { randomUUID } from 'node:crypto';
 
 import {
   LoginEmailSchema,
-  LoginSchema,
   LoginUsernameSchema,
   ProfileSchema,
   RolLiteral,
@@ -35,6 +34,7 @@ const cookieOptions: CookieSerializeOptions = {
   sameSite: 'strict',
   maxAge: 60 * 60 * 24 * 7, // 7 días en segundos
 };
+
 const root: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
   async function generarTokens(payload: TokenPayload, reply: FastifyReply) {
     payload.jti = randomUUID(); //Generamos un nuevo id random
@@ -172,8 +172,6 @@ const root: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
       },
     },
     handler: async function (req, rep) {
-      //TODO: Seguir aca.
-
       const payload = await authRepository.emailLogin(req.body.email, req.body.password);
       return generarTokens(payload, rep);
     },

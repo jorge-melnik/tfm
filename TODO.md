@@ -40,3 +40,5 @@ Que tiempo tiene el usuario para que se confirme el pago en el sistema?
 
 - El carrito vive en la bd. Cuando se confirma el pago se vacía el carrito y se crea el pedido.
 - Si el pago es síncrono no se necesita estado Pagando. Pero mejor considerarlo por si se agrega plataforma no sincrona.
+
+-- Que una IA pueda consumir directamente la api ?

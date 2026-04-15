@@ -3,10 +3,9 @@ import type { FastifyInstance } from 'fastify';
 import { TSchema, Type } from '@sinclair/typebox';
 
 // export const DeAcaList = <T extends TSchema>(type: T) => Type.Object({ data: type });
-
 export const DeAcaList = <T extends TSchema>(type: T) =>
   Type.Object({
-    data: type,
+    data: Type.Array(type),
     meta: Type.Optional(
       Type.Object({
         total: Type.Optional(Type.Number()),
