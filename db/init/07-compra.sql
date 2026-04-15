@@ -52,8 +52,8 @@ CREATE TABLE pedidos (
 -- Relacion 1 a N pero necesitamos guardar cantidad y precio al momento de la compra. Por eso esta tabla adicional.
 CREATE TABLE pedido_productos (
     id_productor UUID NOT NULL,
-    id_producto BIGINT NOT NULL,
     id_pedido BIGINT NOT NULL,
+    id_producto BIGINT NOT NULL,
     
     cantidad INTEGER NOT NULL CHECK (cantidad > 0), 
     precio_unitario DECIMAL(12, 2) NOT NULL CHECK (precio_unitario >= 0),

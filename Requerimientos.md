@@ -39,8 +39,12 @@
 - RF-PP-10: El sistema debe permitir al productor que entrega en su ubicación indicar los días y horarios de entrega habilitados para cada ubicación.
 - RF-PP-11: El sistema debe permitir al productor contestar las preguntas recibidas.
 - RF-PP-12: El sistema debe permitir al productor reportar una pregunta que no cumple los términos y condiciones.
-- RF-PP-13: El sistema debe calcular la calificación del productor tomando el promedio de calificaciones de todos sus ventas realizadas.
+- RF-PP-13: El sistema debe calcular la calificación del productor tomando el promedio de calificaciones de todos sus pedidos recibidos.
 - RF-PP-14: El sistema debe permitir al productor ver su calificación.
+- RF-PP-14: El sistema debe permitir al productor ver el comentario recibido en sus pedidos.
+- RF-PP-14: El sistema debe permitir al productor ver los comentarios recibidos en sus productos.
+- RF-PP-13: El sistema debe calcular la calificación de los productos del productor tomando el promedio de calificaciones recibidas en el producto.
+- RF-PP-14: El sistema debe permitir al productor ver la calificación de sus productos.
 - RF-PP-15: El sistema debe proporcionar al productor un mecanismo para visualizar las ventas de sus productos.
 - RF-PP-16: El sistema debe calcular la cantidad vendida el útlimo mes para cada producto del productor.
 - RF-PP-16: El sistema debe calcular la cantidad vendida los últimos 6 meses para cada producto del productor.
@@ -67,6 +71,10 @@
 - RF-PC-12: El sistema debe proporcionar al usuario consumidor una interfaz con nombre, ubicación, entrega/retiro, horarios de entrega/retiro para ver los datos del productor.
 - RF-PC-13: El sistema debe proporcionar al usuario consumidor una interfaz para realizar el seguimiento de su pedido, mostrando fecha del pedido, producto, ubicación, entrega/retiro.
 - RF-PC-14: El sistema debe permitir al consumidor marcar productos o productores como favoritos para acceso rápido.
+- RF-PC-14: El sistema debe permitir al consumidor calificar los productos que alguna vez compró.
+- RF-PC-14: El sistema debe permitir al consumidor cambiar la calificación dada a los productos que alguna vez compró.
+- RF-PC-14: El sistema debe permitir al consumidor dejar un comentario del producto cada vez que recibe un pedido con dicho producto.
+- RF-PC-14: El sistema debe permitir al consumidor calificar y comentar los pedidos recibidos por única vez.
 
 ## Panel del administrador.
 
