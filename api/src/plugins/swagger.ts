@@ -22,6 +22,7 @@ export default fp(async (fastify: FastifyInstance) => {
           description: 'Fastify server',
         },
       ],
+
       tags: ['auth'],
       components: {
         securitySchemes: {
@@ -43,7 +44,7 @@ export default fp(async (fastify: FastifyInstance) => {
   await fastify.register(swaggerUi, {
     routePrefix: '/docs',
     uiConfig: {
-      docExpansion: 'list',
+      docExpansion: 'none',
       deepLinking: false,
     },
   });

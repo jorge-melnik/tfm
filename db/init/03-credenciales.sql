@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS credenciales (
     id_usuario UUID PRIMARY KEY REFERENCES usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE,
     password_hash TEXT NOT NULL, -- Aquí sí es NOT NULL porque si existe la fila, hay clave.
-    actualizado TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    fecha_actualizacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS cuenta_externa (
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS cuenta_externa (
     
     servidor AUTH_SERVER NOT NULL,
     id_externo VARCHAR(255) NOT NULL,   -- id que da servidor
-    creado TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    fecha_creacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     
     UNIQUE(id_usuario, servidor),   -- Se permite solo una vez cada AUTH_SERVER para cada usuario
     UNIQUE(id_externo, servidor)    -- No se permite que se repita el id_externo para un mismo proveedor. No debería pasar, pero por las dudas.
@@ -21,7 +21,7 @@ CREATE TABLE public.refresh_tokens (
     id_usuario UUID NOT NULL REFERENCES public.usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE,
     token_hash TEXT NOT NULL,
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    fecha_creacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 

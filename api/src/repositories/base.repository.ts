@@ -1,10 +1,16 @@
 import { myPool } from '@database/pool.js';
-import { DeAcaInternal } from '@errors/response.errors.js';
+import { DeAcaBadRequest, DeAcaInternal, DeAcaNotFound } from '@errors/response.errors.js';
 
 export abstract class BaseRepository<T> {
   protected abstract readonly baseQuery: string;
   protected abstract readonly tableName: string;
   protected abstract readonly idName: string;
+
+  async getCount(onlyActive: boolean = true): Promise<number> {
+    let query = 'SELECT COUNT(*) as total FROM ${this.tableName} WHERE activo=$1';
+    const res = await myPool.query(query, [onlyActive]);
+    return parseInt(res.rows[0].total, 10);
+  }
 
   async getAll(): Promise<T[]> {
     const res = await myPool.query(this.baseQuery);
@@ -24,7 +30,7 @@ export abstract class BaseRepository<T> {
 
   async getOneBy(filters: Partial<T>): Promise<T> {
     const keys = Object.keys(filters);
-    if (keys.length === 0) throw new DeAcaInternal('No especificaste el filtro');
+    if (keys.length === 0) throw new DeAcaBadRequest('No especificaste el filtro');
 
     const values = Object.values(filters);
     const condiciones = keys.map((key, index) => `${key} = $${index + 1}`).join(' AND ');
@@ -61,13 +67,31 @@ export abstract class BaseRepository<T> {
     const res = await myPool.query(query, [id]);
 
     if (res.rowCount === 0) {
-      throw new DeAcaInternal(`No se encontró el registro con ${this.idName}: ${id} para eliminar.`);
+      throw new DeAcaNotFound(`No se encontró el registro con ${this.idName}: ${id} para eliminar.`);
+    }
+  }
+
+  public async deactivate(id: string | number) {
+    const query = `UPDATE ${this.tableName} SET fecha_eliminacion=CURRENT_TIMESTAMP WHERE ${this.idName} = $1 AND activo=true`;
+    const res = await myPool.query(query, [id]);
+
+    if (res.rowCount === 0) {
+      throw new DeAcaNotFound(`No se encontró el registro con ${this.idName}: ${id} activo para desactivar.`);
+    }
+  }
+
+  public async activate(id: string | number) {
+    const query = `UPDATE ${this.tableName} SET fecha_eliminacion=null WHERE ${this.idName} = $1 AND activo=false`;
+    const res = await myPool.query(query, [id]);
+
+    if (res.rowCount === 0) {
+      throw new DeAcaNotFound(`No se encontró el registro con ${this.idName}: ${id} inactivo para activar.`);
     }
   }
 
   async update(id: string | number, data: Partial<T>): Promise<T> {
     const keys = Object.keys(data).filter((key) => key != this.idName); //Los idName no se actualizan. //FIXME: Esto puede traer problemas
-    if (keys.length === 0) throw new DeAcaInternal('No hay datos para actualizar');
+    if (keys.length === 0) throw new DeAcaBadRequest('No hay datos para actualizar');
 
     const sets = keys.map((key, i) => `${key} = $${i + 1}`).join(', ');
     const values = keys.map((key) => (data as any)[key]); // 👈 importante
@@ -82,10 +106,12 @@ export abstract class BaseRepository<T> {
     const res = await myPool.query(query, [...values, id]);
 
     if (res.rows.length === 0) {
-      throw new DeAcaInternal(`No se pudo actualizar: registro con ${this.idName} ${id} no existe.`);
+      throw new DeAcaNotFound(`No se pudo actualizar: registro con ${this.idName} ${id} no existe.`);
     }
 
-    return res.rows[0];
+    const filtro = { [this.idName as string]: id } as Partial<T>;
+
+    return this.getOneBy(filtro);
   }
 
   async exists(id: string | number): Promise<boolean> {

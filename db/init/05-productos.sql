@@ -13,8 +13,8 @@ CREATE TABLE productos (
     fotos TEXT[] NOT NULL CHECK (cardinality(fotos) BETWEEN 1 AND 5),
     video_url TEXT,
     
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    fecha_creacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (id_productor, id_producto)
 );

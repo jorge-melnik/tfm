@@ -45,6 +45,7 @@ const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void>
     dir: path.join(__dirname, 'routes'),
     options: opts,
     forceESM: true,
+    routeParams: true,
   });
 };
 

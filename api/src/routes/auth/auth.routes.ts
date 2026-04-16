@@ -12,7 +12,7 @@ import {
   TokenSchema,
   User,
 } from '@schemas/auth.schema.js';
-import { ErrorResponseSchema } from '@schemas/core.schemas.js';
+import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 import { FastifyReply } from 'fastify';
 import { CookieSerializeOptions } from '@fastify/cookie';
 import { DatosPersonales } from '@schemas/usuarios.schema.js';
@@ -57,8 +57,8 @@ const root: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
       body: LoginEmailSchema,
       response: {
         200: TokenSchema,
-        401: ErrorResponseSchema,
-        500: ErrorResponseSchema,
+        401: DeAcaErrorResponse,
+        500: DeAcaErrorResponse,
       },
     },
     handler: async function (req, rep) {
@@ -75,8 +75,8 @@ const root: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
       body: LoginUsernameSchema,
       response: {
         200: TokenSchema,
-        401: ErrorResponseSchema,
-        500: ErrorResponseSchema,
+        401: DeAcaErrorResponse,
+        500: DeAcaErrorResponse,
       },
     },
     handler: async function (req, rep: FastifyReply) {
@@ -93,8 +93,8 @@ const root: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
       security: [{ bearerAuth: [] }],
       response: {
         200: ProfileSchema,
-        401: ErrorResponseSchema,
-        500: ErrorResponseSchema,
+        401: DeAcaErrorResponse,
+        500: DeAcaErrorResponse,
       },
     },
     onRequest: [fastify.authenticate],
@@ -111,7 +111,7 @@ const root: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
         'Permite obtener un nuevo access_token con un refresh token válido. A su vez, se realiza refresh token rotation.',
       response: {
         200: TokenSchema,
-        401: ErrorResponseSchema,
+        401: DeAcaErrorResponse,
       },
       security: [{ cookieAuth: [] }],
     },
@@ -167,8 +167,8 @@ const root: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
       ]),
       response: {
         200: TokenSchema,
-        401: ErrorResponseSchema,
-        500: ErrorResponseSchema,
+        401: DeAcaErrorResponse,
+        500: DeAcaErrorResponse,
       },
     },
     handler: async function (req, rep) {

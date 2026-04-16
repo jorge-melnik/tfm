@@ -8,8 +8,8 @@ CREATE TABLE compras (
     direccion_envio TEXT NOT NULL,  -- Lo repetimos por si el usuario justo cambia/elimina la ubicación.
     contacto_receptor TEXT NOT NULL,-- 
     
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    fecha_creacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE pagos (

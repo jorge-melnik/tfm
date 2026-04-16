@@ -24,5 +24,5 @@ BEGIN
     INSERT INTO consumidores (id_usuario) VALUES (id_consumidor);
     INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_consumidor, crypt('Contraseña', gen_salt('bf', 10)));
 
-    RAISE NOTICE 'Usuarios creados: Admin (%), Productor (%), Consumidor (%)', id_administrador, id_productor, id_consumidor;
+    RAISE NOTICE 'Usuarios fecha_creacions: Admin (%), Productor (%), Consumidor (%)', id_administrador, id_productor, id_consumidor;
 END $$;

@@ -5,7 +5,10 @@ CREATE TABLE IF NOT EXISTS categorias (
         char_length(nombre) <= 35
     ),
     descripcion TEXT,
-    activo BOOLEAN NOT NULL DEFAULT TRUE
+    fecha_creacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fecha_eliminacion TIMESTAMP WITH TIME ZONE,
+    activo BOOLEAN GENERATED ALWAYS AS (fecha_eliminacion IS NULL) STORED
 );
 
 CREATE TABLE IF NOT EXISTS subcategorias (
@@ -15,7 +18,10 @@ CREATE TABLE IF NOT EXISTS subcategorias (
         char_length(nombre) >= 3 AND 
         char_length(nombre) <= 35
     ),
-    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    fecha_creacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fecha_eliminacion TIMESTAMP WITH TIME ZONE,
+    activo BOOLEAN GENERATED ALWAYS AS (fecha_eliminacion IS NULL) STORED,
     UNIQUE(id_categoria, nombre)
 );
 
