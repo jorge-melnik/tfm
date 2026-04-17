@@ -10,9 +10,10 @@ export const DatosPersonales = Type.Object(
       maxLength: 254,
     }),
     username: Type.String({
+      description: 'Nombre de usuario. Una vez seteado no se puede cambiar.',
       minLength: 5,
       maxLength: 30,
-      pattern: '^[a-zA-Z0-9._]+$',
+      pattern: '^[a-zA-Z0-9-]+$',
     }),
     celular: Type.String({
       pattern: '^\\+[1-9]\\d{6,14}$',

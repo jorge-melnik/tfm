@@ -24,7 +24,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Triggers para productores
+-- TODO: TRIGGERs para productores
 CREATE OR REPLACE TRIGGER tr_sync_productores_lifecycle
 AFTER INSERT OR DELETE ON productores
 FOR EACH ROW 
@@ -36,7 +36,7 @@ FOR EACH ROW
 WHEN (OLD.activo IS DISTINCT FROM NEW.activo)
 EXECUTE FUNCTION fn_sincronizar_roles();
 
--- Triggers para consumidores
+-- TODO: TRIGGERs para consumidores
 CREATE OR REPLACE TRIGGER tr_sync_consumidores_lifecycle
 AFTER INSERT OR DELETE ON consumidores
 FOR EACH ROW 

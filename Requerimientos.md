@@ -1,4 +1,4 @@
-# Especificación de requerimientos
+# Especificación de requerimientos Funcionales
 
 ## Gestión de usuarios (GUP)
 
@@ -96,3 +96,8 @@ ver donde mostrar un mapa
 - Calificación del producto. Solo califica el producto una única vez (se puede modificar) por usuario.
 
 - cancelar venta. y la plata?
+
+
+# Especificacion de requerimientos no funcionales
+- RNF-01 : Ley de datos personales
+- RNF-02 : Seo

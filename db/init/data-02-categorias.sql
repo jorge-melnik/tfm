@@ -1,44 +1,43 @@
 
-INSERT INTO public.categorias(nombre, descripcion) VALUES 
-('Alimentos frescos','Alimentos frescos'),                   --1
-('Plantas y semillas','Plantas y semillas'),                 --2
-('Productos elaborados','Productos elaborados'),             --3
-('Artesanías de materiales naturales','Artesanías de materiales naturales'),  --4
-('Otros productos regenerativos','Otros productos regenerativos')        --5
+INSERT INTO public.categorias(nombre, slug_categoria, descripcion) VALUES 
+('Alimentos frescos', 'alimentos-frescos', 'Productos obtenidos directamente de la huerta y granja sin procesos industriales.'),
+('Plantas y semillas', 'plantas-y-semillas', 'Variedad de semillas orgánicas, plantines y especies para cultivo regenerativo.'),
+('Productos elaborados', 'productos-elaborados', 'Alimentos que han pasado por un proceso de transformación artesanal.'),
+('Artesanías de materiales naturales', 'artesanias-de-materiales-naturales', 'Objetos hechos a mano utilizando fibras, madera y otros elementos de la naturaleza.'),
+('Otros productos regenerativos', 'otros-productos-regenerativos', 'Cualquier otro producto que contribuya a la salud del suelo y el ecosistema.')
 ;
 
-INSERT INTO public.subcategorias(id_categoria, nombre) VALUES 
-(1,'Verduras'),             -- 1
-(1,'Frutas'),               -- 2
-(1,'Huevos'),               -- 3
-(1,'Miel'),                 -- 4
-(1,'Lácteos artesanales'),  -- 5
+INSERT INTO public.subcategorias(id_categoria, nombre, slug_subcategoria) VALUES 
+(1, 'Verduras', 'verduras'),
+(1, 'Frutas', 'frutas'),
+(1, 'Huevos', 'huevos'),
+(1, 'Miel', 'miel'),
+(1, 'Lácteos artesanales', 'lacteos-artesanales'),
 
-(2,'Plantines'),            -- 6
-(2,'hierbas medicinales'),  -- 7
-(2,'semillas criollas'),    -- 8
+(2, 'Plantines', 'plantines'),
+(2, 'hierbas medicinales', 'hierbas-medicinales'),
+(2, 'semillas criollas', 'semillas-criollas'),
 
-(3,'conservas'),            -- 9
-(3,'fermentados'),          -- 10
-(3,'jabones naturales'),    -- 11
-(3,'tinturas'),             -- 12
+(3, 'conservas', 'conservas'),
+(3, 'fermentados', 'fermentados'),
+(3, 'jabones naturales', 'jabones-naturales'),
+(3, 'tinturas', 'tinturas'),
 
-(4,'bambú'),                -- 13
-(4,'mimbre'),               -- 14
-(4,'cerámica'),             -- 15
-(4,'madera'),               -- 16
+(4, 'bambú', 'bambu'),
+(4, 'mimbre', 'mimbre'),
+(4, 'cerámica', 'ceramica'),
+(4, 'madera', 'madera'),
 
-(5,'compost'),              -- 17
-(5,'lombricultura'),        -- 18
-(5,'insumos agroecológicos')-- 19
+(5, 'compost', 'compost'),
+(5, 'lombricultura', 'lombricultura'),
+(5, 'insumos agroecológicos', 'insumos-agroecologicos')
 ;
 
--- TODO: Insertar etiquetas
-INSERT INTO public.etiquetas (nombre) VALUES 
-('etiqueta1'),
-('etiqueta2'),
-('etiqueta3'),
-('etiqueta4')
+INSERT INTO public.etiquetas (nombre, slug_etiqueta) VALUES 
+('etiqueta1', 'etiqueta1'),
+('etiqueta2', 'etiqueta2'),
+('etiqueta3', 'etiqueta3'),
+('etiqueta4', 'etiqueta4')
 ;
 
 INSERT INTO public.subcategoria_etiquetas (id_subcategoria,id_etiqueta) VALUES

@@ -1,7 +1,11 @@
 import { myPool } from '@database/pool.js';
 import { DeAcaBadRequest, DeAcaInternal, DeAcaNotFound } from '@errors/response.errors.js';
 
-export abstract class BaseRepository<T> {
+interface DatosParaSlug {
+  nombre?: string;
+  slug?: string;
+}
+export abstract class BaseRepository<T extends DatosParaSlug> {
   protected abstract readonly baseQuery: string;
   protected abstract readonly tableName: string;
   protected abstract readonly idName: string;
@@ -43,6 +47,8 @@ export abstract class BaseRepository<T> {
   }
 
   async add(data: Partial<T>): Promise<T> {
+    if ('slug' in data && data.nombre) data.slug = this.createSlug(data.nombre); //Sobreescribimos el slug por las dudas pero hay que mandarlo (aunque sea undefined) para que lo asigne.
+
     const keys = Object.keys(data);
     const values = Object.values(data);
 
@@ -90,26 +96,37 @@ export abstract class BaseRepository<T> {
   }
 
   async update(id: string | number, data: Partial<T>): Promise<T> {
-    const keys = Object.keys(data).filter((key) => key != this.idName); //Los idName no se actualizan. //FIXME: Esto puede traer problemas
+    //No se hace update de los idName, ni de activo, ni de slugs
+    const keys = Object.keys(data).filter(
+      (key) => key != this.idName && key != 'activo' && !key.startsWith('slug_'),
+    ); //Los idName no se actualizan. //FIXME: Esto puede traer problemas
     if (keys.length === 0) throw new DeAcaBadRequest('No hay datos para actualizar');
 
     const sets = keys.map((key, i) => `${key} = $${i + 1}`).join(', ');
     const values = keys.map((key) => (data as any)[key]); // 👈 importante
-
+    console.log({ keys, values });
     const query = `
       UPDATE ${this.tableName} 
       SET ${sets} 
       WHERE ${this.idName} = $${keys.length + 1} 
       RETURNING *
     `;
-
+    console.log(query);
+    // await myPool.query('ROLLBACK');
+    // await myPool.query('BEGIN');
     const res = await myPool.query(query, [...values, id]);
 
+    // await myPool.query('COMMIT');
     if (res.rows.length === 0) {
       throw new DeAcaNotFound(`No se pudo actualizar: registro con ${this.idName} ${id} no existe.`);
     }
 
     const filtro = { [this.idName as string]: id } as Partial<T>;
+
+    console.log('Objeto desde RETURNING:', res.rows[0]);
+
+    const verificado = await this.getOneBy(filtro);
+    console.log('Objeto re-consultado en el Repo:', verificado);
 
     return this.getOneBy(filtro);
   }
@@ -118,5 +135,18 @@ export abstract class BaseRepository<T> {
     const query = `SELECT 1 FROM ${this.tableName} WHERE ${this.idName} = $1`;
     const res = await myPool.query(query, [id]);
     return res.rows.length === 1;
+  }
+
+  private createSlug(nombre: string): string {
+    return nombre
+      .toString()
+      .normalize('NFD') // Separa acentos
+      .replace(/[\u0300-\u036f]/g, '') // Elimina acentos
+      .toLowerCase()
+      .replace(/\s+/g, '-') // Espacios por guiones
+      .replace(/[^\w-]+/g, '') // Elimina todo lo que no sea letra, número o guion
+      .replace(/--+/g, '-') // Evita guiones dobles
+      .replace(/^-+/, '') // Quita guiones al inicio
+      .replace(/-+$/, ''); // Quita guiones al final
   }
 }

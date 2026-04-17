@@ -1,9 +1,12 @@
 CREATE TABLE IF NOT EXISTS categorias (
     id_categoria SMALLINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nombre CITEXT NOT NULL UNIQUE CHECK (
-        char_length(nombre) >= 3 AND 
-        char_length(nombre) <= 35
+        char_length(nombre) BETWEEN 3 AND 35
     ),
+    slug_categoria CITEXT NOT NULL UNIQUE CHECK (
+        char_length(slug_categoria) BETWEEN 3 AND 35
+        AND slug_categoria ~ '^[a-zA-Z0-9-]+$' 
+    ),-- TODO: TRIGGER para asegurarse que no se cambia el slug_categoria
     descripcion TEXT,
     fecha_creacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -14,10 +17,13 @@ CREATE TABLE IF NOT EXISTS categorias (
 CREATE TABLE IF NOT EXISTS subcategorias (
     id_subcategoria INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     id_categoria SMALLINT NOT NULL REFERENCES categorias(id_categoria) ON DELETE CASCADE ON UPDATE CASCADE,
-    nombre CITEXT NOT NULL CHECK (
-        char_length(nombre) >= 3 AND 
-        char_length(nombre) <= 35
+    nombre CITEXT NOT NULL UNIQUE CHECK (
+        char_length(nombre) BETWEEN 3 AND 35
     ),
+    slug_subcategoria CITEXT NOT NULL UNIQUE CHECK (
+        char_length(slug_subcategoria) BETWEEN 3 AND 35
+        AND slug_subcategoria ~ '^[a-zA-Z0-9-]+$' 
+    ),-- TODO: TRIGGER para asegurarse que no se cambia el slug_subcategoria
     fecha_creacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_eliminacion TIMESTAMP WITH TIME ZONE,
@@ -28,9 +34,12 @@ CREATE TABLE IF NOT EXISTS subcategorias (
 CREATE TABLE IF NOT EXISTS etiquetas (
     id_etiqueta INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nombre CITEXT NOT NULL UNIQUE CHECK (
-        char_length(nombre) >= 3 AND 
-        char_length(nombre) <= 35
-    )
+        char_length(nombre) BETWEEN 3 AND 35
+    ),
+    slug_etiqueta CITEXT NOT NULL UNIQUE CHECK (
+        char_length(slug_etiqueta) BETWEEN 3 AND 35
+        AND slug_etiqueta ~ '^[a-zA-Z0-9-]+$' 
+    )-- TODO: TRIGGER para asegurarse que no se cambia el slug_etiqueta
 );
 
 CREATE TABLE IF NOT EXISTS subcategoria_etiquetas (

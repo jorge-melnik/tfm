@@ -18,10 +18,10 @@ CREATE TABLE IF NOT EXISTS datos_personales (
         email ~* '^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$'
     ),
     username CITEXT UNIQUE CHECK (
-        char_length(username) >= 5 AND 
-        char_length(username) <= 30 AND
-        username ~ '^[a-zA-Z0-9._]+$' 
-    ),
+        char_length(username) BETWEEN 5 AND 20
+        AND username ~ '^[a-zA-Z0-9-]+$' 
+    ),  --TODO trigger para asegurarse que no se modifica el username una vez creado
+    -- aca username será el slug, por eso no hay campo aparte.
     celular VARCHAR(20) UNIQUE CHECK (celular ~ '^\+[1-9]\d{6,14}$'),
     foto_url TEXT,
     email_validado BOOLEAN NOT NULL DEFAULT false,
@@ -51,8 +51,7 @@ CREATE TABLE IF NOT EXISTS ubicaciones (
     id_localidad INTEGER NOT NULL REFERENCES localidades(id_localidad),
     
     nombre CITEXT NOT NULL CHECK (
-        char_length(nombre) >= 2 AND 
-        char_length(nombre) <= 50
+        char_length(nombre) BETWEEN 2 AND 32
     ),
     direccion TEXT NOT NULL,    -- Calle, número, entre calles, lo que quieran
     comentarios TEXT,
