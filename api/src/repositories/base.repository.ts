@@ -9,10 +9,16 @@ export abstract class BaseRepository<T extends DatosParaSlug> {
   protected abstract readonly baseQuery: string;
   protected abstract readonly tableName: string;
   protected abstract readonly idName: string;
+  protected abstract slugName?: keyof T;
 
-  async getCount(onlyActive: boolean = true): Promise<number> {
-    let query = 'SELECT COUNT(*) as total FROM ${this.tableName} WHERE activo=$1';
-    const res = await myPool.query(query, [onlyActive]);
+  async getCount(onlyActive: boolean | undefined = undefined): Promise<number> {
+    const params = [];
+    let query = `SELECT COUNT(*) as total FROM ${this.tableName}`;
+    if (onlyActive !== undefined) {
+      params.push(onlyActive);
+      query += ' WHERE activo=$1';
+    }
+    const res = await myPool.query(query, params);
     return parseInt(res.rows[0].total, 10);
   }
 
@@ -47,7 +53,9 @@ export abstract class BaseRepository<T extends DatosParaSlug> {
   }
 
   async add(data: Partial<T>): Promise<T> {
-    if ('slug' in data && data.nombre) data.slug = this.createSlug(data.nombre); //Sobreescribimos el slug por las dudas pero hay que mandarlo (aunque sea undefined) para que lo asigne.
+    if (this.slugName && this.slugName in data && data.nombre) {
+      (data as any)[this.slugName] = this.createSlug(data.nombre as string);
+    }
 
     const keys = Object.keys(data);
     const values = Object.values(data);
@@ -104,30 +112,21 @@ export abstract class BaseRepository<T extends DatosParaSlug> {
 
     const sets = keys.map((key, i) => `${key} = $${i + 1}`).join(', ');
     const values = keys.map((key) => (data as any)[key]); // 👈 importante
-    console.log({ keys, values });
+
     const query = `
       UPDATE ${this.tableName} 
       SET ${sets} 
       WHERE ${this.idName} = $${keys.length + 1} 
       RETURNING *
     `;
-    console.log(query);
-    // await myPool.query('ROLLBACK');
-    // await myPool.query('BEGIN');
+
     const res = await myPool.query(query, [...values, id]);
 
-    // await myPool.query('COMMIT');
     if (res.rows.length === 0) {
       throw new DeAcaNotFound(`No se pudo actualizar: registro con ${this.idName} ${id} no existe.`);
     }
 
     const filtro = { [this.idName as string]: id } as Partial<T>;
-
-    console.log('Objeto desde RETURNING:', res.rows[0]);
-
-    const verificado = await this.getOneBy(filtro);
-    console.log('Objeto re-consultado en el Repo:', verificado);
-
     return this.getOneBy(filtro);
   }
 
@@ -137,7 +136,7 @@ export abstract class BaseRepository<T extends DatosParaSlug> {
     return res.rows.length === 1;
   }
 
-  private createSlug(nombre: string): string {
+  public createSlug(nombre: string): string {
     return nombre
       .toString()
       .normalize('NFD') // Separa acentos

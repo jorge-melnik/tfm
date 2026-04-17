@@ -1,12 +1,14 @@
 import { test } from 'node:test';
 import * as assert from 'node:assert';
 import { categoriasRepository } from '../../src/repositories/categorias.repository.js';
-import { DeAcaInternal } from '@errors/response.errors.js';
+import { DeAcaInternal, DeAcaNotFound } from '@errors/response.errors.js';
 
 test('test getAll', async (t) => {
   //Arrange
+  const nombre = 'Nombre ' + Date.now();
   const categoria = {
-    nombre: 'Nombre ' + Date.now(),
+    nombre,
+    slug_categoria: categoriasRepository.createSlug(nombre),
     descripcion: 'Descripcion' + Date.now(),
   };
 
@@ -20,8 +22,10 @@ test('test getAll', async (t) => {
 
 test('test getBy', async (t) => {
   //Arrange
+  const nombre = 'Nombre ' + Date.now();
   const categoria = {
-    nombre: 'Nombre ' + Date.now(),
+    nombre,
+    slug_categoria: categoriasRepository.createSlug(nombre),
     descripcion: 'Descripcion' + Date.now(),
   };
 
@@ -41,10 +45,12 @@ test('test getBy sin filtro', async (t) => {
   });
 });
 
-test('test getOnBy', async (t) => {
+test('test getOneBy', async (t) => {
   //Arrange
+  const nombre = 'Nombre ' + Date.now();
   const categoria = {
-    nombre: 'Nombre ' + Date.now(),
+    nombre,
+    slug_categoria: categoriasRepository.createSlug(nombre),
     descripcion: 'Descripcion' + Date.now(),
   };
 
@@ -56,15 +62,19 @@ test('test getOnBy', async (t) => {
   assert.deepStrictEqual(nuevaCategoria, categoriaOne);
 });
 
-test('test getOnBy varios resultados', async (t) => {
+test('test getOneBy varios resultados', async (t) => {
   //Arrange
+  const nombre1 = 'Nombre ' + Date.now();
   const categoria1 = {
-    nombre: 'Nombre ' + Date.now(),
+    nombre: nombre1,
+    slug_categoria: categoriasRepository.createSlug(nombre1),
     descripcion: 'Descripcion' + Date.now(),
   };
+  const nombre2 = 'Nombre2 ' + Date.now();
   const categoria2 = {
-    nombre: 'Nombre2 ' + Date.now(),
-    descripcion: 'Descripcion2' + Date.now(),
+    nombre: nombre2,
+    slug_categoria: categoriasRepository.createSlug(nombre2),
+    descripcion: 'Descripcion' + Date.now(),
   };
 
   //Act
@@ -87,8 +97,10 @@ test('test getOneBy sin filtro', async (t) => {
 
 test('test add', async (t) => {
   //Arrange
+  const nombre = 'Nombre ' + Date.now();
   const categoria = {
-    nombre: 'Nombre ' + Date.now(),
+    nombre,
+    slug_categoria: categoriasRepository.createSlug(nombre),
     descripcion: 'Descripcion' + Date.now(),
   };
 
@@ -102,8 +114,10 @@ test('test add', async (t) => {
 
 test('test update', async (t) => {
   //Arrange
+  const nombre = 'Nombre ' + Date.now();
   const categoria = {
-    nombre: 'Nombre ' + Date.now(),
+    nombre,
+    slug_categoria: categoriasRepository.createSlug(nombre),
     descripcion: 'Descripcion' + Date.now(),
   };
 
@@ -132,6 +146,26 @@ test('test update inexistente', async (t) => {
   });
 });
 
+test('test update inexistente 2', async (t) => {
+  //Arrange
+  const nombre = 'Nombre u ' + Date.now();
+  const categoria = {
+    nombre,
+    slug_categoria: categoriasRepository.createSlug(nombre),
+    descripcion: 'Descripcion' + Date.now(),
+  };
+
+  //Act
+  const nuevaCategoria = await categoriasRepository.add(categoria);
+  nuevaCategoria.nombre = nuevaCategoria.nombre + ' cambiado';
+
+  //Assert
+  await assert.rejects(categoriasRepository.update(-1, nuevaCategoria), (err: any) => {
+    assert.ok(err instanceof DeAcaNotFound);
+    return true;
+  });
+});
+
 test('test update sin datos', async (t) => {
   //Assert
   await assert.rejects(categoriasRepository.update(-1, {}), (err: any) => {
@@ -142,8 +176,10 @@ test('test update sin datos', async (t) => {
 
 test('test remove', async (t) => {
   //Arrange
+  const nombre = 'Nombre ' + Date.now();
   const categoria = {
-    nombre: 'Nombre ' + Date.now(),
+    nombre,
+    slug_categoria: categoriasRepository.createSlug(nombre),
     descripcion: 'Descripcion' + Date.now(),
   };
 
@@ -159,7 +195,25 @@ test('test remove', async (t) => {
 test('test remove inexistente', async (t) => {
   //Assert
   await assert.rejects(categoriasRepository.remove(-1), (err: any) => {
-    assert.ok(err instanceof DeAcaInternal);
+    assert.ok(err instanceof DeAcaNotFound);
     return true;
   });
+});
+
+test('test getCount', async (t) => {
+  //Arrange
+  const nombre = 'Nombre ' + Date.now();
+  const categoria = {
+    nombre,
+    slug_categoria: categoriasRepository.createSlug(nombre),
+    descripcion: 'Descripcion' + Date.now(),
+  };
+  const contadorAnterior = await categoriasRepository.getCount();
+  await categoriasRepository.add(categoria);
+
+  //Act
+  const contadorActual = await categoriasRepository.getCount();
+
+  //Assert
+  assert.equal(contadorActual, contadorAnterior + 1);
 });

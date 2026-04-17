@@ -4,6 +4,7 @@ import { BaseRepository } from './base.repository.js';
 export class SubcategoriasRepositoryClass extends BaseRepository<Subcategoria> {
   protected readonly tableName = 'subcategorias';
   protected readonly idName = 'id_subcategoria';
+  protected readonly slugName?: keyof Subcategoria = 'slug_subcategoria';
 
   protected readonly baseQuery = `
     SELECT SC.*, C.slug_categoria FROM subcategorias SC
