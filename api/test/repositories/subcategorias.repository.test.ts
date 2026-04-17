@@ -27,7 +27,7 @@ test('test getCount', async (t) => {
 
 test('test deactivate', async (t) => {
   //Arrange
-  const nombre = 'Nombre ' + Date.now();
+  const nombre = 'Nombre deactivate' + Date.now();
   const categoria: Categoria = await categoriasRepository.add({
     nombre,
     slug_categoria: categoriasRepository.createSlug(nombre),
