@@ -3,7 +3,7 @@ import { categoriasRepository } from '@repositories/categorias.repository.js';
 import { Categoria } from '@schemas/categoria.schema.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 
-const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
+const idCategoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.put('/', {
     schema: {
       tags: ['categorias'],
@@ -59,4 +59,4 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
   });
 };
 
-export default rutasEtiquetas;
+export default idCategoriasRoutes;

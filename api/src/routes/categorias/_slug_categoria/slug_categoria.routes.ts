@@ -4,7 +4,7 @@ import { subcategoriasRepository } from '@repositories/subcategorias.repository.
 import { Categoria, Subcategoria } from '@schemas/categoria.schema.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 
-const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
+const rutasSlugCategorias: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
     schema: {
       tags: ['categorias'],
@@ -89,4 +89,4 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
   });
 };
 
-export default rutasEtiquetas;
+export default rutasSlugCategorias;

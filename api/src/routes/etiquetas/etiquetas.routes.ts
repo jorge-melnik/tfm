@@ -50,13 +50,13 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
     },
   });
 
-  fastify.get('/:id_etiqueta', {
+  fastify.get('/:slug_etiqueta', {
     schema: {
       tags: ['etiquetas'],
       summary: 'Actualizar etiqueta',
       description: 'Permite actualizar una etiqueta global.',
       params: Type.Object({
-        id_etiqueta: Etiqueta.properties.id_etiqueta,
+        slug_etiqueta: Etiqueta.properties.slug_etiqueta,
       }),
       response: {
         200: Etiqueta,
@@ -65,7 +65,7 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       },
     },
     handler: async function (req, reply) {
-      return etiquetasRepository.getOneBy({ id_etiqueta: req.params.id_etiqueta });
+      return etiquetasRepository.getOneBy({ slug_etiqueta: req.params.slug_etiqueta });
     },
   });
 
