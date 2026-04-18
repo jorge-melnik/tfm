@@ -128,7 +128,6 @@ test('Categorias Repository', async (t) => {
     const categoriaModificada = await categoriasRepository.update(
       nuevaCategoria.id_categoria,
       nuevaCategoria,
-      sssssss,
     );
 
     //Assert
