@@ -56,6 +56,8 @@ services:
       - ./:/deaca
       - deaca_api_node_modules:/deaca/api/node_modules
     restart: unless-stopped
+    ports:
+      - 0.0.0.0:3000:3000
   db:
     image: postgis/postgis:18-3.6-alpine
     container_name: deacadb

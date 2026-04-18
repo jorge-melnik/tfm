@@ -4,7 +4,8 @@ import { type FastifyPluginAsync } from 'fastify';
 import { fileURLToPath } from 'node:url';
 import cookiePlugin from '@plugins/cookie.plugin.js';
 import jwtPlugin from '@plugins/jwt.plugin.js';
-import swaggerPlugin from '@plugins/swagger.plugin.js';
+import swagger from '@plugins/swagger.js';
+import swaggerUi from '@plugins/swagger-ui.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,9 +25,13 @@ const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void>
   });
 
   //Cargar plugins
-  // await fastify.register(cookiePlugin);
-  // await fastify.register(jwtPlugin);
-  await fastify.register(swaggerPlugin);
+  await fastify.register(cookiePlugin);
+  await fastify.register(jwtPlugin);
+  await fastify.register(swagger);
+  // await fastify.register(swaggerUi);
+  await fastify.register(import('@scalar/fastify-api-reference'), {
+    routePrefix: '/docs',
+  });
 
   //Cargar rutas
   void fastify.register(AutoLoad, {

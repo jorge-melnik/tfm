@@ -5,5 +5,6 @@ RUN mkdir -p /deaca/api/node_modules /deaca/api/.angular && chown -R node:node /
 WORKDIR /deaca/api
 
 FROM base AS development
-RUN apk add --no-cache git
+ENV NODE_ENV=development
+RUN apk add --no-cache git && npm install fastify-cli --global 
 USER node
