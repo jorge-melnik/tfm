@@ -8,7 +8,6 @@ import {
   LoginUsernameSchema,
   ProfileSchema,
   RegisterSchema,
-  RolLiteral,
   TokenPayload,
   TokenSchema,
   User,
@@ -16,7 +15,6 @@ import {
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 import { FastifyReply } from 'fastify';
 import { CookieSerializeOptions } from '@fastify/cookie';
-import { DatosPersonales } from '@schemas/usuarios.schema.js';
 
 //Para manejar las mismas opciones en ambas rutas
 const accessTokenOptions = {
@@ -80,7 +78,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
         500: DeAcaErrorResponse,
       },
     },
-    handler: async function (req, rep: FastifyReply) {
+    handler: async function (req, rep) {
       const payload = await authRepository.usernameLogin(req.body.username, req.body.password);
       return generarTokens(payload, rep);
     },

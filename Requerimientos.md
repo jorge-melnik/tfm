@@ -96,8 +96,9 @@ ver donde mostrar un mapa
 - Calificación del producto. Solo califica el producto una única vez (se puede modificar) por usuario.
 
 - cancelar venta. y la plata?
-
+- INFORMAR un problema
 
 # Especificacion de requerimientos no funcionales
 - RNF-01 : Ley de datos personales
 - RNF-02 : Seo
+

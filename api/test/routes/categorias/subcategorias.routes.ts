@@ -29,7 +29,7 @@ test('/categorias/:id_categoria/subcategorias', async (t) => {
     });
 
     const subcategoriaCreada: Subcategoria = JSON.parse(res.payload);
-    console.log({ subcategoriaCreada });
+
     // Assert
     assert.equal(res.statusCode, 201, 'No coincide statusCode');
     assert.ok(subcategoriaCreada.id_subcategoria, 'Debería tener id_subcategoria');

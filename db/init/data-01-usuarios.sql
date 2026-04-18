@@ -14,7 +14,7 @@ BEGIN
     INSERT INTO usuarios (rol_actual, roles) VALUES ('PRODUCTOR', ARRAY['PRODUCTOR']::ROL[]) RETURNING id_usuario INTO id_productor;
     INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username,celular) 
         VALUES (id_productor, 'Juan', 'Huerta', 'juan.productor@email.com','productor', '+59899333444');
-    INSERT INTO productores (id_usuario, presentación) VALUES (id_productor, 'Productor de hortalizas orgánicas y miel pura de campo.');
+    INSERT INTO productores (id_usuario, presentacion) VALUES (id_productor, 'Productor de hortalizas orgánicas y miel pura de campo.');
     INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_productor, crypt('Contraseña', gen_salt('bf', 10)));
 
     -- Alta de consumidor

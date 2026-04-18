@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS datos_personales (
 
 CREATE TABLE IF NOT EXISTS productores (
     id_usuario UUID PRIMARY KEY REFERENCES usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE, -- Misma clave que usuarios
-    presentación TEXT NOT NULL,
+    presentacion TEXT NOT NULL,
     fecha_creacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_eliminacion TIMESTAMP WITH TIME ZONE,

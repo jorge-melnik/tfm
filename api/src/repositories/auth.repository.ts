@@ -7,15 +7,7 @@ import {
   DeAcaUnAuthenticated,
 } from '@errors/response.errors.js';
 import { Profile, RegisterSchema, Rol, TokenPayload, User } from '@schemas/auth.schema.js';
-import { AdicionalesConsumidor, AdicionalesProductor, DatosPersonales } from '@schemas/usuarios.schema.js';
-
-// const queryConsumidor = `
-//       INSERT INTO productores (id_usuario, presentación) VALUES (id_productor, 'Productor de hortalizas orgánicas y miel pura de campo.');
-//     `;
-
-// const queryProductor = `
-//       INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_productor, crypt('Contraseña', gen_salt('bf', 10)));
-//     `;
+import { AdicionalesConsumidor, AdicionalesProductor } from '@schemas/usuarios.schema.js';
 
 class AuthRepositoryClass {
   /**
@@ -23,7 +15,7 @@ class AuthRepositoryClass {
    */
   async emailLogin(email: string, password: string): Promise<TokenPayload> {
     const query = `
-      SELECT U.id_usuario, roles 
+      SELECT U.id_usuario, to_jsonb(roles) as roles 
       FROM public.usuarios U
       JOIN public.credenciales C ON C.id_usuario = U.id_usuario
       JOIN public.datos_personales DP ON DP.id_usuario = U.id_usuario
@@ -42,7 +34,7 @@ class AuthRepositoryClass {
    */
   async usernameLogin(username: string, password: string): Promise<TokenPayload> {
     const query = `
-      SELECT U.id_usuario, roles 
+      SELECT U.id_usuario, to_jsonb(roles) as roles 
       FROM public.usuarios U
       JOIN public.credenciales C ON C.id_usuario = U.id_usuario
       JOIN public.datos_personales DP ON DP.id_usuario = U.id_usuario
@@ -71,9 +63,6 @@ class AuthRepositoryClass {
     const { rows }: QueryResult<Profile> = await myPool.query(query, [id_usuario]);
     if (rows.length === 0) {
       throw new DeAcaNotFound('Usuario con id_usuario ' + id_usuario);
-    }
-    if (rows.length > 1) {
-      throw new DeAcaInternal('Usuario duplicado');
     }
     return rows[0];
   }
@@ -180,10 +169,10 @@ class AuthRepositoryClass {
     const query = 'INSERT into public.consumidores (id_usuario) VALUES($1);';
     if (client) {
       //Si hay client es que viene de la función register
-      client.query(query, [id_usuario]); //Por ahoro no hay campos adicionales en el consumidor al insertar.
+      await client.query(query, [id_usuario]); //Por ahoro no hay campos adicionales en el consumidor al insertar.
     } else {
       //Transacción individual si no hay client especificado.
-      myPool.query(query, [id_usuario]); //Por ahoro no hay campos adicionales en el consumidor al insertar.
+      await myPool.query(query, [id_usuario]); //Por ahoro no hay campos adicionales en el consumidor al insertar.
     }
   }
 
