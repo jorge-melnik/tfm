@@ -176,7 +176,16 @@ class AuthRepositoryClass {
    * @param consumidor
    * @param client Se puede pasar un client si hay que ejecutarlo en la misma transacción. Caso register
    */
-  async activarConsumidor(id_usuario: string, consumidor: AdicionalesConsumidor, client?: PoolClient) {}
+  async activarConsumidor(id_usuario: string, consumidor: AdicionalesConsumidor, client?: PoolClient) {
+    const query = 'INSERT into public.consumidores (id_usuario) VALUES($1);';
+    if (client) {
+      //Si hay client es que viene de la función register
+      client.query(query, [id_usuario]); //Por ahoro no hay campos adicionales en el consumidor al insertar.
+    } else {
+      //Transacción individual si no hay client especificado.
+      myPool.query(query, [id_usuario]); //Por ahoro no hay campos adicionales en el consumidor al insertar.
+    }
+  }
 
   /**
    * Activar rol Productor para un consumidor ya existente.
@@ -184,7 +193,16 @@ class AuthRepositoryClass {
    * @param productor
    * @param client Se puede pasar un client si hay que ejecutarlo en la misma transacción. Caso register
    */
-  async activarProductor(id_usuario: string, productor: AdicionalesProductor, client?: PoolClient) {}
+  async activarProductor(id_usuario: string, productor: AdicionalesProductor, client?: PoolClient) {
+    const query = 'INSERT into public.productores (id_usuario,presentacion) VALUES($1,$2);';
+    if (client) {
+      //Si hay client es que viene de la función register
+      client.query(query, [id_usuario, productor.presentacion]); //Por ahoro no hay campos adicionales en el consumidor al insertar.
+    } else {
+      //Transacción individual si no hay client especificado.
+      myPool.query(query, [id_usuario]); //Por ahoro no hay campos adicionales en el consumidor al insertar.
+    }
+  }
 }
 
 export default new AuthRepositoryClass();

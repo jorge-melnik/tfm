@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import * as assert from 'node:assert';
 import { categoriasRepository } from '../../src/repositories/categorias.repository.js';
-import { DeAcaInternal, DeAcaNotFound } from '@errors/response.errors.js';
+import { DeAcaBadRequest, DeAcaInternal, DeAcaNotFound } from '@errors/response.errors.js';
 
 test('Categorias Repository', async (t) => {
   t.test('test getAll', async () => {
@@ -91,7 +91,7 @@ test('Categorias Repository', async (t) => {
   t.test('test getOneBy sin filtro', async () => {
     //Assert
     await assert.rejects(categoriasRepository.getOneBy({}), (err: any) => {
-      assert.ok(err instanceof DeAcaInternal);
+      assert.ok(err instanceof DeAcaBadRequest);
       return true;
     });
   });
@@ -128,6 +128,7 @@ test('Categorias Repository', async (t) => {
     const categoriaModificada = await categoriasRepository.update(
       nuevaCategoria.id_categoria,
       nuevaCategoria,
+      sssssss,
     );
 
     //Assert
@@ -137,15 +138,15 @@ test('Categorias Repository', async (t) => {
   t.test('test update sin filtro', async () => {
     //Assert
     await assert.rejects(categoriasRepository.update(-1, {}), (err: any) => {
-      assert.ok(err instanceof DeAcaInternal);
+      assert.ok(err instanceof DeAcaBadRequest);
       return true;
     });
   });
 
   t.test('test update inexistente', async () => {
     //Assert
-    await assert.rejects(categoriasRepository.update(-1, { activo: true }), (err: any) => {
-      assert.ok(err instanceof DeAcaInternal);
+    await assert.rejects(categoriasRepository.update(-1, { nombre: 'Otro nombre' }), (err: any) => {
+      assert.ok(err instanceof DeAcaNotFound);
       return true;
     });
   });
@@ -173,7 +174,7 @@ test('Categorias Repository', async (t) => {
   t.test('test update sin datos', async () => {
     //Assert
     await assert.rejects(categoriasRepository.update(-1, {}), (err: any) => {
-      assert.ok(err instanceof DeAcaInternal);
+      assert.ok(err instanceof DeAcaBadRequest);
       return true;
     });
   });
