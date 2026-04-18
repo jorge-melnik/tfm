@@ -115,7 +115,6 @@ class AuthRepositoryClass {
    * @param dp
    */
   async register(dp: RegisterSchema): Promise<void> {
-    if (dp.roles.length <= 0) throw new DeAcaBadRequest('Debes especificar al menos un rol.');
     const queryUsuario = 'INSERT INTO usuarios (rol_actual, roles) VALUES ($1, $2) RETURNING *';
     const queryDatosPersonales = `
         INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username,celular) VALUES ($1, $2, $3, $4,$5, $6);
@@ -167,13 +166,8 @@ class AuthRepositoryClass {
    */
   async activarConsumidor(id_usuario: string, consumidor: AdicionalesConsumidor, client?: PoolClient) {
     const query = 'INSERT into public.consumidores (id_usuario) VALUES($1);';
-    if (client) {
-      //Si hay client es que viene de la función register
-      await client.query(query, [id_usuario]); //Por ahoro no hay campos adicionales en el consumidor al insertar.
-    } else {
-      //Transacción individual si no hay client especificado.
-      await myPool.query(query, [id_usuario]); //Por ahoro no hay campos adicionales en el consumidor al insertar.
-    }
+    const db = client || myPool;
+    await db.query(query, [id_usuario]);
   }
 
   /**
@@ -184,13 +178,9 @@ class AuthRepositoryClass {
    */
   async activarProductor(id_usuario: string, productor: AdicionalesProductor, client?: PoolClient) {
     const query = 'INSERT into public.productores (id_usuario,presentacion) VALUES($1,$2);';
-    if (client) {
-      //Si hay client es que viene de la función register
-      client.query(query, [id_usuario, productor.presentacion]); //Por ahoro no hay campos adicionales en el consumidor al insertar.
-    } else {
-      //Transacción individual si no hay client especificado.
-      myPool.query(query, [id_usuario]); //Por ahoro no hay campos adicionales en el consumidor al insertar.
-    }
+    const params = [id_usuario, productor.presentacion];
+    const db = client || myPool; // Determinamos el ejecutor de una
+    await db.query(query, params);
   }
 }
 

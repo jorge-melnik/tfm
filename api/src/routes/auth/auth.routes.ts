@@ -15,6 +15,7 @@ import {
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 import { FastifyReply } from 'fastify';
 import { CookieSerializeOptions } from '@fastify/cookie';
+import { AdicionalesProductor } from '@schemas/usuarios.schema.js';
 
 //Para manejar las mismas opciones en ambas rutas
 const accessTokenOptions = {
@@ -40,7 +41,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
     const accessToken = fastify.jwt.sign(payload, accessTokenOptions);
     const refreshToken = fastify.jwt.sign(payload, refreshTokenOptions); //No importa que AT y RT tengan el mismo id, RT es de único uso.
     const user: User = fastify.jwt.decode(refreshToken) as User; //No verifica, pero no importa.
-    if (!user) throw new DeAcaInternal('Error al generar refresh token.');
+    // if (!user) throw new DeAcaInternal('Error al generar refresh token.'); //Esto es inalcanzable.
 
     await authRepository.addRefreshToken(user, refreshToken);
 
@@ -119,7 +120,6 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
         await req.jwtVerify({ onlyCookie: true });
         const oldToken = req.cookies.refreshToken;
         fastify.log.info({ oldToken });
-        if (!oldToken) throw new DeAcaUnAuthenticated('No hay refresh token.');
         await authRepository.verifyRefreshToken(req.user, oldToken);
         await authRepository.removeRefreshToken(req.user); //Si es válido una vez hay que borrarlo! Solo se usa una vez.
       } catch (error) {
@@ -170,6 +170,26 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       await authRepository.register(req.body); //Doy de alta el usuario.
       const payload = await authRepository.emailLogin(req.body.email, req.body.password); //Lo autentico.
       return generarTokens(payload, rep);
+    },
+  });
+
+  fastify.post('/profile/productor', {
+    schema: {
+      tags: ['auth'],
+      summary: 'Activar Productor',
+      description: 'Activar rol productor para un usuario que no lo es. Devuelve el perfil con el nuevo rol.',
+      security: [{ bearerAuth: [] }],
+      body: AdicionalesProductor,
+      response: {
+        200: ProfileSchema,
+        401: DeAcaErrorResponse,
+        500: DeAcaErrorResponse,
+      },
+    },
+    onRequest: [fastify.authenticate],
+    handler: async function (req, rep) {
+      await authRepository.activarProductor(req.user.id_usuario, req.body);
+      return await authRepository.getUserById(req.user.id_usuario);
     },
   });
 };

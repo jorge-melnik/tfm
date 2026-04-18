@@ -3,18 +3,19 @@ import * as assert from 'node:assert';
 import authRepository from '@repositories/auth.repository.js';
 import { myPool } from '@database/pool.js';
 import { RegisterSchema } from '@schemas/auth.schema.js';
+import { DeAcaInternal } from '@errors/response.errors.js';
 
 test('AuthRepository - Suite de Pruebas', async (t) => {
   await t.test('register() - Caso: Consumidor', async (st) => {
     await st.test('Registro de consumidor', async () => {
       // Arrange
-      const uniqueId = Date.now();
+      const uniqueId = 'rcok' + Date.now();
       const datosConsumidor: RegisterSchema = {
         email: `c_${uniqueId}@test.com`,
         nombres: 'Juan',
         apellidos: 'Jorge',
         username: `c-${uniqueId}`,
-        celular: `+${uniqueId}`,
+        celular: `+1${Date.now()}`,
         password: 'Contraseña.1',
         password2: 'Contraseña.1',
         roles: ['CONSUMIDOR'],
@@ -52,13 +53,13 @@ test('AuthRepository - Suite de Pruebas', async (t) => {
 
     await st.test('Registro de productor', async () => {
       // Arrange
-      const uniqueId = Date.now();
+      const uniqueId = 'rpok' + Date.now();
       const datosConsumidor: RegisterSchema = {
-        email: `p_${uniqueId}@test.com`,
+        email: `${uniqueId}@test.com`,
         nombres: 'Juan',
         apellidos: 'Jorge',
         username: `p-${uniqueId}`,
-        celular: `+${uniqueId}`,
+        celular: `+2${Date.now()}`,
         password: 'Contraseña.1',
         password2: 'Contraseña.1',
         roles: ['PRODUCTOR'],
@@ -98,13 +99,13 @@ test('AuthRepository - Suite de Pruebas', async (t) => {
 
     await st.test('Registro de consumidor y productor simultáneo', async () => {
       // Arrange
-      const uniqueId = Date.now();
+      const uniqueId = 'rcpok' + Date.now();
       const datosDuales: RegisterSchema = {
         email: `dual_${uniqueId}@test.com`,
         nombres: 'Multi',
         apellidos: 'Tarea',
         username: `d-${uniqueId}`,
-        celular: `+${uniqueId}`,
+        celular: `+3${Date.now()}`,
         password: 'Contraseña.1',
         password2: 'Contraseña.1',
         roles: ['CONSUMIDOR', 'PRODUCTOR'],
@@ -140,6 +141,75 @@ test('AuthRepository - Suite de Pruebas', async (t) => {
       // Verificamos presencia en tablas específicas
       assert.strictEqual(registro.es_consumidor, true, 'No se creó el registro en consumidores');
       assert.strictEqual(registro.es_productor, true, 'No se creó el registro en productores');
+    });
+
+    await st.test('Registro de consumidor duplicado', async () => {
+      // Arrange
+      const uniqueId = 'rcd' + Date.now();
+      const datosConsumidor: RegisterSchema = {
+        email: `${uniqueId}@test.com`,
+        nombres: 'Juan',
+        apellidos: 'Jorge',
+        username: `${uniqueId}`,
+        celular: `+4${Date.now()}`,
+        password: 'Contraseña.1',
+        password2: 'Contraseña.1',
+        roles: ['CONSUMIDOR'],
+        consumidor: {},
+      };
+
+      // Act
+
+      await authRepository.register(datosConsumidor); //Este anda.
+
+      await assert.rejects(authRepository.register(datosConsumidor), (err: any) => {
+        assert.ok(err instanceof DeAcaInternal);
+        return true;
+      });
+    });
+  });
+
+  await t.test('activarConsumidor() y activarProductor() - Casos de error', async (st) => {
+    // 1. Arrange: Creamos un usuario base usando register
+    const uniqueId = 'act' + Date.now();
+    const email = `${uniqueId}@test.com`;
+    await authRepository.register({
+      email,
+      nombres: 'Test',
+      apellidos: 'Activacion',
+      username: `u-${uniqueId}`,
+      celular: `+5${Date.now()}`,
+      password: 'Contraseña.1',
+      password2: 'Contraseña.1',
+      roles: ['CONSUMIDOR', 'PRODUCTOR'], // Solo consumidor al empezar
+      consumidor: {},
+      productor: { presentacion: 'La presentacion.' },
+    });
+
+    // Obtenemos el id para las pruebas directas
+    const { rows } = await myPool.query('SELECT id_usuario FROM datos_personales WHERE email = $1', [email]);
+    const { id_usuario } = rows[0];
+
+    await st.test('Debe fallar si se intenta activar un CONSUMIDOR que ya existe', async () => {
+      // Act & Assert
+      // Como ya se activó en el register, esto debe lanzar un error de Unique Constraint
+      await assert.rejects(authRepository.activarConsumidor(id_usuario, {}), (err: any) => {
+        // Si tu repo no tiene un try/catch específico en activarConsumidor,
+        // tirará el error de pg directo.
+        return err.code === '23505' || err.message.includes('duplicate key');
+      });
+    });
+
+    await st.test('Debe fallar si se intenta activar un PRODUCTOR que ya existe', async () => {
+      // Primero lo activamos una vez exitosamente
+
+      // Act & Assert: Intentamos de nuevo
+      await assert.rejects(
+        authRepository.activarProductor(id_usuario, { presentacion: 'Segunda vez' }),
+        (err: any) => {
+          return err.code === '23505' || err.message.includes('duplicate key');
+        },
+      );
     });
   });
 });
