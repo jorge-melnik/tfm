@@ -25,7 +25,9 @@ export const DatosPersonales = Type.Object(
 );
 
 export const AdicionalesConsumidor = Type.Object({});
-export const AdicionalesProductor = Type.Object({});
+export const AdicionalesProductor = Type.Object({
+  presentacion: Type.String(),
+});
 
 export const Consumidor = Type.Object({
   ...DatosPersonales.properties,

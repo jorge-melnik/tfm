@@ -104,23 +104,67 @@ export const ProfileSchema = Type.Intersect(
   },
 );
 
-export const RegisterSchema = Type.Intersect([
-  Type.Omit(DatosPersonales, ['id_usuario', 'foto_url']),
-  Type.Object({
-    password: Type.String({
-      minLength: 10,
-      maxLength: 32,
-      pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$',
-      description:
-        'Contraseña para iniciar sesión con email/username. Debe contener al menos una mayúscula, una minúscula y un número.',
+export const RegisterSchema = Type.Intersect(
+  [
+    Type.Omit(DatosPersonales, ['id_usuario', 'foto_url']),
+    Type.Object({
+      password: Type.String({
+        minLength: 10,
+        maxLength: 32,
+        pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$',
+        description:
+          'Contraseña para iniciar sesión con email/username. Debe contener al menos una mayúscula, una minúscula y un número.',
+      }),
+      password2: Type.String(),
+      roles: UserSchema.properties.roles,
+      //Consumidor y productor debe coincidir con lo especificado en el rol
+      consumidor: Type.Optional(AdicionalesConsumidor),
+      productor: Type.Optional(AdicionalesProductor),
     }),
-    password2: Type.String(),
-    roles: UserSchema.properties.roles,
-    //Consumidor y productor debe coincidir con lo especificado en el rol
-    consumidor: Type.Optional(AdicionalesConsumidor),
-    productor: Type.Optional(AdicionalesProductor),
-  }),
-]);
+  ],
+  {
+    examples: [
+      {
+        nombres: 'Nombres consumidor1',
+        apellidos: 'Apellidos consumidor1',
+        email: 'consumidor1@gmail.com',
+        username: 'consumidor1',
+        celular: '+59893212122',
+        password: 'Contraseña.1',
+        password2: 'Contraseña.1',
+        roles: ['CONSUMIDOR'],
+        consumidor: {},
+      },
+      {
+        nombres: 'Nombres productor1',
+        apellidos: 'Apellidos productor1',
+        email: 'productor1@gmail.com',
+        username: 'productor1',
+        celular: '+59898323211',
+        password: 'Contraseña.1',
+        password2: 'Contraseña.1',
+        roles: ['PRODUCTOR'],
+        productor: {
+          presentacion: 'Soy un productor produciendo.',
+        },
+      },
+      {
+        nombres: 'Nombres productorConsumidor1',
+        apellidos: 'Apellidos productorConsumidor1',
+        email: 'productorConsumidor1@gmail.com',
+        username: 'productorConsumidor1',
+        celular: '+59898323232',
+        password: 'Contraseña.1',
+        password2: 'Contraseña.1',
+        roles: ['CONSUMIDOR', 'PRODUCTOR'],
+        consumidor: {},
+        productor: {
+          presentacion: 'Soy un productor produciendo.',
+        },
+      },
+    ],
+  },
+);
 
 export type LoginEmailType = Static<typeof LoginEmailSchema>;
 export type LoginUsernameType = Static<typeof LoginUsernameSchema>;

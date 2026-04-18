@@ -5,7 +5,6 @@ import { fileURLToPath } from 'node:url';
 import cookiePlugin from '@plugins/cookie.plugin.js';
 import jwtPlugin from '@plugins/jwt.plugin.js';
 import swagger from '@plugins/swagger.js';
-import swaggerUi from '@plugins/swagger-ui.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

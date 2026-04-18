@@ -153,7 +153,15 @@ class AuthRepositoryClass {
       if (dp.consumidor) await this.activarConsumidor(id_usuario, dp.consumidor, client);
       if (dp.productor) await this.activarProductor(id_usuario, dp.productor, client);
 
-      await client.query('COMMIT;');
+      //Insertar credenciales
+      const credencialesQuery = `
+        INSERT INTO credenciales (id_usuario, password_hash) 
+        VALUES ($1, crypt($2, gen_salt('bf', 10)))
+        ;
+      `;
+      await client.query(credencialesQuery, [id_usuario, dp.password]);
+
+      await client.query('COMMIT;'); //Confirmar transacción
     } catch (error: any) {
       await client.query('ROLLBACK;');
       throw new DeAcaInternal(error.message);
