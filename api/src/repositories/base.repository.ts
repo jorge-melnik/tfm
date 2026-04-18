@@ -1,15 +1,15 @@
 import { myPool } from '@database/pool.js';
 import { DeAcaBadRequest, DeAcaInternal, DeAcaNotFound } from '@errors/response.errors.js';
 
-interface DatosParaSlug {
+interface DatosBase {
   nombre?: string;
-  slug?: string;
+  username: string;
 }
-export abstract class BaseRepository<T extends DatosParaSlug> {
+export abstract class BaseRepository<T extends DatosBase> {
   protected abstract readonly baseQuery: string;
   protected abstract readonly tableName: string;
   protected abstract readonly idName: string;
-  protected abstract slugName?: keyof T;
+  protected abstract slugName?: string;
 
   async getCount(onlyActive: boolean | undefined = undefined): Promise<number> {
     const params = [];

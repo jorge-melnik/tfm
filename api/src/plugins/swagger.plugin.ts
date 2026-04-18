@@ -3,7 +3,6 @@ import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import type { FastifyInstance } from 'fastify';
 
-const API_HOST = process.env.API_HOST || 'localhost';
 const API_PREFIX = process.env.API_PREFIX || 'api';
 
 export default fp(async (fastify: FastifyInstance) => {
@@ -39,23 +38,24 @@ export default fp(async (fastify: FastifyInstance) => {
       ],
 
       tags: [
-      { 
-        name: 'auth', 
-        description: 'Operaciones de autenticación, login y gestión de tokens.' 
-      },
-      { 
-        name: 'Etiquetas', 
-        description: 'Etiquetas genéricas.' 
-      },
-      { 
-        name: 'categorias', 
-        description: 'Gestión de categorías, subcategorías de categorías y etiquetas permitidas en cada categoria.' 
-      },
-      { 
-        name: 'productos', 
-        description: 'Catálogo de productos orgánicos y regenerativos.' 
-      }
-    ],
+        {
+          name: 'auth',
+          description: 'Operaciones de autenticación, login y gestión de tokens.',
+        },
+        {
+          name: 'Etiquetas',
+          description: 'Etiquetas genéricas.',
+        },
+        {
+          name: 'categorias',
+          description:
+            'Gestión de categorías, subcategorías de categorías y etiquetas permitidas en cada categoria.',
+        },
+        {
+          name: 'productos',
+          description: 'Catálogo de productos orgánicos y regenerativos.',
+        },
+      ],
       components: {
         securitySchemes: {
           bearerAuth: {
@@ -74,10 +74,30 @@ export default fp(async (fastify: FastifyInstance) => {
   });
 
   await fastify.register(swaggerUi, {
+    // routePrefix: '/docs',
+    // // transformStaticCSP: (header) => header,
+    // uiConfig: {
+    //   docExpansion: 'none',
+    //   deepLinking: false,
+    // },
     routePrefix: '/docs',
     uiConfig: {
-      docExpansion: 'none',
+      docExpansion: 'full',
       deepLinking: false,
     },
+    uiHooks: {
+      onRequest: function (request, reply, next) {
+        next();
+      },
+      preHandler: function (request, reply, next) {
+        next();
+      },
+    },
+    staticCSP: true,
+    transformStaticCSP: (header) => header,
+    transformSpecification: (swaggerObject, request, reply) => {
+      return swaggerObject;
+    },
+    transformSpecificationClone: true,
   });
 });

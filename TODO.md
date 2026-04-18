@@ -42,3 +42,11 @@ Que tiempo tiene el usuario para que se confirme el pago en el sistema?
 - Si el pago es síncrono no se necesita estado Pagando. Pero mejor considerarlo por si se agrega plataforma no sincrona.
 
 -- Que una IA pueda consumir directamente la api ?
+
+
+-- Usuario no admin para la base de datos? La api NUNCA necesita hacer CREATE o DROP
+-- Row level security ?
+-- TODO: fijarse que tablas amerita pasar a un esquema privado con la siguiente estrategia de permisos.
+
+-- Considerar WHERE to_tsvector(contenido) @@ to_tsquery('perro')  si hay que hacer búsqueda en textos completos. full-text search
+

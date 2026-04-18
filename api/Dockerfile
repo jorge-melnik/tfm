@@ -4,6 +4,6 @@ RUN mkdir -p /deaca/api/node_modules /deaca/api/.angular && chown -R node:node /
 # Obligamos a que inicie con usuario node
 WORKDIR /deaca/api
 
-FROM base as development
+FROM base AS development
 RUN apk add --no-cache git
 USER node

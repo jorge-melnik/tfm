@@ -1,8 +1,21 @@
 import { myPool } from '@database/pool.js';
-import type { QueryResult } from 'pg';
-import { DeAcaInternal, DeAcaNotFound, DeAcaUnAuthenticated } from '@errors/response.errors.js';
-import { Profile, Rol, TokenPayload, User } from '@schemas/auth.schema.js';
-import { DatosPersonales } from '@schemas/usuarios.schema.js';
+import type { Client, PoolClient, QueryResult } from 'pg';
+import {
+  DeAcaBadRequest,
+  DeAcaInternal,
+  DeAcaNotFound,
+  DeAcaUnAuthenticated,
+} from '@errors/response.errors.js';
+import { Profile, RegisterSchema, Rol, TokenPayload, User } from '@schemas/auth.schema.js';
+import { AdicionalesConsumidor, AdicionalesProductor, DatosPersonales } from '@schemas/usuarios.schema.js';
+
+// const queryConsumidor = `
+//       INSERT INTO productores (id_usuario, presentación) VALUES (id_productor, 'Productor de hortalizas orgánicas y miel pura de campo.');
+//     `;
+
+// const queryProductor = `
+//       INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_productor, crypt('Contraseña', gen_salt('bf', 10)));
+//     `;
 
 class AuthRepositoryClass {
   /**
@@ -112,27 +125,58 @@ class AuthRepositoryClass {
    * Registrar un nuevo usuario como consumidor y/o productor.
    * @param dp
    */
-  async register(dp: DatosPersonales, roles: Rol[]): Promise<void> {
-    // const queryUsuario = 'INSERT INTO usuarios (rol_actual, roles) VALUES ($1, $2) RETURNING *';
-    // const queryDP = `
-    //     INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username,celular,fotoUrl) VALUES ($1, $2, $3, $4,$5, $6,$7);
-    //   `;
-    // try {
-    //   await myPool.query('BEGIN;');
-    //   const { rows: rows }: QueryResult<{ id_usuario: string }> = await myPool.query(queryUsuario, [
-    //     roles[0],
-    //     roles,
-    //   ]);
-    //   await myPool.query(queryDP, [usuario.]);
-    //   const queryConsumidor = `
-    //   INSERT INTO productores (id_usuario, presentación) VALUES (id_productor, 'Productor de hortalizas orgánicas y miel pura de campo.');
-    // `;
-    //   const queryProductor = `
-    //   INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_productor, crypt('Contraseña', gen_salt('bf', 10)));
-    // `;
-    //   await myPool.query(query, [decoded.jti]);
-    // } catch (error) {}
+  async register(dp: RegisterSchema): Promise<void> {
+    if (dp.roles.length <= 0) throw new DeAcaBadRequest('Debes especificar al menos un rol.');
+    const queryUsuario = 'INSERT INTO usuarios (rol_actual, roles) VALUES ($1, $2) RETURNING *';
+    const queryDatosPersonales = `
+        INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username,celular) VALUES ($1, $2, $3, $4,$5, $6);
+      `;
+    const client = await myPool.connect(); //Obtenemos un cliente para poder hacer una transacción
+    try {
+      await client.query('BEGIN;');
+      //Primero crear el usuario
+      const { rows: rows }: QueryResult<{ id_usuario: string }> = await client.query(queryUsuario, [
+        dp.roles[0],
+        dp.roles,
+      ]);
+      const { id_usuario } = rows[0]; //Tengo el id_usuario creado
+      //Segundo guardar datos personales.
+      await client.query(queryDatosPersonales, [
+        id_usuario,
+        dp.nombres,
+        dp.apellidos,
+        dp.email,
+        dp.username,
+        dp.celular,
+      ]);
+
+      if (dp.consumidor) await this.activarConsumidor(id_usuario, dp.consumidor, client);
+      if (dp.productor) await this.activarProductor(id_usuario, dp.productor, client);
+
+      await client.query('COMMIT;');
+    } catch (error: any) {
+      await client.query('ROLLBACK;');
+      throw new DeAcaInternal(error.message);
+    } finally {
+      client.release();
+    }
   }
+
+  /**
+   * Activar rol consumidor para un usuario ya existente que aún no lo tiene.
+   * @param id_usuario
+   * @param consumidor
+   * @param client Se puede pasar un client si hay que ejecutarlo en la misma transacción. Caso register
+   */
+  async activarConsumidor(id_usuario: string, consumidor: AdicionalesConsumidor, client?: PoolClient) {}
+
+  /**
+   * Activar rol Productor para un consumidor ya existente.
+   * @param id_usuario
+   * @param productor
+   * @param client Se puede pasar un client si hay que ejecutarlo en la misma transacción. Caso register
+   */
+  async activarProductor(id_usuario: string, productor: AdicionalesProductor, client?: PoolClient) {}
 }
 
 export default new AuthRepositoryClass();

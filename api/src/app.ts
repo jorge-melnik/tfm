@@ -2,6 +2,9 @@ import * as path from 'node:path';
 import AutoLoad, { type AutoloadPluginOptions } from '@fastify/autoload';
 import { type FastifyPluginAsync } from 'fastify';
 import { fileURLToPath } from 'node:url';
+import cookiePlugin from '@plugins/cookie.plugin.js';
+import jwtPlugin from '@plugins/jwt.plugin.js';
+import swaggerPlugin from '@plugins/swagger.plugin.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,33 +17,18 @@ export type AppOptions = {
 const options: AppOptions = {};
 
 const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void> => {
-  // Place here your custom code!
-
-  // Do not touch the following lines
-  await fastify.register(AutoLoad, {
-    dir: path.join(__dirname, 'schemas'),
-    options: opts,
-    forceESM: true,
-  });
-
   await fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'decorators'),
     options: opts,
     forceESM: true,
   });
 
-  // await fastify.register(AutoLoad, {
-  //   dir: path.join(__dirname, 'schemas'),
-  //   options: opts,
-  //   forceESM: true,
-  // });
+  //Cargar plugins
+  // await fastify.register(cookiePlugin);
+  // await fastify.register(jwtPlugin);
+  await fastify.register(swaggerPlugin);
 
-  void fastify.register(AutoLoad, {
-    dir: path.join(__dirname, 'plugins'),
-    options: opts,
-    forceESM: true,
-  });
-
+  //Cargar rutas
   void fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'routes'),
     options: opts,

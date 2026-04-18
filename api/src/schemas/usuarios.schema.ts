@@ -19,9 +19,26 @@ export const DatosPersonales = Type.Object(
       pattern: '^\\+[1-9]\\d{6,14}$',
       description: 'Formato internacional E.164, ej: +59899123456',
     }),
-    foto_url: Type.String({ format: 'uri' }),
+    foto_url: Type.Optional(Type.String({ format: 'uri' })),
   },
   { $id: 'datosPersonales' },
 );
 
+export const AdicionalesConsumidor = Type.Object({});
+export const AdicionalesProductor = Type.Object({});
+
+export const Consumidor = Type.Object({
+  ...DatosPersonales.properties,
+  ...AdicionalesConsumidor.properties,
+});
+
+export const Productor = Type.Object({
+  ...DatosPersonales.properties,
+  ...AdicionalesProductor.properties,
+});
+
 export type DatosPersonales = Static<typeof DatosPersonales>;
+export type Consumidor = Static<typeof Consumidor>;
+export type AdicionalesConsumidor = Static<typeof AdicionalesConsumidor>;
+export type Productor = Static<typeof Productor>;
+export type AdicionalesProductor = Static<typeof AdicionalesProductor>;

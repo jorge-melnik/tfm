@@ -1,5 +1,11 @@
 import { Type, Static } from '@sinclair/typebox';
-import { DatosPersonales } from './usuarios.schema.js';
+import {
+  AdicionalesConsumidor,
+  AdicionalesProductor,
+  Consumidor,
+  DatosPersonales,
+  Productor,
+} from './usuarios.schema.js';
 
 export const RolLiteral = Type.Union(
   [
@@ -98,12 +104,31 @@ export const ProfileSchema = Type.Intersect(
   },
 );
 
+export const RegisterSchema = Type.Intersect([
+  Type.Omit(DatosPersonales, ['id_usuario', 'foto_url']),
+  Type.Object({
+    password: Type.String({
+      minLength: 10,
+      maxLength: 32,
+      pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$',
+      description:
+        'Contraseña para iniciar sesión con email/username. Debe contener al menos una mayúscula, una minúscula y un número.',
+    }),
+    password2: Type.String(),
+    roles: UserSchema.properties.roles,
+    //Consumidor y productor debe coincidir con lo especificado en el rol
+    consumidor: Type.Optional(AdicionalesConsumidor),
+    productor: Type.Optional(AdicionalesProductor),
+  }),
+]);
+
 export type LoginEmailType = Static<typeof LoginEmailSchema>;
 export type LoginUsernameType = Static<typeof LoginUsernameSchema>;
 export type TokenPayload = Static<typeof TokenPayloadSchema>;
 export type User = Static<typeof UserSchema>;
 export type Profile = Static<typeof ProfileSchema>;
 export type Token = Static<typeof TokenSchema>;
+export type RegisterSchema = Static<typeof RegisterSchema>;
 
 export type Rol = Static<typeof RolLiteral>;
 
