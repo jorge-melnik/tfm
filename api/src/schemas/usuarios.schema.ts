@@ -24,10 +24,13 @@ export const DatosPersonales = Type.Object(
   { $id: 'datosPersonales' },
 );
 
-export const AdicionalesConsumidor = Type.Object({});
-export const AdicionalesProductor = Type.Object({
-  presentacion: Type.String(),
-});
+export const AdicionalesConsumidor = Type.Object({}, { additionalProperties: false });
+export const AdicionalesProductor = Type.Object(
+  {
+    presentacion: Type.String(),
+  },
+  { additionalProperties: false },
+);
 
 export const Consumidor = Type.Object({
   ...DatosPersonales.properties,

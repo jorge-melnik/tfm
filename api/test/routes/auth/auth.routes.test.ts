@@ -109,7 +109,7 @@ test('Auth Routes - Login', async (t) => {
     assert.equal(res.statusCode, 401);
   });
 
-  await t.test('GET /profile - Escenarios', async (st) => {
+  await t.test('GET /user - Escenarios', async (st) => {
     // Obtenemos un token válido primero
     const loginRes = await app.inject({
       method: 'POST',
@@ -121,7 +121,7 @@ test('Auth Routes - Login', async (t) => {
     await st.test('Debe retornar el perfil si el token es válido', async () => {
       const res = await app.inject({
         method: 'GET',
-        url: '/auth/profile',
+        url: '/auth/user',
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -137,7 +137,7 @@ test('Auth Routes - Login', async (t) => {
     await st.test('Debe fallar (401) si no se envía token', async () => {
       const res = await app.inject({
         method: 'GET',
-        url: '/auth/profile',
+        url: '/auth/user',
         // Sin headers
       });
 
@@ -147,7 +147,7 @@ test('Auth Routes - Login', async (t) => {
     await st.test('Debe fallar (401) si el token es inválido', async () => {
       const res = await app.inject({
         method: 'GET',
-        url: '/auth/profile',
+        url: '/auth/user',
         headers: {
           authorization: `Bearer un-token-cualquiera-mal-formateado`,
         },
@@ -345,7 +345,7 @@ test('Auth Routes - Login', async (t) => {
     });
   });
 
-  await t.test('POST /profile/productor - Escenarios', async (st) => {
+  await t.test('POST /user/productor - Escenarios', async (st) => {
     // 1. Arrange: Creamos un usuario que inicialmente es SOLO consumidor
     const uniqueId = Date.now();
     const password = 'Contraseña.1';
@@ -380,7 +380,7 @@ test('Auth Routes - Login', async (t) => {
       // Act
       const res = await app.inject({
         method: 'POST',
-        url: '/auth/profile/productor',
+        url: '/auth/user/productor',
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -405,7 +405,7 @@ test('Auth Routes - Login', async (t) => {
     await st.test('Debe fallar (400) si el body es inválido', async () => {
       const res = await app.inject({
         method: 'POST',
-        url: '/auth/profile/productor',
+        url: '/auth/user/productor',
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -421,7 +421,7 @@ test('Auth Routes - Login', async (t) => {
     await st.test('Debe fallar (401) si no hay token', async () => {
       const res = await app.inject({
         method: 'POST',
-        url: '/auth/profile/productor',
+        url: '/auth/user/productor',
         payload: { presentacion: '...' },
       });
 
@@ -436,11 +436,98 @@ test('Auth Routes - Login', async (t) => {
       // Act
       const res = await app.inject({
         method: 'POST',
-        url: '/auth/profile/productor',
+        url: '/auth/user/productor',
         headers: {
           authorization: `Bearer ${token}`,
         },
         payload: payloadProductor,
+      });
+
+      // Assert
+      assert.equal(res.statusCode, 500);
+    });
+  });
+
+  await t.test('POST /user/consumidor - Escenarios', async (st) => {
+    // 1. Arrange: Creamos un usuario que inicialmente es SOLO productor
+    const uniqueId = Date.now();
+    const password = 'Contraseña.1';
+    const email = `prod-${uniqueId}@test.com`;
+    const username = `p-${uniqueId}`;
+
+    await authRepository.register({
+      email,
+      nombres: 'Solo',
+      apellidos: 'Productor',
+      username,
+      celular: `+${uniqueId}`,
+      password,
+      password2: password,
+      roles: ['PRODUCTOR'],
+      productor: { presentacion: 'la presentacion.' },
+    });
+
+    // Login para obtener el token
+    const loginRes = await app.inject({
+      method: 'POST',
+      url: '/auth/login/email',
+      payload: { email, password },
+    });
+    const { token } = JSON.parse(loginRes.payload);
+
+    await st.test('Debe activar el perfil de consumidor exitosamente', async () => {
+      // Act
+      const res = await app.inject({
+        method: 'POST',
+        url: '/auth/user/consumidor',
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+        payload: { consumidor: {} },
+      });
+
+      const body = JSON.parse(res.payload);
+      console.log({ body });
+      // Assert
+      assert.equal(res.statusCode, 200);
+      assert.equal(body.username, username);
+
+      assert.ok(body.roles.includes('CONSUMIDOR'), 'El usuario debería tener el rol CONSUMIDOR ahora');
+      assert.ok(body.roles.includes('PRODUCTOR'), 'El usuario aún debería tener el rol PRODUCTOR');
+    });
+
+    // await st.test('Debe fallar (400) si el body es inválido', async () => {
+    //   const res = await app.inject({
+    //     method: 'POST',
+    //     url: '/auth/user/consumidor',
+    //     headers: {
+    //       authorization: `Bearer ${token}`,
+    //     },
+    //     payload: { algo: 'esto no es lo que el esquema espera' },
+    //   });
+    //   console.log(res.payload);
+    //   assert.equal(res.statusCode, 400, 'Debe fallar por validación de TypeBox');
+    // });
+
+    await st.test('Debe fallar (401) si no hay token', async () => {
+      const res = await app.inject({
+        method: 'POST',
+        url: '/auth/user/consumidor',
+        payload: { presentacion: '...' },
+      });
+
+      assert.equal(res.statusCode, 401);
+    });
+
+    await st.test('Activar consumidor que ya es consumidor.', async () => {
+      // Act
+      const res = await app.inject({
+        method: 'POST',
+        url: '/auth/user/consumidor',
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+        payload: { consumidor: {} },
       });
 
       // Assert

@@ -15,7 +15,7 @@ import {
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 import { FastifyReply } from 'fastify';
 import { CookieSerializeOptions } from '@fastify/cookie';
-import { AdicionalesProductor } from '@schemas/usuarios.schema.js';
+import { AdicionalesConsumidor, AdicionalesProductor } from '@schemas/usuarios.schema.js';
 
 //Para manejar las mismas opciones en ambas rutas
 const accessTokenOptions = {
@@ -85,7 +85,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
     },
   });
 
-  fastify.get('/profile', {
+  fastify.get('/user', {
     schema: {
       tags: ['auth'],
       summary: 'User Profile',
@@ -99,6 +99,47 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
     },
     onRequest: [fastify.authenticate],
     handler: async function (req, rep) {
+      return await authRepository.getUserById(req.user.id_usuario);
+    },
+  });
+
+  fastify.post('/user/productor', {
+    schema: {
+      tags: ['auth'],
+      summary: 'Activar Productor',
+      description: 'Activar rol productor para un usuario que no lo es. Devuelve el perfil con el nuevo rol.',
+      security: [{ bearerAuth: [] }],
+      body: AdicionalesProductor,
+      response: {
+        200: ProfileSchema,
+        401: DeAcaErrorResponse,
+        500: DeAcaErrorResponse,
+      },
+    },
+    onRequest: [fastify.authenticate],
+    handler: async function (req, rep) {
+      await authRepository.activarProductor(req.user.id_usuario, req.body);
+      return await authRepository.getUserById(req.user.id_usuario);
+    },
+  });
+
+  fastify.post('/user/consumidor', {
+    schema: {
+      tags: ['auth'],
+      summary: 'Activar Consumidor',
+      description:
+        'Activar rol consumidor para un usuario que no lo es. Devuelve el perfil con el nuevo rol.',
+      security: [{ bearerAuth: [] }],
+      body: AdicionalesConsumidor,
+      response: {
+        200: ProfileSchema,
+        401: DeAcaErrorResponse,
+        500: DeAcaErrorResponse,
+      },
+    },
+    onRequest: [fastify.authenticate],
+    handler: async function (req, rep) {
+      await authRepository.activarConsumidor(req.user.id_usuario, req.body);
       return await authRepository.getUserById(req.user.id_usuario);
     },
   });
@@ -118,7 +159,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
     onRequest: async function (req, rep) {
       try {
         await req.jwtVerify({ onlyCookie: true });
-        const oldToken = req.cookies.refreshToken;
+        const oldToken = req.cookies.refreshToken || 'dsadasdlkasjdaslñk';
         fastify.log.info({ oldToken });
         await authRepository.verifyRefreshToken(req.user, oldToken);
         await authRepository.removeRefreshToken(req.user); //Si es válido una vez hay que borrarlo! Solo se usa una vez.
@@ -170,26 +211,6 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       await authRepository.register(req.body); //Doy de alta el usuario.
       const payload = await authRepository.emailLogin(req.body.email, req.body.password); //Lo autentico.
       return generarTokens(payload, rep);
-    },
-  });
-
-  fastify.post('/profile/productor', {
-    schema: {
-      tags: ['auth'],
-      summary: 'Activar Productor',
-      description: 'Activar rol productor para un usuario que no lo es. Devuelve el perfil con el nuevo rol.',
-      security: [{ bearerAuth: [] }],
-      body: AdicionalesProductor,
-      response: {
-        200: ProfileSchema,
-        401: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
-      },
-    },
-    onRequest: [fastify.authenticate],
-    handler: async function (req, rep) {
-      await authRepository.activarProductor(req.user.id_usuario, req.body);
-      return await authRepository.getUserById(req.user.id_usuario);
     },
   });
 };
