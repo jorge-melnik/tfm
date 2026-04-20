@@ -4,10 +4,34 @@ import { Categoria, Subcategoria } from '@schemas/categoria.schema.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 
 const idSubcategoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
+  fastify.get('/', {
+    schema: {
+      tags: ['Admin: Subcategorias'],
+      summary: 'READ subcategoria',
+      description:
+        'Permite obtener una subcategoría a partir del id de la categoría y el id de la subcategoría.',
+      params: Type.Object({
+        id_categoria: Categoria.properties.id_categoria,
+        id_subcategoria: Subcategoria.properties.id_subcategoria,
+      }),
+      response: {
+        200: Subcategoria,
+        404: DeAcaErrorResponse,
+        500: DeAcaErrorResponse,
+      },
+    },
+    handler: async function (req, reply) {
+      return subcategoriasRepository.getOneBy({
+        id_categoria: req.params.id_categoria,
+        id_subcategoria: req.params.id_subcategoria,
+      });
+    },
+  });
+
   fastify.put('/', {
     schema: {
-      tags: ['categorias'],
-      summary: 'Actualizar subcategoria',
+      tags: ['Admin: Subcategorias'],
+      summary: 'UPDATE subcategoria',
       description: 'Permite actualizar una subcategoria global.',
       params: Type.Object({
         id_categoria: Categoria.properties.id_categoria,
@@ -29,8 +53,8 @@ const idSubcategoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): 
 
   fastify.delete('/', {
     schema: {
-      tags: ['categorias'],
-      summary: 'Borrar subcategoria',
+      tags: ['Admin: Subcategorias'],
+      summary: 'DELETE subcategoria',
       description: 'Permite actualizar una subcategoria global.',
       params: Type.Object({
         id_categoria: Categoria.properties.id_categoria,

@@ -4,10 +4,29 @@ import { Categoria } from '@schemas/categoria.schema.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 
 const idCategoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
+  fastify.get('/', {
+    schema: {
+      tags: ['Admin: Categorias'],
+      summary: 'READ categoria',
+      description: 'Permite obtener una categoría por su slug.',
+      params: Type.Object({
+        id_categoria: Categoria.properties.id_categoria,
+      }),
+      response: {
+        200: Categoria,
+        404: DeAcaErrorResponse,
+        500: DeAcaErrorResponse,
+      },
+    },
+    handler: async function (req, reply) {
+      return categoriasRepository.getOneBy({ id_categoria: req.params.id_categoria });
+    },
+  });
+
   fastify.put('/', {
     schema: {
-      tags: ['categorias'],
-      summary: 'Actualizar categoria',
+      tags: ['Admin: Categorias'],
+      summary: 'UPDATE categoria',
       description: 'Permite actualizar una categoria global.',
       params: Type.Object({
         id_categoria: Categoria.properties.id_categoria,
@@ -40,8 +59,8 @@ const idCategoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
 
   fastify.delete('/', {
     schema: {
-      tags: ['categorias'],
-      summary: 'Borrar categoria',
+      tags: ['Admin: Categorias'],
+      summary: 'DELETE categoria',
       description: 'Permite actualizar una categoria global.',
       params: Type.Object({
         id_categoria: Categoria.properties.id_categoria,

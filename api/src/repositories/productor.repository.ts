@@ -1,4 +1,4 @@
-import { Productor } from '@schemas/usuarios.schema.js';
+import { Productor } from '@schemas/productores.schema.js';
 import { BaseRepository } from './base.repository.js';
 
 class ProductorRepositoryClass extends BaseRepository<Productor> {
@@ -18,4 +18,4 @@ class ProductorRepositoryClass extends BaseRepository<Productor> {
   }
 }
 
-export const categoriasRepository = new ProductorRepositoryClass();
+export const productorRepository = new ProductorRepositoryClass();

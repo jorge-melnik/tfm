@@ -51,7 +51,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
 
   fastify.post('/login/email', {
     schema: {
-      tags: ['auth'],
+      tags: ['Auth'],
       summary: 'Email login',
       description: 'Realizar login con email y contraseña.',
       body: LoginEmailSchema,
@@ -69,7 +69,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
 
   fastify.post('/login/username', {
     schema: {
-      tags: ['auth'],
+      tags: ['Auth'],
       summary: 'Username login',
       description: 'Realizar login con username y contraseña.',
       body: LoginUsernameSchema,
@@ -87,7 +87,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
 
   fastify.get('/user', {
     schema: {
-      tags: ['auth'],
+      tags: ['Auth'],
       summary: 'User Profile',
       description: 'Obtener el usuario propietario del token recibido.',
       security: [{ bearerAuth: [] }],
@@ -105,7 +105,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
 
   fastify.post('/user/productor', {
     schema: {
-      tags: ['auth'],
+      tags: ['Auth'],
       summary: 'Activar Productor',
       description: 'Activar rol productor para un usuario que no lo es. Devuelve el perfil con el nuevo rol.',
       security: [{ bearerAuth: [] }],
@@ -125,7 +125,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
 
   fastify.post('/user/consumidor', {
     schema: {
-      tags: ['auth'],
+      tags: ['Auth'],
       summary: 'Activar Consumidor',
       description:
         'Activar rol consumidor para un usuario que no lo es. Devuelve el perfil con el nuevo rol.',
@@ -146,7 +146,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
 
   fastify.post('/refresh', {
     schema: {
-      tags: ['auth'],
+      tags: ['Auth'],
       summary: 'Refresh Token',
       description:
         'Permite obtener un nuevo access_token con un refresh token válido. A su vez, se realiza refresh token rotation.',
@@ -177,7 +177,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
     schema: {
       summary: 'Logout',
       description: 'Hacer logout e invalidar el refresh token.',
-      tags: ['auth'],
+      tags: ['Auth'],
       security: [{ bearerAuth: [] }],
     },
     onRequest: [fastify.authenticate],
@@ -190,7 +190,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
 
   fastify.post('/register', {
     schema: {
-      tags: ['auth'],
+      tags: ['Auth'],
       summary: 'Registrarse',
       description: `
         - Endpoint para registrar un nuevo usuario consumidor y/o productor. 

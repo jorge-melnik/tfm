@@ -4,6 +4,7 @@ import { categoriasRepository } from '../../src/repositories/categorias.reposito
 import { Categoria } from '@schemas/categoria.schema.js';
 import { subcategoriasRepository } from '@repositories/subcategorias.repository.js';
 import { DeAcaNotFound } from '@errors/response.errors.js';
+import { etiquetasRepository } from '@repositories/etiquetas.repository.js';
 
 test('Subcategorias Repository', async (t) => {
   t.test('test getCount', async () => {
@@ -92,5 +93,84 @@ test('Subcategorias Repository', async (t) => {
 
     //Assert
     assert.equal(subcategoria.activo, subcategoriaActivada.activo);
+  });
+});
+
+test('Subcategorias Repository (Etiquetas)', async (t) => {
+  t.test('addEtiqueta y getEtiquetas', async () => {
+    // Arrange
+    const nombre = 'CatAdd ' + Date.now();
+    const categoria: Categoria = await categoriasRepository.add({
+      nombre,
+      slug_categoria: '',
+      descripcion: 'Desc',
+    });
+
+    const subcategoria = await subcategoriasRepository.add({
+      id_categoria: categoria.id_categoria,
+      nombre: 'Sub ' + nombre,
+      slug_subcategoria: '',
+    });
+
+    const etiqueta = await etiquetasRepository.add({
+      nombre,
+      slug_etiqueta: '',
+    });
+
+    // Act
+    await subcategoriasRepository.addEtiqueta(
+      categoria.id_categoria,
+      subcategoria.id_subcategoria,
+      etiqueta.id_etiqueta,
+    );
+    const etiquetas = await subcategoriasRepository.getEtiquetas(
+      categoria.id_categoria,
+      subcategoria.id_subcategoria,
+    );
+
+    // Assert
+    const encontrada = etiquetas.some((e) => e.id_etiqueta === etiqueta.id_etiqueta);
+    assert.ok(encontrada, 'La etiqueta debería haber sido asociada correctamente');
+  });
+
+  t.test('test removeEtiqueta', async () => {
+    // Arrange
+    const nombre = 'Cat Remove ' + Date.now();
+    const categoria: Categoria = await categoriasRepository.add({
+      nombre,
+      slug_categoria: categoriasRepository.createSlug(nombre),
+      descripcion: 'Desc',
+    });
+
+    const subcategoria = await subcategoriasRepository.add({
+      id_categoria: categoria.id_categoria,
+      nombre: 'Sub ' + nombre,
+      slug_subcategoria: subcategoriasRepository.createSlug('Sub ' + nombre),
+    });
+
+    const etiqueta = await etiquetasRepository.add({
+      nombre,
+      slug_etiqueta: '',
+    });
+    await subcategoriasRepository.addEtiqueta(
+      categoria.id_categoria,
+      subcategoria.id_subcategoria,
+      etiqueta.id_etiqueta,
+    );
+
+    // Act
+    await subcategoriasRepository.removeEtiqueta(
+      categoria.id_categoria,
+      subcategoria.id_subcategoria,
+      etiqueta.id_etiqueta,
+    );
+    const etiquetas = await subcategoriasRepository.getEtiquetas(
+      categoria.id_categoria,
+      subcategoria.id_subcategoria,
+    );
+
+    // Assert
+    const encontrada = etiquetas.some((e) => e.id_etiqueta === etiqueta.id_etiqueta);
+    assert.strictEqual(encontrada, false, 'La etiqueta no debería existir después de ser removida');
   });
 });

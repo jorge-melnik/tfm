@@ -38,22 +38,34 @@ export default fp(async (fastify: FastifyInstance) => {
 
       tags: [
         {
-          name: 'auth',
+          name: 'Admin: Categorias',
+          description: 'Rutas de categorias solo para el administrador.',
+        },
+        {
+          name: 'Admin: Subcategorias',
+          description: 'Rutas de subcategorias solo para el administrador.',
+        },
+        {
+          name: 'Admin: Etiquetas',
+          description: 'Rutas de etiquetas solo para el administrador.',
+        },
+        {
+          name: 'Auth',
           description: 'Operaciones de autenticación, login y gestión de tokens.',
         },
         {
-          name: 'Etiquetas',
-          description: 'Etiquetas genéricas.',
-        },
-        {
-          name: 'categorias',
+          name: 'Categorias',
           description:
-            'Gestión de categorías, subcategorías de categorías y etiquetas permitidas en cada categoria.',
+            'Gestión de categorías, subcategorías de categorías y etiquetas permitidas en cada subcategoria para usuarios.',
         },
-        {
-          name: 'productos',
-          description: 'Catálogo de productos orgánicos y regenerativos.',
-        },
+        // {
+        //   name: 'Productores',
+        //   description: 'Catálogo de productos orgánicos y regenerativos.',
+        // },
+        // {
+        //   name: 'productos',
+        //   description: 'Catálogo de productos orgánicos y regenerativos.',
+        // },
       ],
       components: {
         securitySchemes: {

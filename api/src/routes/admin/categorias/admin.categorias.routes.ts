@@ -6,7 +6,7 @@ import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
     schema: {
-      tags: ['Categorias'],
+      tags: ['Admin: Categorias'],
       summary: 'READ categorias',
       description: `
         Devuelve el listado completo de categorias existentes en el sistema. 
@@ -20,11 +20,13 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
                 id_categoria: 1,
                 nombre: 'categoria 1',
                 descripcion: 'descripcion de la categoria 1',
+                activo: true,
               },
               {
                 id_categoria: 2,
                 nombre: 'categoria 2',
                 descripcion: 'descripcion de la categoria 1',
+                activo: true,
               },
             ],
           ],
@@ -34,6 +36,37 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
     },
     handler: async function (req, reply) {
       return categoriasRepository.getAll();
+    },
+  });
+
+  fastify.post('/', {
+    schema: {
+      tags: ['Admin: Categorias'],
+      summary: 'CREATE categoria',
+      description: 'Permite crear una nueva categoria.',
+      body: Type.Omit(Categoria, ['id_categoria'], {
+        description: 'Datos necesarios para crear una nueva categoria.',
+        examples: [
+          {
+            nombre: 'categoria 6',
+            slug_categoria: 'categoria-6',
+            descripcion: 'descripcion de la categoria 6',
+          },
+          {
+            nombre: 'categoria 7',
+            slug_categoria: 'categoria-7',
+            descripcion: 'descripcion de la categoria 7',
+          },
+        ],
+      }),
+      response: {
+        201: Categoria,
+        500: DeAcaErrorResponse,
+      },
+    },
+    handler: async function (req, reply) {
+      reply.code(201);
+      return await categoriasRepository.add(req.body);
     },
   });
 };

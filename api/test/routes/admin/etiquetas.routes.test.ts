@@ -2,44 +2,24 @@ import { test } from 'node:test';
 import * as assert from 'node:assert';
 import { Etiqueta } from '@schemas/categoria.schema.js';
 import { etiquetasRepository } from '@repositories/etiquetas.repository.js';
-import { build } from '../helper.js';
+import { build } from '../../helper.js';
 
 test('API /etiquetas', async (t) => {
   const app = await build(t);
+  const nombre = 'etiqueta ' + Date.now();
 
-  await t.test('GET / - debería listar todas las etiquetas', async () => {
+  //CREATE
+  await t.test('POST /admin/etiquetas', async () => {
     // Arrange
-    await etiquetasRepository.add({
-      nombre: 'Etiqueta List Test ' + Date.now(),
-      slug_etiqueta: 'list-test-' + Date.now(),
-    });
-
-    // Act
-    const res = await app.inject({
-      method: 'GET',
-      url: '/etiquetas',
-    });
-
-    const etiquetas: Etiqueta[] = JSON.parse(res.payload);
-
-    // Assert
-    assert.equal(res.statusCode, 200, 'No coincide statusCode');
-    assert.ok(Array.isArray(etiquetas), 'Debería devolver un array');
-    assert.ok(etiquetas.length > 0, 'El array no debería estar vacío');
-  });
-
-  await t.test('POST / - debería crear una etiqueta exitosamente', async () => {
-    // Arrange
-    const nombre = 'Nueva Etiqueta ' + Date.now();
-    const slug_etiqueta = etiquetasRepository.createSlug(nombre);
+    const slug_etiqueta = etiquetasRepository.createSlug(nombre); //Necesario para chequearlo
 
     // Act
     const res = await app.inject({
       method: 'POST',
-      url: '/etiquetas',
+      url: '/admin/etiquetas',
       payload: {
         nombre,
-        slug_etiqueta,
+        slug_etiqueta: '',
       },
     });
 
@@ -52,31 +32,46 @@ test('API /etiquetas', async (t) => {
     assert.equal(etiquetaCreada.slug_etiqueta, slug_etiqueta, 'No coincide el slug');
   });
 
-  await t.test('GET /:slug_etiqueta - debería obtener una etiqueta por su slug', async () => {
+  //READ
+  await t.test('GET /admin/etiquetas', async () => {
     // Arrange
-    const nombre = 'Etiqueta Slug Test ' + Date.now();
-    const slug_etiqueta = etiquetasRepository.createSlug(nombre);
-
     await etiquetasRepository.add({
-      nombre,
-      slug_etiqueta,
+      nombre: 'Etiqueta List Test ' + Date.now(),
+      slug_etiqueta: 'list-test-' + Date.now(),
     });
 
     // Act
     const res = await app.inject({
       method: 'GET',
-      url: `/etiquetas/${slug_etiqueta}`,
+      url: '/admin/etiquetas',
+    });
+
+    const etiquetas: Etiqueta[] = JSON.parse(res.payload);
+
+    // Assert
+    assert.equal(res.statusCode, 200, 'No coincide statusCode');
+    assert.ok(Array.isArray(etiquetas), 'Debería devolver un array');
+    assert.ok(etiquetas.length > 0, 'El array no debería estar vacío');
+  });
+
+  const etiquetaCreada = await etiquetasRepository.getOneBy({ nombre });
+
+  await t.test(`GET /admin/etiquetas/${etiquetaCreada.id_etiqueta}`, async () => {
+    // Act
+    const res = await app.inject({
+      method: 'GET',
+      url: `/admin/etiquetas/${etiquetaCreada.id_etiqueta}`,
     });
 
     const etiqueta: Etiqueta = JSON.parse(res.payload);
 
     // Assert
     assert.equal(res.statusCode, 200, 'No coincide statusCode');
-    assert.equal(etiqueta.slug_etiqueta, slug_etiqueta, 'No coincide el slug');
+    assert.equal(etiqueta.id_etiqueta, etiquetaCreada.id_etiqueta, 'No coincide el id_etiqueta');
     assert.equal(etiqueta.nombre, nombre, 'No coincide el nombre');
   });
 
-  await t.test('PUT /:id_etiqueta - debería actualizar el nombre', async () => {
+  await t.test(`PUT /admin/etiquetas/${etiquetaCreada.id_etiqueta}`, async () => {
     // Arrange
     const nombreOriginal = 'Original ' + Date.now();
     const slugOriginal = etiquetasRepository.createSlug(nombreOriginal);
@@ -90,7 +85,7 @@ test('API /etiquetas', async (t) => {
     // Act
     const res = await app.inject({
       method: 'PUT',
-      url: `/etiquetas/${creada.id_etiqueta}`,
+      url: `/admin/etiquetas/${creada.id_etiqueta}`,
       payload: {
         ...creada,
         nombre: nuevoNombre,
@@ -116,7 +111,7 @@ test('API /etiquetas', async (t) => {
     // Act
     const res = await app.inject({
       method: 'DELETE',
-      url: `/etiquetas/${creada.id_etiqueta}`,
+      url: `/admin/etiquetas/${creada.id_etiqueta}`,
     });
 
     // Assert

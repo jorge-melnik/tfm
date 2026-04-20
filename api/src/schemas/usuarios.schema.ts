@@ -32,18 +32,6 @@ export const AdicionalesProductor = Type.Object(
   { additionalProperties: false },
 );
 
-export const Consumidor = Type.Object({
-  ...DatosPersonales.properties,
-  ...AdicionalesConsumidor.properties,
-});
-
-export const Productor = Type.Object({
-  ...DatosPersonales.properties,
-  ...AdicionalesProductor.properties,
-});
-
 export type DatosPersonales = Static<typeof DatosPersonales>;
-export type Consumidor = Static<typeof Consumidor>;
 export type AdicionalesConsumidor = Static<typeof AdicionalesConsumidor>;
-export type Productor = Static<typeof Productor>;
 export type AdicionalesProductor = Static<typeof AdicionalesProductor>;

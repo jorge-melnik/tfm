@@ -3,7 +3,7 @@ import { DeAcaBadRequest, DeAcaInternal, DeAcaNotFound } from '@errors/response.
 
 interface DatosBase {
   nombre?: string;
-  username: string;
+  username?: string;
 }
 export abstract class BaseRepository<T extends DatosBase> {
   protected abstract readonly baseQuery: string;
@@ -49,6 +49,10 @@ export abstract class BaseRepository<T extends DatosBase> {
     const res = await myPool.query(query, values);
     if (res.rows.length > 1)
       throw new DeAcaInternal('Se obtuvo más de un valor con ese filtro. Se esperaba uno.');
+
+    if (res.rows.length === 0) {
+      throw new DeAcaNotFound('');
+    }
     return res.rows[0];
   }
 

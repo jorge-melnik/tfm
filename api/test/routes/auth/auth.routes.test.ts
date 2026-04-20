@@ -83,7 +83,6 @@ test('Auth Routes - Login', async (t) => {
     });
 
     const body = JSON.parse(res.payload);
-    console.log({ body });
     // Assert Body
     assert.equal(res.statusCode, 200);
     assert.ok(body.token, 'Debe devolver un access token');
@@ -487,7 +486,6 @@ test('Auth Routes - Login', async (t) => {
       });
 
       const body = JSON.parse(res.payload);
-      console.log({ body });
       // Assert
       assert.equal(res.statusCode, 200);
       assert.equal(body.username, username);
