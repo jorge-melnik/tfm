@@ -51,7 +51,7 @@ export abstract class BaseRepository<T extends DatosBase> {
       throw new DeAcaInternal('Se obtuvo más de un valor con ese filtro. Se esperaba uno.');
 
     if (res.rows.length === 0) {
-      throw new DeAcaNotFound('');
+      throw new DeAcaNotFound(`No existe registro con ${JSON.stringify(filters)}`);
     }
     return res.rows[0];
   }

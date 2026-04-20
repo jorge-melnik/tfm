@@ -21,13 +21,14 @@ test('/categorias/:id_categoria/subcategorias/:id_subcategoria', async (t) => {
       nombre: 'Sub original ' + Date.now(),
       slug_subcategoria: '',
     });
+    console.log({ subcategoriaCreada });
 
     const nuevoNombreSub = 'Sub editada ' + Date.now();
 
     // Act
     const res = await app.inject({
       method: 'PUT',
-      url: `/categorias/${categoriaPadre.id_categoria}/subcategorias/${subcategoriaCreada.id_subcategoria}`,
+      url: `/admin/categorias/${categoriaPadre.id_categoria}/subcategorias/${subcategoriaCreada.id_subcategoria}`,
       payload: {
         id_subcategoria: subcategoriaCreada.id_subcategoria,
         nombre: nuevoNombreSub,
@@ -35,7 +36,7 @@ test('/categorias/:id_categoria/subcategorias/:id_subcategoria', async (t) => {
     });
 
     const subcategoriaEditada: Subcategoria = JSON.parse(res.payload);
-
+    console.log({ subcategoriaEditada });
     // Assert
     assert.equal(res.statusCode, 200, 'No coincide statusCode');
     assert.equal(
@@ -68,7 +69,7 @@ test('/categorias/:id_categoria/subcategorias/:id_subcategoria', async (t) => {
     // Act
     const res = await app.inject({
       method: 'DELETE',
-      url: `/categorias/${categoriaPadre.id_categoria}/subcategorias/${subcategoriaABorrar.id_subcategoria}`,
+      url: `/admin/categorias/${categoriaPadre.id_categoria}/subcategorias/${subcategoriaABorrar.id_subcategoria}`,
     });
 
     // Assert

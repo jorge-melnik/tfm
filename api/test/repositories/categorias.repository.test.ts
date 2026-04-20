@@ -96,6 +96,13 @@ test('Categorias Repository', async (t) => {
     });
   });
 
+  t.test('test remove no encontrado', async () => {
+    //Assert
+    await assert.rejects(categoriasRepository.getOneBy({ id_categoria: -1 }), (err: any) => {
+      assert.ok(err instanceof DeAcaNotFound);
+      return true;
+    });
+  });
   t.test('test add', async () => {
     //Arrange
     const nombre = 'Nombre ' + Date.now();
