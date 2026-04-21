@@ -194,9 +194,8 @@ test('AuthRepository - Suite de Pruebas', async (t) => {
       // Act & Assert
       // Como ya se activó en el register, esto debe lanzar un error de Unique Constraint
       await assert.rejects(authRepository.activarConsumidor(id_usuario, {}), (err: any) => {
-        // Si tu repo no tiene un try/catch específico en activarConsumidor,
-        // tirará el error de pg directo.
-        return err.code === '23505' || err.message.includes('duplicate key');
+        assert.ok(err instanceof DeAcaInternal);
+        return true;
       });
     });
 
@@ -207,7 +206,8 @@ test('AuthRepository - Suite de Pruebas', async (t) => {
       await assert.rejects(
         authRepository.activarProductor(id_usuario, { presentacion: 'Segunda vez' }),
         (err: any) => {
-          return err.code === '23505' || err.message.includes('duplicate key');
+          assert.ok(err instanceof DeAcaInternal);
+          return true;
         },
       );
     });

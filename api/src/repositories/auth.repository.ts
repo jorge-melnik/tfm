@@ -160,9 +160,20 @@ class AuthRepositoryClass {
    * @param client Se puede pasar un client si hay que ejecutarlo en la misma transacción. Caso register
    */
   async activarConsumidor(id_usuario: string, consumidor: AdicionalesConsumidor, client?: PoolClient) {
-    const query = 'INSERT into public.consumidores (id_usuario) VALUES($1);';
+    const query = `
+      INSERT into public.consumidores (id_usuario) 
+      VALUES($1)
+      ON CONFLICT (id_usuario) DO UPDATE                -- si ya existe 
+      SET fecha_eliminacion = NULL
+      WHERE consumidores.fecha_eliminacion IS NOT NULL  -- Solo si estaba desactivado.
+      RETURNING id_usuario
+      ;
+    `;
     const db = client || myPool;
-    await db.query(query, [id_usuario]);
+    const res = await db.query(query, [id_usuario]);
+    if (res.rows.length === 0) {
+      throw new DeAcaInternal(`No es posible hacer ese cambio.`);
+    }
   }
 
   /**
@@ -172,10 +183,21 @@ class AuthRepositoryClass {
    * @param client Se puede pasar un client si hay que ejecutarlo en la misma transacción. Caso register
    */
   async activarProductor(id_usuario: string, productor: AdicionalesProductor, client?: PoolClient) {
-    const query = 'INSERT into public.productores (id_usuario,presentacion) VALUES($1,$2);';
+    const query = `
+      INSERT into public.productores (id_usuario,presentacion) 
+      VALUES($1,$2)
+      ON CONFLICT (id_usuario) DO UPDATE                -- si ya existe 
+      SET presentacion = EXCLUDED.presentacion, fecha_eliminacion = NULL
+      WHERE productores.fecha_eliminacion IS NOT NULL   -- Solo si estaba desactivado.
+      RETURNING *
+      ;
+    `;
     const params = [id_usuario, productor.presentacion];
     const db = client || myPool; // Determinamos el ejecutor de una
-    await db.query(query, params);
+    const res = await db.query(query, params);
+    if (res.rows.length === 0) {
+      throw new DeAcaInternal(`No es posible hacer ese cambio.`);
+    }
   }
 }
 

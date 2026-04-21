@@ -8,7 +8,7 @@ const rutasProductores: FastifyPluginAsyncTypebox = async (fastify, opts): Promi
   fastify.get('/', {
     schema: {
       tags: ['Productores'],
-      summary: 'GET productores',
+      summary: 'READ productores',
       description: `
         Devuelve el listado completo de productores registrados. 
       `,

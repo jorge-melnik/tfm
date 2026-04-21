@@ -4,7 +4,7 @@ import { productorRepository } from '@repositories/productor.repository.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 import { Productor } from '@schemas/productores.schema.js';
 
-const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
+const productorUsernameRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
     schema: {
       tags: ['Productores'],
@@ -12,17 +12,16 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       description: `
         Busca y devuelve un productor por su username (slug). 
       `,
-      params: Type.Pick(Productor, ['username']),
+      params: Type.Object({ username: Productor.properties.username }),
       response: {
         200: Productor,
         500: DeAcaErrorResponse,
       },
     },
     handler: async function (req, reply) {
-      //FIXME: Eventualmente esto no conviene que devuelva TODO. paginar.
       return productorRepository.getOneBy({ username: req.params.username });
     },
   });
 };
 
-export default rutasEtiquetas;
+export default productorUsernameRoutes;

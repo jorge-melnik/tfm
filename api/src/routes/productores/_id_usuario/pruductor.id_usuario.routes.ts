@@ -12,15 +12,36 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       description: `
         Permite que el productor autenticado actualice sus propios datos. 
       `,
-      params: Type.Pick(Productor, ['username']),
+      params: Type.Object({ id_usuario: Productor.properties.id_usuario }),
+      body: Productor,
       response: {
         200: Productor,
         500: DeAcaErrorResponse,
       },
     },
+    // preHandler : //FIXME: fastify.seModificaASiMismo
     handler: async function (req, reply) {
-      //FIXME: Eventualmente esto no conviene que devuelva TODO. paginar.
-      return productorRepository.getOneBy({ username: req.params.username });
+      return productorRepository.update(req.params.id_usuario, req.body);
+    },
+  });
+
+  fastify.delete('/', {
+    schema: {
+      tags: ['Productores'],
+      summary: 'DELETE productor',
+      description: `
+        Permite que el usuario se de de baja como productor, desactivando (no borrando) sus rol de productor. 
+      `,
+      params: Type.Object({ id_usuario: Productor.properties.id_usuario }),
+      body: Productor,
+      response: {
+        200: Productor,
+        500: DeAcaErrorResponse,
+      },
+    },
+    // preHandler : //FIXME: fastify.seModificaASiMismo
+    handler: async function (req, reply) {
+      return productorRepository.update(req.params.id_usuario, req.body);
     },
   });
 };
