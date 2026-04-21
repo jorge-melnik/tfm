@@ -1,5 +1,6 @@
 import { Productor } from '@schemas/productores.schema.js';
 import { BaseRepository } from './base.repository.js';
+import { DeAcaInternal } from '@errors/response.errors.js';
 
 class ProductorRepositoryClass extends BaseRepository<Productor> {
   protected readonly tableName = 'categorias';
@@ -15,6 +16,10 @@ class ProductorRepositoryClass extends BaseRepository<Productor> {
 
   constructor() {
     super();
+  }
+
+  override async activate(id: string | number): Promise<void> {
+    throw new DeAcaInternal('Para activar productor usar AuthRepository.');
   }
 }
 

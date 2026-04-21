@@ -90,7 +90,11 @@ export abstract class BaseRepository<T extends DatosBase> {
   }
 
   public async deactivate(id: string | number) {
-    const query = `UPDATE ${this.tableName} SET fecha_eliminacion=CURRENT_TIMESTAMP WHERE ${this.idName} = $1 AND activo=true`;
+    const query = `
+      UPDATE ${this.tableName} 
+      SET fecha_eliminacion=CURRENT_TIMESTAMP 
+      WHERE ${this.idName} = $1 
+      AND activo=true`;
     const res = await myPool.query(query, [id]);
 
     if (res.rowCount === 0) {
@@ -99,7 +103,12 @@ export abstract class BaseRepository<T extends DatosBase> {
   }
 
   public async activate(id: string | number) {
-    const query = `UPDATE ${this.tableName} SET fecha_eliminacion=null WHERE ${this.idName} = $1 AND activo=false`;
+    const query = `
+      UPDATE ${this.tableName} 
+      SET fecha_eliminacion=null 
+      WHERE ${this.idName} = $1 
+      AND activo=false
+    `;
     const res = await myPool.query(query, [id]);
 
     if (res.rowCount === 0) {

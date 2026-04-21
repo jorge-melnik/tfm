@@ -503,7 +503,6 @@ test('Auth Routes - Login', async (t) => {
     //     },
     //     payload: { algo: 'esto no es lo que el esquema espera' },
     //   });
-    //   console.log(res.payload);
     //   assert.equal(res.statusCode, 400, 'Debe fallar por validación de TypeBox');
     // });
 

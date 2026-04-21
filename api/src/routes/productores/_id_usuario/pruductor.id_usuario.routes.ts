@@ -4,7 +4,7 @@ import { productorRepository } from '@repositories/productor.repository.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 import { Productor } from '@schemas/productores.schema.js';
 
-const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
+const productoIdUsuarioRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.put('/', {
     schema: {
       tags: ['Productores'],
@@ -35,15 +35,16 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       params: Type.Object({ id_usuario: Productor.properties.id_usuario }),
       body: Productor,
       response: {
-        200: Productor,
+        204: Productor,
         500: DeAcaErrorResponse,
       },
     },
     // preHandler : //FIXME: fastify.seModificaASiMismo
     handler: async function (req, reply) {
-      return productorRepository.update(req.params.id_usuario, req.body);
+      reply.code(204);
+      await productorRepository.deactivate(req.params.id_usuario);
     },
   });
 };
 
-export default rutasEtiquetas;
+export default productoIdUsuarioRoutes;

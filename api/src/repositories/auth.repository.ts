@@ -155,6 +155,7 @@ class AuthRepositoryClass {
 
   /**
    * Activar rol consumidor para un usuario ya existente que aún no lo tiene.
+   * A diferencia de activate en consumidorRepository, recibe un client y AdicionalesProductor
    * @param id_usuario
    * @param consumidor
    * @param client Se puede pasar un client si hay que ejecutarlo en la misma transacción. Caso register
@@ -178,6 +179,7 @@ class AuthRepositoryClass {
 
   /**
    * Activar rol Productor para un consumidor ya existente.
+   * A diferencia de activate en productorRepository, recibe un client y AdicionalesProductor
    * @param id_usuario
    * @param productor
    * @param client Se puede pasar un client si hay que ejecutarlo en la misma transacción. Caso register
