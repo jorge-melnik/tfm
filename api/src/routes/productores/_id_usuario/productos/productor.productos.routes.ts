@@ -9,7 +9,7 @@ const productoIdUsuarioRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
   fastify.get('/', {
     schema: {
       tags: ['Productores'],
-      summary: 'READ productos',
+      summary: 'READ productos productor',
       description: `Permite Obtener el listado completo de productos (activos o no) de un productor. `,
       params: Type.Object({ id_usuario: Productor.properties.id_usuario }),
       response: {
@@ -19,7 +19,7 @@ const productoIdUsuarioRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
     },
     // preHandler : //FIXME: fastify.seModificaASiMismo
     handler: async function (req, reply) {
-      return productoRepository.update(req.params.id_usuario, req.body);
+      return productoRepository.getOneBy({ id_productor: req.params.id_usuario });
     },
   });
 };

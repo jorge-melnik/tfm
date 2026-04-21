@@ -42,7 +42,6 @@ export class SubcategoriasRepositoryClass extends BaseRepository<Subcategoria> {
       WHERE id_categoria = $1 AND id_subcategoria = $2
       ;
     `;
-    console.log({ query });
     await myPool.query(query, [id_categoria, id_subcategoria, id_etiqueta]);
   }
 

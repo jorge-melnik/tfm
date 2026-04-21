@@ -1,16 +1,23 @@
 import { myPool } from '@database/pool.js';
 import { DeAcaBadRequest, DeAcaInternal, DeAcaNotFound } from '@errors/response.errors.js';
+import { PaginationOptions } from '@schemas/pagination.schema.js';
 
 interface DatosBase {
   nombre?: string;
   username?: string;
 }
+
 export abstract class BaseRepository<T extends DatosBase> {
   protected abstract readonly baseQuery: string;
   protected abstract readonly tableName: string;
   protected abstract readonly idName: string;
   protected abstract slugName?: string;
 
+  /**
+   * Devuelve la cantidad de filas usando tableName. No usa la baseQuery
+   * @param onlyActive
+   * @returns
+   */
   async getCount(onlyActive: boolean | undefined = undefined): Promise<number> {
     const params = [];
     let query = `SELECT COUNT(*) as total FROM ${this.tableName}`;
@@ -27,13 +34,39 @@ export abstract class BaseRepository<T extends DatosBase> {
     return res.rows;
   }
 
-  async getBy(filters: Partial<T>): Promise<T[]> {
+  // async getBy(filters: Partial<T>, pagination?: PaginationOptions): Promise<T[]> {
+  //   const keys = Object.keys(filters);
+  //   if (keys.length === 0) throw new DeAcaInternal('No especificaste el filtro');
+
+  //   const values = Object.values(filters);
+  //   const condiciones = keys.map((key, index) => `${key} = $${index + 1}`).join(' AND ');
+  //   const query = `${this.baseQuery} AND ${condiciones}`;
+  //   const res = await myPool.query(query, values);
+  //   return res.rows;
+  // }
+
+  async getBy(filters: Partial<T>, pagination?: PaginationOptions): Promise<T[]> {
     const keys = Object.keys(filters);
     if (keys.length === 0) throw new DeAcaInternal('No especificaste el filtro');
 
     const values = Object.values(filters);
     const condiciones = keys.map((key, index) => `${key} = $${index + 1}`).join(' AND ');
-    const query = `${this.baseQuery} AND ${condiciones}`;
+
+    let query = `${this.baseQuery} AND ${condiciones}`;
+
+    // Datos para ordenar
+    const direction = pagination?.orderDirection || 'ASC';
+    const sortField = pagination?.orderBy || this.idName;
+
+    query += ` ORDER BY ${sortField} ${direction}`;
+
+    //Paginación si la hubiera
+    if (pagination?.limit && pagination?.page) {
+      const offset = (pagination.page - 1) * pagination.limit;
+      query += ` LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
+      values.push(pagination.limit, offset);
+    }
+
     const res = await myPool.query(query, values);
     return res.rows;
   }

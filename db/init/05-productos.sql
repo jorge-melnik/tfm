@@ -22,7 +22,7 @@ CREATE TABLE productos (
     fecha_actualizacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     
     PRIMARY KEY (id_productor, id_producto)
-);
+);fecha_actualizacion
 
 CREATE TABLE producto_etiquetas (
     id_productor UUID NOT NULL,

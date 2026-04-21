@@ -109,7 +109,6 @@ const rutasSlugCategorias: FastifyPluginAsyncTypebox = async (fastify, opts): Pr
         slug_categoria: req.params.slug_categoria,
         slug_subcategoria: req.params.slug_subcategoria,
       });
-      console.log({ subcategoria });
       return subcategoriasRepository.getEtiquetas(subcategoria.id_categoria, subcategoria.id_subcategoria);
     },
   });
