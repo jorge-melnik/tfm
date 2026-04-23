@@ -11,7 +11,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       tags: ['Productores'],
       summary: 'ADD producto',
       description: `Permite al PRODUCTOR agregar un producto a su catálogo.`,
-      params: Type.Object({ id_usuario: Productor.properties.id_usuario }),
+      params: Type.Object({ id_productor: Productor.properties.id_productor }),
       body: POSTProducto,
       response: {
         200: Producto,
@@ -31,7 +31,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       summary: 'UPDATE producto',
       description: `Permite al PRODUCTOR modificar un producto a su catálogo.`,
       params: Type.Object({
-        id_usuario: Type.String(),
+        id_productor: Type.String(),
         id_producto: Type.Integer(),
       }),
       body: Producto, //FIXME: Con fotos y video?
@@ -52,7 +52,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       summary: 'DELETE producto',
       description: `Permite al PRODUCTOR borrar (si nunca fue vendido) un producto a su catálogo.`,
       params: Type.Object({
-        id_usuario: Type.String(),
+        id_productor: Type.String(),
         id_producto: Type.Integer(),
       }),
       response: {
@@ -72,7 +72,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       summary: 'ACTIVAR/DESACTIVAR producto',
       description: `Permite al PRODUCTOR activar o desactivar`,
       params: Type.Object({
-        id_usuario: Type.String(),
+        id_productor: Type.String(),
         id_producto: Type.Integer(),
       }),
       body: Type.Object({ activo: Type.Boolean() }), //FIXME: Con fotos y video?

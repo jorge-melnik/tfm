@@ -2,7 +2,7 @@ import { Type, Static } from '@sinclair/typebox';
 import { AdicionalesProductor, DatosPersonales } from './usuarios.schema.js';
 
 export const Productor = Type.Object({
-  ...DatosPersonales.properties,
+  ...Type.Omit(DatosPersonales, ['id_usuario']).properties,
   ...AdicionalesProductor.properties,
 });
 

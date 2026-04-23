@@ -11,7 +11,7 @@ const productoIdUsuarioRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
       tags: ['Productores'],
       summary: 'READ productos',
       description: `Permite Obtener el listado completo de productos (activos o no) de un productor. `,
-      params: Type.Object({ id_usuario: Productor.properties.id_usuario }),
+      params: Type.Object({ username: Productor.properties.username }),
       response: {
         200: Type.Array(Producto),
         500: DeAcaErrorResponse,
@@ -19,7 +19,7 @@ const productoIdUsuarioRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
     },
     // preHandler : //FIXME: fastify.seModificaASiMismo
     handler: async function (req, reply) {
-      return productoRepository.getBy({ id_productor: req.params.id_usuario });
+      return productoRepository.getBy({ username: req.params.username });
     },
   });
 };

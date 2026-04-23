@@ -28,10 +28,12 @@ CREATE TABLE IF NOT EXISTS subcategorias (
     fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_eliminacion TIMESTAMP WITH TIME ZONE,
     activo BOOLEAN GENERATED ALWAYS AS (fecha_eliminacion IS NULL) STORED,
-    UNIQUE(id_categoria, nombre),
-    -- Esté índice lo hacemos para buscar tranquilamente por id_categoría e id_subcategoría, para no tener que chequear coincidencia en la ruta.
-    INDEX subcategorias_id_categoria_IDX ON subcategorias (id_categoria, id_subcategoria) WHERE fecha_eliminacion IS NULL
+    UNIQUE(id_categoria, nombre)
 );
+-- Esté índice lo hacemos para buscar tranquilamente por id_categoría e id_subcategoría, para no tener que chequear coincidencia en la ruta.
+CREATE INDEX IF NOT EXISTS subcategorias_id_categoria_id_sub_idx 
+ON subcategorias (id_categoria, id_subcategoria) 
+WHERE fecha_eliminacion IS NULL;
 
 CREATE TABLE IF NOT EXISTS etiquetas (
     id_etiqueta INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

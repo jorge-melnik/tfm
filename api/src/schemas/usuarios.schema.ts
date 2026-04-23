@@ -24,9 +24,15 @@ export const DatosPersonales = Type.Object(
   { $id: 'datosPersonales' },
 );
 
-export const AdicionalesConsumidor = Type.Object({}, { additionalProperties: false });
+export const AdicionalesConsumidor = Type.Object(
+  {
+    id_consumidor: Type.String({ format: 'uuid' }),
+  },
+  { additionalProperties: false },
+);
 export const AdicionalesProductor = Type.Object(
   {
+    id_productor: Type.String({ format: 'uuid' }),
     presentacion: Type.String(),
   },
   { additionalProperties: false },

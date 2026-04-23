@@ -118,8 +118,8 @@ export const RegisterSchema = Type.Intersect(
       password2: Type.String(),
       roles: UserSchema.properties.roles,
       //Consumidor y productor debe coincidir con lo especificado en el rol
-      consumidor: Type.Optional(AdicionalesConsumidor),
-      productor: Type.Optional(AdicionalesProductor),
+      consumidor: Type.Optional(Type.Omit(AdicionalesConsumidor, ['id_consumidor'])),
+      productor: Type.Optional(Type.Omit(AdicionalesProductor, ['id_productor'])),
     }),
   ],
   {

@@ -78,7 +78,6 @@ export abstract class BaseRepository<T extends DatosBase> {
     const values = Object.values(filters);
     const condiciones = keys.map((key, index) => `${key} = $${index + 1}`).join(' AND ');
     const query = `${this.baseQuery} AND ${condiciones}`;
-
     const res = await myPool.query(query, values);
     if (res.rows.length > 1)
       throw new DeAcaInternal('Se obtuvo más de un valor con ese filtro. Se esperaba uno.');
@@ -109,7 +108,6 @@ export abstract class BaseRepository<T extends DatosBase> {
     const res = await myPool.query(query, values);
     //Sintaxis Computada [this.idName]: valor
     const filtro = { [this.idName]: res.rows[0][this.idName] } as Partial<T>;
-
     return this.getOneBy(filtro);
   }
 

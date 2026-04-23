@@ -160,18 +160,18 @@ class AuthRepositoryClass {
    * @param consumidor
    * @param client Se puede pasar un client si hay que ejecutarlo en la misma transacción. Caso register
    */
-  async activarConsumidor(id_usuario: string, consumidor: AdicionalesConsumidor, client?: PoolClient) {
+  async activarConsumidor(id_consumidor: string, consumidor: AdicionalesConsumidor, client?: PoolClient) {
     const query = `
-      INSERT into public.consumidores (id_usuario) 
+      INSERT into public.consumidores (id_consumidor) 
       VALUES($1)
-      ON CONFLICT (id_usuario) DO UPDATE                -- si ya existe 
+      ON CONFLICT (id_consumidor) DO UPDATE                -- si ya existe 
       SET fecha_eliminacion = NULL
       WHERE consumidores.fecha_eliminacion IS NOT NULL  -- Solo si estaba desactivado.
-      RETURNING id_usuario
+      RETURNING id_consumidor
       ;
     `;
     const db = client || myPool;
-    const res = await db.query(query, [id_usuario]);
+    const res = await db.query(query, [id_consumidor]);
     if (res.rows.length === 0) {
       throw new DeAcaInternal(`No es posible hacer ese cambio.`);
     }
@@ -184,17 +184,17 @@ class AuthRepositoryClass {
    * @param productor
    * @param client Se puede pasar un client si hay que ejecutarlo en la misma transacción. Caso register
    */
-  async activarProductor(id_usuario: string, productor: AdicionalesProductor, client?: PoolClient) {
+  async activarProductor(id_productor: string, productor: AdicionalesProductor, client?: PoolClient) {
     const query = `
-      INSERT into public.productores (id_usuario,presentacion) 
+      INSERT into public.productores (id_productor,presentacion) 
       VALUES($1,$2)
-      ON CONFLICT (id_usuario) DO UPDATE                -- si ya existe 
+      ON CONFLICT (id_productor) DO UPDATE                -- si ya existe 
       SET presentacion = EXCLUDED.presentacion, fecha_eliminacion = NULL
       WHERE productores.fecha_eliminacion IS NOT NULL   -- Solo si estaba desactivado.
       RETURNING *
       ;
     `;
-    const params = [id_usuario, productor.presentacion];
+    const params = [id_productor, productor.presentacion];
     const db = client || myPool; // Determinamos el ejecutor de una
     const res = await db.query(query, params);
     if (res.rows.length === 0) {

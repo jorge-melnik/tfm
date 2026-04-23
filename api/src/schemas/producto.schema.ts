@@ -4,7 +4,7 @@ import { Subcategoria } from './categoria.schema.js';
 import { DatosPersonales } from './usuarios.schema.js';
 
 export const POSTProducto = Type.Object({
-  id_productor: Productor.properties.id_usuario,
+  id_productor: Productor.properties.id_productor,
   id_subcategoria: Subcategoria.properties.id_subcategoria,
   nombre: Type.String(),
   slug_producto: Type.String(),

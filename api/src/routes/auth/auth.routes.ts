@@ -1,5 +1,4 @@
-import { DeAcaInternal, DeAcaUnAuthenticated } from '@errors/response.errors.js';
-import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
+import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import authRepository from '@repositories/auth.repository.js';
 import { randomUUID } from 'node:crypto';
 

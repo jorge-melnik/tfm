@@ -34,7 +34,7 @@ test('AuthRepository - Suite de Pruebas', async (t) => {
           dp.email,
           dp.username,
           EXISTS(SELECT 1 FROM credenciales WHERE id_usuario = u.id_usuario) as tiene_pass,
-          EXISTS(SELECT 1 FROM consumidores WHERE id_usuario = u.id_usuario) as es_consumidor
+          EXISTS(SELECT 1 FROM consumidores WHERE id_consumidor = u.id_usuario) as es_consumidor
         FROM public.usuarios u
         JOIN public.datos_personales dp ON u.id_usuario = dp.id_usuario
         WHERE dp.email = $1
@@ -80,7 +80,7 @@ test('AuthRepository - Suite de Pruebas', async (t) => {
           dp.email,
           dp.username,
           EXISTS(SELECT 1 FROM credenciales WHERE id_usuario = u.id_usuario) as tiene_pass,
-          EXISTS(SELECT 1 FROM productores WHERE id_usuario = u.id_usuario) as es_productor
+          EXISTS(SELECT 1 FROM productores WHERE id_productor = u.id_usuario) as es_productor
         FROM public.usuarios u
         JOIN public.datos_personales dp ON u.id_usuario = dp.id_usuario
         WHERE dp.email = $1
@@ -122,8 +122,8 @@ test('AuthRepository - Suite de Pruebas', async (t) => {
       const query = `
         SELECT 
           u.roles,
-          EXISTS(SELECT 1 FROM consumidores WHERE id_usuario = u.id_usuario) as es_consumidor,
-          EXISTS(SELECT 1 FROM productores WHERE id_usuario = u.id_usuario) as es_productor
+          EXISTS(SELECT 1 FROM consumidores WHERE id_consumidor = u.id_usuario) as es_consumidor,
+          EXISTS(SELECT 1 FROM productores WHERE id_productor = u.id_usuario) as es_productor
         FROM public.usuarios u
         JOIN public.datos_personales dp ON u.id_usuario = dp.id_usuario
         WHERE dp.email = $1
@@ -193,10 +193,13 @@ test('AuthRepository - Suite de Pruebas', async (t) => {
     await st.test('Debe fallar si se intenta activar un CONSUMIDOR que ya existe', async () => {
       // Act & Assert
       // Como ya se activó en el register, esto debe lanzar un error de Unique Constraint
-      await assert.rejects(authRepository.activarConsumidor(id_usuario, {}), (err: any) => {
-        assert.ok(err instanceof DeAcaInternal);
-        return true;
-      });
+      await assert.rejects(
+        authRepository.activarConsumidor(id_usuario, { id_consumidor: id_usuario }),
+        (err: any) => {
+          assert.ok(err instanceof DeAcaInternal);
+          return true;
+        },
+      );
     });
 
     await st.test('Debe fallar si se intenta activar un PRODUCTOR que ya existe', async () => {
@@ -204,7 +207,10 @@ test('AuthRepository - Suite de Pruebas', async (t) => {
 
       // Act & Assert: Intentamos de nuevo
       await assert.rejects(
-        authRepository.activarProductor(id_usuario, { presentacion: 'Segunda vez' }),
+        authRepository.activarProductor(id_usuario, {
+          id_productor: id_usuario,
+          presentacion: 'Segunda vez',
+        }),
         (err: any) => {
           assert.ok(err instanceof DeAcaInternal);
           return true;
