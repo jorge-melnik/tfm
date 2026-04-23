@@ -89,6 +89,46 @@ test('/admin/categorias', async (t) => {
     assert.equal(categoriaEditada.nombre, nuevoNombre, 'No coincide nombre actualizado');
   });
 
+  //DESACTIVAR
+  await t.test(`PATCH /admin/categorias/${categoriaCreada.id_categoria} (desactivar)`, async () => {
+    // Act
+    const res = await app.inject({
+      method: 'PATCH',
+      url: `/admin/categorias/${categoriaCreada.id_categoria}`,
+      payload: {
+        activo: false,
+      },
+    });
+
+    // Assert
+    assert.equal(res.statusCode, 204, 'No coincide statusCode');
+    const categoriaDesactivada = await categoriasRepository.getOneBy({
+      id_categoria: categoriaCreada.id_categoria,
+    });
+
+    assert.equal(categoriaDesactivada.activo, false);
+  });
+
+  //ACTIVAR
+  await t.test(`PATCH /admin/categorias/${categoriaCreada.id_categoria} (activar)`, async () => {
+    // Act
+    const res = await app.inject({
+      method: 'PATCH',
+      url: `/admin/categorias/${categoriaCreada.id_categoria}`,
+      payload: {
+        activo: true,
+      },
+    });
+
+    // Assert
+    assert.equal(res.statusCode, 204, 'No coincide statusCode');
+    const categoriaActivada = await categoriasRepository.getOneBy({
+      id_categoria: categoriaCreada.id_categoria,
+    });
+
+    assert.equal(categoriaActivada.activo, true);
+  });
+
   //DELETE
   await t.test(`DELETE /admin/categorias/${categoriaCreada.id_categoria}`, async () => {
     // Act

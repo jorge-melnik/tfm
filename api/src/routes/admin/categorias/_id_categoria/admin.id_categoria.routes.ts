@@ -61,7 +61,7 @@ const idCategoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
     schema: {
       tags: ['Admin: Categorias'],
       summary: 'DELETE categoria',
-      description: 'Permite actualizar una categoria global.',
+      description: 'Permite borrar una categoria global.',
       params: Type.Object({
         id_categoria: Categoria.properties.id_categoria,
       }),
@@ -74,6 +74,28 @@ const idCategoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
     handler: async function (req, reply) {
       reply.code(204);
       await categoriasRepository.remove(req.params.id_categoria);
+    },
+  });
+
+  fastify.patch('/', {
+    schema: {
+      tags: ['Admin: Categorias'],
+      summary: 'ACTIVAR/DESACTIVAR Categoria',
+      description: `Permite al ADMIN activar o desactivar Categoría`,
+      params: Type.Object({
+        id_categoria: Categoria.properties.id_categoria,
+      }),
+      body: Type.Object({ activo: Type.Boolean() }), //FIXME: Con fotos y video?
+      response: {
+        204: Categoria,
+        500: DeAcaErrorResponse,
+      },
+    },
+    // preHandler : //FIXME: Solo admin
+    handler: async function (req, reply) {
+      reply.code(204);
+      if (req.body.activo) return categoriasRepository.activate(req.params.id_categoria);
+      return categoriasRepository.deactivate(req.params.id_categoria);
     },
   });
 };

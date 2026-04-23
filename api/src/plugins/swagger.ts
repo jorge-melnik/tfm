@@ -58,14 +58,22 @@ Slugs
           description:
             'Gestión de categorías, subcategorías de categorías y etiquetas permitidas en cada subcategoria para usuarios.',
         },
-        // {
-        //   name: 'Productores',
-        //   description: 'Catálogo de productos orgánicos y regenerativos.',
-        // },
-        // {
-        //   name: 'productos',
-        //   description: 'Catálogo de productos orgánicos y regenerativos.',
-        // },
+        {
+          name: 'Productores',
+          description: `
+Endpoint para que los productores administren sus productos y para que los consumidores vean la info del productor.
+No se puede hacer POST de productores, ya que se corresponde con el registro o con activar productor.  
+## Endpoints disponibles:
+- Obtener todos los productores: ADMIN
+- Obtener un productor por su username: Cualquier usuario autenticado.
+- Modificar un productor. Solo el propio productor.
+- 
+          `,
+        },
+        {
+          name: 'productos',
+          description: 'Catálogo de productos orgánicos y regenerativos de todos los productores.',
+        },
       ],
       components: {
         securitySchemes: {

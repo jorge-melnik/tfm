@@ -10,7 +10,7 @@ const productorUsernameRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
       tags: ['Productores'],
       summary: 'READ productor.',
       description: `
-        Busca y devuelve un productor por su username (slug). 
+        Busca y devuelve un productor por su username (slug). Todos los usuarios pueden obtener la info de un productor (incluido el mismo) con este endpoint
       `,
       params: Type.Object({ username: Productor.properties.username }),
       response: {
@@ -18,6 +18,7 @@ const productorUsernameRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
         500: DeAcaErrorResponse,
       },
     },
+    // preHandler: //FIXME No se que verificar aca:
     handler: async function (req, reply) {
       return productorRepository.getOneBy({ username: req.params.username });
     },

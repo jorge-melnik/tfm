@@ -36,7 +36,7 @@ ADD COLUMN id_pago_exitoso UUID NULL REFERENCES pagos(id_pago);
 
 CREATE TABLE pedidos (
     id_productor UUID NOT NULL REFERENCES productores(id_usuario),
-    id_pedido BIGINT GENERATED ALWAYS AS IDENTITY,
+    id_pedido BIGINT GENERATED ALWAYS AS IDENTITY UNIQUE,
     id_compra BIGINT NOT NULL REFERENCES compras(id_compra) ON DELETE CASCADE,
     
     estado_pedido ESTADO_PEDIDO NOT NULL DEFAULT 'PAGANDO',    

@@ -71,6 +71,29 @@ const idSubcategoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): 
       await subcategoriasRepository.remove(req.params.id_subcategoria);
     },
   });
+
+  fastify.patch('/', {
+    schema: {
+      tags: ['Admin: Subcategorias'],
+      summary: 'ACTIVAR/DESACTIVAR Categoria',
+      description: `Permite al ADMIN activar o desactivar Subcategoría`,
+      params: Type.Object({
+        id_categoria: Categoria.properties.id_categoria,
+        id_subcategoria: Subcategoria.properties.id_subcategoria,
+      }),
+      body: Type.Object({ activo: Type.Boolean() }),
+      response: {
+        200: Categoria,
+        500: DeAcaErrorResponse,
+      },
+    },
+    // preHandler : //FIXME: Solo admin
+    handler: async function (req, reply) {
+      reply.code(204);
+      if (req.body.activo) return subcategoriasRepository.activate(req.params.id_subcategoria);
+      return subcategoriasRepository.deactivate(req.params.id_subcategoria);
+    },
+  });
 };
 
 export default idSubcategoriasRoutes;

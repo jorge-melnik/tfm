@@ -7,7 +7,9 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
   protected readonly slugName?: keyof Producto = 'slug_producto';
 
   protected readonly baseQuery = `
-    SELECT * FROM etiquetas e
+    SELECT P.*, PS.username
+    FROM productos P
+    JOIN productores PS ON PS.id_usuario=P.id_productor
     WHERE 1=1
   `;
 

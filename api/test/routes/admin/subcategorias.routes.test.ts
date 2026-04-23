@@ -117,6 +117,52 @@ test('/admin/categorias/:id_categoria/subcategorias', async (t) => {
     },
   );
 
+  //DESACTIVAR
+  await t.test(
+    `PATCH /admin/categorias/${subcategoriaCreada.id_categoria}/subcategorias/${subcategoriaCreada.id_subcategoria} (desactivar)`,
+    async () => {
+      // Act
+      const res = await app.inject({
+        method: 'PATCH',
+        url: `/admin/categorias/${subcategoriaCreada.id_categoria}/subcategorias/${subcategoriaCreada.id_subcategoria}`,
+        payload: {
+          activo: false,
+        },
+      });
+
+      // Assert
+      assert.equal(res.statusCode, 204, 'No coincide statusCode');
+      const subcategoriaDesactivada = await subcategoriasRepository.getOneBy({
+        id_subcategoria: subcategoriaCreada.id_subcategoria,
+      });
+
+      assert.equal(subcategoriaDesactivada.activo, false);
+    },
+  );
+
+  //ACTIVAR
+  await t.test(
+    `PATCH /admin/categorias/${subcategoriaCreada.id_categoria}/subcategorias/${subcategoriaCreada.id_subcategoria} (activar)`,
+    async () => {
+      // Act
+      const res = await app.inject({
+        method: 'PATCH',
+        url: `/admin/categorias/${subcategoriaCreada.id_categoria}/subcategorias/${subcategoriaCreada.id_subcategoria}`,
+        payload: {
+          activo: true,
+        },
+      });
+
+      // Assert
+      assert.equal(res.statusCode, 204, 'No coincide statusCode');
+      const subcategoriaActivada = await subcategoriasRepository.getOneBy({
+        id_subcategoria: subcategoriaCreada.id_subcategoria,
+      });
+
+      assert.equal(subcategoriaActivada.activo, true);
+    },
+  );
+
   //DELETE
   await t.test(
     `DELETE /admin/categorias/${categoriaPadre.id_categoria}/subcategorias/${subcategoriaCreada}`,
