@@ -1,7 +1,6 @@
 import { myPool } from '@database/pool.js';
 import { DeAcaInternal } from '@errors/response.errors.js';
 import authRepository from '@repositories/auth.repository.js';
-import { consumidorRepository } from '@repositories/consumidor.repository.js';
 import { productorRepository } from '@repositories/productor.repository.js';
 import assert from 'node:assert';
 import test from 'node:test';

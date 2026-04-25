@@ -14,15 +14,13 @@ export const POSTProducto = Type.Object({
   id_etiquetas: Type.Array(Type.Integer()),
 });
 
-export const Producto = Type.Intersect([
-  POSTProducto,
-  Type.Object({
-    id_producto: Type.Integer(),
-    fotos: Type.Array(Type.String()),
-    video: Type.Optional(Type.String()),
-    etiquetas: Type.Array(Type.String()), //slug etiquetas
-    username: DatosPersonales.properties.username,
-  }),
-]);
+export const Producto = Type.Object({
+  ...POSTProducto.properties,
+  id_producto: Type.Integer(),
+  fotos: Type.Array(Type.String()),
+  video: Type.Optional(Type.String()),
+  etiquetas: Type.Array(Type.String()), //slug etiquetas
+  username: DatosPersonales.properties.username,
+});
 
 export type Producto = Static<typeof Producto>;
