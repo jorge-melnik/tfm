@@ -15,12 +15,24 @@ test('/productores', async (t) => {
   const aleatorio = Date.now();
   const username = 'act-' + aleatorio;
   const email = `${username}@test.com`;
+  const emailDuplicado = `dup${username}@test.com`;
   await authRepository.register({
     email,
     nombres: 'Test',
     apellidos: 'Productores',
     username,
-    celular: `+4${Date.now()}`,
+    celular: `+4${aleatorio}`,
+    password: 'Contraseña.1',
+    password2: 'Contraseña.1',
+    roles: ['PRODUCTOR'],
+    productor: { presentacion: 'La presentacion.' },
+  });
+  await authRepository.register({
+    email: emailDuplicado,
+    nombres: 'Test',
+    apellidos: 'Productores',
+    username: `r-${aleatorio}`,
+    celular: `+5${aleatorio}`,
     password: 'Contraseña.1',
     password2: 'Contraseña.1',
     roles: ['PRODUCTOR'],
@@ -135,5 +147,43 @@ test('/productores', async (t) => {
     assert.equal(productorModificado.id_productor, productorCreado.id_productor);
     assert.equal(productorModificado.nombres, nuevoNombre);
     assert.equal(productorModificado.presentacion, nuevaPresentacion);
+  });
+
+  await t.test('PUT /productores/:id_productor', async () => {
+    //Arrange
+    const nuevoNombre = 'Nombre cambiado.';
+    const nuevaPresentacion = 'Nombre cambiado.';
+
+    //ACT
+    const res = await app.inject({
+      method: 'PUT',
+      url: `/productores/${productorCreado.id_productor}`,
+      payload: {
+        ...productorCreado,
+        email: emailDuplicado,
+        nombres: nuevoNombre,
+        presentacion: nuevaPresentacion,
+      },
+    });
+    const payload = JSON.parse(res.payload);
+    //ASSERT
+    assert.equal(res.statusCode, 500);
+    assert.equal(payload.statusCode, 500);
+  });
+
+  await t.test('DELETE /productores/:id_productor', async () => {
+    //Arrange
+
+    //ACT
+    const res = await app.inject({
+      method: 'DELETE',
+      url: `/productores/${productorCreado.id_productor}`,
+    });
+    const productorModificado: any = await productorRepository.getOneBy({
+      id_productor: productorCreado.id_productor,
+    });
+    //ASSERT
+    assert.equal(res.statusCode, 204);
+    assert.equal(productorModificado.activo, false);
   });
 });

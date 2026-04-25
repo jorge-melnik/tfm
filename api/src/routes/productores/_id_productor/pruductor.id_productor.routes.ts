@@ -1,4 +1,5 @@
 import { myPool } from '@database/pool.js';
+import { DeAcaInternal } from '@errors/response.errors.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import {
   datosPersonalesRepository,
@@ -43,7 +44,8 @@ const productoIdUsuarioRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
         }); //Actualizo datos personales del usuario
         await client.query('COMMIT;');
       } catch (error: any) {
-        throw error;
+        await client.query('ROLLBACK');
+        throw new DeAcaInternal(error.message);
       } finally {
         client.release(); //Necesitamos el try catch para siempre liberar el client
       }
@@ -58,9 +60,8 @@ const productoIdUsuarioRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
         Permite que el usuario se de de baja como productor, desactivando (no borrando) sus rol de productor. 
       `,
       params: Type.Object({ id_productor: Productor.properties.id_productor }),
-      body: Productor,
       response: {
-        204: Productor,
+        204: Type.Null(),
         500: DeAcaErrorResponse,
       },
     },

@@ -21,12 +21,14 @@ class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
   }
 
   override async activate(id: string | number): Promise<void> {
-    throw new DeAcaInternal('Para activar productor usar AuthRepository.');
+    throw new DeAcaInternal(
+      'Para activar productor en consumidor usar el método activarProductor de consumidor repository.',
+    );
   }
 
   /**
    * Activar rol Productor para un consumidor ya existente.
-   * A diferencia de activate en productorRepository, recibe un client y AdicionalesProductor
+   * A diferencia de activate en productorRepository, este hace INSERT o UPDATE según corresponda.
    * @param id_usuario
    * @param productor
    * @param client Se puede pasar un client si hay que ejecutarlo en la misma transacción. Caso register
