@@ -14,12 +14,13 @@ test('/admin/categorias/:id_categoria/subcategorias', async (t) => {
     descripcion: 'Descripcion ' + Date.now(),
     slug_categoria: '',
   };
+
+  const categoriaPadre = await categoriasRepository.add(datosCategoria); //Asumimos que esto funciona.
   const datosSubcategoria = {
+    id_categoria: categoriaPadre.id_categoria,
     nombre,
     slug_subcategoria: '',
   };
-
-  const categoriaPadre = await categoriasRepository.add(datosCategoria); //Asumimos que esto funciona.
 
   //CREATE
   await t.test(`POST /admin/categorias/${categoriaPadre.id_categoria}/subcategorias`, async () => {
@@ -31,7 +32,6 @@ test('/admin/categorias/:id_categoria/subcategorias', async (t) => {
     });
 
     const subcategoriaCreada: Subcategoria = JSON.parse(res.payload);
-
     // Assert
     assert.equal(res.statusCode, 201, 'No coincide statusCode');
     assert.ok(subcategoriaCreada.id_subcategoria, 'Debería tener id_subcategoria');
@@ -103,10 +103,12 @@ test('/admin/categorias/:id_categoria/subcategorias', async (t) => {
         },
       });
 
-      const subcategoriaEditada: Subcategoria = JSON.parse(res.payload);
+      const subcategoriaEditada: Subcategoria = await subcategoriasRepository.getOneBy({
+        id_subcategoria: subcategoriaCreada.id_subcategoria,
+      });
 
       // Assert
-      assert.equal(res.statusCode, 200, 'No coincide statusCode');
+      assert.equal(res.statusCode, 204, 'No coincide statusCode');
       assert.equal(subcategoriaEditada.id_categoria, subcategoriaCreada.id_categoria, 'No coinciden Ids ');
       assert.equal(
         subcategoriaEditada.id_subcategoria,

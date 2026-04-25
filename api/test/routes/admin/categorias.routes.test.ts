@@ -81,10 +81,12 @@ test('/admin/categorias', async (t) => {
       },
     });
 
-    const categoriaEditada: Categoria = JSON.parse(res.payload);
+    const categoriaEditada: Categoria = await categoriasRepository.getOneBy({
+      id_categoria: categoriaCreada.id_categoria,
+    });
 
     // Assert
-    assert.equal(res.statusCode, 200, 'No coincide statusCode');
+    assert.equal(res.statusCode, 204, 'No coincide statusCode');
     assert.equal(categoriaEditada.id_categoria, categoriaCreada.id_categoria, 'No coinciden Ids ');
     assert.equal(categoriaEditada.nombre, nuevoNombre, 'No coincide nombre actualizado');
   });

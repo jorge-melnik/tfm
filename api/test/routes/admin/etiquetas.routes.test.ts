@@ -92,10 +92,10 @@ test('API /etiquetas', async (t) => {
       },
     });
 
-    const editada: Etiqueta = JSON.parse(res.payload);
+    const editada: Etiqueta = await etiquetasRepository.getOneBy({ id_etiqueta: creada.id_etiqueta });
 
     // Assert
-    assert.equal(res.statusCode, 200, 'No coincide statusCode');
+    assert.equal(res.statusCode, 204, 'No coincide statusCode');
     assert.equal(editada.id_etiqueta, creada.id_etiqueta, 'No coincide el ID');
     assert.equal(editada.nombre, nuevoNombre, 'El nombre no se actualizó');
     assert.equal(editada.slug_etiqueta, slugOriginal, 'El slug no debería haber cambiado');

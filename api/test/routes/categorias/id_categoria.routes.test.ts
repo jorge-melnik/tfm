@@ -34,9 +34,11 @@ test('/categorias/:id_categoria/subcategorias/:id_subcategoria', async (t) => {
       },
     });
 
-    const subcategoriaEditada: Subcategoria = JSON.parse(res.payload);
+    const subcategoriaEditada: Subcategoria = await subcategoriasRepository.getOneBy({
+      id_subcategoria: subcategoriaCreada.id_subcategoria,
+    });
     // Assert
-    assert.equal(res.statusCode, 200, 'No coincide statusCode');
+    assert.equal(res.statusCode, 204, 'No coincide statusCode');
     assert.equal(
       subcategoriaEditada.id_subcategoria,
       subcategoriaCreada.id_subcategoria,

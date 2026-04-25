@@ -41,14 +41,14 @@ const idSubcategoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): 
         examples: [{ id_subcategoria: 20, nombre: 'nombre cambiado' }],
       }),
       response: {
-        200: Subcategoria,
+        204: Type.Null(),
         404: DeAcaErrorResponse,
         500: DeAcaErrorResponse,
       },
     },
     handler: async function (req, reply) {
+      reply.code(204);
       await subcategoriasRepository.update(req.params.id_subcategoria, req.body);
-      return subcategoriasRepository.getOneBy({ id_subcategoria: req.params.id_subcategoria });
     },
   });
 

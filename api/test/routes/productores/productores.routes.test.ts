@@ -121,12 +121,17 @@ test('/productores', async (t) => {
     const res = await app.inject({
       method: 'PUT',
       url: `/productores/${productorCreado.id_productor}`,
-      payload: productorCreado,
+      payload: {
+        ...productorCreado,
+        nombres: nuevoNombre,
+        presentacion: nuevaPresentacion,
+      },
     });
-    const productorModificado: Productor = JSON.parse(res.payload);
-    console.log({ productorModificado });
+    const productorModificado: Productor = await productorRepository.getOneBy({
+      id_productor: productorCreado.id_productor,
+    });
     //ASSERT
-    assert.equal(res.statusCode, 200);
+    assert.equal(res.statusCode, 204);
     assert.equal(productorModificado.id_productor, productorCreado.id_productor);
     assert.equal(productorModificado.nombres, nuevoNombre);
     assert.equal(productorModificado.presentacion, nuevaPresentacion);
