@@ -47,7 +47,8 @@ const idSubcategoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): 
       },
     },
     handler: async function (req, reply) {
-      return subcategoriasRepository.update(req.params.id_subcategoria, req.body);
+      await subcategoriasRepository.update(req.params.id_subcategoria, req.body);
+      return subcategoriasRepository.getOneBy({ id_subcategoria: req.params.id_subcategoria });
     },
   });
 
@@ -83,7 +84,8 @@ const idSubcategoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): 
       }),
       body: Type.Object({ activo: Type.Boolean() }),
       response: {
-        200: Categoria,
+        // 200: Categoria,
+        204: Type.Null(),
         500: DeAcaErrorResponse,
       },
     },

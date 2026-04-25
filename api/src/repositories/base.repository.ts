@@ -1,6 +1,7 @@
 import { myPool } from '@database/pool.js';
 import { DeAcaBadRequest, DeAcaInternal, DeAcaNotFound } from '@errors/response.errors.js';
 import { PaginationOptions } from '@schemas/pagination.schema.js';
+import { Pool, PoolClient } from 'pg';
 
 interface DatosBase {
   nombre?: string;
@@ -12,6 +13,21 @@ export abstract class BaseRepository<T extends DatosBase> {
   protected abstract readonly tableName: string;
   protected abstract readonly idName: string;
   protected abstract slugName?: string;
+
+  protected executor: PoolClient | Pool = myPool;
+
+  /**
+   * Obtenemos una copia del repositorio, pero que usará el client recibido como parámetro.
+   * Esto nos permite controlar la transacción desde afuera del repository
+   * @param client
+   * @returns this
+   */
+  public withTransaction(client: PoolClient): this {
+    const instance = Object.create(Object.getPrototypeOf(this)); //Copiamos la instancia actual. No queremos cambiar la "original"
+    Object.assign(instance, this); //Copiamos las propiedades
+    instance.executor = client;
+    return instance;
+  }
 
   /**
    * Devuelve la cantidad de filas usando tableName. No usa la baseQuery
@@ -25,25 +41,14 @@ export abstract class BaseRepository<T extends DatosBase> {
       params.push(onlyActive);
       query += ' WHERE activo=$1';
     }
-    const res = await myPool.query(query, params);
+    const res = await this.executor.query(query, params);
     return parseInt(res.rows[0].total, 10);
   }
 
   async getAll(): Promise<T[]> {
-    const res = await myPool.query(this.baseQuery);
+    const res = await this.executor.query(this.baseQuery);
     return res.rows;
   }
-
-  // async getBy(filters: Partial<T>, pagination?: PaginationOptions): Promise<T[]> {
-  //   const keys = Object.keys(filters);
-  //   if (keys.length === 0) throw new DeAcaInternal('No especificaste el filtro');
-
-  //   const values = Object.values(filters);
-  //   const condiciones = keys.map((key, index) => `${key} = $${index + 1}`).join(' AND ');
-  //   const query = `${this.baseQuery} AND ${condiciones}`;
-  //   const res = await myPool.query(query, values);
-  //   return res.rows;
-  // }
 
   async getBy(filters: Partial<T>, pagination?: PaginationOptions): Promise<T[]> {
     const keys = Object.keys(filters);
@@ -67,7 +72,7 @@ export abstract class BaseRepository<T extends DatosBase> {
       values.push(pagination.limit, offset);
     }
 
-    const res = await myPool.query(query, values);
+    const res = await this.executor.query(query, values);
     return res.rows;
   }
 
@@ -78,7 +83,7 @@ export abstract class BaseRepository<T extends DatosBase> {
     const values = Object.values(filters);
     const condiciones = keys.map((key, index) => `${key} = $${index + 1}`).join(' AND ');
     const query = `${this.baseQuery} AND ${condiciones}`;
-    const res = await myPool.query(query, values);
+    const res = await this.executor.query(query, values);
     if (res.rows.length > 1)
       throw new DeAcaInternal('Se obtuvo más de un valor con ese filtro. Se esperaba uno.');
 
@@ -105,7 +110,7 @@ export abstract class BaseRepository<T extends DatosBase> {
       RETURNING *
     `;
 
-    const res = await myPool.query(query, values);
+    const res = await this.executor.query(query, values);
     //Sintaxis Computada [this.idName]: valor
     const filtro = { [this.idName]: res.rows[0][this.idName] } as Partial<T>;
     return this.getOneBy(filtro);
@@ -113,7 +118,7 @@ export abstract class BaseRepository<T extends DatosBase> {
 
   async remove(id: string | number): Promise<void> {
     const query = `DELETE FROM ${this.tableName} WHERE ${this.idName} = $1`;
-    const res = await myPool.query(query, [id]);
+    const res = await this.executor.query(query, [id]);
 
     if (res.rowCount === 0) {
       throw new DeAcaNotFound(`No se encontró el registro con ${this.idName}: ${id} para eliminar.`);
@@ -126,7 +131,7 @@ export abstract class BaseRepository<T extends DatosBase> {
       SET fecha_eliminacion=CURRENT_TIMESTAMP 
       WHERE ${this.idName} = $1 
       AND activo=true`;
-    const res = await myPool.query(query, [id]);
+    const res = await this.executor.query(query, [id]);
 
     if (res.rowCount === 0) {
       throw new DeAcaNotFound(`No se encontró el registro con ${this.idName}: ${id} activo para desactivar.`);
@@ -140,14 +145,14 @@ export abstract class BaseRepository<T extends DatosBase> {
       WHERE ${this.idName} = $1 
       AND activo=false
     `;
-    const res = await myPool.query(query, [id]);
+    const res = await this.executor.query(query, [id]);
 
     if (res.rowCount === 0) {
       throw new DeAcaNotFound(`No se encontró el registro con ${this.idName}: ${id} inactivo para activar.`);
     }
   }
 
-  async update(id: string | number, data: Partial<T>): Promise<T> {
+  async update(id: string | number, data: Partial<T>): Promise<void> {
     //No se hace update de los idName, ni de activo, ni de slugs
     const keys = Object.keys(data).filter(
       (key) => key != this.idName && key != 'activo' && !key.startsWith('slug_'),
@@ -164,19 +169,19 @@ export abstract class BaseRepository<T extends DatosBase> {
       RETURNING *
     `;
 
-    const res = await myPool.query(query, [...values, id]);
+    const res = await this.executor.query(query, [...values, id]);
 
     if (res.rows.length === 0) {
       throw new DeAcaNotFound(`No se pudo actualizar: registro con ${this.idName} ${id} no existe.`);
     }
 
-    const filtro = { [this.idName as string]: id } as Partial<T>;
-    return this.getOneBy(filtro);
+    // const filtro = { [this.idName as string]: id } as Partial<T>;
+    // return this.getOneBy(filtro);
   }
 
   async exists(id: string | number): Promise<boolean> {
     const query = `SELECT 1 FROM ${this.tableName} WHERE ${this.idName} = $1`;
-    const res = await myPool.query(query, [id]);
+    const res = await this.executor.query(query, [id]);
     return res.rows.length === 1;
   }
 

@@ -1,5 +1,10 @@
+import { myPool } from '@database/pool.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
-import { productorRepository } from '@repositories/productor.repository.js';
+import {
+  datosPersonalesRepository,
+  DatosPersonalessRepositoryClass,
+} from '@repositories/datos-personales.respository.js';
+import { productorRepository, ProductorRepositoryClass } from '@repositories/productor.repository.js';
 
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 import { Productor } from '@schemas/productores.schema.js';
@@ -15,14 +20,33 @@ const productoIdUsuarioRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
       params: Type.Object({ id_productor: Productor.properties.id_productor }),
       body: Productor,
       response: {
-        200: Productor,
+        204: Type.Null(),
         500: DeAcaErrorResponse,
       },
     },
     // preHandler : //FIXME: fastify.seModificaASiMismo
     handler: async function (req, reply) {
-      //TODO: Hacer override update en productorRepository, para que actualice las distintas tablas. Idem para consumidor.
-      return productorRepository.update(req.params.id_productor, { presentacion: req.body.presentacion });
+      const { id_productor } = req.params;
+      const { presentacion, nombres, apellidos, email, celular } = req.body;
+      const client = await myPool.connect();
+      try {
+        const prodRepoWT: ProductorRepositoryClass = productorRepository.withTransaction(client);
+        const dpRepoWT: DatosPersonalessRepositoryClass = datosPersonalesRepository.withTransaction(client);
+
+        await client.query('BEGIN;');
+        await prodRepoWT.update(req.params.id_productor, { presentacion }); //Actualizo datos específicos del productor
+        await dpRepoWT.update(id_productor, {
+          nombres,
+          apellidos,
+          email,
+          celular,
+        }); //Actualizo datos personales del usuario
+        await client.query('COMMIT;');
+      } catch (error: any) {
+        throw error;
+      } finally {
+        client.release(); //Necesitamos el try catch para siempre liberar el client
+      }
     },
   });
 

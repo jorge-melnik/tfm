@@ -1,8 +1,9 @@
 import { Productor } from '@schemas/productores.schema.js';
 import { BaseRepository } from './base.repository.js';
 import { DeAcaInternal } from '@errors/response.errors.js';
+import { AdicionalesConsumidor } from '@schemas/usuarios.schema.js';
 
-class ProductorRepositoryClass extends BaseRepository<Productor> {
+export class ProductorRepositoryClass extends BaseRepository<Productor> {
   protected readonly tableName = 'productores';
   protected readonly idName = 'id_productor';
   protected readonly slugName?: string = 'slug_productor'; //No ponemos acá para que no intente generarlo. Pero es el username
@@ -19,12 +20,30 @@ class ProductorRepositoryClass extends BaseRepository<Productor> {
     super();
   }
 
-  override async update(id_productor: string, productor: Productor): Promise<Productor> {
-    //TODO: Hacer transacción para actualizar productor y datos personales juntas.
-    throw new DeAcaInternal('No implementado');
-  }
   override async activate(id: string | number): Promise<void> {
     throw new DeAcaInternal('Para activar productor usar AuthRepository.');
+  }
+  /**
+   * Activar rol consumidor para un usuario ya existente que aún no lo tiene.
+   * A diferencia de activate en consumidorRepository, recibe un client y AdicionalesProductor
+   * @param id_usuario
+   * @param consumidor
+   * @param client Se puede pasar un client si hay que ejecutarlo en la misma transacción. Caso register
+   */
+  async activarConsumidor(id_consumidor: string, consumidor: AdicionalesConsumidor) {
+    const query = `
+        INSERT into public.consumidores (id_consumidor) 
+        VALUES($1)
+        ON CONFLICT (id_consumidor) DO UPDATE                -- si ya existe 
+        SET fecha_eliminacion = NULL
+        WHERE consumidores.fecha_eliminacion IS NOT NULL  -- Solo si estaba desactivado.
+        RETURNING id_consumidor
+        ;
+      `;
+    const res = await this.executor.query(query, [id_consumidor]);
+    if (res.rows.length === 0) {
+      throw new DeAcaInternal(`No es posible hacer ese cambio.`);
+    }
   }
 }
 

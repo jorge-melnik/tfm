@@ -79,13 +79,14 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       }),
       body: Etiqueta,
       response: {
-        200: Etiqueta,
+        204: Type.Null(),
         404: DeAcaErrorResponse,
         500: DeAcaErrorResponse,
       },
     },
     handler: async function (req, reply) {
-      return etiquetasRepository.update(req.params.id_etiqueta, req.body);
+      reply.code(204);
+      await etiquetasRepository.update(req.params.id_etiqueta, req.body);
     },
   });
 

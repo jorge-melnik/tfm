@@ -67,7 +67,6 @@ Estas subcategorias pueden ser usadas en los productos.
     // preHandler : TODO: Verificar que el slug del body coincide con el de params
     handler: async function (req, reply) {
       reply.code(201);
-      req.body.id_categoria = req.params.id_categoria;
       return await subcategoriasRepository.add(req.body);
     },
   });

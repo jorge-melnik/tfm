@@ -47,13 +47,14 @@ const idCategoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
         ],
       }),
       response: {
-        200: Categoria,
+        204: Type.Null(),
         404: DeAcaErrorResponse,
         500: DeAcaErrorResponse,
       },
     },
     handler: async function (req, reply) {
-      return categoriasRepository.update(req.params.id_categoria, req.body);
+      reply.code(204);
+      await categoriasRepository.update(req.params.id_categoria, req.body);
     },
   });
 
@@ -87,7 +88,7 @@ const idCategoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       }),
       body: Type.Object({ activo: Type.Boolean() }), //FIXME: Con fotos y video?
       response: {
-        204: Categoria,
+        204: Type.Null(),
         500: DeAcaErrorResponse,
       },
     },

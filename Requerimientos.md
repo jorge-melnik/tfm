@@ -9,7 +9,7 @@
 - RF-GUP-05: El sistema debe permitir al usuario iniciar sesión con Google y el email previamente registrado.
 - RF-GUP-06: El sistema debe permitir al usuario iniciar sesión con Facebook y el email previamente registrado.
 - RF-GUP-07: El sistema debe permitir al usuario iniciar sesión con nombre de usuario o email, y su contraseña.
-- RF-GUP-08: El sistema debe permitir al usuario proveedor gestionar sus datos personales nombre de usuario, nombres, apellidos, ubicación, contraseña, email, celular, si acepta envios y/o retiros, foto, acepta envíos y/o retiros y presentacion.
+- RF-GUP-08: El sistema debe permitir al usuario proveedor gestionar sus datos personales nombres, apellidos, email, celular, si acepta envios y/o retiros, foto, acepta envíos y/o retiros y presentacion.
 - RF-GUP-09: El sistema debe permitir al usuario consumidor gestionar su datos personales ingresando nombre de usuario, nombres, apellidos, contraseña, email, celular y foto.
 - RF-GUP-10: El sistema debe permitir al usuario consumidor activar las funcionalidades de productor ingresando si acepta envíos y/o retiros y presentación.
 - RF-GUP-11: El sistema debe permitir al usuario productor activar las funcionalidades de consumidor.
@@ -23,6 +23,7 @@
 - RF-GUP-18: El sistema debe permitir al usuario darse de baja del sistema borrando todos sus datos personales en cumplimiento de la ley 18331 de Uruguay.
 - RF-GUP-19: El sistema debe permitir al usuario descargarse toda la información relacionada a su usuario en formato xlsx y ods.
 - RF-GUP-20: El sistema debe permitir al usuario recuperar su contraseña.
+- El sistema no debe permitir al usuario cambiar su nombre de usuario.
 
 ## Panel del productor (PP)
 

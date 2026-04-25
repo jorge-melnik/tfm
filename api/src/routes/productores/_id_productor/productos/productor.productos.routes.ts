@@ -36,13 +36,14 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       }),
       body: Producto, //FIXME: Con fotos y video?
       response: {
-        200: Producto,
+        204: Type.Null(),
         500: DeAcaErrorResponse,
       },
     },
     // preHandler : //FIXME: fastify.seModificaASiMismo y el coincide id_productor en body y params
     handler: async function (req, reply) {
-      return productoRepository.update(req.params.id_producto, req.body);
+      reply.code(204);
+      await productoRepository.update(req.params.id_producto, req.body);
     },
   });
 
@@ -56,13 +57,13 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
         id_producto: Type.Integer(),
       }),
       response: {
-        200: Producto,
+        204: Type.Null(),
         500: DeAcaErrorResponse,
       },
     },
     // preHandler : //FIXME: fastify.seModificaASiMismo y el coincide id_productor en body y params
     handler: async function (req, reply) {
-      return productoRepository.remove(req.params.id_producto);
+      await productoRepository.remove(req.params.id_producto);
     },
   });
 
@@ -77,7 +78,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       }),
       body: Type.Object({ activo: Type.Boolean() }), //FIXME: Con fotos y video?
       response: {
-        200: Producto,
+        204: Type.Null(),
         500: DeAcaErrorResponse,
       },
     },

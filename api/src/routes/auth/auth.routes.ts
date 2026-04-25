@@ -15,6 +15,8 @@ import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 import { FastifyReply } from 'fastify';
 import { CookieSerializeOptions } from '@fastify/cookie';
 import { AdicionalesConsumidor, AdicionalesProductor } from '@schemas/usuarios.schema.js';
+import { productorRepository } from '@repositories/productor.repository.js';
+import { consumidorRepository } from '@repositories/consumidor.repository.js';
 
 //Para manejar las mismas opciones en ambas rutas
 const accessTokenOptions = {
@@ -117,7 +119,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
     },
     onRequest: [fastify.authenticate],
     handler: async function (req, rep) {
-      await authRepository.activarProductor(req.user.id_usuario, req.body);
+      await consumidorRepository.activarProductor(req.user.id_usuario, req.body);
       return await authRepository.getUserById(req.user.id_usuario);
     },
   });
@@ -138,7 +140,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
     },
     onRequest: [fastify.authenticate],
     handler: async function (req, rep) {
-      await authRepository.activarConsumidor(req.user.id_usuario, req.body);
+      await productorRepository.activarConsumidor(req.user.id_usuario, req.body);
       return await authRepository.getUserById(req.user.id_usuario);
     },
   });

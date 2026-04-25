@@ -26,13 +26,13 @@ export const DatosPersonales = Type.Object(
 
 export const AdicionalesConsumidor = Type.Object(
   {
-    id_consumidor: Type.String({ format: 'uuid' }),
+    // id_consumidor: Type.String({ format: 'uuid' }),
   },
   { additionalProperties: false },
 );
 export const AdicionalesProductor = Type.Object(
   {
-    id_productor: Type.String({ format: 'uuid' }),
+    // id_productor: Type.String({ format: 'uuid' }),
     presentacion: Type.String(),
   },
   { additionalProperties: false },

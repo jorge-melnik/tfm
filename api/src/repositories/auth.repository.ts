@@ -1,8 +1,11 @@
 import { myPool } from '@database/pool.js';
-import type { PoolClient, QueryResult } from 'pg';
+import type { QueryResult } from 'pg';
 import { DeAcaInternal, DeAcaNotFound, DeAcaUnAuthenticated } from '@errors/response.errors.js';
 import { Profile, RegisterSchema, TokenPayload, User } from '@schemas/auth.schema.js';
-import { AdicionalesConsumidor, AdicionalesProductor } from '@schemas/usuarios.schema.js';
+import { productorRepository } from './productor.repository.js';
+import { consumidorRepository } from './consumidor.repository.js';
+import { datosPersonalesRepository } from './datos-personales.respository.js';
+import { DatosPersonales } from '@schemas/usuarios.schema.js';
 
 class AuthRepositoryClass {
   /**
@@ -110,95 +113,47 @@ class AuthRepositoryClass {
    * @param dp
    */
   async register(dp: RegisterSchema): Promise<void> {
-    const queryUsuario = 'INSERT INTO usuarios (rol_actual, roles) VALUES ($1, $2) RETURNING *';
-    const queryDatosPersonales = `
-        INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username,celular) VALUES ($1, $2, $3, $4,$5, $6);
-      `;
     const client = await myPool.connect(); //Obtenemos un cliente para poder hacer una transacción
+    const dpRepoWT = datosPersonalesRepository.withTransaction(client);
+    const productorRepoWT = productorRepository.withTransaction(client);
+    const consumidorRepoWT = consumidorRepository.withTransaction(client);
+
     try {
       await client.query('BEGIN;');
       //Primero crear el usuario
-      const { rows: rows }: QueryResult<{ id_usuario: string }> = await client.query(queryUsuario, [
+      const queryUsuario = 'INSERT INTO usuarios (rol_actual, roles) VALUES ($1, $2) RETURNING *';
+      const { rows }: QueryResult<{ id_usuario: string }> = await client.query(queryUsuario, [
         dp.roles[0],
         dp.roles,
       ]);
       const { id_usuario } = rows[0]; //Tengo el id_usuario creado
-      //Segundo guardar datos personales.
-      await client.query(queryDatosPersonales, [
+      const datosPersonales: DatosPersonales = {
         id_usuario,
-        dp.nombres,
-        dp.apellidos,
-        dp.email,
-        dp.username,
-        dp.celular,
-      ]);
+        nombres: dp.nombres,
+        apellidos: dp.apellidos,
+        email: dp.email,
+        username: dp.username,
+        celular: dp.celular,
+      };
+      //Segundo guardar datos personales.
+      await dpRepoWT.add(datosPersonales);
+      //Tercero, activar consumidor y/o productor según corresponda.
+      if (dp.consumidor) await productorRepoWT.activarConsumidor(id_usuario, dp.consumidor);
+      if (dp.productor) await consumidorRepoWT.activarProductor(id_usuario, dp.productor);
 
-      if (dp.consumidor) await this.activarConsumidor(id_usuario, dp.consumidor, client);
-      if (dp.productor) await this.activarProductor(id_usuario, dp.productor, client);
-
-      //Insertar credenciales
+      //Último: insertar credenciales
       const credencialesQuery = `
         INSERT INTO credenciales (id_usuario, password_hash) 
         VALUES ($1, crypt($2, gen_salt('bf', 10)))
         ;
       `;
       await client.query(credencialesQuery, [id_usuario, dp.password]);
-
       await client.query('COMMIT;'); //Confirmar transacción
     } catch (error: any) {
       await client.query('ROLLBACK;');
       throw new DeAcaInternal(error.message);
     } finally {
       client.release();
-    }
-  }
-
-  /**
-   * Activar rol consumidor para un usuario ya existente que aún no lo tiene.
-   * A diferencia de activate en consumidorRepository, recibe un client y AdicionalesProductor
-   * @param id_usuario
-   * @param consumidor
-   * @param client Se puede pasar un client si hay que ejecutarlo en la misma transacción. Caso register
-   */
-  async activarConsumidor(id_consumidor: string, consumidor: AdicionalesConsumidor, client?: PoolClient) {
-    const query = `
-      INSERT into public.consumidores (id_consumidor) 
-      VALUES($1)
-      ON CONFLICT (id_consumidor) DO UPDATE                -- si ya existe 
-      SET fecha_eliminacion = NULL
-      WHERE consumidores.fecha_eliminacion IS NOT NULL  -- Solo si estaba desactivado.
-      RETURNING id_consumidor
-      ;
-    `;
-    const db = client || myPool;
-    const res = await db.query(query, [id_consumidor]);
-    if (res.rows.length === 0) {
-      throw new DeAcaInternal(`No es posible hacer ese cambio.`);
-    }
-  }
-
-  /**
-   * Activar rol Productor para un consumidor ya existente.
-   * A diferencia de activate en productorRepository, recibe un client y AdicionalesProductor
-   * @param id_usuario
-   * @param productor
-   * @param client Se puede pasar un client si hay que ejecutarlo en la misma transacción. Caso register
-   */
-  async activarProductor(id_productor: string, productor: AdicionalesProductor, client?: PoolClient) {
-    const query = `
-      INSERT into public.productores (id_productor,presentacion) 
-      VALUES($1,$2)
-      ON CONFLICT (id_productor) DO UPDATE                -- si ya existe 
-      SET presentacion = EXCLUDED.presentacion, fecha_eliminacion = NULL
-      WHERE productores.fecha_eliminacion IS NOT NULL   -- Solo si estaba desactivado.
-      RETURNING *
-      ;
-    `;
-    const params = [id_productor, productor.presentacion];
-    const db = client || myPool; // Determinamos el ejecutor de una
-    const res = await db.query(query, params);
-    if (res.rows.length === 0) {
-      throw new DeAcaInternal(`No es posible hacer ese cambio.`);
     }
   }
 }

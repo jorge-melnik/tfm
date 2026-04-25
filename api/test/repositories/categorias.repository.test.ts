@@ -132,10 +132,10 @@ test('Categorias Repository', async (t) => {
     //Act
     const nuevaCategoria = await categoriasRepository.add(categoria);
     nuevaCategoria.nombre = nuevaCategoria.nombre + ' cambiado';
-    const categoriaModificada = await categoriasRepository.update(
-      nuevaCategoria.id_categoria,
-      nuevaCategoria,
-    );
+    await categoriasRepository.update(nuevaCategoria.id_categoria, nuevaCategoria);
+    const categoriaModificada = await categoriasRepository.getOneBy({
+      id_categoria: nuevaCategoria.id_categoria,
+    });
 
     //Assert
     assert.deepStrictEqual(nuevaCategoria, categoriaModificada);

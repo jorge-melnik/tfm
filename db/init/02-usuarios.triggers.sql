@@ -1,29 +1,3 @@
-
--- CREATE OR REPLACE FUNCTION fn_sincronizar_roles()
--- RETURNS TRIGGER AS $$
--- DECLARE
---     v_rol ROL;
--- BEGIN
---     -- Determinar qué rol estamos manejando según la tabla que disparó el trigger
---     IF TG_TABLE_NAME = 'productores' THEN
---         v_rol := 'PRODUCTOR';
---     ELSIF TG_TABLE_NAME = 'consumidores' THEN
---         v_rol := 'CONSUMIDOR';
---     END IF;
-
---     IF (TG_OP = 'DELETE' OR NEW.activo = FALSE) THEN    --delete fisico o lógico
---         UPDATE usuarios 
---         SET roles = array_remove(roles, v_rol)
---         WHERE id_usuario = OLD.id_usuario;
---     ELSE -- Si entra acá, NEW.activo = TRUE
---         UPDATE usuarios 
---         SET roles = array_append(array_remove(roles, v_rol), v_rol) -- Hacemos un remove antes por si las moscas
---         WHERE id_usuario = NEW.id_usuario;
---     END IF;
---     RETURN NULL;
--- END;
--- $$ LANGUAGE plpgsql;
-
 CREATE OR REPLACE FUNCTION fn_sincronizar_roles()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -76,3 +50,7 @@ AFTER UPDATE OF activo ON consumidores
 FOR EACH ROW 
 WHEN (OLD.activo IS DISTINCT FROM NEW.activo)
 EXECUTE FUNCTION fn_sincronizar_roles();
+
+
+--TODO: Trigger para que si cambia email en datos_personales setear email_validado en false
+--TODO: Trigger para que si cambia celular en datos_personales setear celular_validado en false
