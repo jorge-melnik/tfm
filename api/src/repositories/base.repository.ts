@@ -45,52 +45,67 @@ export abstract class BaseRepository<T extends DatosBase> {
     return parseInt(res.rows[0].total, 10);
   }
 
+  /**
+   * Devuelve todos los elementos encontrados. Sin paginación ni filtrado.
+   * @returns
+   */
   async getAll(): Promise<T[]> {
-    const res = await this.executor.query(this.baseQuery);
-    return res.rows;
+    return this.getBy();
   }
 
-  async getBy(filters: Partial<T>, pagination?: PaginationOptions): Promise<T[]> {
+  /**
+   *
+   * @param filters permite agregar condiciones a la consulta.
+   * @param pagination permite paginar.
+   * @returns
+   */
+  async getBy(filters: Partial<T> = {}, pagination?: PaginationOptions): Promise<T[]> {
     const keys = Object.keys(filters);
-    if (keys.length === 0) throw new DeAcaInternal('No especificaste el filtro');
-
     const values = Object.values(filters);
-    const condiciones = keys.map((key, index) => `${key} = $${index + 1}`).join(' AND ');
 
-    let query = `${this.baseQuery} AND ${condiciones}`;
+    // Construimos las condiciones solo si hay filtros
+    let condiciones = '';
+    if (keys.length > 0) {
+      condiciones =
+        ' AND ' +
+        keys
+          .map((key, index) => {
+            const keySegura = key.replace(/[^a-zA-Z0-9_]/g, ''); //Borramos los caracteres que no son válidos en un nombre de columna.
+            if (!keySegura) throw new DeAcaBadRequest('Clave de filtrado no válida'); //Si la linea anterior dejó un string vacío.
+            return `"${keySegura}" = $${index + 1}`; //Entrecomillamos para que tome todo lo entrecomillado como el nombre de la columna.
+          })
+          .join(' AND ');
+    }
 
-    // Datos para ordenar
-    const direction = pagination?.orderDirection || 'ASC';
-    const sortField = pagination?.orderBy || this.idName;
+    let query = `${this.baseQuery} ${condiciones}`;
 
-    query += ` ORDER BY ${sortField} ${direction}`;
-
-    //Paginación si la hubiera
     if (pagination?.limit && pagination?.page) {
-      const offset = (pagination.page - 1) * pagination.limit;
+      const direction = pagination?.orderDirection?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'; //Así safamos de codigo no deseado en order direction
+      const sortField = pagination?.orderBy || this.idName;
+      const safeSortField = sortField.replace(/[^a-zA-Z0-9_]/g, ''); //Eliminamos todos los caracteres que no son validos en un nombre de columna.
+      query += ` ORDER BY "${safeSortField}" ${direction}`; //Entrecomillamos sortField para que lo tome como una columna y evitar código no deseado
+      const limit = parseInt(pagination.limit.toString(), 10) || 10; //Me aseguro que limit no traiga codigo no deseado
+      const page = parseInt(pagination.page.toString(), 10) || 1; //Me aseguro que page no traiga codigo no deseado
+      const offset = (page - 1) * limit;
       query += ` LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
-      values.push(pagination.limit, offset);
+      values.push(limit, offset);
     }
 
     const res = await this.executor.query(query, values);
-    return res.rows;
+    return res.rows as T[];
   }
 
   async getOneBy(filters: Partial<T>): Promise<T> {
     const keys = Object.keys(filters);
     if (keys.length === 0) throw new DeAcaBadRequest('No especificaste el filtro');
-
-    const values = Object.values(filters);
-    const condiciones = keys.map((key, index) => `${key} = $${index + 1}`).join(' AND ');
-    const query = `${this.baseQuery} AND ${condiciones}`;
-    const res = await this.executor.query(query, values);
-    if (res.rows.length > 1)
+    const rows: T[] = await this.getBy(filters, { limit: 2, page: 1 }); //Pedimos 2 para que pueda fallar si viene más de una
+    if (rows.length > 1)
       throw new DeAcaInternal('Se obtuvo más de un valor con ese filtro. Se esperaba uno.');
 
-    if (res.rows.length === 0) {
+    if (rows.length === 0) {
       throw new DeAcaNotFound(`No existe registro con ${JSON.stringify(filters)}`);
     }
-    return res.rows[0];
+    return rows[0];
   }
 
   async add(data: Partial<T>): Promise<T> {

@@ -38,10 +38,48 @@ test('Categorias Repository', async (t) => {
     assert.equal(true, categorias.length > 0);
   });
 
-  t.test('test getBy sin filtro', async () => {
+  t.test('test getBy paginado', async () => {
+    //Arrange
+    const nombre = 'Nombre ' + Date.now();
+    const categoria = {
+      nombre,
+      slug_categoria: categoriasRepository.createSlug(nombre),
+      descripcion: 'Descripcion' + Date.now(),
+    };
+
+    //Act
+    await categoriasRepository.add(categoria);
+    const categorias = await categoriasRepository.getBy(
+      { activo: true },
+      { page: 1, limit: 1, orderBy: 'id_categoria', orderDirection: 'DESC' },
+    );
+
     //Assert
-    await assert.rejects(categoriasRepository.getBy({}), (err: any) => {
-      assert.ok(err instanceof DeAcaInternal);
+    assert.equal(categorias.length, 1);
+  });
+  t.test('test getBy paginado2', async () => {
+    //Arrange
+    const nombre = 'Nombre ' + Date.now();
+    const categoria = {
+      nombre,
+      slug_categoria: categoriasRepository.createSlug(nombre),
+      descripcion: 'Descripcion' + Date.now(),
+    };
+    const pagination: any = { page: 's', limit: 's', orderBy: 'id_categoria', orderDirection: 'DESC' };
+
+    //Act
+    await categoriasRepository.add(categoria);
+    const categorias = await categoriasRepository.getBy({ activo: true }, pagination);
+
+    //Assert
+    assert.equal(categorias.length, 1);
+  });
+
+  t.test('test getBy filtro no valido', async () => {
+    //Assert
+    const filtroNovalido: any = { '.': '' };
+    await assert.rejects(categoriasRepository.getBy(filtroNovalido), (err: any) => {
+      assert.ok(err instanceof DeAcaBadRequest);
       return true;
     });
   });
@@ -212,6 +250,24 @@ test('Categorias Repository', async (t) => {
   });
 
   t.test('test getCount', async () => {
+    //Arrange
+    const nombre = 'Nombre ' + Date.now();
+    const categoria = {
+      nombre,
+      slug_categoria: categoriasRepository.createSlug(nombre),
+      descripcion: 'Descripcion' + Date.now(),
+    };
+    const contadorAnterior = await categoriasRepository.getCount();
+    await categoriasRepository.add(categoria);
+
+    //Act
+    const contadorActual = await categoriasRepository.getCount();
+
+    //Assert
+    assert.ok(contadorActual >= contadorAnterior + 1);
+  });
+
+  t.test('test getBy (con paginacion)', async () => {
     //Arrange
     const nombre = 'Nombre ' + Date.now();
     const categoria = {

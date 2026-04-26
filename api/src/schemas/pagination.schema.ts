@@ -20,28 +20,31 @@ export const RolLiteral = Type.Union(
   { description: 'Posibles roles del usuario del sistema.' },
 );
 
-export const PaginationOptions = Type.Object({
-  page: Type.Optional(
-    Type.Integer({
-      minimum: 1,
-      default: 1,
-      description: 'Número de página solicitada.',
-    }),
-  ),
-  limit: Type.Optional(
-    Type.Integer({
-      minimum: 1,
-      maximum: 100,
-      default: 10,
-      description: 'Cantidad de filas por página.',
-    }),
-  ),
-  orderBy: Type.Optional(
-    Type.String({
-      description: 'Campo por el cual ordenar',
-    }),
-  ),
-  orderDirection: Type.Optional(OrderDirection),
-});
+export const PaginationOptions = Type.Object(
+  {
+    page: Type.Optional(
+      Type.Integer({
+        minimum: 1,
+        default: 1,
+        description: 'Número de página solicitada.',
+      }),
+    ),
+    limit: Type.Optional(
+      Type.Integer({
+        minimum: 1,
+        maximum: 100,
+        default: 10,
+        description: 'Cantidad de filas por página.',
+      }),
+    ),
+    orderBy: Type.Optional(
+      Type.String({
+        description: 'Campo por el cual ordenar',
+      }),
+    ),
+    orderDirection: Type.Optional(OrderDirection),
+  },
+  { description: 'Información de paginación.', additionalProperties: false },
+);
 
 export type PaginationOptions = Static<typeof PaginationOptions>;
