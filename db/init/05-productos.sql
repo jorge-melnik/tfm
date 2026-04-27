@@ -20,7 +20,9 @@ CREATE TABLE productos (
     
     fecha_creacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    
+
+    fecha_eliminacion TIMESTAMP WITH TIME ZONE,
+    activo BOOLEAN GENERATED ALWAYS AS (fecha_eliminacion IS NULL) STORED,
     PRIMARY KEY (id_productor, id_producto)
 );
 

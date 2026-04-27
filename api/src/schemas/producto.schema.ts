@@ -11,6 +11,7 @@ export const POSTProducto = Type.Object({
   descripcion: Type.String(),
   precio: Type.Number(),
   cantidad_disponible: Type.Number(),
+  fotos: Type.Array(Type.String(), { description: 'las de urls de fotos.', minItems: 1, maxItems: 5 }),
   id_etiquetas: Type.Array(Type.Integer()),
 });
 
@@ -21,6 +22,7 @@ export const Producto = Type.Object({
   video: Type.Optional(Type.String()),
   etiquetas: Type.Array(Type.String()), //slug etiquetas
   username: DatosPersonales.properties.username,
+  activo: Type.Optional(Type.Boolean()),
 });
 
 export type Producto = Static<typeof Producto>;

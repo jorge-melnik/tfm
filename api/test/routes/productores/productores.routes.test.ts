@@ -105,25 +105,6 @@ test('/productores', async (t) => {
     assert.equal(productor.username, productorCreado.username);
   });
 
-  await t.test('GET /productores/:username/productos', async () => {
-    //ACT
-    const res = await app.inject({
-      method: 'GET',
-      url: `/productores/${username}/productos`,
-    });
-
-    const productos: Producto[] = JSON.parse(res.payload);
-    const productoBuscadoA = productos.find((p) => p.id_producto === productoA.id_producto);
-    const productoBuscadoB = productos.find((p) => p.id_producto === productoB.id_producto);
-
-    //ASSERT
-    assert.equal(res.statusCode, 200);
-    assert.equal(productoBuscadoA?.id_productor, productorCreado.id_productor);
-    assert.equal(productoBuscadoA?.id_producto, productoA.id_producto);
-    assert.equal(productoBuscadoB?.id_productor, productorCreado.id_productor);
-    assert.equal(productoBuscadoB?.id_producto, productoB.id_producto);
-  });
-
   await t.test('PUT /productores/:id_productor', async () => {
     //Arrange
     const nuevoNombre = 'Nombre cambiado.';

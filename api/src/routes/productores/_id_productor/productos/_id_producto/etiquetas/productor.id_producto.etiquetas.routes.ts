@@ -6,10 +6,10 @@ import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 import { Producto } from '@schemas/producto.schema.js';
 
 const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
-  fastify.put('/', {
+  fastify.patch('/', {
     schema: {
       tags: ['Productores'],
-      summary: 'ADD etiquetas',
+      summary: 'ADD REMOVE etiquetas',
       description: `Permite al PRODUCTOR agregar o quitar etiquetas a un producto.`,
       params: Type.Object({
         id_productor: Type.String(),
@@ -28,7 +28,6 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
     },
     // preHandler : //FIXME: fastify.seModificaASiMismo y el coincide id_productor en body y params. Params coincide con body o bad Request
     handler: async function (req, reply) {
-      reply.code(204);
       const { id_productor, id_producto, ids_borrar, ids_agregar } = req.body;
 
       const client = await myPool.connect();
@@ -44,6 +43,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       } finally {
         client.release();
       }
+      reply.code(204);
     },
   });
 };

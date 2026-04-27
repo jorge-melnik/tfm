@@ -160,8 +160,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
     onRequest: async function (req, rep) {
       try {
         await req.jwtVerify({ onlyCookie: true });
-        const oldToken = req.cookies.refreshToken || 'dsadasdlkasjdaslñk';
-        fastify.log.info({ oldToken });
+        const oldToken: any = req.cookies.refreshToken;
         await authRepository.verifyRefreshToken(req.user, oldToken);
         await authRepository.removeRefreshToken(req.user); //Si es válido una vez hay que borrarlo! Solo se usa una vez.
       } catch (error) {

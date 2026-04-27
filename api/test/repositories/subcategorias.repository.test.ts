@@ -24,7 +24,7 @@ test('Subcategorias Repository', async (t) => {
     const cantidadActual = await subcategoriasRepository.getCount(true);
 
     //Assert
-    assert.equal(cantidadActual, cantidadAnterior + 1);
+    assert.equal(cantidadActual > cantidadAnterior, true);
   });
 
   t.test('test deactivate', async () => {

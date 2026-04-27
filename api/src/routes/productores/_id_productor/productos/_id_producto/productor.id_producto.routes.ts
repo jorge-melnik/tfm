@@ -15,7 +15,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
         id_productor: Type.String(),
         id_producto: Type.Integer(),
       }),
-      body: Producto, //FIXME: Con fotos y video?
+      body: Type.Omit(Producto, ['id_etiquetas', 'etiquetas', 'slug_producto', 'fotos', 'videos']), //FIXME: Con fotos y video?
       response: {
         204: Type.Null(),
         500: DeAcaErrorResponse,
@@ -44,6 +44,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
     },
     // preHandler : //FIXME: fastify.seModificaASiMismo y el coincide id_productor en body y params
     handler: async function (req, reply) {
+      reply.code(204);
       await productoRepository.remove(req.params.id_producto);
     },
   });
@@ -65,8 +66,11 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
     },
     // preHandler : //FIXME: fastify.seModificaASiMismo y el coincide id_productor en body y params
     handler: async function (req, reply) {
-      if (req.body.activo) return productoRepository.activate(req.params.id_producto);
-      return productoRepository.deactivate(req.params.id_producto);
+      reply.code(204);
+
+      if (req.body.activo) await productoRepository.activate(req.params.id_producto);
+      if (!req.body.activo) await productoRepository.deactivate(req.params.id_producto);
+      console.log('PATCH Prodcuto');
     },
   });
 };

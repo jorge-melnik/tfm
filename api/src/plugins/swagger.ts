@@ -5,7 +5,7 @@ import type { FastifyInstance } from 'fastify';
 const API_PREFIX = process.env.API_PREFIX || 'api';
 
 export default fp(async (fastify: FastifyInstance) => {
-  if (process.env.NODE_ENV !== 'development') return; //docs de api solo development
+  // if (process.env.NODE_ENV !== 'development') return; //docs de api solo development
 
   await fastify.register(swagger, {
     openapi: {

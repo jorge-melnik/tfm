@@ -4,7 +4,7 @@ const pgConfig: PoolConfig = {
   database: process.env.PGDATABASE,
   user: process.env.PGUSER,
   password: process.env.PGPASSWORD,
-  port: Number(process.env.PGPORT) || 5432,
+  port: Number(process.env.PGPORT),
   host: process.env.PGHOST,
   connectionTimeoutMillis: 0,
   idleTimeoutMillis: 1000,

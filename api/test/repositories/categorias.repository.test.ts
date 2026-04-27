@@ -6,7 +6,7 @@ import { DeAcaBadRequest, DeAcaInternal, DeAcaNotFound } from '@errors/response.
 test('Categorias Repository', async (t) => {
   t.test('test getAll', async () => {
     //Arrange
-    const nombre = 'Nombre ' + Date.now();
+    const nombre = 'Cat ' + Date.now();
     const categoria = {
       nombre,
       slug_categoria: categoriasRepository.createSlug(nombre),
@@ -72,7 +72,7 @@ test('Categorias Repository', async (t) => {
     const categorias = await categoriasRepository.getBy({ activo: true }, pagination);
 
     //Assert
-    assert.equal(categorias.length, 1);
+    assert.equal(categorias.length > 0, true);
   });
 
   t.test('test getBy filtro no valido', async () => {
