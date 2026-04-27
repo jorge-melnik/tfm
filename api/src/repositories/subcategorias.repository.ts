@@ -30,7 +30,7 @@ export class SubcategoriasRepositoryClass extends BaseRepository<Subcategoria> {
       WHERE SC.id_categoria = $1 AND SC.id_subcategoria=$2
       ;
     `;
-    const res = await myPool.query(query, [id_categoria, id_subcategoria]);
+    const res = await this.executor.query(query, [id_categoria, id_subcategoria]);
     return res.rows;
   }
 
@@ -42,7 +42,7 @@ export class SubcategoriasRepositoryClass extends BaseRepository<Subcategoria> {
       WHERE id_categoria = $1 AND id_subcategoria = $2
       ;
     `;
-    await myPool.query(query, [id_categoria, id_subcategoria, id_etiqueta]);
+    await this.executor.query(query, [id_categoria, id_subcategoria, id_etiqueta]);
   }
 
   async removeEtiqueta(id_categoria: number, id_subcategoria: number, id_etiqueta: number) {
@@ -55,7 +55,7 @@ export class SubcategoriasRepositoryClass extends BaseRepository<Subcategoria> {
         AND SE.id_subcategoria = S.id_subcategoria -- clave para JOINEAR
         ;
     `;
-    await myPool.query(query, [id_categoria, id_subcategoria, id_etiqueta]);
+    await this.executor.query(query, [id_categoria, id_subcategoria, id_etiqueta]);
   }
 }
 
