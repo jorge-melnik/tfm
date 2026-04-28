@@ -1,7 +1,10 @@
-<div class="flex align-items-center justify-content-center min-h-screen bg-surface-ground p-4">
-  <p-card class="shadow-4 border-round-xl w-full md:w-35rem">
+<div
+  id="main"
+  class="flex flex-column flex-grow-1 justify-content-center align-items-center h-full p-1"
+>
+  <p-card class="shadow-4 border-round-xl w-full md:w-30rem">
     <ng-template #header>
-      <div class="flex justify-content-center pt-6">
+      <div class="flex justify-content-center pt-6 hide-on-short-screen">
         <i class="pi pi-user-plus text-primary text-6xl"></i>
       </div>
     </ng-template>
@@ -10,16 +13,12 @@
       <div class="text-center text-900 text-3xl font-medium mb-1">Crear Cuenta</div>
     </ng-template>
 
-    <ng-template #subtitle>
-      <div class="text-center text-600 mb-5">Únete a De Acá y comienza a comprar</div>
-    </ng-template>
-
     <form class="flex flex-column gap-4">
       <div class="flex justify-content-center mb-3">
         <p-selectButton
           [options]="[
-            { label: 'Quiero Comprar', value: 'consumer', icon: 'pi pi-shopping-cart' },
-            { label: 'Quiero Vender', value: 'producer', icon: 'pi pi-shop' },
+            { label: 'Quiero Comprar', value: 'consumer' },
+            { label: 'Quiero Vender', value: 'producer' },
           ]"
           [(ngModel)]="this.selectedRoles"
           optionLabel="label"
@@ -84,6 +83,20 @@
             mediumLabel="Media"
             strongLabel="Fuerte"
             autocomplete="new-password"
+          />
+          <label for="password">Contraseña</label>
+        </p-iconfield>
+      </p-floatlabel>
+
+      <p-floatlabel variant="on">
+        <p-iconfield iconPosition="right">
+          <p-inputicon class="pi pi-key" />
+          <p-password
+            name="password"
+            [toggleMask]="true"
+            [fluid]="true"
+            promptLabel="Repita la contraseña"
+            feedback="false"
           />
           <label for="password">Contraseña</label>
         </p-iconfield>

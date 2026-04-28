@@ -1,0 +1,11 @@
+/* Por defecto el icono está oculto */
+.hide-on-short-screen {
+  display: none !important;
+}
+
+/* Solo se muestra si la pantalla tiene más de 600px de alto */
+@media (min-height: 800px) {
+  .hide-on-short-screen {
+    display: flex !important;
+  }
+}
