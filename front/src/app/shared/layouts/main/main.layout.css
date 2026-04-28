@@ -1,10 +1,3 @@
 main {
   border: 1px solid black;
 }
-
-:host {
-  display: flex;
-  flex-direction: column;
-  flex: 1; /* Esto estira el componente dentro de app-root */
-  height: 100%;
-}

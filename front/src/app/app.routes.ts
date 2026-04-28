@@ -9,6 +9,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
+        title: 'Home',
         loadComponent: () => import('@features/main/home/home.page').then((m) => m.HomePage),
       },
       {

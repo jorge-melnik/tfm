@@ -4,7 +4,7 @@ import { Button } from 'primeng/button';
 import { TabsModule, Tabs, TabList, Tab, TabPanel, TabPanels } from 'primeng/tabs';
 
 @Component({
-  selector: 'app-main',
+  selector: 'app-main-layout',
   imports: [RouterOutlet, Button, TabsModule, Tabs, TabList, Tab, TabPanel, TabPanels],
   templateUrl: './main.layout.html',
   styleUrl: './main.layout.css',
