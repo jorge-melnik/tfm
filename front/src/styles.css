@@ -1,2 +1,20 @@
 @import 'primeicons/primeicons.css'; /* Para los iconos de los botones */
 @import 'primeflex/primeflex.css';
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100svh; /* El único con altura fija */
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
