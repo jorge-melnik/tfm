@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { Button } from 'primeng/button';
 import { Tabs, TabList, Tab } from 'primeng/tabs';
+import { TopBarComponent } from '@shared/components/top-bar/top-bar.component';
 
 @Component({
   selector: 'app-consumidor-layout',
-  imports: [Button, RouterOutlet, Tabs, TabList, Tab, RouterLink],
+  imports: [RouterOutlet, Tabs, TabList, Tab, RouterLink, TopBarComponent],
   templateUrl: './consumidor.layout.html',
   styleUrl: './consumidor.layout.css',
 })

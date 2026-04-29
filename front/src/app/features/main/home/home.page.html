@@ -1,9 +1,46 @@
-<p>home works!</p>
-<ul>
-  <li><a [routerLink]="['admin']">Admin</a></li>
-  <li><a [routerLink]="['consumidor']">Consumidor</a></li>
-  <li><a [routerLink]="['productor']">Productor</a></li>
+<div class="flex flex-column h-full">
+  <main class="flex-grow-1 overflow-y-auto bg-surface-ground">
+    <ul>
+      <li><a [routerLink]="['admin']">Admin</a></li>
+      <li><a [routerLink]="['consumidor']">Consumidor</a></li>
+      <li><a [routerLink]="['productor']">Productor</a></li>
 
-  <li><a [routerLink]="['auth', 'login']">Login</a></li>
-  <li><a [routerLink]="['auth', 'register']">Registro</a></li>
-</ul>
+      <li><a [routerLink]="['auth', 'login']">Login</a></li>
+      <li><a [routerLink]="['auth', 'register']">Registro</a></li>
+    </ul>
+
+    <section class="px-4">
+      <h2 class="text-xl font-bold mb-3">Recién cosechado</h2>
+
+      <div class="grid">
+        @for (producto of productos; track producto.id) {
+          <div class="col-6 md:col-3">
+            <p-card>
+              <ng-template #header>
+                <img
+                  src="https://img.rawpixel.com/s3fs-private/rawpixel_images/website_content/pdwatercolorfruitbatch1-295-gloy-a_1.jpg?w=1200&h=1200&fit=clip&crop=default&dpr=1&q=75&vib=3&con=3&usm=15&cs=srgb&bg=F4F4F3&ixlib=js-2.2.1&s=a9ba1d710e08b5d2889881099014ebb9"
+                  class="w-full border-round-top"
+                />
+              </ng-template>
+
+              <div class="flex flex-column gap-1">
+                <span class="text-sm text-secondary">{{ producto.productor }}</span>
+                <span class="font-bold">{{ producto.nombre }}</span>
+                <span class="text-primary font-bold text-lg">${{ producto.precio }}</span>
+              </div>
+
+              <ng-template #footer>
+                <p-button label="Agregar" icon="pi pi-plus" class="w-full" />
+              </ng-template>
+            </p-card>
+          </div>
+        } @empty {
+          <div class="col-12 text-center p-5">
+            <i class="pi pi-search text-4xl text-300"></i>
+            <p>No hay productos cerca en este momento.</p>
+          </div>
+        }
+      </div>
+    </section>
+  </main>
+</div>
