@@ -1,13 +1,17 @@
 <header class="flex align-items-center justify-content-between px-4 py-2 bg-primary shadow-2 z-5">
-  <div class="flex align-items-center gap-2" [routerLink]="['/']">
+  <div class="flex align-items-center gap-2 cursor-pointer" [routerLink]="['/']">
     <i class="pi pi-shopping-bag text-2xl"></i>
     <span class="font-bold text-xl">De Acá</span>
   </div>
+
+  <p-menu #menu [model]="items" [popup]="true" />
+
   <p-button
     icon="pi pi-user"
     [rounded]="true"
     [text]="true"
     severity="secondary"
     styleClass="text-white"
+    (onClick)="menu.toggle($event)"
   />
 </header>

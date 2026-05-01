@@ -4,6 +4,7 @@
 
 - `npm run dev` : Inicia el servidor en modo desarrollo y con hotreload
 - `npm run test`: Ejecutar los tests unitarios
+- `npm run testc8`: Ejecutar los tests unitarios con reporte armado por c8 (por errores en números de línea.)
 - `npm run build`: Generar el build con los archivos .js
 - `npm run start`: Ejecutar el servidor a partir de los archivos .js (para uso en producción)
 
