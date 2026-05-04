@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS categorias (
         AND slug_categoria ~ '^[a-zA-Z0-9-]+$' 
     ),-- TODO: TRIGGER para asegurarse que no se cambia el slug_categoria
     descripcion TEXT,
+    icono VARCHAR(24), --FIXME: Cambiar a NOT NULL
+    color VARCHAR(7) NOT NULL DEFAULT '#6366F1'; -- Color hexadecimal
     fecha_creacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_eliminacion TIMESTAMP WITH TIME ZONE,
@@ -24,6 +26,7 @@ CREATE TABLE IF NOT EXISTS subcategorias (
         char_length(slug_subcategoria) BETWEEN 3 AND 35
         AND slug_subcategoria ~ '^[a-zA-Z0-9-]+$' 
     ),-- TODO: TRIGGER para asegurarse que no se cambia el slug_subcategoria
+    -- en api hereda color y/o ícono para que no quede tan cargado
     fecha_creacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_eliminacion TIMESTAMP WITH TIME ZONE,
@@ -43,7 +46,9 @@ CREATE TABLE IF NOT EXISTS etiquetas (
     slug_etiqueta CITEXT NOT NULL UNIQUE CHECK (
         char_length(slug_etiqueta) BETWEEN 3 AND 35
         AND slug_etiqueta ~ '^[a-zA-Z0-9-]+$' 
-    )-- TODO: TRIGGER para asegurarse que no se cambia el slug_etiqueta
+    ),-- TODO: TRIGGER para asegurarse que no se cambia el slug_etiqueta
+    imagen TEXT, --FIXME: Podría ser clase icono o url de imagen. --FIXME: Hacer not null
+    color VARCHAR(7) NOT NULL DEFAULT '#6366F1'; -- Color hexadecimal FIME: Sacar el default
 );
 
 CREATE TABLE IF NOT EXISTS subcategoria_etiquetas (

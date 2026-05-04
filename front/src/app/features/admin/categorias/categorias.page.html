@@ -1,1 +1,6 @@
-<p>categorias works!</p>
+<app-admin-table
+  [isLoading]="this.categoriasResource.isLoading()"
+  [data]="this.categoriasResource.value()"
+  [title]="'Categorias'"
+  (refresh)="this.categoriasResource.reload()"
+></app-admin-table>
