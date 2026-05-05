@@ -1,1 +1,6 @@
-<p>etiquetas works!</p>
+<app-admin-table
+  [isLoading]="this.etiquetasResource.isLoading()"
+  [data]="this.etiquetasResource.value()"
+  title="Etiquetas"
+  (refresh)="this.etiquetasResource.reload()"
+></app-admin-table>

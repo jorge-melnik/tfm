@@ -1,4 +1,4 @@
-import { Component, inject, resource } from '@angular/core';
+import { Component, computed, inject, resource } from '@angular/core';
 import { CategoriasService } from '@shared/services/categorias.service';
 import { TableModule } from 'primeng/table';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -15,6 +15,13 @@ export class CategoriasPage {
 
   public categoriasResource = resource({
     defaultValue: [],
-    loader: () => this._categoriasService.getAll(),
+    loader: async () => {
+      try {
+        return await this._categoriasService.getAll();
+      } catch (error: any) {
+        console.error(error);
+      }
+      return [];
+    },
   });
 }

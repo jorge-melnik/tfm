@@ -1,36 +1,42 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { environment } from '@env/environment';
-import { PaginatedResponse, QueryFilters } from '@shared/types/api.types';
+import { DeAcaRequestOptions, PaginatedResponse, PathParams } from '@shared/types/api.types';
 import { firstValueFrom } from 'rxjs';
 
 export abstract class BaseService<T> {
   protected http = inject(HttpClient);
   protected abstract serviceUrl: string;
 
-  async getAll(): Promise<T[]> {
-    return await firstValueFrom(this.http.get<T[]>(this.serviceUrl));
+  private buildUrl(pathParams?: PathParams): string {
+    let url = this.serviceUrl;
+    if (pathParams) {
+      Object.entries(pathParams).forEach(([key, value]) => {
+        url = url.replace(`:${key}`, value.toString());
+      });
+    }
+    return url;
   }
 
-  async getById(id: number | string): Promise<T> {
-    return await firstValueFrom(this.http.get<T>(`${this.serviceUrl}/${id}`));
+  async getAll(pathParams?: PathParams): Promise<T[]> {
+    return await firstValueFrom(this.http.get<T[]>(this.buildUrl(pathParams)));
   }
 
-  async getBy(
-    filtros: QueryFilters = {},
-    page: number = 1,
-    limit: number = 10,
-    orderBy?: string,
-    orderDirection: 'ASC' | 'DESC' = 'ASC',
-  ): Promise<PaginatedResponse<T>> {
+  async getBy(options?: DeAcaRequestOptions): Promise<PaginatedResponse<T>> {
+    if (!options?.queryParams) throw new Error('Tienes que especificar el filtro.');
+    if (!options?.pagination) throw new Error('Tienes que especificar la paginación.');
+    if (!options?.pagination.page || !options?.pagination.limit)
+      throw new Error('Tienes que especificar page y limit.');
+    const { page, limit, orderBy, orderDirection } = options?.pagination;
     let params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
 
     if (orderBy) {
       params = params.set('orderBy', orderBy);
+    }
+    if (orderDirection) {
       params = params.set('orderDirection', orderDirection);
     }
 
-    Object.entries(filtros).forEach(([key, value]) => {
+    Object.entries(options.queryParams).forEach(([key, value]) => {
       if (Array.isArray(value)) {
         value.forEach((v) => {
           params = params.append(key, v); //append para que repita la clave.
@@ -40,18 +46,20 @@ export abstract class BaseService<T> {
       }
     });
 
-    return await firstValueFrom(this.http.get<PaginatedResponse<T>>(this.serviceUrl, { params }));
+    return await firstValueFrom(
+      this.http.get<PaginatedResponse<T>>(this.buildUrl(options.pathParams), { params }),
+    );
   }
 
-  async create(data: Partial<T>): Promise<T> {
-    return await firstValueFrom(this.http.post<T>(this.serviceUrl, data));
+  async create(data: Partial<T>, pathParams?: PathParams): Promise<T> {
+    return await firstValueFrom(this.http.post<T>(this.buildUrl(pathParams), data));
   }
 
-  async update(id: number | string, data: Partial<T>): Promise<void> {
-    await firstValueFrom(this.http.put<T>(`${this.serviceUrl}/${id}`, data));
+  async update(id: number | string, data: Partial<T>, pathParams?: PathParams): Promise<void> {
+    await firstValueFrom(this.http.put<T>(`${this.buildUrl(pathParams)}/${id}`, data));
   }
 
-  async remove(id: number | string): Promise<void> {
-    await firstValueFrom(this.http.delete<void>(`${this.serviceUrl}/${id}`));
+  async remove(id: number | string, pathParams: PathParams): Promise<void> {
+    await firstValueFrom(this.http.delete<void>(`${this.buildUrl(pathParams)}/${id}`));
   }
 }

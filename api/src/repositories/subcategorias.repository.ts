@@ -1,6 +1,5 @@
 import { Etiqueta, Subcategoria } from '@schemas/categoria.schema.js';
 import { BaseRepository } from './base.repository.js';
-import { myPool } from '@database/pool.js';
 
 export class SubcategoriasRepositoryClass extends BaseRepository<Subcategoria> {
   protected readonly tableName = 'subcategorias';

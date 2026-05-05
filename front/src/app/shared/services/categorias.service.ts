@@ -7,5 +7,5 @@ import { environment } from '@env/environment';
   providedIn: 'root',
 })
 export class CategoriasService extends BaseService<Categoria> {
-  protected override serviceUrl: string = `${environment.apiUrl}/categorias`;
+  protected override serviceUrl: string = `${environment.apiUrl}/admin/categorias`;
 }
