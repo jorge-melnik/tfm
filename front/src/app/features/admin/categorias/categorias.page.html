@@ -1,6 +1,86 @@
-<app-admin-table
+<!-- <app-admin-table
   [isLoading]="this.categoriasResource.isLoading()"
   [data]="this.categoriasResource.value()"
   [title]="'Categorias'"
   (refresh)="this.categoriasResource.reload()"
-></app-admin-table>
+></app-admin-table> -->
+
+<p-table
+  #dt
+  [value]="this.categoriasResource.value()"
+  [paginator]="true"
+  [rows]="10"
+  class="shadow-1"
+  [scrollable]="true"
+  [rowHover]="true"
+  [globalFilterFields]="['nombre', 'descripcion']"
+  size="small"
+>
+  <ng-template #caption>
+    <div class="flex align-items-center justify-content-between">
+      <h3>
+        <p-button
+          icon="pi pi-refresh"
+          severity="secondary"
+          text="Recargar text"
+          [loading]="this.categoriasResource.isLoading()"
+          (onClick)="this.categoriasResource.reload()"
+          styleClass="p-button-sm"
+        />
+
+        Categoriasss
+        <p-button
+          icon="pi pi-plus"
+          severity="primary"
+          text="Recargar text"
+          [routerLink]="['create']"
+          styleClass="p-button-sm"
+        />
+      </h3>
+      <p-iconfield>
+        <p-inputicon class="pi pi-search" />
+        <input
+          pInputText
+          type="text"
+          (input)="dt.filterGlobal($event.target.value, 'contains')"
+          placeholder="Buscar..."
+        />
+      </p-iconfield>
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      @for (col of this.columns(); track col.key) {
+        <th [pSortableColumn]="col.key">
+          {{ col.keyTitle | titlecase }} <p-sortIcon [field]="col.key" />
+        </th>
+      }
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-rowData>
+    <tr>
+      @for (col of columns(); track col.key) {
+        <td>
+          @if (col.key === 'color') {
+            <div class="flex align-items-center gap-2">
+              <div class="escolor" [style.background]="rowData[col.key]"></div>
+              <span class="text-xs">{{ rowData[col.key] }}</span>
+            </div>
+          } @else if (col.key.includes('fecha')) {
+            {{ rowData[col.key] | date: 'dd/MM/yyyy' }}
+          } @else if (rowData[col.key] === true || rowData[col.key] === false) {
+            <i
+              class="pi"
+              [ngClass]="
+                rowData[col.key] ? 'pi-check-circle text-success' : 'pi-times-circle text-danger'
+              "
+            ></i>
+          } @else {
+            {{ rowData[col.key] }}
+          }
+        </td>
+      }
+    </tr>
+  </ng-template>
+</p-table>
