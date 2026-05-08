@@ -1,6 +1,9 @@
 <app-admin-table
   [isLoading]="this.etiquetasResource.isLoading()"
   [data]="this.etiquetasResource.value()"
+  [editableColumns]="['nombre', 'imagen', 'color']"
+  id="id_etiqueta"
   title="Etiquetas"
+  [columns]="this.columns"
   (refresh)="this.etiquetasResource.reload()"
 ></app-admin-table>

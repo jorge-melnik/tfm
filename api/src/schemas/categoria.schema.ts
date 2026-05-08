@@ -17,6 +17,14 @@ export const Categoria = Type.Object(
     activo: Type.Boolean({
       description: 'Indica si la categoría está activa',
     }),
+    color: Type.String({
+      description: 'Color de la etiqueta',
+      minLength: 7,
+      maxLength: 7,
+    }),
+    icono: Type.String({
+      description: 'Color de la etiqueta',
+    }),
   },
   {
     description: 'Categoría principal utilizada para clasificar elementos',
@@ -62,6 +70,9 @@ export const Etiqueta = Type.Object(
     }),
     slug_etiqueta: Type.String({
       description: 'Identificador SEO friendly para URLs. Una vez seteado, no se puede cambiar.',
+    }),
+    color: Type.String({
+      description: 'Color de la etiqueta',
     }),
   },
   {

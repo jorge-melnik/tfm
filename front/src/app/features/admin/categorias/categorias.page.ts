@@ -10,14 +10,16 @@ import { FormsModule } from '@angular/forms';
 import { InputIcon } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
+import { MessageService } from 'primeng/api';
+import { Categoria } from '@shared/types/categoria';
+import { SelectItem } from 'primeng/select';
+import { TableColumn } from '@shared/types/util';
 
 @Component({
   selector: 'app-categorias',
   imports: [
     TableModule,
     ProgressSpinnerModule,
-    TitleCasePipe,
-    DatePipe,
     TableModule,
     CommonModule,
     IconFieldModule,
@@ -26,6 +28,7 @@ import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
     InputText,
     Button,
     RouterLink,
+    AdminTable,
   ],
   templateUrl: './categorias.page.html',
   styleUrl: './categorias.page.css',
@@ -33,22 +36,43 @@ import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
 export class CategoriasPage {
   private readonly _categoriasService = inject(CategoriasService);
 
-  public excludeColumns: string[] = [];
-
-  public searchValue = signal<string | null>(null);
-
-  columns = computed(() => {
-    const data = this.categoriasResource.value();
-    const firstItem = data[0];
-    if (!firstItem) return [];
-
-    return Object.keys(firstItem)
-      .filter((key) => !this.excludeColumns.includes(key)) //La key no está en las excluidas
-      .map((key) => ({
-        key,
-        keyTitle: this.formatHeader(key),
-      }));
-  });
+  public columns: TableColumn[] = [
+    {
+      key: 'id_categoria',
+      keyTitle: 'Id',
+      type: 'number',
+    },
+    {
+      key: 'nombre',
+      keyTitle: 'Nombre',
+      type: 'text',
+    },
+    {
+      key: 'slug_categoria',
+      keyTitle: 'Slug',
+      type: 'text',
+    },
+    {
+      key: 'descripcion',
+      keyTitle: 'Descripcion',
+      type: 'text',
+    },
+    {
+      key: 'icono',
+      keyTitle: 'Icono',
+      type: 'icono',
+    },
+    {
+      key: 'color',
+      keyTitle: 'Color',
+      type: 'color',
+    },
+    {
+      key: 'activo',
+      keyTitle: 'Activo',
+      type: 'boolean',
+    },
+  ];
 
   public categoriasResource = resource({
     defaultValue: [],
@@ -61,15 +85,4 @@ export class CategoriasPage {
       return [];
     },
   });
-
-  private formatHeader(key: string): string {
-    if (key.startsWith('id_')) return '#';
-    if (key.startsWith('slug_')) return 'Slug';
-    return key.replace(/_/g, ' '); ///reemplazamos guion bajo por espacio
-  }
-
-  clear(dt: Table) {
-    this.searchValue.set(null);
-    dt.reset();
-  }
 }

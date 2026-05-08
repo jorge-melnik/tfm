@@ -1,11 +1,40 @@
 
-INSERT INTO public.categorias(nombre, slug_categoria, descripcion) VALUES 
-('Alimentos frescos', 'alimentos-frescos', 'Productos obtenidos directamente de la huerta y granja sin procesos industriales.'),
-('Plantas y semillas', 'plantas-y-semillas', 'Variedad de semillas orgánicas, plantines y especies para cultivo regenerativo.'),
-('Productos elaborados', 'productos-elaborados', 'Alimentos que han pasado por un proceso de transformación artesanal.'),
-('Artesanías de materiales naturales', 'artesanias-de-materiales-naturales', 'Objetos hechos a mano utilizando fibras, madera y otros elementos de la naturaleza.'),
-('Otros productos regenerativos', 'otros-productos-regenerativos', 'Cualquier otro producto que contribuya a la salud del suelo y el ecosistema.')
-;
+INSERT INTO public.categorias (nombre, slug_categoria, descripcion, color, icono) VALUES 
+(
+  'Alimentos frescos', 
+  'alimentos-frescos', 
+  'Productos obtenidos directamente de la huerta y granja sin procesos industriales.', 
+  '#22c55e', 
+  'pi pi-shopping-bag'
+),
+(
+  'Plantas y semillas', 
+  'plantas-y-semillas', 
+  'Variedad de semillas orgánicas, plantines y especies para cultivo regenerativo.', 
+  '#15803d', 
+  'pi pi-bolt'
+),
+(
+  'Productos elaborados', 
+  'productos-elaborados', 
+  'Alimentos que han pasado por un proceso de transformación artesanal.', 
+  '#f59e0b', 
+  'pi pi-box'
+),
+(
+  'Artesanías de materiales naturales', 
+  'artesanias-naturales', 
+  'Objetos hechos a mano utilizando fibras, madera y otros elementos de la naturaleza.', 
+  '#b45309', 
+  'pi pi-palette'
+),
+(
+  'Otros productos regenerativos', 
+  'otros-regenerativos', 
+  'Cualquier otro producto que contribuya a la salud del suelo y el ecosistema.', 
+  '#6366f1', 
+  'pi pi-globe'
+);
 
 INSERT INTO public.subcategorias(id_categoria, nombre, slug_subcategoria) VALUES 
 (1, 'Verduras', 'verduras'),

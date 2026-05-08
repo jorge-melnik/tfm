@@ -1,79 +1,243 @@
-<p-table
-  #dt
-  [value]="data()"
-  [paginator]="this.paginator()"
-  [rows]="10"
-  class="shadow-1"
-  [scrollable]="true"
-  [rowHover]="true"
-  [globalFilterFields]="this.globalFilterFields()"
-  size="small"
->
-  <ng-template #caption>
-    <div class="flex align-items-center justify-content-between">
-      <h3>
-        <p-button
-          icon="pi pi-refresh"
-          severity="secondary"
-          text="Recargar text"
-          (onClick)="refresh.emit()"
-          styleClass="p-button-sm"
-        />
+<form #createForm="ngForm">
+  <p-table
+    #dt
+    [value]="data()"
+    [paginator]="this.paginator()"
+    [rows]="10"
+    class="shadow-1"
+    [dataKey]="this.id()"
+    [scrollable]="true"
+    [rowHover]="true"
+    [globalFilterFields]="this.globalFilterFields()"
+    size="small"
+    editMode="row"
+  >
+    <ng-template #caption>
+      <div class="flex align-items-center justify-content-between">
+        <h3>
+          <p-button
+            icon="pi pi-refresh"
+            severity="secondary"
+            text="Recargar text"
+            (onClick)="refresh.emit()"
+            styleClass="p-button-sm"
+          />
 
-        {{ this.title() }}
-        <p-button
-          icon="pi pi-plus"
-          severity="primary"
-          text="Recargar text"
-          [routerLink]="['create']"
-          styleClass="p-button-sm"
-        />
-      </h3>
-      <p-iconfield>
-        <p-inputicon class="pi pi-search" />
-        <input
-          pInputText
-          type="text"
-          (input)="dt.filterGlobal($event.target.value, 'contains')"
-          placeholder="Buscar..."
-        />
-      </p-iconfield>
-    </div>
-  </ng-template>
-  <ng-template #header>
-    <tr>
-      @for (col of columns(); track col.key) {
-        <th [pSortableColumn]="col.key">
-          {{ col.keyTitle | titlecase }} <p-sortIcon [field]="col.key" />
-        </th>
-      }
-      <!-- <th style="width: 10rem">Acciones</th> -->
-    </tr>
-  </ng-template>
-
-  <ng-template #body let-rowData>
-    <tr>
-      @for (col of columns(); track col.key) {
-        <td>
-          @if (col.key === 'color') {
-            <div class="flex align-items-center gap-2">
-              <div class="escolor" [style.background]="rowData[col.key]"></div>
-              <span class="text-xs">{{ rowData[col.key] }}</span>
-            </div>
-          } @else if (col.key.includes('fecha')) {
-            {{ rowData[col.key] | date: 'dd/MM/yyyy' }}
-          } @else if (rowData[col.key] === true || rowData[col.key] === false) {
-            <i
-              class="pi"
-              [ngClass]="
-                rowData[col.key] ? 'pi-check-circle text-success' : 'pi-times-circle text-danger'
-              "
-            ></i>
-          } @else {
-            {{ rowData[col.key] }}
+          {{ this.title() }}
+          <p-button
+            icon="pi pi-plus"
+            severity="primary"
+            text="Recargar text"
+            styleClass="p-button-sm"
+            (click)="this.createInit()"
+          />
+        </h3>
+        <p-iconfield>
+          <p-inputicon class="pi pi-search" />
+          <input
+            pInputText
+            type="text"
+            (input)="dt.filterGlobal($event.target.value, 'contains')"
+            placeholder="Buscar..."
+          />
+        </p-iconfield>
+      </div>
+    </ng-template>
+    <ng-template #header>
+      <tr>
+        @for (col of columns(); track col.key) {
+          <th [pSortableColumn]="col.key">
+            {{ col.keyTitle | titlecase }} <p-sortIcon [field]="col.key" />
+          </th>
+        }
+        <th>Acciones</th>
+      </tr>
+      @if (this.creating()) {
+        <tr>
+          @for (col of columns(); track col.key) {
+            <td>
+              @if (this.editableColumns().includes(col.key)) {
+                <ng-container
+                  *ngTemplateOutlet="renderInput; context: { col: col, group: newItem() }"
+                ></ng-container>
+              }
+            </td>
           }
-        </td>
+          <td>
+            <div class="flex items-center justify-center gap-2">
+              <p-button
+                icon="pi pi-check"
+                [rounded]="true"
+                [text]="true"
+                severity="success"
+                [disabled]="!createForm.valid"
+                (onClick)="this.createSave()"
+              />
+              <p-button
+                icon="pi pi-times"
+                [rounded]="true"
+                [text]="true"
+                severity="danger"
+                (onClick)="this.createCancel()"
+              />
+            </div>
+          </td>
+        </tr>
       }
-    </tr>
-  </ng-template>
-</p-table>
+    </ng-template>
+
+    <ng-template #body let-rowData let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="rowData">
+        @for (col of columns(); track col.key) {
+          <td>
+            @if (this.editableColumns().includes(col.key)) {
+              <p-cellEditor>
+                <ng-template #input>
+                  <ng-container
+                    *ngTemplateOutlet="renderInput; context: { col: col, group: rowData }"
+                  ></ng-container>
+                </ng-template>
+                <ng-template #output>
+                  <ng-container
+                    *ngTemplateOutlet="renderOutput; context: { col: col, rowData: rowData }"
+                  ></ng-container>
+                </ng-template>
+              </p-cellEditor>
+            } @else {
+              <ng-container
+                *ngTemplateOutlet="renderOutput; context: { col: col, rowData: rowData }"
+              ></ng-container>
+            }
+          </td>
+        }
+        @if (this.editableColumns().length > 0) {
+          <td>
+            <div class="flex items-center justify-center gap-2">
+              @if (editing) {
+                <p-button
+                  pButton
+                  pRipple
+                  type="button"
+                  pSaveEditableRow
+                  icon="pi pi-check"
+                  (click)="editSave(rowData)"
+                  text
+                  rounded
+                  severity="success"
+                ></p-button>
+                <p-button
+                  pButton
+                  pRipple
+                  type="button"
+                  pCancelEditableRow
+                  icon="pi pi-times"
+                  (click)="editCancel(rowData, ri)"
+                  text
+                  rounded
+                  severity="secondary"
+                ></p-button>
+              } @else {
+                <p-button
+                  pButton
+                  pRipple
+                  type="button"
+                  pInitEditableRow
+                  icon="pi pi-pencil"
+                  (click)="editInit(rowData)"
+                  text
+                  rounded
+                  severity="primary"
+                ></p-button>
+                <p-button
+                  pButton
+                  pRipple
+                  type="button"
+                  icon="pi pi-trash"
+                  (click)="removeInit(rowData)"
+                  text
+                  rounded
+                  severity="danger"
+                ></p-button>
+              }
+            </div>
+          </td>
+        }
+      </tr>
+    </ng-template>
+  </p-table>
+</form>
+
+<ng-template #renderOutput let-col="col" let-rowData="rowData">
+  @switch (col.type) {
+    @case ('color') {
+      <div class="flex align-items-center gap-2">
+        <div class="color" [style.background-color]="rowData[col.key]"></div>
+        <span class="text-xs font-mono" [style.color]="rowData[col.key]">{{
+          rowData[col.key]
+        }}</span>
+      </div>
+    }
+    @case ('icono') {
+      <div class="flex justify-content-center w-full">
+        <i [class]="rowData[col.key]" style="font-size: 1.2rem"></i>
+      </div>
+    }
+    @case ('date') {
+      {{ rowData[col.key] | date: 'dd/MM/yyyy' }}
+    }
+    @case ('boolean') {
+      <i
+        class="pi"
+        [ngClass]="
+          rowData[col.key] ? 'pi-check-circle text-success' : 'pi-times-circle text-danger'
+        "
+      ></i>
+    }
+    @default {
+      {{ rowData[col.key] }}
+    }
+  }
+</ng-template>
+
+<ng-template #renderInput let-col="col" let-group="group">
+  @switch (col.type) {
+    @case ('number') {
+      <p-inputnumber
+        [name]="col.key"
+        inputId="integeronly"
+        [(ngModel)]="group[col.key]"
+        required
+        class="w-full"
+      />
+    }
+    @case ('date') {
+      <input
+        pInputText
+        type="date"
+        [name]="col.key"
+        [(ngModel)]="group[col.key]"
+        required
+        class="w-full"
+      />
+    }
+    @case ('boolean') {
+      <p-toggleswitch [name]="col.key" [(ngModel)]="group[col.key]" required />
+    }
+    @case ('color') {
+      <div class="flex align-items-center gap-2">
+        <p-colorPicker [name]="col.key" [(ngModel)]="group[col.key]" appendTo="body" required />
+        <small class="font-mono">{{ group[col.key] }}</small>
+      </div>
+    }
+    @default {
+      <input
+        pInputText
+        type="text"
+        [name]="col.key"
+        [(ngModel)]="group[col.key]"
+        required
+        class="w-full"
+      />
+    }
+  }
+</ng-template>

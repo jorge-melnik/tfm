@@ -6,7 +6,10 @@ import { InputIcon } from 'primeng/inputicon';
 import { FormsModule } from '@angular/forms';
 import { InputText } from 'primeng/inputtext';
 import { Button } from 'primeng/button';
-import { RouterLink } from '@angular/router';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TableColumn } from '@shared/types/util';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { ColorPickerModule } from 'primeng/colorpicker';
 
 @Component({
   selector: 'app-admin-table',
@@ -20,7 +23,10 @@ import { RouterLink } from '@angular/router';
     FormsModule,
     InputText,
     Button,
-    RouterLink,
+    FormsModule,
+    ProgressSpinnerModule,
+    ToggleSwitchModule,
+    ColorPickerModule,
   ],
   templateUrl: './admin.table.html',
   styleUrl: './admin.table.css',
@@ -31,30 +37,22 @@ export class AdminTable {
 
   public paginator = input<boolean>(false);
   public isLoading = input.required<boolean>();
-
-  public excludeColumns = input<string[]>([]); //Columnas a ignorar
+  public id = input.required<string>();
+  public columns = input.required<TableColumn[]>();
+  public editableColumns = input<string[]>([]); //Columnas editables
 
   public searchValue = signal<string | null>(null);
+  public newItem = signal<any>({});
 
   // Eventos para las acciones
+  public create = output<any>();
   public update = output<string | number>();
   public remove = output<string | number>();
   public refresh = output<void>();
 
+  public creating = signal<boolean>(false);
+
   constructor() {}
-
-  columns = computed(() => {
-    const data = this.data();
-    const firstItem = data[0];
-    if (!firstItem) return [];
-
-    return Object.keys(firstItem)
-      .filter((key) => !this.excludeColumns().includes(key)) //La key no está en las excluidas
-      .map((key) => ({
-        key,
-        keyTitle: this.formatHeader(key),
-      }));
-  });
 
   globalFilterFields = computed(() => {
     return this.columns().map((c) => c.key);
@@ -69,5 +67,44 @@ export class AdminTable {
   clear(dt: Table) {
     this.searchValue.set(null);
     dt.reset();
+  }
+
+  editInit(data: any) {
+    console.log('edit init.', { data });
+    this.creating.set(false);
+  }
+
+  editSave(data: any) {
+    console.log('edit save.', { data });
+    this.creating.set(false);
+    this.update.emit(data);
+  }
+
+  removeInit(data: any) {
+    console.log('remove init.', { data });
+    this.creating.set(false);
+  }
+
+  editCancel(data: any, index: number) {
+    console.log('edit Cancelado.');
+    this.creating.set(false);
+  }
+
+  createInit() {
+    console.log('Create init');
+
+    this.creating.set(true);
+  }
+
+  createSave() {
+    const data = this.newItem();
+    this.create.emit(data);
+    console.log({ data });
+    this.newItem.set({});
+    this.creating.set(false);
+  }
+
+  createCancel() {
+    this.creating.set(false);
   }
 }
