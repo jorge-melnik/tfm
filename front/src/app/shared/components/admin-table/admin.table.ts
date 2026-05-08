@@ -6,8 +6,7 @@ import { InputIcon } from 'primeng/inputicon';
 import { FormsModule } from '@angular/forms';
 import { InputText } from 'primeng/inputtext';
 import { Button } from 'primeng/button';
-import { RefreshButton } from '../buttons/refresh/refresh.button';
-import { CreateButton } from '../buttons/create/create.button';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-admin-table',
@@ -20,8 +19,8 @@ import { CreateButton } from '../buttons/create/create.button';
     InputIcon,
     FormsModule,
     InputText,
-    RefreshButton,
-    CreateButton,
+    Button,
+    RouterLink,
   ],
   templateUrl: './admin.table.html',
   styleUrl: './admin.table.css',
@@ -38,9 +37,8 @@ export class AdminTable {
   public searchValue = signal<string | null>(null);
 
   // Eventos para las acciones
-  public update = output<any>();
-  public remove = output<any>();
-
+  public update = output<string | number>();
+  public remove = output<string | number>();
   public refresh = output<void>();
 
   constructor() {}

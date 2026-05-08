@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RefreshButton } from './refresh.button';
+import { CategoriaCreatePage } from './categoria-create.page';
 
-describe('RefreshButton', () => {
-  let component: RefreshButton;
-  let fixture: ComponentFixture<RefreshButton>;
+describe('CategoriaCreatePage', () => {
+  let component: CategoriaCreatePage;
+  let fixture: ComponentFixture<CategoriaCreatePage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RefreshButton],
+      imports: [CategoriaCreatePage],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(RefreshButton);
+    fixture = TestBed.createComponent(CategoriaCreatePage);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

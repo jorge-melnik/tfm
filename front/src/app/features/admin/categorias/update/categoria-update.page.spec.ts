@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CreateButton } from './create.button';
+import { CategoriaUpdatePage } from './categoria-update.page';
 
-describe('CreateButton', () => {
-  let component: CreateButton;
-  let fixture: ComponentFixture<CreateButton>;
+describe('CategoriaUpdatePage', () => {
+  let component: CategoriaUpdatePage;
+  let fixture: ComponentFixture<CategoriaUpdatePage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreateButton],
+      imports: [CategoriaUpdatePage],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CreateButton);
+    fixture = TestBed.createComponent(CategoriaUpdatePage);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
