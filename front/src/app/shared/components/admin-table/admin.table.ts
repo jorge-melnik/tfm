@@ -46,8 +46,8 @@ export class AdminTable {
 
   // Eventos para las acciones
   public create = output<any>();
-  public update = output<string | number>();
-  public remove = output<string | number>();
+  public update = output<any>();
+  public remove = output<any>();
   public refresh = output<void>();
 
   public creating = signal<boolean>(false);
@@ -81,8 +81,7 @@ export class AdminTable {
   }
 
   removeInit(data: any) {
-    console.log('remove init.', { data });
-    this.creating.set(false);
+    this.remove.emit(data);
   }
 
   editCancel(data: any, index: number) {

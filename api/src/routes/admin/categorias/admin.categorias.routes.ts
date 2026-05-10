@@ -44,17 +44,15 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       tags: ['Admin: Categorias'],
       summary: 'CREATE categoria',
       description: 'Permite crear una nueva categoria.',
-      body: Type.Omit(Categoria, ['id_categoria'], {
+      body: Type.Omit(Categoria, ['id_categoria', 'slug_categoria'], {
         description: 'Datos necesarios para crear una nueva categoria.',
         examples: [
           {
             nombre: 'categoria 6',
-            slug_categoria: 'categoria-6',
             descripcion: 'descripcion de la categoria 6',
           },
           {
             nombre: 'categoria 7',
-            slug_categoria: 'categoria-7',
             descripcion: 'descripcion de la categoria 7',
           },
         ],
@@ -66,7 +64,10 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
     },
     handler: async function (req, reply) {
       reply.code(201);
-      return await categoriasRepository.add(req.body);
+      return await categoriasRepository.add({
+        ...req.body,
+        slug_categoria: '', //Para que sepa que hay que calcularlo.
+      });
     },
   });
 };

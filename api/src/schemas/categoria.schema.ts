@@ -74,6 +74,9 @@ export const Etiqueta = Type.Object(
     color: Type.String({
       description: 'Color de la etiqueta',
     }),
+    imagen: Type.String({
+      description: 'Imagen de la etiqueta',
+    }),
   },
   {
     description: 'Etiqueta utilizada para clasificar o marcar elementos',

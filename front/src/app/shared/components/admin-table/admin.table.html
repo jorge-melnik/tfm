@@ -193,6 +193,9 @@
         "
       ></i>
     }
+    @case ('link') {
+      <a [href]="rowData[col.key]">{{ rowData[col.key] }}</a>
+    }
     @default {
       {{ rowData[col.key] }}
     }

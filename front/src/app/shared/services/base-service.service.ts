@@ -1,9 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { DeAcaRequestOptions, PaginatedResponse, PathParams } from '@shared/types/api.types';
+import { CrudServiceInterface } from '@shared/types/crud-base';
 import { firstValueFrom } from 'rxjs';
 
-export abstract class BaseService<T> {
+export abstract class BaseService<T> implements CrudServiceInterface<T> {
   protected http = inject(HttpClient);
   protected abstract serviceUrl: string;
 
@@ -59,7 +60,7 @@ export abstract class BaseService<T> {
     await firstValueFrom(this.http.put<T>(`${this.buildUrl(pathParams)}/${id}`, data));
   }
 
-  async remove(id: number | string, pathParams: PathParams): Promise<void> {
+  async remove(id: number | string, pathParams?: PathParams): Promise<void> {
     await firstValueFrom(this.http.delete<void>(`${this.buildUrl(pathParams)}/${id}`));
   }
 }

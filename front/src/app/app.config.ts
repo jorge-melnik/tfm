@@ -13,13 +13,12 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding()),
     provideClientHydration(withEventReplay()),
-
     providePrimeNG({
       theme: {
         preset: Aura,
       },
     }),
-    // MessageService, //FIXME: Revisar si es necesario aca.
-    // ConfirmationService, //FIXME: Revisar si es necesario aca.
+    MessageService,
+    ConfirmationService,
   ],
 };

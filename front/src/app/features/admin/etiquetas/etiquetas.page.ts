@@ -1,7 +1,9 @@
-import { Component, inject, resource } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { EtiquetasService } from '@shared/services/etiquetas.service';
 import { AdminTable } from '@shared/components/admin-table/admin.table';
 import { TableColumn } from '@shared/types/util';
+import { Etiqueta } from '@shared/types/etiqueta';
+import { AdminBasePage } from '../admin-base.page';
 
 @Component({
   selector: 'app-etiquetas',
@@ -9,8 +11,11 @@ import { TableColumn } from '@shared/types/util';
   templateUrl: './etiquetas.page.html',
   styleUrl: './etiquetas.page.css',
 })
-export class EtiquetasPage {
-  private readonly _etiquetaService = inject(EtiquetasService);
+export class EtiquetasPage extends AdminBasePage<Etiqueta> {
+  protected override idKey: keyof Etiqueta = 'id_etiqueta';
+  public override entidadName: string = 'etiqueta';
+
+  protected _dataService = inject(EtiquetasService);
 
   public columns: TableColumn[] = [
     {
@@ -36,19 +41,7 @@ export class EtiquetasPage {
     {
       key: 'imagen',
       keyTitle: 'Imagen',
-      type: 'text',
+      type: 'link',
     },
   ];
-
-  public etiquetasResource = resource({
-    defaultValue: [],
-    loader: async () => {
-      try {
-        return await this._etiquetaService.getAll();
-      } catch (error: any) {
-        console.error(error);
-      }
-      return [];
-    },
-  });
 }

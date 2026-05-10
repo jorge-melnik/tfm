@@ -54,7 +54,7 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       tags: ['Admin: Etiquetas'],
       summary: 'CREATE etiqueta.',
       description: 'Permite crear una nueva etiqueta global.',
-      body: Type.Omit(Etiqueta, ['id_etiqueta'], {
+      body: Type.Omit(Etiqueta, ['id_etiqueta', 'slug_categoria'], {
         description: 'Datos necesarios para crear una nueva etiqueta.',
         examples: [{ nombre: 'nueva Etiqueta 1' }, { nombre: 'nueva Etiqueta 2' }],
       }),
@@ -65,7 +65,10 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
     },
     handler: async function (req, reply) {
       reply.code(201);
-      return await etiquetasRepository.add(req.body);
+      return await etiquetasRepository.add({
+        ...req.body,
+        slug_etiqueta: '', //Para que sepa que tiene que calcularlo.
+      });
     },
   });
 
@@ -77,7 +80,7 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       params: Type.Object({
         id_etiqueta: Etiqueta.properties.id_etiqueta,
       }),
-      body: Etiqueta,
+      body: Type.Omit(Etiqueta, ['slug_categoria']),
       response: {
         204: Type.Null(),
         404: DeAcaErrorResponse,

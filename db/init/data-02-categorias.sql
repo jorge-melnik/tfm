@@ -62,11 +62,11 @@ INSERT INTO public.subcategorias(id_categoria, nombre, slug_subcategoria) VALUES
 (5, 'insumos agroecológicos', 'insumos-agroecologicos')
 ;
 
-INSERT INTO public.etiquetas (nombre, slug_etiqueta) VALUES 
-('etiqueta1', 'etiqueta1'),
-('etiqueta2', 'etiqueta2'),
-('etiqueta3', 'etiqueta3'),
-('etiqueta4', 'etiqueta4')
+INSERT INTO public.etiquetas (nombre, slug_etiqueta,imagen) VALUES 
+('sin gluten', 'sin-gluten','images/sin-gluten.png'),
+('sin lacteos', 'sin-lacteos','images/sin-lacteos.png'),
+('orgánico', 'organico','images/organico.png'),
+('artesanal', 'artesanal','images/artesanal.png')
 ;
 
 INSERT INTO public.subcategoria_etiquetas (id_subcategoria,id_etiqueta) VALUES

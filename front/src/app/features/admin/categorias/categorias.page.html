@@ -1,9 +1,12 @@
 <app-admin-table
-  [isLoading]="this.categoriasResource.isLoading()"
-  [data]="this.categoriasResource.value()"
-  [editableColumns]="['nombre', 'descripcion', 'color']"
-  id="id_etiqueta"
-  title="Etiquetas"
+  [isLoading]="this.resource.isLoading()"
+  [data]="this.resource.value()"
+  [editableColumns]="['nombre', 'descripcion', 'color', 'icono']"
+  id="id_categoria"
+  title="Categorias"
   [columns]="this.columns"
-  (refresh)="this.categoriasResource.reload()"
+  (refresh)="this.resource.reload()"
+  (remove)="this.remove($event)"
+  (create)="this.create($event)"
+  (update)="this.update($event)"
 ></app-admin-table>
