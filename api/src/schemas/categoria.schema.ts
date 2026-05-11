@@ -53,10 +53,12 @@ export const Subcategoria = Type.Object(
     activo: Type.Boolean({
       description: 'Indica si la subcategoría está activa',
     }),
-    //   categoria: Type.String(),
+    icono: Categoria.properties.icono,
+    color: Categoria.properties.color,
   },
   {
     description: 'Subcategoría asociada a una categoría',
+    additionalProperties: false,
   },
 );
 

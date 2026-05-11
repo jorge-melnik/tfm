@@ -37,9 +37,15 @@ const idSubcategoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): 
         id_categoria: Categoria.properties.id_categoria,
         id_subcategoria: Subcategoria.properties.id_subcategoria,
       }),
-      body: Type.Omit(Subcategoria, ['id_categoria', 'slug_categoria', 'slug_subcategoria', 'activo'], {
-        examples: [{ id_subcategoria: 20, nombre: 'nombre cambiado' }],
-      }),
+      body: Type.Object(
+        {
+          id_categoria: Subcategoria.properties.id_categoria,
+          nombre: Subcategoria.properties.nombre,
+        },
+        {
+          additionalProperties: false,
+        },
+      ),
       response: {
         204: Type.Null(),
         404: DeAcaErrorResponse,
@@ -47,6 +53,7 @@ const idSubcategoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): 
       },
     },
     handler: async function (req, reply) {
+      console.log({ body: req.body });
       reply.code(204);
       await subcategoriasRepository.update(req.params.id_subcategoria, req.body);
     },

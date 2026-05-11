@@ -17,16 +17,13 @@ export const adminRoutes: Routes = [
         loadComponent: () =>
           import('@features/admin/categorias/categorias.page').then((m) => m.CategoriasPage),
       },
-
-      {
-        path: ':id_categoria/subcategorias',
-        title: 'Subcategorias',
-        loadComponent: () =>
-          import('@features/admin/categorias/subcategorias/subcategorias.page').then(
-            (m) => m.SubcategoriasPage,
-          ),
-      },
     ],
+  },
+  {
+    path: 'subcategorias',
+    title: 'Subcategorias',
+    loadComponent: () =>
+      import('@features/admin/subcategorias/subcategorias.page').then((m) => m.SubcategoriasPage),
   },
   {
     path: 'etiquetas',

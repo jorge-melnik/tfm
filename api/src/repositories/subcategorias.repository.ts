@@ -8,7 +8,7 @@ export class SubcategoriasRepositoryClass extends BaseRepository<Subcategoria> {
 
   protected readonly baseQuery = `
     WITH MIS_SUBCATEGORIAS AS (
-      SELECT SC.*, C.slug_categoria 
+      SELECT SC.*, C.slug_categoria, C.color, C.icono
       FROM subcategorias SC
       JOIN public.categorias C ON C.id_categoria = SC.id_categoria
     )

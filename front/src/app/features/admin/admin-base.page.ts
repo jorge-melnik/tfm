@@ -42,10 +42,10 @@ export abstract class AdminBasePage<T> extends CrudPage<T> {
     const nombre = (data as any).nombre || 'registro';
     const confirmado = await this._dialogService.pedirConfirmarBorrado(this.entidadName, nombre);
     if (!confirmado) return;
-    await this._runTryCatch(() => this._dataService.remove(id));
+    await this._runTryCatch(() => this._dataService.remove(id, this.pathParams));
   }
 
-  private async _runTryCatch(action: () => Promise<any>) {
+  protected async _runTryCatch(action: () => Promise<any>) {
     try {
       await action();
       this.resource.reload();

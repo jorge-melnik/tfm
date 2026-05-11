@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, computed, input, model, output, signal } from '@angular/core';
 import { Table, TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
@@ -10,6 +10,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableColumn } from '@shared/types/util';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { ColorPickerModule } from 'primeng/colorpicker';
+import { Categoria, Subcategoria } from '@shared/types/categoria';
+import { Select } from 'primeng/select';
 
 @Component({
   selector: 'app-admin-table',
@@ -27,6 +29,7 @@ import { ColorPickerModule } from 'primeng/colorpicker';
     ProgressSpinnerModule,
     ToggleSwitchModule,
     ColorPickerModule,
+    Select,
   ],
   templateUrl: './admin.table.html',
   styleUrl: './admin.table.css',
@@ -40,6 +43,9 @@ export class AdminTable {
   public id = input.required<string>();
   public columns = input.required<TableColumn[]>();
   public editableColumns = input<string[]>([]); //Columnas editables
+  public categorias = input<Categoria[]>();
+  public subcategorias = input<Subcategoria[]>();
+  public etiquetas = input<Categoria[]>();
 
   public searchValue = signal<string | null>(null);
   public newItem = signal<any>({});
@@ -49,6 +55,8 @@ export class AdminTable {
   public update = output<any>();
   public remove = output<any>();
   public refresh = output<void>();
+  public categoriaSeleccionada = model<Categoria | null>(null);
+  public subcategoriaSeleccionada = model<Subcategoria | null>(null);
 
   public creating = signal<boolean>(false);
 

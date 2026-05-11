@@ -39,6 +39,7 @@
             type="text"
             (input)="dt.filterGlobal($event.target.value, 'contains')"
             placeholder="Buscar..."
+            size="small"
           />
         </p-iconfield>
       </div>
@@ -47,7 +48,7 @@
       <tr>
         @for (col of columns(); track col.key) {
           <th [pSortableColumn]="col.key">
-            {{ col.keyTitle | titlecase }} <p-sortIcon [field]="col.key" />
+            {{ col.keyTitle | titlecase }}
           </th>
         }
         <th>Acciones</th>
@@ -196,6 +197,9 @@
     @case ('link') {
       <a [href]="rowData[col.key]">{{ rowData[col.key] }}</a>
     }
+    @case ('categoria') {
+      {{ rowData['slug_categoria'] }}
+    }
     @default {
       {{ rowData[col.key] }}
     }
@@ -230,6 +234,25 @@
       <div class="flex align-items-center gap-2">
         <p-colorPicker [name]="col.key" [(ngModel)]="group[col.key]" appendTo="body" required />
         <small class="font-mono">{{ group[col.key] }}</small>
+      </div>
+    }
+    @case ('categoria') {
+      <div class="flex align-items-center gap-2">
+        <p-select
+          [options]="this.categorias()"
+          [(ngModel)]="group[col.key]"
+          optionLabel="nombre"
+          optionValue="id_categoria"
+          appendTo="body"
+          class="w-full"
+        >
+          <ng-template let-categoria #item>
+            <div class="flex items-center gap-2">
+              <i [class]="categoria.icono" style="font-size: 1.2rem"></i>
+              <div>{{ categoria.nombre }}</div>
+            </div>
+          </ng-template>
+        </p-select>
       </div>
     }
     @default {

@@ -52,13 +52,18 @@ Estas subcategorias pueden ser usadas en los productos.
       params: Type.Object({
         id_categoria: Categoria.properties.id_categoria,
       }),
-      body: Type.Omit(Subcategoria, ['id_subcategoria', 'activo', 'slug_categoria'], {
-        description: 'Datos necesarios para crear una nueva subcategoria.',
-        examples: [
-          { id_categoria: 1, nombre: 'subcategoria 1', slug_subcategoria: 'subcategoria-1' },
-          { id_categoria: 2, nombre: 'subcategoria 2', slug_subcategoria: 'subcategoria-2' },
-        ],
-      }),
+      body: Type.Object(
+        {
+          nombre: Subcategoria.properties.nombre,
+        },
+        {
+          description: 'Datos necesarios para crear una nueva subcategoria.',
+          examples: [
+            { id_categoria: 1, nombre: 'subcategoria 1', slug_subcategoria: 'subcategoria-1' },
+            { id_categoria: 2, nombre: 'subcategoria 2', slug_subcategoria: 'subcategoria-2' },
+          ],
+        },
+      ),
       response: {
         201: Subcategoria,
         500: DeAcaErrorResponse,
