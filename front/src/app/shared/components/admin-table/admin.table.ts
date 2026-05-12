@@ -12,6 +12,8 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { Categoria, Subcategoria } from '@shared/types/categoria';
 import { Select } from 'primeng/select';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { Etiqueta } from '@shared/types/etiqueta';
 
 @Component({
   selector: 'app-admin-table',
@@ -30,6 +32,7 @@ import { Select } from 'primeng/select';
     ToggleSwitchModule,
     ColorPickerModule,
     Select,
+    MultiSelectModule,
   ],
   templateUrl: './admin.table.html',
   styleUrl: './admin.table.css',
@@ -45,7 +48,7 @@ export class AdminTable {
   public editableColumns = input<string[]>([]); //Columnas editables
   public categorias = input<Categoria[]>();
   public subcategorias = input<Subcategoria[]>();
-  public etiquetas = input<Categoria[]>();
+  public etiquetas = input<Etiqueta[]>();
 
   public searchValue = signal<string | null>(null);
   public newItem = signal<any>({});
@@ -55,22 +58,12 @@ export class AdminTable {
   public update = output<any>();
   public remove = output<any>();
   public refresh = output<void>();
-  public categoriaSeleccionada = model<Categoria | null>(null);
-  public subcategoriaSeleccionada = model<Subcategoria | null>(null);
 
   public creating = signal<boolean>(false);
-
-  constructor() {}
 
   globalFilterFields = computed(() => {
     return this.columns().map((c) => c.key);
   });
-
-  private formatHeader(key: string): string {
-    if (key.startsWith('id_')) return '#';
-    if (key.startsWith('slug_')) return 'Slug';
-    return key.replace(/_/g, ' '); ///reemplazamos guion bajo por espacio
-  }
 
   clear(dt: Table) {
     this.searchValue.set(null);
@@ -113,5 +106,13 @@ export class AdminTable {
 
   createCancel() {
     this.creating.set(false);
+  }
+
+  activateInit(data: any) {
+    console.log('activate');
+  }
+
+  deactivateInit(data: any) {
+    console.log('deactivate');
   }
 }

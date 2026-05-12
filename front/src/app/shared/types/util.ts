@@ -11,5 +11,5 @@ export interface TableColumn {
     | 'link'
     | 'categoria'
     | 'subcategoria'
-    | 'etiqueta';
+    | 'etiquetas';
 }

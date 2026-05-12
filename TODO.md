@@ -50,3 +50,4 @@ Que tiempo tiene el usuario para que se confirme el pago en el sistema?
 
 -- Considerar WHERE to_tsvector(contenido) @@ to_tsquery('perro')  si hay que hacer búsqueda en textos completos. full-text search
 
+-- TODO: En subcategorías, que se puedan seleccionar las etiquetas permitidas.

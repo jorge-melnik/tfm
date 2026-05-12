@@ -113,7 +113,7 @@
         }
         @if (this.editableColumns().length > 0) {
           <td>
-            <div class="flex items-center justify-center gap-2">
+            <div class="flex justify-content-center w-full">
               @if (editing) {
                 <p-button
                   pButton
@@ -125,6 +125,8 @@
                   text
                   rounded
                   severity="success"
+                  title="Guardar"
+                  size="small"
                 ></p-button>
                 <p-button
                   pButton
@@ -136,6 +138,8 @@
                   text
                   rounded
                   severity="secondary"
+                  title="Cancelar"
+                  size="small"
                 ></p-button>
               } @else {
                 <p-button
@@ -148,6 +152,8 @@
                   text
                   rounded
                   severity="primary"
+                  title="Editar"
+                  size="small"
                 ></p-button>
                 <p-button
                   pButton
@@ -158,7 +164,37 @@
                   text
                   rounded
                   severity="danger"
+                  title="Borrar"
+                  size="small"
                 ></p-button>
+                @if (rowData.activo === true) {
+                  <p-button
+                    pButton
+                    pRipple
+                    type="button"
+                    icon="pi pi-ban"
+                    (click)="deactivateInit(rowData)"
+                    text
+                    rounded
+                    severity="danger"
+                    title="Desactivar"
+                    size="small"
+                  ></p-button>
+                }
+                @if (rowData.activo === false) {
+                  <p-button
+                    pButton
+                    pRipple
+                    type="button"
+                    icon="pi pi-times"
+                    (click)="activateInit(rowData)"
+                    text
+                    rounded
+                    severity="danger"
+                    title="Activar"
+                    size="small"
+                  ></p-button>
+                }
               }
             </div>
           </td>
@@ -171,7 +207,7 @@
 <ng-template #renderOutput let-col="col" let-rowData="rowData">
   @switch (col.type) {
     @case ('color') {
-      <div class="flex align-items-center gap-2">
+      <div class="flex justify-content-center w-full">
         <div class="color" [style.background-color]="rowData[col.key]"></div>
         <span class="text-xs font-mono" [style.color]="rowData[col.key]">{{
           rowData[col.key]
@@ -187,18 +223,30 @@
       {{ rowData[col.key] | date: 'dd/MM/yyyy' }}
     }
     @case ('boolean') {
-      <i
-        class="pi"
-        [ngClass]="
-          rowData[col.key] ? 'pi-check-circle text-success' : 'pi-times-circle text-danger'
-        "
-      ></i>
+      <div class="flex justify-content-center w-full">
+        <i
+          class="pi"
+          [ngClass]="
+            rowData[col.key] ? 'pi-check-circle text-success' : 'pi-times-circle text-danger'
+          "
+        ></i>
+      </div>
     }
     @case ('link') {
       <a [href]="rowData[col.key]">{{ rowData[col.key] }}</a>
     }
     @case ('categoria') {
       {{ rowData['slug_categoria'] }}
+    }
+    @case ('etiquetas') {
+      <div class="flex flex-wrap gap-1">
+        @for (id_etiqueta of rowData[col.key]; track id_etiqueta; let last = $last) {
+          {{ this.etiquetas()?.find((e) => e.id_etiqueta == id_etiqueta)?.nombre }}
+          @if (!last) {
+            ,&nbsp;
+          }
+        }
+      </div>
     }
     @default {
       {{ rowData[col.key] }}
@@ -253,6 +301,20 @@
             </div>
           </ng-template>
         </p-select>
+      </div>
+    }
+
+    @case ('etiquetas') {
+      <div class="flex align-items-center gap-2">
+        <p-multiselect
+          [options]="this.etiquetas()"
+          [(ngModel)]="group[col.key]"
+          optionLabel="nombre"
+          optionValue="id_etiqueta"
+          placeholder="Etiquetas permitidas"
+          appendTo="body"
+          class="w-full"
+        />
       </div>
     }
     @default {

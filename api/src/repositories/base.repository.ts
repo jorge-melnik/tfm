@@ -4,7 +4,7 @@ import { BaseReadRepository } from './base.read.repository.js';
 interface DatosBase {
   nombre?: string;
   username?: string;
-  id_compra: number; //Solo para que no me patee typescript
+  id_compra?: number; //Solo para que no me patee typescript
 }
 
 export abstract class BaseRepository<T extends DatosBase> extends BaseReadRepository<T> {
