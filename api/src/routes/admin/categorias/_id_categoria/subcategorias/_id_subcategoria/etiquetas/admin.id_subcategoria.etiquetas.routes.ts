@@ -53,6 +53,37 @@ const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, o
     },
   });
 
+  fastify.patch('/', {
+    schema: {
+      tags: ['Admin: Subcategorias'],
+      summary: 'ADD etiquetas',
+      description:
+        'Permite determinar en una única solicitud las etiquetas que deben quedar asociadas a la subcategoria.',
+      params: Type.Object({
+        id_categoria: Categoria.properties.id_categoria,
+        id_subcategoria: Subcategoria.properties.id_subcategoria,
+      }),
+      body: Type.Object({
+        id_categoria: Categoria.properties.id_categoria,
+        id_subcategoria: Subcategoria.properties.id_subcategoria,
+        id_etiquetas: Type.Array(Etiqueta.properties.id_etiqueta),
+      }),
+      response: {
+        204: Type.Null(),
+        404: DeAcaErrorResponse,
+        500: DeAcaErrorResponse,
+      },
+    },
+    handler: async function (req, reply) {
+      reply.code(204);
+      return subcategoriasRepository.setEtiquetas(
+        req.params.id_categoria,
+        req.params.id_subcategoria,
+        req.body.id_etiquetas,
+      );
+    },
+  });
+
   fastify.delete('/:id_etiqueta', {
     schema: {
       tags: ['Admin: Subcategorias'],

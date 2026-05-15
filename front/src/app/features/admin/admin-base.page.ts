@@ -22,11 +22,11 @@ export abstract class AdminBasePage<T> extends CrudPage<T> {
     return this._dataService.getAll(this.pathParams);
   }
 
-  protected override async create(data: Partial<T>): Promise<void> {
+  protected override async create(data: Partial<T>): Promise<T | null> {
     const nombre = (data as any).nombre || 'nuevo';
     const confirmado = await this._dialogService.pedirConfirmarCrear(this.entidadName, nombre);
-    if (!confirmado) return;
-    await this._runTryCatch(() => this._dataService.create(data));
+    if (!confirmado) return null;
+    return this._runTryCatch(() => this._dataService.create(data));
   }
 
   protected override async update(data: Partial<T>): Promise<void> {
@@ -47,8 +47,9 @@ export abstract class AdminBasePage<T> extends CrudPage<T> {
 
   protected async _runTryCatch(action: () => Promise<any>) {
     try {
-      await action();
+      const res = await action();
       this.resource.reload();
+      return res;
     } catch (error: any) {
       this._dialogService.addError(error.message);
     }

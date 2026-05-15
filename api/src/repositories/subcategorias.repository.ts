@@ -59,6 +59,27 @@ export class SubcategoriasRepositoryClass extends BaseRepository<Subcategoria> {
     `;
     await this.executor.query(query, [id_categoria, id_subcategoria, id_etiqueta]);
   }
+
+  async setEtiquetas(id_categoria: number, id_subcategoria: number, id_etiquetas: number[]) {
+    const query = `
+      WITH PARA_INSERTAR as (
+        SELECT S.id_subcategoria, E.id_etiqueta
+        FROM public.subcategorias S
+        CROSS JOIN unnest($3::INT[]) AS E(id_etiqueta)
+        LEFT JOIN public.subcategoria_etiquetas SE on SE.id_subcategoria = S.id_subcategoria and SE.id_etiqueta = E.id_etiqueta
+        WHERE S.id_categoria =$1
+        AND S.id_subcategoria =$2
+        AND SE.id_etiqueta is null -- Solo me interesan las que hay que insertar
+      ),
+      INSERCION as (
+        INSERT INTO public.subcategoria_etiquetas (id_subcategoria,id_etiqueta)
+        SELECT * FROM PARA_INSERTAR
+      )
+      DELETE FROM public.subcategoria_etiquetas where id_subcategoria=$2 and id_etiqueta <>ALL($3::INT[])
+  `;
+
+    await this.executor.query(query, [id_categoria, id_subcategoria, id_etiquetas]);
+  }
 }
 
 export const subcategoriasRepository = new SubcategoriasRepositoryClass();

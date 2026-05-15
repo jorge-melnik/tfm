@@ -78,21 +78,9 @@ export class SubcategoriasPage extends AdminBasePage<Subcategoria> {
   private readonly _subcategoriaService = inject(SubcategoriasService);
   private readonly _etiquetaService = inject(EtiquetasService);
 
-  public categoriaSeleccionada = model<Categoria | null>(null);
-  public subcategoriaSeleccionada = model<Subcategoria | null>(null);
-
   public categoriasResource = resource({
     defaultValue: [] as Categoria[],
     loader: () => this._categoriaService.getAll(),
-  });
-
-  public subcategoriasResource = resource({
-    defaultValue: [] as Subcategoria[],
-    loader: async () => {
-      const categoria = this.categoriaSeleccionada();
-      if (!categoria) return [];
-      return this._subcategoriaService.getAll({ id_categoria: categoria.id_categoria });
-    },
   });
 
   public etiquetasResource = resource({
@@ -110,19 +98,32 @@ export class SubcategoriasPage extends AdminBasePage<Subcategoria> {
     return firstValueFrom(this._http.get<Subcategoria[]>(url));
   }
 
-  protected override async create(data: Partial<Subcategoria>): Promise<void> {
+  protected async createSubcategoria(data: Partial<Subcategoria>): Promise<void> {
     if (!data.id_categoria) return;
     this.pathParams = { id_categoria: data.id_categoria };
-    await super.create(data);
-    //TODO: Agregar etiquetas
+    const subcategoria = await super.create(data);
+
+    if (!subcategoria) return;
+    if (!data.id_etiquetas) return;
+
+    await this._subcategoriaService.setEtiquetas(
+      data.id_categoria,
+      subcategoria.id_subcategoria,
+      data.id_etiquetas,
+    );
   }
 
-  protected override async update(data: Partial<Subcategoria>): Promise<void> {
+  protected async updateSubcategoria(data: Partial<Subcategoria>): Promise<void> {
     if (!data.id_categoria) return;
+    if (!data.id_subcategoria) return;
     this.pathParams = { id_categoria: data.id_categoria };
     await super.update(data);
-    //TODO: Quitar etiquetas que ya no están.
-    //TODO: Agregar etiquetas que no estaban.
+    if (!data.id_etiquetas) return;
+    await this._subcategoriaService.setEtiquetas(
+      data.id_categoria,
+      data.id_subcategoria,
+      data.id_etiquetas,
+    );
   }
 
   protected override async remove(data: Subcategoria): Promise<void> {

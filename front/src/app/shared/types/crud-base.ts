@@ -9,7 +9,7 @@ export interface CrudServiceInterface<T> {
 
 export abstract class CrudPage<T> {
   protected abstract getAll(): Promise<T[]>;
-  protected abstract create(data: Partial<T>): Promise<void>;
+  protected abstract create(data: Partial<T>): Promise<T | null>;
   protected abstract update(data: Partial<T>): Promise<void>;
   protected abstract remove(data: T): Promise<void>;
 }

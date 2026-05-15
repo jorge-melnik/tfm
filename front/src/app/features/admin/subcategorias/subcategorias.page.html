@@ -7,8 +7,8 @@
   [columns]="this.columns"
   (refresh)="this.resource.reload()"
   (remove)="this.remove($event)"
-  (create)="this.create($event)"
-  (update)="this.update($event)"
+  (create)="this.createSubcategoria($event)"
+  (update)="this.updateSubcategoria($event)"
   [categorias]="this.categoriasResource.value()"
   [etiquetas]="this.etiquetasResource.value()"
 ></app-admin-table>

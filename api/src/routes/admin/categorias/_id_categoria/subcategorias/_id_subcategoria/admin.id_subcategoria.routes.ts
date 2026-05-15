@@ -83,7 +83,7 @@ const idSubcategoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): 
   fastify.patch('/', {
     schema: {
       tags: ['Admin: Subcategorias'],
-      summary: 'ACTIVAR/DESACTIVAR Categoria',
+      summary: 'ACTIVAR/DESACTIVAR Subcategoria',
       description: `Permite al ADMIN activar o desactivar Subcategoría`,
       params: Type.Object({
         id_categoria: Categoria.properties.id_categoria,

@@ -8,7 +8,7 @@ export abstract class BaseService<T> implements CrudServiceInterface<T> {
   protected http = inject(HttpClient);
   protected abstract serviceUrl: string;
 
-  private buildUrl(pathParams?: PathParams): string {
+  protected buildUrl(pathParams?: PathParams): string {
     let url = this.serviceUrl;
     if (pathParams) {
       Object.entries(pathParams).forEach(([key, value]) => {

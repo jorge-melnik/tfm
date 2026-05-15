@@ -13,4 +13,5 @@ export type Subcategoria = {
   slug_subcategoria: string;
   slug_categoria: string;
   activo: boolean;
+  id_etiquetas: number[];
 };
