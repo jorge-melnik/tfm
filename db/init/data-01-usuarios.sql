@@ -3,6 +3,7 @@ DECLARE
     id_administrador UUID;
     id_productor UUID;
     id_consumidor UUID;
+    id_ambos UUID;
 BEGIN
     --- 1. ALTA DE ADMINISTRADOR
     INSERT INTO usuarios (rol_actual, roles) VALUES ('ADMIN', ARRAY['ADMIN']::ROL[]) RETURNING id_usuario INTO id_administrador;
@@ -24,5 +25,14 @@ BEGIN
     INSERT INTO consumidores (id_consumidor) VALUES (id_consumidor);
     INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_consumidor, crypt('Contraseña', gen_salt('bf', 10)));
 
-    RAISE NOTICE 'Usuarios fecha_creacions: Admin (%), Productor (%), Consumidor (%)', id_administrador, id_productor, id_consumidor;
+
+    -- Alta de ambos
+    INSERT INTO usuarios (rol_actual, roles) VALUES ('CONSUMIDOR', ARRAY['CONSUMIDOR']::ROL[]) RETURNING id_usuario INTO id_ambos;
+    INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username, celular) 
+        VALUES (id_ambos, 'Juan', 'Ambos', 'ambos@email.com', 'ambos' ,'+59899555777');
+    INSERT INTO consumidores (id_consumidor) VALUES (id_ambos);
+    INSERT INTO productores (id_productor, presentacion) VALUES (id_ambos, 'Productor artesanal de cosas.');
+    INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_ambos, crypt('Contraseña', gen_salt('bf', 10)));
+
+    RAISE NOTICE 'Usuarios fecha_creacion: Admin (%), Productor (%), Consumidor (%)', id_administrador, id_productor, id_consumidor;
 END $$;
