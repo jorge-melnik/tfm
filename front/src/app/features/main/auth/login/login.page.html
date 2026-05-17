@@ -1,21 +1,21 @@
-<div class="flex flex-column flex-grow-1 justify-content-center align-items-center h-full p-1">
-  <p-card class="shadow-4 border-round-xl w-full md:w-30rem">
+<div class="flex flex-col grow justify-center items-center h-full p-1">
+  <p-card class="shadow-lg rounded-xl w-full md:w-[30rem]">
     <ng-template #header>
-      <div class="flex justify-content-center pt-6">
+      <div class="flex justify-center pt-12">
         <i class="pi pi-shopping-bag text-primary text-6xl"></i>
       </div>
     </ng-template>
 
     <ng-template #title>
-      <div class="text-center text-900 text-3xl font-medium mb-1">Bienvenido</div>
+      <div class="text-center text-surface-900 dark:text-surface-0 text-3xl font-medium mb-1">Bienvenido</div>
     </ng-template>
 
     <ng-template #subtitle>
-      <div class="text-center text-600 mb-5">Inicia sesión en De Acá</div>
+      <div class="text-center text-surface-600 dark:text-surface-200 mb-20">Inicia sesión en De Acá</div>
     </ng-template>
 
-    <form class="flex flex-column gap-4">
-      <div class="flex justify-content-center mb-2">
+    <form class="flex flex-col gap-12">
+      <div class="flex justify-center mb-2">
         <p-selectButton
           [options]="this.loginOptions"
           [(ngModel)]="this.selectedMethod"
@@ -69,7 +69,7 @@
     </form>
 
     <ng-template #footer>
-      <p class="text-center text-600 mt-2">
+      <p class="text-center text-surface-600 dark:text-surface-200 mt-2">
         ¿Aún no tienes cuenta?
         <a routerLink="/auth/register" class="text-primary font-bold cursor-pointer no-underline"
           >Regístrate</a

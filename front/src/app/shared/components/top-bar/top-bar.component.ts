@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MenuItem } from 'primeng/api';
+import { MenuModule } from 'primeng/menu';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-top-bar',
-  imports: [RouterLink],
+  imports: [RouterLink, MenuModule, Button],
   templateUrl: './top-bar.component.html',
   styleUrl: './top-bar.component.css',
 })

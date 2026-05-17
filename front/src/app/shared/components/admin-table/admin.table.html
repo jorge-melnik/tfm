@@ -4,7 +4,7 @@
     [value]="data()"
     [paginator]="this.paginator()"
     [rows]="10"
-    class="shadow-1"
+    class="shadow-sm"
     [dataKey]="this.id()"
     [scrollable]="true"
     [rowHover]="true"
@@ -13,7 +13,7 @@
     editMode="row"
   >
     <ng-template #caption>
-      <div class="flex align-items-center justify-content-between">
+      <div class="flex items-center justify-between">
         <h3>
           <p-button
             icon="pi pi-refresh"
@@ -113,7 +113,7 @@
         }
         @if (this.editableColumns().length > 0) {
           <td>
-            <div class="flex justify-content-center w-full">
+            <div class="flex justify-center w-full">
               @if (editing) {
                 <p-button
                   pButton
@@ -207,7 +207,7 @@
 <ng-template #renderOutput let-col="col" let-rowData="rowData">
   @switch (col.type) {
     @case ('color') {
-      <div class="flex justify-content-center w-full">
+      <div class="flex justify-center w-full">
         <div class="color" [style.background-color]="rowData[col.key]"></div>
         <span class="text-xs font-mono" [style.color]="rowData[col.key]">{{
           rowData[col.key]
@@ -215,7 +215,7 @@
       </div>
     }
     @case ('icono') {
-      <div class="flex justify-content-center w-full">
+      <div class="flex justify-center w-full">
         <i [class]="rowData[col.key]" style="font-size: 1.2rem"></i>
       </div>
     }
@@ -223,7 +223,7 @@
       {{ rowData[col.key] | date: 'dd/MM/yyyy' }}
     }
     @case ('boolean') {
-      <div class="flex justify-content-center w-full">
+      <div class="flex justify-center w-full">
         <i
           class="pi"
           [ngClass]="
@@ -279,13 +279,13 @@
       <p-toggleswitch [name]="col.key" [(ngModel)]="group[col.key]" required />
     }
     @case ('color') {
-      <div class="flex align-items-center gap-2">
+      <div class="flex items-center gap-2">
         <p-colorPicker [name]="col.key" [(ngModel)]="group[col.key]" appendTo="body" required />
         <small class="font-mono">{{ group[col.key] }}</small>
       </div>
     }
     @case ('categoria') {
-      <div class="flex align-items-center gap-2">
+      <div class="flex items-center gap-2">
         <p-select
           [options]="this.categorias()"
           [(ngModel)]="group[col.key]"
@@ -305,7 +305,7 @@
     }
 
     @case ('etiquetas') {
-      <div class="flex align-items-center gap-2">
+      <div class="flex items-center gap-2">
         <p-multiselect
           [options]="this.etiquetas()"
           [(ngModel)]="group[col.key]"

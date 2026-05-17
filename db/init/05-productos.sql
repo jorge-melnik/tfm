@@ -14,8 +14,6 @@ CREATE TABLE productos (
     descripcion TEXT NOT NULL,
     precio DECIMAL(12, 2) NOT NULL,
     cantidad_disponible INTEGER NOT NULL DEFAULT 0,
-    
-    fotos TEXT[] NOT NULL CHECK (cardinality(fotos) BETWEEN 1 AND 5),
     video_url TEXT,
     
     fecha_creacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -35,3 +33,12 @@ CREATE TABLE producto_etiquetas (
     CONSTRAINT producto_etiquetas_producto_fk FOREIGN KEY (id_productor, id_producto) REFERENCES productos(id_productor, id_producto) ON DELETE CASCADE
 );
 
+CREATE TABLE producto_imagenes (
+    id_productor UUID NOT NULL,
+    id_producto INTEGER NOT NULL,
+    posicion SMALLINT NOT NULL CHECK (posicion BETWEEN 1 AND 5),
+    path CITEXT NOT NULL, --path relativo
+
+    PRIMARY KEY (id_productor,id_producto,posicion),
+    FOREIGN KEY (id_productor, id_producto) REFERENCES productos(id_productor, id_producto) ON DELETE CASCADE
+);

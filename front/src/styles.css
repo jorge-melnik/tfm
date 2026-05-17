@@ -1,5 +1,14 @@
 @import 'primeicons/primeicons.css'; /* Para los iconos de los botones */
-@import 'primeflex/primeflex.css';
+@import 'tailwindcss';
+@import 'tailwindcss-primeui';
+
+@source "src/**/*.html";
+@source "src/**/*.ts";
+
+/* Capa de compatibilidad para los componentes de PrimeNG */
+@layer primeng {
+  /* Si el día de mañana necesitás pisar estilos de PrimeNG, van acá */
+}
 
 * {
   box-sizing: border-box;
