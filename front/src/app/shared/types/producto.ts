@@ -9,4 +9,7 @@ export interface Producto {
   cantidad_disponible: number;
   fotos: string[];
   video_url?: string | null;
+  username: string;
+  etiquetas: string[];
+  id_etiquetas: number[];
 }

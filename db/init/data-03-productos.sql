@@ -18,8 +18,8 @@ BEGIN
     
     -- Imágenes asociadas (Posición 1 y 2)
     INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES
-    (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'images/miel_1.webp'),
-    (v_id_juan_huerta, currval('productos_id_producto_seq'), 2, 'images/miel_2.webp');
+    (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'productos/miel_1.webp'),
+    (v_id_juan_huerta, currval('productos_id_producto_seq'), 2, 'productos/miel_2.webp');
 
     INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
     (v_id_juan_huerta, currval('productos_id_producto_seq'), 8),   -- Cosecha silvestre
@@ -31,7 +31,7 @@ BEGIN
     VALUES (v_id_juan_huerta, 1, 'Tomate Perita Agroecológico kg', 'tomate-perita-agroecologico-kg', 'Tomates madurados en planta, cultivados con técnicas regenerativas cuidando el suelo.', 120.00, 50);
     
     INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES
-    (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'images/tomates.webp');
+    (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'productos/tomates.webp');
 
     INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
     (v_id_juan_huerta, currval('productos_id_producto_seq'), 1),   -- Local
@@ -44,7 +44,7 @@ BEGIN
     VALUES (v_id_juan_huerta, 3, 'Huevos de Campo x12', 'huevos-de-campo-x12', 'Huevos de gallinas libres, criadas a pastoreo e insumos naturales.', 180.00, 15);
     
     INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES
-    (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'images/huevos.webp');
+    (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'productos/huevos.webp');
 
     INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
     (v_id_juan_huerta, currval('productos_id_producto_seq'), 1),   -- Local
@@ -56,7 +56,7 @@ BEGIN
     VALUES (v_id_juan_huerta, 17, 'Compost Orgánico Maduro 5kg', 'compost-organico-maduro-5kg', 'Abono orgánico premium ideal para huertas y plantas, excelente retención de nutrientes.', 250.00, 30);
     
     INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES
-    (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'images/compost.webp');
+    (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'productos/compost.webp');
 
     INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
     (v_id_juan_huerta, currval('productos_id_producto_seq'), 1),   -- Local
@@ -68,7 +68,7 @@ BEGIN
     VALUES (v_id_juan_huerta, 6, 'Plantín de Albahaca Criolla', 'plantin-albahaca-criolla', 'Plantines listos para pasar a tierra o maceta, variedades adaptadas localmente.', 80.00, 40);
     
     INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES
-    (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'images/albahaca.webp');
+    (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'productos/albahaca.webp');
 
     INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
     (v_id_juan_huerta, currval('productos_id_producto_seq'), 1),   -- Local
@@ -86,8 +86,8 @@ BEGIN
     VALUES (v_id_juan_ambos, 15, 'Cuenco de Cerámica Artesanal', 'cuenco-ceramica-artesanal', 'Modelado a mano con arcilla de cañada local, horneado a leña.', 550.00, 8);
     
     INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES
-    (v_id_juan_ambos, currval('productos_id_producto_seq'), 1, 'images/cuenco1.webp'),
-    (v_id_juan_ambos, currval('productos_id_producto_seq'), 2, 'images/cuenco2.webp');
+    (v_id_juan_ambos, currval('productos_id_producto_seq'), 1, 'productos/cuenco1.webp'),
+    (v_id_juan_ambos, currval('productos_id_producto_seq'), 2, 'productos/cuenco2.webp');
 
     INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
     (v_id_juan_ambos, currval('productos_id_producto_seq'), 1),   -- Local
@@ -99,7 +99,7 @@ BEGIN
     VALUES (v_id_juan_ambos, 11, 'Jabón de Caléndula y Oliva', 'jabon-calendula-oliva', 'Jabón corporal saponificado en frío, ideal para pieles sensibles y libre de químicos.', 190.00, 20);
     
     INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES
-    (v_id_juan_ambos, currval('productos_id_producto_seq'), 1, 'images/jabon.webp');
+    (v_id_juan_ambos, currval('productos_id_producto_seq'), 1, 'productos/jabon.webp');
 
     INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
     (v_id_juan_ambos, currval('productos_id_producto_seq'), 9),   -- Artesanal
@@ -111,7 +111,7 @@ BEGIN
     VALUES (v_id_juan_ambos, 14, 'Canasta de Mimbre Tejida', 'canasta-mimbre-tejida', 'Canasta reforzada tejida a mano con mimbre natural del río.', 720.00, 5);
     
     INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES
-    (v_id_juan_ambos, currval('productos_id_producto_seq'), 1, 'images/canasta.webp');
+    (v_id_juan_ambos, currval('productos_id_producto_seq'), 1, 'productos/canasta.webp');
 
     INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
     (v_id_juan_ambos, currval('productos_id_producto_seq'), 9),   -- Artesanal
@@ -123,7 +123,7 @@ BEGIN
     VALUES (v_id_juan_ambos, 9, 'Chutney de Manzana Agridulce', 'chutney-manzana-agridulce', 'Acompañamiento agridulce elaborado artesanalmente con frutas locales de estación.', 280.00, 12);
     
     INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES
-    (v_id_juan_ambos, currval('productos_id_producto_seq'), 1, 'images/chutney.webp');
+    (v_id_juan_ambos, currval('productos_id_producto_seq'), 1, 'productos/chutney.webp');
 
     INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
     (v_id_juan_ambos, currval('productos_id_producto_seq'), 10),  -- Sin conservantes
@@ -136,7 +136,7 @@ BEGIN
     VALUES (v_id_juan_ambos, 16, 'Tabla para Picar de Olivo', 'tabla-picar-olivo', 'Tabla rústica confeccionada a mano a partir de maderas caídas y tratada con cera de abejas.', 890.00, 4);
     
     INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES
-    (v_id_juan_ambos, currval('productos_id_producto_seq'), 1, 'images/tabla.webp');
+    (v_id_juan_ambos, currval('productos_id_producto_seq'), 1, 'productos/tabla.webp');
 
     INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
     (v_id_juan_ambos, currval('productos_id_producto_seq'), 9),   -- Artesanal

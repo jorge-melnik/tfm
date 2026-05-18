@@ -1,0 +1,38 @@
+<div class="relative w-full h-full group/carrusel">
+  <img
+    [src]="cdnUrl() + '/' + fotos()[indiceActual()]"
+    [alt]="altText()"
+    class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
+  />
+
+  @if (fotos().length > 1 && indiceActual() > 0) {
+    <button
+      (click)="anterior($event)"
+      class="absolute left-2 top-1/2 -translate-y-1/2 bg-surface-0/80 dark:bg-surface-900/80 text-surface-900 dark:text-surface-0 border border-surface-200 dark:border-surface-700 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover/carrusel:opacity-100 transition-opacity duration-200 hover:bg-surface-0 dark:hover:bg-surface-900 shadow-xs cursor-pointer z-10"
+    >
+      <i class="pi pi-chevron-left text-xs"></i>
+    </button>
+  }
+
+  @if (fotos().length > 1 && indiceActual() < fotos().length - 1) {
+    <button
+      (click)="siguiente($event)"
+      class="absolute right-2 top-1/2 -translate-y-1/2 bg-surface-0/80 dark:bg-surface-900/80 text-surface-900 dark:text-surface-0 border border-surface-200 dark:border-surface-700 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover/carrusel:opacity-100 transition-opacity duration-200 hover:bg-surface-0 dark:hover:bg-surface-900 shadow-xs cursor-pointer z-10"
+    >
+      <i class="pi pi-chevron-right text-xs"></i>
+    </button>
+  }
+
+  @if (fotos().length > 1) {
+    <div
+      class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 bg-black/20 px-2 py-1 rounded-full backdrop-blur-xs"
+    >
+      @for (foto of fotos(); track $index) {
+        <span
+          class="w-1.5 h-1.5 rounded-full transition-all duration-200"
+          [class]="$index === indiceActual() ? 'bg-white scale-110' : 'bg-white/50'"
+        ></span>
+      }
+    </div>
+  }
+</div>
