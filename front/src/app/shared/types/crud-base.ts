@@ -1,7 +1,8 @@
-import { PathParams } from '@shared/types/api.types';
+import { PaginatedResponse, PathParams } from '@shared/types/api.types';
 
 export interface CrudServiceInterface<T> {
   getAll(pathParams?: PathParams): Promise<T[]>;
+  getBy(pathParams?: PathParams): Promise<PaginatedResponse<T>>;
   create(data: Partial<T>, pathParams?: PathParams): Promise<T>;
   update(id: number | string, data: Partial<T>, pathParams?: PathParams): Promise<void>;
   remove(id: number | string, pathParams?: PathParams): Promise<void>;

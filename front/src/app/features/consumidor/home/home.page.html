@@ -4,7 +4,8 @@
     [value]="this.productosResource.value()"
     [layout]="this.layout()"
     [paginator]="true"
-    [rows]="10"
+    [rows]="this.rows()"
+    [rowsPerPageOptions]="[5, 10, 15]"
     [sortField]="this.sortField()"
     [sortOrder]="this.sortOrder()"
   >

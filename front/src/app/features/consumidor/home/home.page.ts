@@ -14,6 +14,12 @@ interface SortOption {
   value: string;
 }
 import { SelectModule } from 'primeng/select';
+import { CategoriasService } from '@shared/services/categorias.service';
+import { Categoria, Subcategoria } from '@shared/types/categoria';
+import { SubcategoriasService } from '@shared/services/subcategorias.service';
+import { QueryParams } from '@shared/types/api.types';
+import { Etiqueta } from '@shared/types/etiqueta';
+import { EtiquetasService } from '@shared/services/etiquetas.service';
 @Component({
   selector: 'app-home-consumidor',
   imports: [
@@ -30,18 +36,72 @@ import { SelectModule } from 'primeng/select';
 })
 export class HomePage implements OnInit {
   private readonly _productoService = inject(ProductosService);
+  private readonly _categoriaService = inject(CategoriasService);
+  private readonly _subcategoriaService = inject(SubcategoriasService);
+  private readonly _etiquetaService = inject(EtiquetasService);
 
   public cdnUrl = environment.cdnUrl;
 
+  //Signals para filtros.
+  public filtroBusqueda = signal<string>('');
+  public categoriaSeleccionada = signal<Categoria | null>(null);
+  public subcategoriaSeleccionada = signal<Subcategoria | null>(null);
+  public etiquetasSeleccionadas = signal<Etiqueta[]>([]);
+
+  public categoriasResource = resource({
+    defaultValue: [] as Categoria[],
+    loader: async () => this._categoriaService.getAll(),
+  });
+
+  public subcategoriasResource = resource({
+    defaultValue: [] as Subcategoria[],
+    loader: async () => {
+      const categoria = this.categoriaSeleccionada();
+      if (!categoria) return this._subcategoriaService.getAll();
+      const paginado = await this._subcategoriaService.getBy({
+        queryParams: { id_categoria: categoria.id_categoria },
+        pathParams: { id_categoria: categoria.id_categoria },
+      });
+      return paginado.data;
+    },
+  });
+
+  public etiquetasResource = resource({
+    defaultValue: [] as Etiqueta[],
+    loader: async () => {
+      const categoria = this.categoriaSeleccionada();
+      const subcategoria = this.subcategoriaSeleccionada();
+      const queryParams: QueryParams = {};
+      if (categoria) queryParams['id_categoria'] = categoria.id_categoria;
+      if (subcategoria) queryParams['id_subcategoria'] = subcategoria.id_subcategoria;
+      if (Object.keys(queryParams).length === 0) return this._etiquetaService.getAll();
+      const paginado = await this._etiquetaService.getBy({
+        queryParams,
+      });
+      return paginado.data;
+    },
+  });
+
   public productosResource = resource({
     defaultValue: [] as Producto[],
-    loader: () => this._productoService.getAll(),
+    loader: async () => {
+      const categoria = this.categoriaSeleccionada();
+      const subcategoria = this.subcategoriaSeleccionada();
+      const id_etiquetas = this.etiquetasSeleccionadas().map((e) => e.id_etiqueta);
+      const queryParams: QueryParams = {};
+      if (categoria) queryParams['id_categoria'] = categoria.id_categoria;
+      if (subcategoria) queryParams['id_subcategoria'] = subcategoria.id_subcategoria;
+      if (id_etiquetas.length > 0) queryParams['id_etiquetas'] = id_etiquetas;
+      if (Object.keys(queryParams).length === 0) return this._productoService.getAll();
+      const paginado = await this._productoService.getBy(queryParams);
+      return paginado.data;
+    },
   });
 
   // Señales para filtros
-  public filtroBusqueda = signal<string>('');
   public layout = signal<'grid' | 'list'>('grid'); // Estado del diseño (tarjeta o lista)
 
+  public rows = signal(10);
   public sortKey = signal<string>('');
   public sortOrder = signal<number>(0);
   public sortField = signal<string>('');
