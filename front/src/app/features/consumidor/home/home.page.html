@@ -1,8 +1,23 @@
 <div class="card">
-  <p-dataview #dv [value]="this.productosResource.value()" [layout]="this.layout()">
+  <p-dataview
+    #dv
+    [value]="this.productosResource.value()"
+    [layout]="this.layout()"
+    [paginator]="true"
+    [rows]="10"
+    [sortField]="this.sortField()"
+    [sortOrder]="this.sortOrder()"
+  >
     <ng-template #header>
       <div class="flex justify-end">
-        <p-selectbutton [(ngModel)]="layout" [options]="['grid', 'list']" [allowEmpty]="false">
+        <p-select
+          [options]="this.sortOptions"
+          [(ngModel)]="this.sortKey"
+          placeholder="Ordenar por..."
+          (onChange)="this.onSortChange($event)"
+          class="mb-2 md:mb-0"
+        />
+        <p-selectbutton [(ngModel)]="this.layout" [options]="['grid', 'list']" [allowEmpty]="false">
           <ng-template #item let-item>
             <i class="pi" [class]="{ 'pi-bars': item === 'list', 'pi-table': item === 'grid' }"></i>
           </ng-template>
