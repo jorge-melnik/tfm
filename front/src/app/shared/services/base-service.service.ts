@@ -19,36 +19,40 @@ export abstract class BaseService<T> implements CrudServiceInterface<T> {
   }
 
   async getAll(pathParams?: PathParams): Promise<T[]> {
+    console.log({ pathParams });
     return await firstValueFrom(this.http.get<T[]>(this.buildUrl(pathParams)));
   }
 
   async getBy(options?: DeAcaRequestOptions): Promise<PaginatedResponse<T>> {
-    if (!options?.queryParams) throw new Error('Tienes que especificar el filtro.');
-    if (!options?.pagination) throw new Error('Tienes que especificar la paginación.');
-    if (!options?.pagination.page || !options?.pagination.limit)
-      throw new Error('Tienes que especificar page y limit.');
-    const { page, limit, orderBy, orderDirection } = options?.pagination;
-    let params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
+    let params = new HttpParams();
+    if (options?.pagination) {
+      if (!options?.pagination) throw new Error('Tienes que especificar la paginación.');
+      if (!options?.pagination.page || !options?.pagination.limit)
+        throw new Error('Tienes que especificar page y limit.');
+      const { page, limit, orderBy, orderDirection } = options?.pagination;
+      params.set('page', page.toString()).set('limit', limit.toString());
 
-    if (orderBy) {
-      params = params.set('orderBy', orderBy);
-    }
-    if (orderDirection) {
-      params = params.set('orderDirection', orderDirection);
-    }
-
-    Object.entries(options.queryParams).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        value.forEach((v) => {
-          params = params.append(key, v); //append para que repita la clave.
-        });
-      } else {
-        params = params.set(key, value);
+      if (orderBy) {
+        params = params.set('orderBy', orderBy);
       }
-    });
+      if (orderDirection) {
+        params = params.set('orderDirection', orderDirection);
+      }
+    }
+    if (options?.queryParams) {
+      Object.entries(options.queryParams).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          value.forEach((v) => {
+            params = params.append(key, v); //append para que repita la clave.
+          });
+        } else {
+          params = params.set(key, value);
+        }
+      });
+    }
 
     return await firstValueFrom(
-      this.http.get<PaginatedResponse<T>>(this.buildUrl(options.pathParams), { params }),
+      this.http.get<PaginatedResponse<T>>(this.buildUrl(options?.pathParams), { params }),
     );
   }
 

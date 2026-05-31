@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, resource, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, resource, Signal, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
@@ -9,6 +9,8 @@ import { Producto } from '@shared/types/producto';
 import { environment } from '@env/environment';
 import { ProductoCard } from '@shared/components/producto-card/producto.card';
 import { SelectItem } from 'primeng/select';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { toSignal } from '@angular/core/rxjs-interop';
 interface SortOption {
   label: string;
   value: string;
@@ -20,6 +22,7 @@ import { SubcategoriasService } from '@shared/services/subcategorias.service';
 import { QueryParams } from '@shared/types/api.types';
 import { Etiqueta } from '@shared/types/etiqueta';
 import { EtiquetasService } from '@shared/services/etiquetas.service';
+import { ActivatedRoute, convertToParamMap, ParamMap, Router } from '@angular/router';
 @Component({
   selector: 'app-home-consumidor',
   imports: [
@@ -30,6 +33,7 @@ import { EtiquetasService } from '@shared/services/etiquetas.service';
     FormsModule,
     ProductoCard,
     SelectModule,
+    MultiSelectModule,
   ],
   templateUrl: './home.page.html',
   styleUrl: './home.page.css',
@@ -39,7 +43,12 @@ export class HomePage implements OnInit {
   private readonly _categoriaService = inject(CategoriasService);
   private readonly _subcategoriaService = inject(SubcategoriasService);
   private readonly _etiquetaService = inject(EtiquetasService);
+  private readonly _router = inject(Router);
+  private readonly _route = inject(ActivatedRoute);
 
+  private _queryParams = toSignal(this._route.queryParamMap, {
+    initialValue: convertToParamMap({}),
+  });
   public cdnUrl = environment.cdnUrl;
 
   //Signals para filtros.
@@ -55,29 +64,34 @@ export class HomePage implements OnInit {
 
   public subcategoriasResource = resource({
     defaultValue: [] as Subcategoria[],
-    loader: async () => {
-      const categoria = this.categoriaSeleccionada();
-      if (!categoria) return this._subcategoriaService.getAll();
-      const paginado = await this._subcategoriaService.getBy({
-        queryParams: { id_categoria: categoria.id_categoria },
-        pathParams: { id_categoria: categoria.id_categoria },
-      });
-      return paginado.data;
+    params: () => ({ id_categoria: this.categoriaSeleccionada()?.id_categoria }),
+    loader: async ({ params }) => {
+      const { id_categoria } = params;
+
+      const current = this._router.currentNavigation();
+      console.log({ current });
+      if (!id_categoria) return [];
+      return this._subcategoriaService.getAll({ id_categoria });
     },
   });
 
   public etiquetasResource = resource({
     defaultValue: [] as Etiqueta[],
-    loader: async () => {
-      const categoria = this.categoriaSeleccionada();
-      const subcategoria = this.subcategoriaSeleccionada();
+
+    params: () => ({
+      id_categoria: this.categoriaSeleccionada()?.id_categoria,
+      id_subcategoria: this.subcategoriaSeleccionada()?.id_subcategoria,
+    }),
+    loader: async ({ params }) => {
+      const { id_categoria, id_subcategoria } = params;
       const queryParams: QueryParams = {};
-      if (categoria) queryParams['id_categoria'] = categoria.id_categoria;
-      if (subcategoria) queryParams['id_subcategoria'] = subcategoria.id_subcategoria;
+      if (id_categoria) queryParams['id_categoria'] = id_categoria;
+      if (id_subcategoria) queryParams['id_subcategoria'] = id_subcategoria;
       if (Object.keys(queryParams).length === 0) return this._etiquetaService.getAll();
       const paginado = await this._etiquetaService.getBy({
         queryParams,
       });
+      console.log({ paginado });
       return paginado.data;
     },
   });
@@ -121,6 +135,7 @@ export class HomePage implements OnInit {
       { label: 'Menor a mayor precio', value: 'precio' },
       { label: 'Mayor a menor precio', value: '!precio' },
     ];
+    console.log({ queryParams: this._queryParams() });
   }
 
   public agregarAlCarrito(producto: any) {
@@ -139,5 +154,9 @@ export class HomePage implements OnInit {
       this.sortField.set(value);
       this.sortKey.set(value);
     }
+  }
+
+  public log(m: any) {
+    console.log(m);
   }
 }
