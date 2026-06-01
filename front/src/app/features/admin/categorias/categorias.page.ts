@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CategoriasService } from '@shared/services/categorias.service';
+import { CategoriasService } from '@shared/services/admin/categorias.service';
 import { TableModule } from 'primeng/table';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { AdminTable } from '@shared/components/admin-table/admin.table';

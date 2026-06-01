@@ -1,11 +1,15 @@
 <div class="card">
   <p-dataview
     #dv
-    [value]="this.productosResource.value()"
+    [value]="this.productosResource.value()?.data"
     [layout]="this.layout()"
     [paginator]="true"
-    [rows]="this.rows()"
+    [rows]="this.limit()"
+    [first]="this.first()"
+    [totalRecords]="30"
+    [lazy]="true"
     [rowsPerPageOptions]="[5, 10, 15]"
+    (onPage)="this.onPageChange($event)"
     [sortField]="this.sortField()"
     [sortOrder]="this.sortOrder()"
   >
@@ -52,7 +56,8 @@
           <p-select
             [options]="this.categoriasResource.value()"
             [(ngModel)]="this.categoriaSeleccionada"
-            optionLabel="nombre"
+            optionLabel="slug_categoria"
+            optionValue="slug_categoria"
             appendTo="body"
             class="w-full"
             [showClear]="true"
@@ -61,7 +66,7 @@
             <ng-template let-categoria #item>
               <div class="flex items-center gap-2">
                 <i [class]="categoria.icono" style="font-size: 1.2rem"></i>
-                <div>{{ categoria.nombre }}</div>
+                <div>{{ categoria.slug_categoria }}</div>
               </div>
             </ng-template>
           </p-select>
@@ -69,7 +74,8 @@
           <p-select
             [options]="this.subcategoriasResource.value()"
             [(ngModel)]="subcategoriaSeleccionada"
-            optionLabel="nombre"
+            optionLabel="slug_subcategoria"
+            optionValue="slug_subcategoria"
             appendTo="body"
             class="w-full"
             [showClear]="true"

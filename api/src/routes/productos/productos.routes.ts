@@ -1,7 +1,7 @@
-import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
+import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { productoRepository } from '@repositories/producto.repository.js';
 
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { DeAcaErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
 import { Producto } from '@schemas/producto.schema.js';
 
 const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -12,15 +12,15 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
       description: `
         Devuelve el listado completo de productores registrados. 
       `,
+      query: DeAcaQueryString,
       response: {
-        200: Type.Array(Producto, { description: 'Listado de productos con filtrado y paginación.' }),
+        200: DeAcaListResponse(Producto),
         500: DeAcaErrorResponse,
       },
     },
     // onRequest : //FIXME: Solo para admin.
-    handler: async function (req, reply) {
-      //FIXME: Eventualmente esto no conviene que devuelva TODO. paginar.
-      return productoRepository.getAll();
+    handler: async (req, reply) => {
+      return productoRepository.getBy(req.query); //Paginado
     },
   });
 };

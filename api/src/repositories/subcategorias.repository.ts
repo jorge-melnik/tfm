@@ -23,16 +23,19 @@ export class SubcategoriasRepositoryClass extends BaseRepository<Subcategoria> {
     super();
   }
 
-  async getEtiquetas(id_categoria: number, id_subcategoria: number): Promise<Etiqueta[]> {
+  async getEtiquetas(categoria: number | string, subcategoria: number | string): Promise<Etiqueta[]> {
+    const claveCategoria = typeof categoria === 'number' ? 'id_categoria' : 'slug_categoria';
+    const claveSubcategoria = typeof subcategoria === 'number' ? 'id_subcategoria' : 'slug_subcategoria';
     const query = `
-      SELECT E.* 
+      SELECT E.* , SC.slug_subcategoria, C.slug_categoria
       FROM public.subcategorias SC
+      JOIN public.categorias C ON SC.id_categoria = C.id_categoria
       JOIN public.subcategoria_etiquetas SE ON SE.id_subcategoria = SC.id_subcategoria
       JOIN public.etiquetas E ON E.id_etiqueta = SE.id_etiqueta
-      WHERE SC.id_categoria = $1 AND SC.id_subcategoria=$2
+      WHERE C.${claveCategoria} = $1 AND SC.${claveSubcategoria}=$2
       ;
     `;
-    const res = await this.executor.query(query, [id_categoria, id_subcategoria]);
+    const res = await this.executor.query(query, [categoria, subcategoria]);
     return res.rows;
   }
 

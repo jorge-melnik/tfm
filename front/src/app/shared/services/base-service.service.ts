@@ -30,8 +30,10 @@ export abstract class BaseService<T> implements CrudServiceInterface<T> {
       if (!options?.pagination.page || !options?.pagination.limit)
         throw new Error('Tienes que especificar page y limit.');
       const { page, limit, orderBy, orderDirection } = options?.pagination;
-      params.set('page', page.toString()).set('limit', limit.toString());
-
+      console.log(options?.pagination);
+      params = params.set('page', page);
+      params = params.set('limit', limit);
+      console.log({ params });
       if (orderBy) {
         params = params.set('orderBy', orderBy);
       }

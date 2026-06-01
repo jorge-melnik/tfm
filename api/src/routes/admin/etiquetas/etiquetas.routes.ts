@@ -3,7 +3,7 @@ import { etiquetasRepository } from '@repositories/etiquetas.repository.js';
 import { Etiqueta } from '@schemas/categoria.schema.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 
-const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
+const rutasAdminEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
     schema: {
       tags: ['Admin: Etiquetas'],
@@ -114,4 +114,4 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
   });
 };
 
-export default rutasEtiquetas;
+export default rutasAdminEtiquetas;

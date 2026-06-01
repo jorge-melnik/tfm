@@ -40,7 +40,7 @@ Estas subcategorias pueden ser usadas en los productos.
       },
     },
     handler: async function (req, reply) {
-      return subcategoriasRepository.getBy({ id_categoria: req.params.id_categoria });
+      return (await subcategoriasRepository.getBy({ id_categoria: req.params.id_categoria })).data;
     },
   });
 

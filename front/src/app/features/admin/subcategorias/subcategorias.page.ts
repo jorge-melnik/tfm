@@ -1,5 +1,5 @@
 import { Component, inject, model, resource } from '@angular/core';
-import { CategoriasService } from '@shared/services/categorias.service';
+import { CategoriasService } from '@shared/services/admin/categorias.service';
 import { TableModule } from 'primeng/table';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { AdminTable } from '@shared/components/admin-table/admin.table';
@@ -9,12 +9,12 @@ import { CommonModule } from '@angular/common';
 import { TableColumn } from '@shared/types/util';
 import { AdminBasePage } from '../admin-base.page';
 import { Categoria, Subcategoria } from '@shared/types/categoria';
-import { SubcategoriasService } from '@shared/services/subcategorias.service';
+import { SubcategoriasService } from '@shared/services/admin/subcategorias.service';
 import { firstValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@env/environment';
 import { Etiqueta } from '@shared/types/etiqueta';
-import { EtiquetasService } from '@shared/services/etiquetas.service';
+import { EtiquetasService } from '@shared/services/admin/etiquetas.service';
 
 @Component({
   selector: 'app-categorias',

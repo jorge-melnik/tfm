@@ -2,11 +2,6 @@ import { Routes } from '@angular/router';
 
 export const consumidorRoutes: Routes = [
   {
-    path: '',
-    title: 'Consumidor',
-    loadComponent: () => import('@features/consumidor/home/home.page').then((m) => m.HomePage),
-  },
-  {
     path: 'carrito',
     title: 'Carrito',
     loadComponent: () =>
@@ -17,5 +12,27 @@ export const consumidorRoutes: Routes = [
     title: 'Compras',
     loadComponent: () =>
       import('@features/consumidor/compras/compras.page').then((m) => m.ComprasPage),
+  },
+  {
+    path: '',
+    title: 'Consumidor',
+    children: [
+      {
+        path: '',
+        title: 'Consumidor',
+        loadComponent: () => import('@features/consumidor/home/home.page').then((m) => m.HomePage),
+      },
+
+      {
+        path: ':slug_categoria/:slug_subcategoria',
+        title: 'Consumidor',
+        loadComponent: () => import('@features/consumidor/home/home.page').then((m) => m.HomePage),
+      },
+      {
+        path: ':slug_categoria',
+        title: 'Consumidor',
+        loadComponent: () => import('@features/consumidor/home/home.page').then((m) => m.HomePage),
+      },
+    ],
   },
 ];

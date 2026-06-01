@@ -1,6 +1,6 @@
 import { myPool } from '@database/pool.js';
 import { DeAcaBadRequest, DeAcaInternal, DeAcaNotFound } from '@errors/response.errors.js';
-import { PaginationOptions } from '@schemas/pagination.schema.js';
+import { DeAcaListResponseType, keyGenericas } from '@schemas/core.schemas.js';
 import { Pool, PoolClient } from 'pg';
 
 interface DatosBase {
@@ -55,19 +55,23 @@ export abstract class BaseReadRepository<T extends DatosBase> {
    * @returns
    */
   async getAll(): Promise<T[]> {
-    return this.getBy();
+    const res = await this.executor.query(this.baseQuery);
+    return res.rows;
   }
 
-  /**
-   *
-   * @param filters permite agregar condiciones a la consulta.
-   * @param pagination permite paginar.
-   * @returns
-   */
-  async getBy(filters: Partial<T> = {}, pagination?: PaginationOptions): Promise<T[]> {
+  async getBy(routeQuery: any = {}): Promise<DeAcaListResponseType<T>> {
+    console.log({ routeQuery });
+    const { limit, page, sort, sort_direction } = routeQuery;
+    const filters: Partial<T> = {};
+    for (const [key, value] of Object.entries(routeQuery)) {
+      if (!keyGenericas.includes(key)) {
+        filters[key as keyof T] = value as any;
+      }
+    }
+
     const keys = Object.keys(filters);
     const values = Object.values(filters);
-
+    console.log({ keys, values });
     // Construimos las condiciones solo si hay filtros
     let condiciones = '';
     if (keys.length > 0) {
@@ -84,33 +88,49 @@ export abstract class BaseReadRepository<T extends DatosBase> {
 
     let query = `${this.baseQuery} ${condiciones}`;
 
-    if (pagination?.limit && pagination?.page) {
-      const direction = pagination?.orderDirection?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'; //Así safamos de codigo no deseado en order direction
-      const sortField = pagination?.orderBy || this.idName;
+    const countQuery = `SELECT COUNT(*)::INT as total FROM (${this.baseQuery} ${condiciones}) AS count_query`;
+    const countValues = [...values];
+
+    let pageParseado = 1;
+    let limitParseado = 10;
+    if (limit && page) {
+      const direction = sort_direction?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'; //Así safamos de codigo no deseado en order direction
+      const sortField = sort || this.idName;
       const safeSortField = sortField.replace(/[^a-zA-Z0-9_]/g, ''); //Eliminamos todos los caracteres que no son validos en un nombre de columna.
       query += ` ORDER BY "${safeSortField}" ${direction}`; //Entrecomillamos sortField para que lo tome como una columna y evitar código no deseado
-      const limit = parseInt(pagination.limit.toString(), 10) || 10; //Me aseguro que limit no traiga codigo no deseado
-      const page = parseInt(pagination.page.toString(), 10) || 1; //Me aseguro que page no traiga codigo no deseado
-      const offset = (page - 1) * limit;
+      limitParseado = parseInt(limit.toString(), 10) || limitParseado; //Me aseguro que limit no traiga codigo no deseado
+      pageParseado = parseInt(page.toString(), 10) || pageParseado; //Me aseguro que page no traiga codigo no deseado
+      const offset = (pageParseado - 1) * limitParseado;
       query += ` LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
       values.push(limit, offset);
     }
-
     const res = await this.executor.query(query, values);
-    return res.rows as T[];
-  }
 
+    const countRes = await this.executor.query(countQuery, countValues);
+    const totalRegistros = countRes.rows[0]?.total || 0;
+    const lastPage = Math.ceil(totalRegistros / limitParseado) || 1;
+
+    return {
+      data: res.rows as T[],
+      meta: {
+        total: totalRegistros,
+        page: pageParseado,
+        limit: limitParseado,
+        last_page: lastPage,
+      },
+    };
+  }
   async getOneBy(filters: Partial<T>): Promise<T> {
     const keys = Object.keys(filters);
     if (keys.length === 0) throw new DeAcaBadRequest('No especificaste el filtro');
-    const rows: T[] = await this.getBy(filters, { limit: 2, page: 1 }); //Pedimos 2 para que pueda fallar si viene más de una
-    if (rows.length > 1)
+    const { data } = (await this.getBy({ ...filters, limit: 2, page: 1 })) as { data: T[] };
+    if (data.length > 1)
       throw new DeAcaInternal('Se obtuvo más de un valor con ese filtro. Se esperaba uno.');
 
-    if (rows.length === 0) {
+    if (data.length === 0) {
       throw new DeAcaNotFound(`No existe registro con ${JSON.stringify(filters)}`);
     }
-    return rows[0];
+    return data[0];
   }
 
   async exists(id: string | number): Promise<boolean> {

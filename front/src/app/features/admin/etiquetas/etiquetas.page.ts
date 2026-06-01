@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { EtiquetasService } from '@shared/services/etiquetas.service';
+import { EtiquetasService } from '@shared/services/admin/etiquetas.service';
 import { AdminTable } from '@shared/components/admin-table/admin.table';
 import { TableColumn } from '@shared/types/util';
 import { Etiqueta } from '@shared/types/etiqueta';

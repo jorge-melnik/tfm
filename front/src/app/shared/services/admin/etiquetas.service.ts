@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BaseService } from './base-service.service';
+import { BaseService } from '../base-service.service';
 import { environment } from '@env/environment';
 import { Etiqueta } from '@shared/types/etiqueta';
 
