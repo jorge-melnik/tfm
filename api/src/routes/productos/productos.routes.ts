@@ -12,7 +12,7 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
       description: `
         Devuelve el listado completo de productores registrados. 
       `,
-      query: DeAcaQueryString,
+      querystring: DeAcaQueryString,
       response: {
         200: DeAcaListResponse(Producto),
         500: DeAcaErrorResponse,
@@ -20,6 +20,7 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
     },
     // onRequest : //FIXME: Solo para admin.
     handler: async (req, reply) => {
+      console.log(req.query);
       return productoRepository.getBy(req.query); //Paginado
     },
   });

@@ -1,11 +1,15 @@
 export interface PaginatedResponse<T> {
   data: T[];
-  total: number;
-  lastPage: number;
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    last_page: number;
+  };
 }
 
 export type Primitive = string | number | boolean;
-export type QueryParams = Record<string, Primitive | Primitive[]>;
+export type ApiQueryParams = Record<string, Primitive | Primitive[]>;
 export type PathParams = Record<string, number | string>;
 export interface Pagination {
   page?: number;
@@ -16,6 +20,6 @@ export interface Pagination {
 
 export interface DeAcaRequestOptions {
   pathParams?: PathParams;
-  queryParams?: QueryParams;
+  queryParams?: ApiQueryParams;
   pagination?: Pagination;
 }

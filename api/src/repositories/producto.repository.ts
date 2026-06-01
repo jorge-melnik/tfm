@@ -36,12 +36,15 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
       SELECT 
         P.*,
         DP.username,
+        SC.slug_subcategoria, C.slug_categoria,
         COALESCE(ME.id_etiquetas, '[]') AS id_etiquetas,
         COALESCE(ME.etiquetas, '[]') AS etiquetas,
         COALESCE(MF.fotos, '[]') AS fotos
       FROM productos P JOIN productores PP ON PP.id_productor = P.id_productor
       JOIN public.usuarios U ON U.id_usuario = PP.id_productor
       JOIN public.datos_personales DP ON DP.id_usuario = U.id_usuario
+      JOIN public.subcategorias SC ON SC.id_subcategoria = P.id_subcategoria
+      JOIN public.categorias C ON C.id_categoria=SC.id_categoria
       LEFT JOIN MIS_ETIQUETAS ME ON ME.id_producto = P.id_producto
       LEFT JOIN MIS_FOTOS MF ON MF.id_producto = P.id_producto
     )

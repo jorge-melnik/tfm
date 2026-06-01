@@ -6,7 +6,7 @@ import { AdicionalesConsumidor } from '@schemas/usuarios.schema.js';
 export class ProductorRepositoryClass extends BaseRepository<Productor> {
   protected readonly tableName = 'productores';
   protected readonly idName = 'id_productor';
-  protected readonly slugName?: string = 'slug_productor'; //No ponemos acá para que no intente generarlo. Pero es el username
+  protected readonly slugName?: string = 'slug_producto'; //No ponemos acá para que no intente generarlo. Pero es el username
 
   protected readonly baseQuery = `
     SELECT P.*, DP.*

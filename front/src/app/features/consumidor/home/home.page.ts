@@ -6,7 +6,6 @@ import {
   InputSignal,
   OnInit,
   resource,
-  Signal,
   signal,
 } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
@@ -15,24 +14,23 @@ import { TagModule } from 'primeng/tag';
 import { SelectButton } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
 import { ProductosService } from '@shared/services/productos.service';
-import { Producto } from '@shared/types/producto';
 import { environment } from '@env/environment';
 import { ProductoCard } from '@shared/components/producto-card/producto.card';
-import { SelectItem } from 'primeng/select';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { toSignal } from '@angular/core/rxjs-interop';
-interface SortOption {
-  label: string;
-  value: string;
-}
 import { SelectModule } from 'primeng/select';
 import { CategoriasService } from '@shared/services/categorias.service';
 import { Categoria, Subcategoria } from '@shared/types/categoria';
 import { SubcategoriasService } from '@shared/services/subcategorias.service';
-import { PathParams, QueryParams } from '@shared/types/api.types';
+import { ApiQueryParams } from '@shared/types/api.types';
 import { Etiqueta } from '@shared/types/etiqueta';
 import { ActivatedRoute, convertToParamMap, ParamMap, Router } from '@angular/router';
-import { PaginatorState } from 'primeng/paginator';
+import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
+
+interface SortOption {
+  label: string;
+  value: string;
+}
 
 @Component({
   selector: 'app-home-consumidor',
@@ -53,6 +51,7 @@ export class HomePage implements OnInit {
   private readonly _productoService = inject(ProductosService);
   private readonly _categoriaService = inject(CategoriasService);
   private readonly _subcategoriaService = inject(SubcategoriasService);
+  private readonly _preferenciasStore = inject(PreferenciasStore);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
 
@@ -60,6 +59,7 @@ export class HomePage implements OnInit {
     initialValue: convertToParamMap({}),
   });
 
+  //Params
   public slug_categoria: InputSignal<string | undefined> = input();
   public slug_subcategoria: InputSignal<string | undefined> = input();
 
@@ -93,12 +93,7 @@ export class HomePage implements OnInit {
       slug_subcategoria: this._pathParams().get('slug_subcategoria'),
     }),
     loader: async ({ params }) => {
-      console.log({ params });
       const { slug_categoria, slug_subcategoria } = params;
-      console.log({
-        slug_categoria,
-        slug_subcategoria,
-      });
       if (!slug_categoria) return [];
       if (!slug_subcategoria) return this._categoriaService.getEtiquetas(slug_categoria);
 
@@ -109,19 +104,19 @@ export class HomePage implements OnInit {
 
   public productosResource = resource({
     params: () => ({
-      id_categoria: this._pathParams().get('id_categoria'),
-      id_subcategoria: this._pathParams().get('id_subcategoria'),
+      slug_categoria: this._pathParams().get('slug_categoria'),
+      slug_subcategoria: this._pathParams().get('slug_subcategoria'),
       limit: this.limit(),
       page: this.page(),
     }),
     loader: async ({ params }) => {
-      const { id_categoria, id_subcategoria, limit, page } = params;
-      const queryParams: QueryParams = {};
+      const { slug_categoria, slug_subcategoria, limit, page } = params;
+      const queryParams: ApiQueryParams = {};
 
-      const pagination: QueryParams = { limit, page };
+      const pagination: ApiQueryParams = { limit, page };
 
-      if (id_categoria) queryParams['id_categoria'] = id_categoria;
-      if (id_subcategoria) queryParams['id_subcategoria'] = id_subcategoria;
+      if (slug_categoria) queryParams['slug_categoria'] = slug_categoria;
+      if (slug_subcategoria) queryParams['slug_subcategoria'] = slug_subcategoria;
 
       return this._productoService.getBy({ queryParams, pagination });
     },
@@ -131,7 +126,7 @@ export class HomePage implements OnInit {
   public layout = signal<'grid' | 'list'>('grid'); // Estado del diseño (tarjeta o lista)
 
   public page = signal(1);
-  public limit = signal(10);
+  public limit = this._preferenciasStore.limit;
   public first = computed(() => (this.page() - 1) * this.limit());
   public sortKey = signal<string>('');
   public sortOrder = signal<number>(0);
@@ -165,13 +160,26 @@ export class HomePage implements OnInit {
     }
   }
 
-  public log(m: any) {
-    console.log(m);
-  }
-
   onPageChange(event: any) {
-    this.limit.set(event.rows);
+    this._preferenciasStore.setLimit(event.rows);
     const nuevaPagina = event.first / event.rows + 1;
     this.page.set(nuevaPagina);
+  }
+
+  public onCategoriaChange(slug: string | null) {
+    this.page.set(1);
+    if (!slug) {
+      this._router.navigate(['consumidor']);
+      return;
+    }
+    this._router.navigate(['consumidor', slug]);
+  }
+
+  public onSubcategoriaChange(slug_categoria: string | null, slug_subcategoria: string | null) {
+    this.page.set(1);
+    if (!slug_subcategoria || !slug_categoria) {
+      return this.onCategoriaChange(slug_categoria);
+    }
+    this._router.navigate(['consumidor', slug_categoria, slug_subcategoria]);
   }
 }
