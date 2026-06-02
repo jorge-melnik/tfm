@@ -113,11 +113,15 @@ export class HomePage implements OnInit {
       etiquetas: this._queryParams().getAll('etiquetas'),
       limit: this.limit(),
       page: this.page(),
+      sort: this.sortField(),
+      sort_direction: this.sortOrder() === -1 ? 'DESC' : 'ASC',
     }),
     loader: async ({ params }) => {
-      const { slug_categoria, slug_subcategoria, etiquetas, limit, page } = params;
+      const { slug_categoria, slug_subcategoria, etiquetas, limit, page, sort, sort_direction } =
+        params;
       const queryParams: ApiQueryParams = {};
-      const pagination: ApiQueryParams = { limit, page };
+      const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
+      console.log({ pagination });
 
       if (slug_categoria) queryParams['slug_categoria'] = slug_categoria;
       if (slug_subcategoria) queryParams['slug_subcategoria'] = slug_subcategoria;
@@ -152,16 +156,21 @@ export class HomePage implements OnInit {
   }
 
   public onSortChange(event: any) {
-    const value = event.value;
+    const value = event.value; // ej: 'precio' o '!precio'
+    this.page.set(1);
+
+    if (!value) {
+      this.sortField.set('');
+      this.sortOrder.set(1);
+      return;
+    }
 
     if (value.indexOf('!') === 0) {
-      this.sortOrder.set(-1);
-      this.sortField.set(value.substring(1, value.length));
-      this.sortKey.set(value);
+      this.sortOrder.set(-1); // DESC
+      this.sortField.set(value.substring(1));
     } else {
-      this.sortOrder.set(1);
+      this.sortOrder.set(1); // ASC
       this.sortField.set(value);
-      this.sortKey.set(value);
     }
   }
 

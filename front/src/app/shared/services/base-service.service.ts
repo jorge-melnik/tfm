@@ -29,16 +29,16 @@ export abstract class BaseService<T> implements CrudServiceInterface<T> {
       if (!options?.pagination) throw new Error('Tienes que especificar la paginación.');
       if (!options?.pagination.page || !options?.pagination.limit)
         throw new Error('Tienes que especificar page y limit.');
-      const { page, limit, orderBy, orderDirection } = options?.pagination;
-      console.log(options?.pagination);
+      const { page, limit, sort, sort_direction } = options?.pagination;
+      console.log('PAGINATION: ', options?.pagination);
       params = params.set('page', page);
       params = params.set('limit', limit);
       console.log({ params });
-      if (orderBy) {
-        params = params.set('orderBy', orderBy);
+      if (sort) {
+        params = params.set('sort', sort);
       }
-      if (orderDirection) {
-        params = params.set('orderDirection', orderDirection);
+      if (sort_direction) {
+        params = params.set('sort_direction', sort_direction);
       }
     }
     if (options?.queryParams) {

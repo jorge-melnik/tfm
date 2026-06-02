@@ -14,8 +14,8 @@ export type PathParams = Record<string, number | string>;
 export interface Pagination {
   page?: number;
   limit?: number;
-  orderBy?: string;
-  orderDirection?: 'ASC' | 'DESC';
+  sort?: string;
+  sort_direction?: 'ASC' | 'DESC';
 }
 
 export interface DeAcaRequestOptions {
