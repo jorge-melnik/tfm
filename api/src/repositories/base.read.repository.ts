@@ -82,7 +82,7 @@ export abstract class BaseReadRepository<T extends DatosBase> {
             if (!keySegura) throw new DeAcaBadRequest('Clave de filtrado no válida'); //Si la linea anterior dejó un string vacío.
 
             if (Array.isArray(values[index])) {
-              return `"${keySegura}" && $${index + 1}::TEXT[]`; //ARRAY[1,4,3] && ARRAY[2,1] → t
+              return `"${keySegura}" && $${index + 1}::TEXT[]`; //ARRAY[1,4,3] && ARRAY[2,1] → t https://www.postgresql.org/docs/current/functions-array.html
             }
             return `"${keySegura}" = $${index + 1}`; //Entrecomillamos para que tome todo lo entrecomillado como el nombre de la columna.
           })
