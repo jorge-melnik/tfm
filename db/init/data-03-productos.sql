@@ -364,5 +364,154 @@ BEGIN
     (v_id_juan_ambos, currval('productos_id_producto_seq'), 9),   -- Artesanal
     (v_id_juan_ambos, currval('productos_id_producto_seq'), 13);  -- Biodegradable
 
+    -- Producto 31: Frutillas Agroecológicas
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, slug_producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_juan_huerta, 2, 'Frutillas de Huerta x kg', 'frutillas-de-huerta-kg', 'Frutillas dulces y carnosas cultivadas en suelo vivo sin pesticidas químicos.', 280.00, 15);
+    INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'productos/frutillas.webp');
+    INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
+    (v_id_juan_huerta, currval('productos_id_producto_seq'), 1), (v_id_juan_huerta, currval('productos_id_producto_seq'), 3), 
+    (v_id_juan_huerta, currval('productos_id_producto_seq'), 19), (v_id_juan_huerta, currval('productos_id_producto_seq'), 2);
+
+    -- Producto 32: Limón Sutil de Estación
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, slug_producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_juan_huerta, 2, 'Limón Sutil Agroecológico kg', 'limon-sutil-agroecologico-kg', 'Limones muy jugosos de producción propia, ideales para aderezos y jugos naturales.', 150.00, 40);
+    INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'productos/limones.webp');
+    INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
+    (v_id_juan_huerta, currval('productos_id_producto_seq'), 1), (v_id_juan_huerta, currval('productos_id_producto_seq'), 3), (v_id_juan_huerta, currval('productos_id_producto_seq'), 19);
+
+    -----------------------------------------------------------------------------------------
+    -- SUBCATEGORÍA 5: LÁCTEOS ARTESANALES (Artesano - Juan Ambos)
+    -- Etiquetas permitidas: Artesanal (9), Sin lactosa (16), Sin gluten (14), Sin conservantes (10)
+    -----------------------------------------------------------------------------------------
+    
+    -- Producto 33: Queso Criollo Estacionado
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, slug_producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_juan_ambos, 5, 'Queso Criollo Artesanal kg', 'queso-criollo-artesanal-kg', 'Queso de leche cruda de vacas de pastoreo, madurado de forma natural.', 680.00, 12);
+    INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES (v_id_juan_ambos, currval('productos_id_producto_seq'), 1, 'productos/queso_criollo.webp');
+    INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
+    (v_id_juan_ambos, currval('productos_id_producto_seq'), 9), (v_id_juan_ambos, currval('productos_id_producto_seq'), 14), (v_id_juan_ambos, currval('productos_id_producto_seq'), 10);
+
+    -----------------------------------------------------------------------------------------
+    -- SUBCATEGORÍA 7: HIERBAS MEDICINALES (Huertero - Juan Huerta)
+    -- Etiquetas permitidas: Cosecha silvestre (8), Sin aditivos artificiales (11), Agroecológico (6)
+    -----------------------------------------------------------------------------------------
+    
+    -- Producto 34: Carqueja Deshidratada para Infusión
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, slug_producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_juan_huerta, 7, 'Hierba Carqueja Seca 100g', 'hierba-carqueja-seca-100g', 'Hojas recolectadas a mano en ambientes serranos puros y secadas a la sombra.', 90.00, 30);
+    INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'productos/carqueja.webp');
+    INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
+    (v_id_juan_huerta, currval('productos_id_producto_seq'), 8), (v_id_juan_huerta, currval('productos_id_producto_seq'), 11), (v_id_juan_huerta, currval('productos_id_producto_seq'), 6);
+
+    -- Producto 35: Mix de Hierbas Relajantes
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, slug_producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_juan_huerta, 7, 'Mix Infusión Calma Intensa', 'mix-infusion-calma-intensa', 'Combinación equilibrada de melisa, pasionaria y manzanilla agroecológica.', 120.00, 25);
+    INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'productos/mix_calma.webp');
+    INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
+    (v_id_juan_huerta, currval('productos_id_producto_seq'), 11), (v_id_juan_huerta, currval('productos_id_producto_seq'), 6);
+
+    -----------------------------------------------------------------------------------------
+    -- SUBCATEGORÍA 8: SEMILLAS CRIOLLAS (Huertero - Juan Huerta)
+    -- Etiquetas permitidas: Local (1), Sin agroquímicos (3), Producción familiar (2)
+    -----------------------------------------------------------------------------------------
+    
+    -- Producto 36: Semillas de Maíz Amarillo Criollo
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, slug_producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_juan_huerta, 8, 'Semillas Maíz Criollo 200g', 'semillas-maiz-criollo-200g', 'Semilla nativa multiplicada agroecológicamente para siembra y conservación de variedad.', 160.00, 50);
+    INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'productos/semillas_maiz.webp');
+    INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
+    (v_id_juan_huerta, currval('productos_id_producto_seq'), 1), (v_id_juan_huerta, currval('productos_id_producto_seq'), 3), (v_id_juan_huerta, currval('productos_id_producto_seq'), 2);
+
+    -- Producto 37: Semillas de Zapallo Plomo Nativo
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, slug_producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_juan_huerta, 8, 'Semillas Zapallo Plomo x30u', 'semillas-zapallo-plomo-30u', 'Alta tasa de germinación, seleccionadas de los mejores frutos de la cosecha familiar.', 80.00, 40);
+    INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'productos/semillas_zapallo.webp');
+    INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
+    (v_id_juan_huerta, currval('productos_id_producto_seq'), 1), (v_id_juan_huerta, currval('productos_id_producto_seq'), 3), (v_id_juan_huerta, currval('productos_id_producto_seq'), 2);
+
+    -----------------------------------------------------------------------------------------
+    -- SUBCATEGORÍA 10: FERMENTADOS (Artesano - Juan Ambos)
+    -- Etiquetas permitidas: Sin conservantes (10), Vegano (17), Artesanal (9)
+    -----------------------------------------------------------------------------------------
+    
+    -- Producto 38: Chucrut Tradicional Fermentado
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, slug_producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_juan_ambos, 10, 'Chucrut Vivo Artesanal 360g', 'chucrut-vivo-artesanal-360g', 'Repollo blanco fermentado en agua y sal marina. Probiótico natural sin pasteurizar.', 290.00, 15);
+    INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES (v_id_juan_ambos, currval('productos_id_producto_seq'), 1, 'productos/chucrut.webp');
+    INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
+    (v_id_juan_ambos, currval('productos_id_producto_seq'), 10), (v_id_juan_ambos, currval('productos_id_producto_seq'), 17), (v_id_juan_ambos, currval('productos_id_producto_seq'), 9);
+
+    -----------------------------------------------------------------------------------------
+    -- SUBCATEGORÍA 12: TINTURAS MADRE (Artesano - Juan Ambos)
+    -- Etiquetas permitidas: Cosecha silvestre (8), Materiales naturales (12), Artesanal (9)
+    -----------------------------------------------------------------------------------------
+    
+    -- Producto 39: Tintura Madre de Propóleo
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, slug_producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_juan_ambos, 12, 'Tintura Madre Propóleo Puro', 'tintura-madre-propoleo-puro', 'Extracto hidroalcohólico concentrado, excelente antibiótico e inmunomodulador natural.', 320.00, 20);
+    INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES (v_id_juan_ambos, currval('productos_id_producto_seq'), 1, 'productos/tintura_propoleo.webp');
+    INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
+    (v_id_juan_ambos, currval('productos_id_producto_seq'), 8), (v_id_juan_ambos, currval('productos_id_producto_seq'), 12), (v_id_juan_ambos, currval('productos_id_producto_seq'), 9);
+
+    -- Producto 40: Tintura Madre de Diente de León
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, slug_producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_juan_ambos, 12, 'Tintura Diente de León 50ml', 'tintura-diente-de-leon-50ml', 'Depurativo hepático natural elaborado artesanalmente a partir de raíces silvestres.', 260.00, 14);
+    INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES (v_id_juan_ambos, currval('productos_id_producto_seq'), 1, 'productos/tintura_diente.webp');
+    INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
+    (v_id_juan_ambos, currval('productos_id_producto_seq'), 8), (v_id_juan_ambos, currval('productos_id_producto_seq'), 12), (v_id_juan_ambos, currval('productos_id_producto_seq'), 9);
+
+    -----------------------------------------------------------------------------------------
+    -- SUBCATEGORÍA 13: BAMBÚ (Artesano - Juan Ambos)
+    -- Etiquetas permitidas: Materiales naturales (12), Biodegradable (13), Artesanal (9)
+    -----------------------------------------------------------------------------------------
+    
+    -- Producto 41: Sorbetes Reutilizables de Bambú
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, slug_producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_juan_ambos, 13, 'Pack 4 Sorbetes de Bambú', 'pack-4-sorbetes-bambu', 'Sorbetes pulidos a mano ecológicos, alternativos al plástico, incluye cepillo limpiador.', 180.00, 30);
+    INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES (v_id_juan_ambos, currval('productos_id_producto_seq'), 1, 'productos/sorbetes_bambu.webp');
+    INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
+    (v_id_juan_ambos, currval('productos_id_producto_seq'), 12), (v_id_juan_ambos, currval('productos_id_producto_seq'), 13), (v_id_juan_ambos, currval('productos_id_producto_seq'), 9);
+
+    -- Producto 42: Jabonera Rustica de Caña Bambú
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, slug_producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_juan_ambos, 13, 'Jabonera de Bambú Drenante', 'jabonera-bambu-drenante', 'Diseño ranurado que optimiza la ventilación de tus cosméticos sólidos impidiendo hongos.', 220.00, 15);
+    INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES (v_id_juan_ambos, currval('productos_id_producto_seq'), 1, 'productos/jabonera_bambu.webp');
+    INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
+    (v_id_juan_ambos, currval('productos_id_producto_seq'), 12), (v_id_juan_ambos, currval('productos_id_producto_seq'), 13), (v_id_juan_ambos, currval('productos_id_producto_seq'), 9);
+
+    -----------------------------------------------------------------------------------------
+    -- SUBCATEGORÍA 18: LOMBRICULTURA (Huertero - Juan Huerta)
+    -- Etiquetas permitidas: Biodegradable (13), Local (1), Producción familiar (2)
+    -----------------------------------------------------------------------------------------
+    
+    -- Producto 43: Núcleo de Lombrices California Rojas
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, slug_producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_juan_huerta, 18, 'Núcleo Lombrices Rojas x100u', 'nucleo-lombrices-rojas-100u', 'Lombrices adultas, juveniles y cocones en su propio ecosistema para iniciar tu compostera.', 350.00, 20);
+    INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'productos/lombrices.webp');
+    INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
+    (v_id_juan_huerta, currval('productos_id_producto_seq'), 13), (v_id_juan_huerta, currval('productos_id_producto_seq'), 1), (v_id_juan_huerta, currval('productos_id_producto_seq'), 2);
+
+    -----------------------------------------------------------------------------------------
+    -- SUBCATEGORÍA 19: INSUMOS AGROECOLÓGICOS (Huertero - Juan Huerta)
+    -- Etiquetas permitidas: Agroecológico (6), Sin agroquímicos (3), Local (1)
+    -----------------------------------------------------------------------------------------
+    
+    -- Producto 44: Jabón Potásico Concentrado
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, slug_producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_juan_huerta, 19, 'Jabón Potásico Neem 250cc', 'jabon-potasico-neem-250cc', 'Insecticida y acaricida natural orgánico preventivo para el control biológico de plagas.', 240.00, 25);
+    INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'productos/jabon_potasico.webp');
+    INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
+    (v_id_juan_huerta, currval('productos_id_producto_seq'), 6), (v_id_juan_huerta, currval('productos_id_producto_seq'), 3), (v_id_juan_huerta, currval('productos_id_producto_seq'), 1);
+
+    -- Producto 45: Purín de Ortiga Fermentado
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, slug_producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_juan_huerta, 19, 'Purín de Ortiga Bioestimulante', 'purin-ortiga-bioestimulante', 'Fortalece las defensas naturales y aporta nitrógeno asimilable a tus cultivos huerteros.', 180.00, 15);
+    INSERT INTO producto_imagenes (id_productor, id_producto, posicion, path) VALUES (v_id_juan_huerta, currval('productos_id_producto_seq'), 1, 'productos/purin_ortiga.webp');
+    INSERT INTO producto_etiquetas (id_productor, id_producto, id_etiqueta) VALUES 
+    (v_id_juan_huerta, currval('productos_id_producto_seq'), 6), (v_id_juan_huerta, currval('productos_id_producto_seq'), 3), (v_id_juan_huerta, currval('productos_id_producto_seq'), 1);
+
+    RAISE NOTICE '¡Padrón Completado! Se han cubierto todas las subcategorías con cuotas equilibradas y etiquetas coherentes.';
+
     RAISE NOTICE '¡Excelente! Se han cargado exitosamente los 30 productos con sus respectivas imágenes y etiquetas distribuidas de manera proporcional.';
 END $$;
+
