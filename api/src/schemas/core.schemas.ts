@@ -60,18 +60,18 @@ export const DeAcaQueryString = Type.Object({
   limit: Type.Optional(
     Type.Integer({ minimum: 1, maximum: 100, default: 10, description: 'Cantidad de "filas" por página.' }),
   ),
-  search: Type.Optional(
+  busqueda: Type.Optional(
     Type.String({
       maxLength: 100,
       description:
-        'Término de búsqueda en formato texto para buscar con ILIKE o LIKE en columnas como nombre, descripción, etc.',
+        'Término de búsqueda en formato texto para busqueda avanzada con el campo busqueda de la tabla.',
     }),
   ),
   sort: Type.Optional(Type.String({ description: 'Campo por el cual se esperar ordenar' })),
   sort_direction: Type.Optional(SortDirection),
 });
 
-export const keyGenericas = ['page', 'limit', 'search', 'sort', 'sort_direction'];
+export const keyGenericas = ['page', 'limit', 'sort', 'sort_direction'];
 
 export type DeAcaQueryString = Static<typeof DeAcaQueryString>;
 

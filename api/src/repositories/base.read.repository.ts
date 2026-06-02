@@ -70,6 +70,7 @@ export abstract class BaseReadRepository<T extends DatosBase> {
 
     const keys = Object.keys(filters);
     const values = Object.values(filters);
+    console.log({ filters });
 
     // Construimos las condiciones solo si hay filtros
     let condiciones = '';
@@ -81,6 +82,11 @@ export abstract class BaseReadRepository<T extends DatosBase> {
             const keySegura = key.replace(/[^a-zA-Z0-9_]/g, ''); //Borramos los caracteres que no son válidos en un nombre de columna.
             if (!keySegura) throw new DeAcaBadRequest('Clave de filtrado no válida'); //Si la linea anterior dejó un string vacío.
 
+            if (keySegura === 'busqueda') {
+              const textoOriginal = values[index] as string;
+              values[index] = this._formatTsQuery(textoOriginal);
+              return `"${keySegura}" @@ to_tsquery('spanish', $${index + 1})`; //Usamos el "Text Search Matching Operator": https://www.postgresql.org/docs/current/functions-textsearch.html
+            }
             if (Array.isArray(values[index])) {
               return `"${keySegura}" && $${index + 1}::TEXT[]`; //ARRAY[1,4,3] && ARRAY[2,1] → t https://www.postgresql.org/docs/current/functions-array.html
             }
@@ -90,8 +96,7 @@ export abstract class BaseReadRepository<T extends DatosBase> {
     }
 
     let query = `${this.baseQuery} ${condiciones}`;
-    console.log({ keys, values });
-    console.log({ query });
+    console.log({ condiciones });
     const countQuery = `SELECT COUNT(*)::INT as total FROM (${this.baseQuery} ${condiciones}) AS count_query`;
     const countValues = [...values];
 
@@ -141,5 +146,19 @@ export abstract class BaseReadRepository<T extends DatosBase> {
     const query = `SELECT 1 FROM ${this.tableName} WHERE ${this.idName} = $1`;
     const res = await this.executor.query(query, [id]);
     return res.rows.length === 1;
+  }
+
+  /**
+   * Prepara las cadenas para la busqueda avanzada
+   * @param texto
+   * @returns
+   */
+  private _formatTsQuery(texto: string): string {
+    return texto
+      .trim()
+      .split(/\s+/) // Separa por cualquier cantidad de espacios
+      .map((palabra) => `${palabra.replace(/[^a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ]/g, '')}:*`) // Limpia caracteres raros y agrega el prefijo :*
+      .filter((p) => p !== ':*') // Evita que queden elementos vacíos si metieron símbolos
+      .join(' & '); // Une con el operador AND
   }
 }

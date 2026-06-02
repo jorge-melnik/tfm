@@ -4,7 +4,7 @@ import { Injectable, signal } from '@angular/core';
   providedIn: 'root',
 })
 export class PreferenciasStore {
-  private _limit = signal<number>(10);
+  private _limit = signal<number>(12);
 
   public limit = this._limit.asReadonly(); //Esto es para que no vayan a cambiar la referencia de la signal.
 

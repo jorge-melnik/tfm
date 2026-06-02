@@ -115,10 +115,19 @@ export class HomePage implements OnInit {
       page: this.page(),
       sort: this.sortField(),
       sort_direction: this.sortOrder() === -1 ? 'DESC' : 'ASC',
+      busqueda: this.filtroBusqueda(),
     }),
     loader: async ({ params }) => {
-      const { slug_categoria, slug_subcategoria, etiquetas, limit, page, sort, sort_direction } =
-        params;
+      const {
+        slug_categoria,
+        slug_subcategoria,
+        etiquetas,
+        limit,
+        page,
+        sort,
+        sort_direction,
+        busqueda,
+      } = params;
       const queryParams: ApiQueryParams = {};
       const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
       console.log({ pagination });
@@ -126,6 +135,7 @@ export class HomePage implements OnInit {
       if (slug_categoria) queryParams['slug_categoria'] = slug_categoria;
       if (slug_subcategoria) queryParams['slug_subcategoria'] = slug_subcategoria;
       if (etiquetas) queryParams['etiquetas'] = etiquetas;
+      if (busqueda) queryParams['busqueda'] = busqueda;
 
       return this._productoService.getBy({ queryParams, pagination });
     },

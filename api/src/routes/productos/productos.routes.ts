@@ -8,9 +8,9 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
   fastify.get('/', {
     schema: {
       tags: ['Productos'],
-      summary: 'READ productores',
+      summary: 'READ productos',
       description: `
-        Devuelve el listado completo de productores registrados. 
+        Devuelve el listado completo de productos registrados. 
       `,
       querystring: Type.Intersect([
         DeAcaQueryString,
@@ -19,6 +19,7 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
           etiquetas: Type.Optional(Type.Array(Type.String())),
           slug_categoria: Type.Optional(Type.String()),
           slug_subcategoria: Type.Optional(Type.String()),
+          busqueda: Type.Optional(Type.String()),
         }),
       ]),
       response: {

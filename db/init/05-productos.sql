@@ -21,8 +21,14 @@ CREATE TABLE productos (
 
     fecha_eliminacion TIMESTAMP WITH TIME ZONE,
     activo BOOLEAN GENERATED ALWAYS AS (fecha_eliminacion IS NULL) STORED,
+    busqueda TSVECTOR GENERATED ALWAYS AS (
+        setweight(to_tsvector('spanish'::regconfig, COALESCE(nombre, '')), 'A') ||
+        setweight(to_tsvector('spanish'::regconfig, COALESCE(descripcion, '')), 'B')
+    ) STORED,
     PRIMARY KEY (id_productor, id_producto)
 );
+-- Indice para búsquedas avanzadas con el campo busqueda
+CREATE INDEX productos_busqueda_idx ON productos USING GIN (busqueda);
 
 CREATE TABLE producto_etiquetas (
     id_productor UUID NOT NULL,
