@@ -60,7 +60,6 @@ export abstract class BaseReadRepository<T extends DatosBase> {
   }
 
   async getBy(routeQuery: any = {}): Promise<DeAcaListResponseType<T>> {
-    console.log({ routeQuery });
     const { limit, page, sort, sort_direction } = routeQuery;
     const filters: Partial<T> = {};
     for (const [key, value] of Object.entries(routeQuery)) {
@@ -71,7 +70,7 @@ export abstract class BaseReadRepository<T extends DatosBase> {
 
     const keys = Object.keys(filters);
     const values = Object.values(filters);
-    console.log({ keys, values });
+
     // Construimos las condiciones solo si hay filtros
     let condiciones = '';
     if (keys.length > 0) {
@@ -81,13 +80,18 @@ export abstract class BaseReadRepository<T extends DatosBase> {
           .map((key, index) => {
             const keySegura = key.replace(/[^a-zA-Z0-9_]/g, ''); //Borramos los caracteres que no son válidos en un nombre de columna.
             if (!keySegura) throw new DeAcaBadRequest('Clave de filtrado no válida'); //Si la linea anterior dejó un string vacío.
+
+            if (Array.isArray(values[index])) {
+              return `"${keySegura}" && $${index + 1}::TEXT[]`; //ARRAY[1,4,3] && ARRAY[2,1] → t
+            }
             return `"${keySegura}" = $${index + 1}`; //Entrecomillamos para que tome todo lo entrecomillado como el nombre de la columna.
           })
           .join(' AND ');
     }
 
     let query = `${this.baseQuery} ${condiciones}`;
-
+    console.log({ keys, values });
+    console.log({ query });
     const countQuery = `SELECT COUNT(*)::INT as total FROM (${this.baseQuery} ${condiciones}) AS count_query`;
     const countValues = [...values];
 
@@ -102,7 +106,7 @@ export abstract class BaseReadRepository<T extends DatosBase> {
       pageParseado = parseInt(page.toString(), 10) || pageParseado; //Me aseguro que page no traiga codigo no deseado
       const offset = (pageParseado - 1) * limitParseado;
       query += ` LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
-      values.push(limit, offset);
+      values.push(limitParseado, offset);
     }
     const res = await this.executor.query(query, values);
 

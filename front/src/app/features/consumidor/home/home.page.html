@@ -52,12 +52,15 @@
 
           <p-multiSelect
             [options]="this.etiquetasResource.value()"
-            [(ngModel)]="etiquetasSeleccionadas"
+            [(ngModel)]="this.etiquetasSeleccionadas"
+            (onChange)="this.onEtiquetasChange($event.value)"
             placeholder="Etiquetas"
             class="w-full"
             display="chip"
             optionLabel="nombre"
+            optionValue="slug_etiqueta"
             appendTo="body"
+            [showClear]="true"
             [maxSelectedLabels]="3"
           />
 

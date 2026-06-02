@@ -11,12 +11,12 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
       SELECT 
         PE.id_producto,
         COALESCE(
-          json_agg(E.id_etiqueta ORDER BY E.id_etiqueta) FILTER (WHERE E.id_etiqueta IS NOT NULL), 
-          '[]'
+          array_agg(E.id_etiqueta ORDER BY E.id_etiqueta) FILTER (WHERE E.id_etiqueta IS NOT NULL), 
+          ARRAY[]::INT[] 
         ) AS id_etiquetas,
         COALESCE(
-          json_agg(E.slug_etiqueta ORDER BY E.id_etiqueta) FILTER (WHERE E.slug_etiqueta IS NOT NULL), 
-          '[]'
+          array_agg(E.slug_etiqueta ORDER BY E.id_etiqueta) FILTER (WHERE E.slug_etiqueta IS NOT NULL), 
+          ARRAY[]::TEXT[] 
         ) AS etiquetas
       FROM public.producto_etiquetas PE
       JOIN public.etiquetas E ON E.id_etiqueta = PE.id_etiqueta
@@ -37,8 +37,8 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
         P.*,
         DP.username,
         SC.slug_subcategoria, C.slug_categoria,
-        COALESCE(ME.id_etiquetas, '[]') AS id_etiquetas,
-        COALESCE(ME.etiquetas, '[]') AS etiquetas,
+        COALESCE(ME.id_etiquetas, ARRAY[]::INT[] ) AS id_etiquetas,
+        COALESCE(ME.etiquetas, ARRAY[]::TEXT[] ) AS etiquetas,
         COALESCE(MF.fotos, '[]') AS fotos
       FROM productos P JOIN productores PP ON PP.id_productor = P.id_productor
       JOIN public.usuarios U ON U.id_usuario = PP.id_productor

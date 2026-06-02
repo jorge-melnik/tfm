@@ -55,6 +55,10 @@ export class HomePage implements OnInit {
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
 
+  private _queryParams = toSignal(this._route.queryParamMap, {
+    initialValue: convertToParamMap({}),
+  });
+
   private _pathParams = toSignal(this._route.paramMap, {
     initialValue: convertToParamMap({}),
   });
@@ -69,7 +73,7 @@ export class HomePage implements OnInit {
   public filtroBusqueda = signal<string>('');
   public categoriaSeleccionada = signal<string | null>(null);
   public subcategoriaSeleccionada = signal<string | null>(null);
-  public etiquetasSeleccionadas = signal<Etiqueta[]>([]);
+  public etiquetasSeleccionadas = signal<string[]>([]);
 
   public categoriasResource = resource({
     defaultValue: [] as Categoria[],
@@ -106,17 +110,18 @@ export class HomePage implements OnInit {
     params: () => ({
       slug_categoria: this._pathParams().get('slug_categoria'),
       slug_subcategoria: this._pathParams().get('slug_subcategoria'),
+      etiquetas: this._queryParams().getAll('etiquetas'),
       limit: this.limit(),
       page: this.page(),
     }),
     loader: async ({ params }) => {
-      const { slug_categoria, slug_subcategoria, limit, page } = params;
+      const { slug_categoria, slug_subcategoria, etiquetas, limit, page } = params;
       const queryParams: ApiQueryParams = {};
-
       const pagination: ApiQueryParams = { limit, page };
 
       if (slug_categoria) queryParams['slug_categoria'] = slug_categoria;
       if (slug_subcategoria) queryParams['slug_subcategoria'] = slug_subcategoria;
+      if (etiquetas) queryParams['etiquetas'] = etiquetas;
 
       return this._productoService.getBy({ queryParams, pagination });
     },
@@ -181,5 +186,17 @@ export class HomePage implements OnInit {
       return this.onCategoriaChange(slug_categoria);
     }
     this._router.navigate(['consumidor', slug_categoria, slug_subcategoria]);
+  }
+
+  public onEtiquetasChange(etiquetas: string[]) {
+    this.page.set(1); // Siempre volvemos a la página 1 al filtrar
+
+    this._router.navigate([], {
+      relativeTo: this._route,
+      queryParams: {
+        etiquetas: etiquetas.length > 0 ? etiquetas : null,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 }

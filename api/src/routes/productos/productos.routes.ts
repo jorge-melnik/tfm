@@ -1,4 +1,4 @@
-import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
+import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { productoRepository } from '@repositories/producto.repository.js';
 
 import { DeAcaErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
@@ -12,7 +12,15 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
       description: `
         Devuelve el listado completo de productores registrados. 
       `,
-      querystring: DeAcaQueryString,
+      querystring: Type.Intersect([
+        DeAcaQueryString,
+        Type.Object({
+          // Mantenemos la lógica de la unión de strings/arrays para etiquetas
+          etiquetas: Type.Optional(Type.Array(Type.String())),
+          slug_categoria: Type.Optional(Type.String()),
+          slug_subcategoria: Type.Optional(Type.String()),
+        }),
+      ]),
       response: {
         200: DeAcaListResponse(Producto),
         500: DeAcaErrorResponse,
