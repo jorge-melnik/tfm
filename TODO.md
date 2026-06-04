@@ -51,3 +51,15 @@ Que tiempo tiene el usuario para que se confirme el pago en el sistema?
 -- Considerar WHERE to_tsvector(contenido) @@ to_tsquery('perro')  si hay que hacer búsqueda en textos completos. full-text search
 
 -- TODO: En subcategorías, que se puedan seleccionar las etiquetas permitidas.
+
+
+
+- Carrito
+- Documentación. Leer plantilla y documentar al menos lo hecho hasta ahora.
+- BORRADOR: Objetivos, Introducción y contexto y algún resultado preliminar.
+- Hacer borrador y pasarle al profe.
+- Se puede ir metiendo el gant, hdus, etc.
+
+- Para poder hacer carrito primero implementar:
+- Autenticación.
+- Autorización.

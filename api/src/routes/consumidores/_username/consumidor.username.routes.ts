@@ -9,22 +9,20 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
   fastify.get('/', {
     schema: {
       tags: ['Consumidores'],
-      summary: 'READ consumidores',
-      description: `
-        Devuelve el listado completo de consumidores registrados. 
-      `,
+      summary: 'READ consumidor',
+      description: `Devuelve el consumidor a partir del slug en params.`,
       params: Type.Object({
         username: DatosPersonales.properties.username,
       }),
       response: {
-        200: Type.Array(Consumidor, { description: 'Listado de consumidores.' }),
+        200: Consumidor,
         500: DeAcaErrorResponse,
       },
     },
     // onRequest : //FIXME: Solo para admin.
     handler: async function (req, reply) {
       //FIXME: Eventualmente esto no conviene que devuelva TODO. paginar.
-      return consumidorRepository.getBy({ username: req.params.username });
+      return consumidorRepository.getOneBy({ username: req.params.username });
     },
   });
 };

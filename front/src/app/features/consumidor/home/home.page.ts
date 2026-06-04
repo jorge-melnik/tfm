@@ -24,7 +24,7 @@ import { Categoria, Subcategoria } from '@shared/types/categoria';
 import { SubcategoriasService } from '@shared/services/subcategorias.service';
 import { ApiQueryParams } from '@shared/types/api.types';
 import { Etiqueta } from '@shared/types/etiqueta';
-import { ActivatedRoute, convertToParamMap, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
 
 interface SortOption {
