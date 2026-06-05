@@ -67,21 +67,21 @@ export class DialogService {
       });
     });
   }
-  async addSuccess(message: string) {
+  addSuccess(message: string) {
     this._messageService.add({
       severity: 'success',
       summary: 'Listo.',
       detail: message,
     });
   }
-  async addInfo(message: string) {
+  addInfo(message: string) {
     this._messageService.add({
       severity: 'info',
       summary: 'Info',
       detail: message,
     });
   }
-  async addWarn(message: string) {
+  addWarn(message: string) {
     this._messageService.add({
       severity: 'warn',
       summary: 'Advertencia',
@@ -89,7 +89,7 @@ export class DialogService {
     });
   }
 
-  async addError(message: string) {
+  addError(message: string) {
     this._messageService.add({
       severity: 'error',
       summary: 'Error',

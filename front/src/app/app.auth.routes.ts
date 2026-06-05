@@ -12,4 +12,12 @@ export const authRoutes: Routes = [
     loadComponent: () =>
       import('@features/main/auth/register/register.page').then((m) => m.RegisterPage),
   },
+  {
+    path: 'unauthorized',
+    title: 'No autorizado',
+    loadComponent: () =>
+      import('@features/main/auth/unauthorized/unauthorized.component').then(
+        (m) => m.UnauthorizedComponent,
+      ),
+  },
 ];

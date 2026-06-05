@@ -7,14 +7,18 @@
     </ng-template>
 
     <ng-template #title>
-      <div class="text-center text-surface-900 dark:text-surface-0 text-3xl font-medium mb-1">Bienvenido</div>
+      <div class="text-center text-surface-900 dark:text-surface-0 text-3xl font-medium mb-1">
+        Bienvenido
+      </div>
     </ng-template>
 
     <ng-template #subtitle>
-      <div class="text-center text-surface-600 dark:text-surface-200 mb-20">Inicia sesión en De Acá</div>
+      <div class="text-center text-surface-600 dark:text-surface-200 mb-20">
+        Inicia sesión en De Acá
+      </div>
     </ng-template>
 
-    <form class="flex flex-col gap-12">
+    <form #loginForm class="flex flex-col gap-12" (ngSubmit)="this.doLogin()">
       <div class="flex justify-center mb-2">
         <p-selectButton
           [options]="this.loginOptions"
@@ -34,7 +38,13 @@
         <p-floatlabel variant="on">
           <p-iconfield iconPosition="right">
             <p-inputicon class="pi pi-envelope" />
-            <input pInputText name="email" autocomplete="off" class="w-full" />
+            <input
+              pInputText
+              name="email"
+              autocomplete="off"
+              class="w-full"
+              [(ngModel)]="this.email"
+            />
             <label for="email">Email</label>
           </p-iconfield>
         </p-floatlabel>
@@ -43,7 +53,13 @@
         <p-floatlabel variant="on">
           <p-iconfield iconPosition="right">
             <p-inputicon class="pi pi-user" />
-            <input pInputText name="username" autocomplete="off" class="w-full" />
+            <input
+              pInputText
+              name="username"
+              autocomplete="off"
+              class="w-full"
+              [(ngModel)]="this.username"
+            />
             <label for="username">Username</label>
           </p-iconfield>
         </p-floatlabel>
@@ -65,7 +81,7 @@
         </p-iconfield>
       </p-floatlabel>
 
-      <p-button label="Ingresar" styleClass="w-full" />
+      <p-button type="submit" label="Ingresar" styleClass="w-full" />
     </form>
 
     <ng-template #footer>

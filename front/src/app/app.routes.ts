@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { isAdminGuard } from '@core/guard/is-admin-guard';
 import { AdminLayout } from '@shared/layouts/admin/admin.layout';
 import { MainLayout } from '@shared/layouts/main/main.layout';
 
@@ -21,6 +22,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     loadComponent: () => import('@shared/layouts/admin/admin.layout').then((m) => m.AdminLayout),
+    canActivateChild: [isAdminGuard],
     children: [
       {
         path: '',
