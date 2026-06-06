@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '@env/environment';
-import { Profile, TipoLogin } from '@shared/types/user.types';
+import { Profile, Rol, TipoLogin } from '@shared/types/user.types';
 import { firstValueFrom } from 'rxjs';
 import { UserStore } from './stores/user.store';
 import { Router } from '@angular/router';
@@ -59,5 +59,22 @@ export class AuthService {
   async doLogout() {
     this._userStore.setToken(null);
     this._userStore.setUser(null);
+    const logoutUrl = `${this.serviceUrl}/logout`;
+    await firstValueFrom(this._http.get(logoutUrl));
+  }
+
+  async activarProductor() {
+    //  /user/productor
+  }
+  async activarConsumidor() {
+    //  /user/consumidor
+  }
+
+  public async cargarSesionAlArrancar(): Promise<void> {
+    try {
+      await this.refreshToken();
+    } catch (error) {
+      return Promise.resolve();
+    }
   }
 }

@@ -145,7 +145,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
     },
   });
 
-  fastify.post('/refresh', {
+  fastify.get('/refresh', {
     schema: {
       tags: ['Auth'],
       summary: 'Refresh Token',

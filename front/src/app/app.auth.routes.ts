@@ -20,4 +20,10 @@ export const authRoutes: Routes = [
         (m) => m.UnauthorizedComponent,
       ),
   },
+  {
+    path: 'logout',
+    title: 'Cerrar Sesión',
+    loadComponent: () =>
+      import('@features/main/auth/logout/logout.component').then((m) => m.LogoutComponent),
+  },
 ];

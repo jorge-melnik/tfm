@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { Profile } from '@shared/types/user.types';
+import { Profile, Rol } from '@shared/types/user.types';
 
 @Injectable({
   providedIn: 'root',
@@ -20,5 +20,9 @@ export class UserStore {
   }
   public setToken(token: string | null) {
     this._token.set(token);
+  }
+
+  public userHasRole(rol: Rol): boolean {
+    return !!this._user()?.roles.includes(rol);
   }
 }

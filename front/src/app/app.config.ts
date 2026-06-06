@@ -1,4 +1,11 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  APP_INITIALIZER,
+  ApplicationConfig,
+  ENVIRONMENT_INITIALIZER,
+  inject,
+  provideAppInitializer,
+  provideBrowserGlobalErrorListeners,
+} from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -8,6 +15,11 @@ import Aura from '@primeuix/themes/aura';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { tokenInterceptor } from '@core/interceptors/token-interceptor';
+import { AuthService } from '@shared/services/auth.service';
+
+function initializeAuth(authService: AuthService) {
+  return () => authService.cargarSesionAlArrancar();
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,5 +33,9 @@ export const appConfig: ApplicationConfig = {
     }),
     MessageService,
     ConfirmationService,
+    provideAppInitializer(() => {
+      const authService = inject(AuthService);
+      return authService.cargarSesionAlArrancar();
+    }),
   ],
 };

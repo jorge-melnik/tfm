@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { AuthService } from '@shared/services/auth.service';
 
 @Component({
   selector: 'app-home-productor',
@@ -6,4 +7,8 @@ import { Component } from '@angular/core';
   templateUrl: './home.page.html',
   styleUrl: './home.page.css',
 })
-export class HomePage {}
+export class HomePage implements OnInit {
+  private readonly _authService = inject(AuthService);
+
+  async ngOnInit() {}
+}
