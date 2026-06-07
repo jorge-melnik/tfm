@@ -47,7 +47,7 @@ export class TopBarComponent {
         routerLink: '/quiero/vender',
       });
 
-    items.push({ label: 'Logout', icon: 'pi pi-sign-out', routerLink: '/' });
+    items.push({ label: 'Logout', icon: 'pi pi-sign-out', routerLink: '/auth/logout' });
     return [{ label: user.username, items }];
   });
 }

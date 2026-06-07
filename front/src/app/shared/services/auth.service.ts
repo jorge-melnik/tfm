@@ -45,7 +45,9 @@ export class AuthService {
 
   public async refreshToken() {
     const refreshUrl = `${this.serviceUrl}/refresh`;
-    const resToken = await firstValueFrom(this._http.get<TokenResponse>(refreshUrl));
+    const resToken = await firstValueFrom(
+      this._http.get<TokenResponse>(refreshUrl, { withCredentials: true }), //Se envía la cookie refreshToken
+    );
     this._userStore.setToken(resToken.token);
     await this.getProfile();
   }
@@ -57,10 +59,11 @@ export class AuthService {
   }
 
   async doLogout() {
+    const logoutUrl = `${this.serviceUrl}/logout`;
+    await firstValueFrom(this._http.get(logoutUrl)); //Esto debería borrar el refresh token.
     this._userStore.setToken(null);
     this._userStore.setUser(null);
-    const logoutUrl = `${this.serviceUrl}/logout`;
-    await firstValueFrom(this._http.get(logoutUrl));
+    this._router.navigate(['/']);
   }
 
   async activarProductor() {
@@ -70,9 +73,16 @@ export class AuthService {
     //  /user/consumidor
   }
 
+  async cambiarRolActualA(rol: Rol) {
+    const url = `${this.serviceUrl}/user/${rol.toLowerCase()}`;
+    await firstValueFrom(this._http.put(url, { rol }));
+    await this.refreshToken(); //Recargamos el usuario y token para que tenga actualizado el rol actual.
+  }
+
   public async cargarSesionAlArrancar(): Promise<void> {
     try {
       await this.refreshToken();
+      this.goToUserHome();
     } catch (error) {
       return Promise.resolve();
     }

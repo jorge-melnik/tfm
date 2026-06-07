@@ -7,17 +7,23 @@ import { AuthService } from '@shared/services/auth.service';
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   const userStore = inject(UserStore);
   const authService = inject(AuthService);
+  const token = userStore.token();
+  if (!token) return next(req);
 
-  const authReq = addToken(req, userStore.token());
+  const authReq = addToken(req, token);
 
   return next(authReq).pipe(
     catchError(async (error) => {
       if (error instanceof HttpErrorResponse && error.status === 401) {
         try {
+          if (req.url.includes('/auth/refresh')) throw error; //para que no entre en bucle si el error fue en la ruta de refrescar el token o si ni siquiera hay token.
+
           await authService.refreshToken();
-          return firstValueFrom(next(addToken(req, userStore.token())));
+          const token = userStore.token(); //Nuevo token
+          if (!token) throw error; //Si por las moscas no hay nuevo token
+          return firstValueFrom(next(addToken(req, token)));
         } catch {
-          authService.doLogout();
+          await authService.doLogout();
           throw error;
         }
       }
@@ -26,8 +32,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   );
 };
 
-function addToken(req: HttpRequest<unknown>, token: string | null) {
-  if (!token) return req;
+function addToken(req: HttpRequest<unknown>, token: string) {
   return req.clone({
     setHeaders: { Authorization: `Bearer ${token}` },
   });

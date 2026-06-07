@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { activeRoleGuard } from '@core/guard/active-role-guard';
 import { hasNotRoleGuard } from '@core/guard/has-not-role-guard';
+import { hasRoleGuard } from '@core/guard/has-role-guard';
+import { loggedGuard } from '@core/guard/logged-guard';
 import { Rol } from '@shared/types/user.types';
 
 export const routes: Routes = [
@@ -19,7 +21,7 @@ export const routes: Routes = [
       },
 
       {
-        canActivate: [hasNotRoleGuard('PRODUCTOR')],
+        canActivate: [loggedGuard, hasNotRoleGuard('PRODUCTOR')],
         path: 'quiero/vender',
         loadComponent: () =>
           import('./features/main/quiero-vender/quiero-vender.component').then(
@@ -27,7 +29,7 @@ export const routes: Routes = [
           ),
       },
       {
-        canActivate: [hasNotRoleGuard('CONSUMIDOR')],
+        canActivate: [loggedGuard, hasNotRoleGuard('CONSUMIDOR')],
         path: 'quiero/comprar',
         loadComponent: () =>
           import('./features/main/quiero-comprar/quiero-comprar.component').then(
@@ -39,7 +41,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     loadComponent: () => import('@shared/layouts/admin/admin.layout').then((m) => m.AdminLayout),
-    canActivateChild: [activeRoleGuard('ADMIN' as Rol)],
+    canActivateChild: [hasRoleGuard('ADMIN' as Rol)],
     children: [
       {
         path: '',
@@ -51,7 +53,7 @@ export const routes: Routes = [
     path: 'consumidor',
     loadComponent: () =>
       import('@shared/layouts/consumidor/consumidor.layout').then((m) => m.ConsumidorLayout),
-    canActivateChild: [activeRoleGuard('CONSUMIDOR' as Rol)],
+    canActivateChild: [hasRoleGuard('CONSUMIDOR' as Rol)],
     children: [
       {
         path: '',
@@ -63,7 +65,7 @@ export const routes: Routes = [
     path: 'productor',
     loadComponent: () =>
       import('@shared/layouts/productor/productor.layout').then((m) => m.ProductorLayout),
-    canActivateChild: [activeRoleGuard('PRODUCTOR' as Rol)],
+    canActivateChild: [hasRoleGuard('PRODUCTOR' as Rol)],
     children: [
       {
         path: '',

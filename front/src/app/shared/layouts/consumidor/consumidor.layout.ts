@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { Tabs, TabList, Tab } from 'primeng/tabs';
 import { TopBarComponent } from '@shared/components/top-bar/top-bar.component';
+import { UserStore } from '@shared/services/stores/user.store';
+import { AuthService } from '@shared/services/auth.service';
 
 @Component({
   selector: 'app-consumidor-layout',
@@ -9,4 +11,13 @@ import { TopBarComponent } from '@shared/components/top-bar/top-bar.component';
   templateUrl: './consumidor.layout.html',
   styleUrl: './consumidor.layout.css',
 })
-export class ConsumidorLayout {}
+export class ConsumidorLayout implements OnInit {
+  private userStore = inject(UserStore);
+  private authService = inject(AuthService);
+
+  async ngOnInit(): Promise<void> {
+    const user = this.userStore.user();
+    if (!user) return;
+    this.authService.cambiarRolActualA('CONSUMIDOR');
+  }
+}

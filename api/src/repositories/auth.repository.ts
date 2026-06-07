@@ -1,7 +1,7 @@
 import { myPool } from '@database/pool.js';
 import type { QueryResult } from 'pg';
 import { DeAcaInternal, DeAcaNotFound, DeAcaUnAuthenticated } from '@errors/response.errors.js';
-import { Profile, RegisterSchema, TokenPayload, User } from '@schemas/auth.schema.js';
+import { Profile, RegisterSchema, Rol, TokenPayload, User } from '@schemas/auth.schema.js';
 import { productorRepository } from './productor.repository.js';
 import { consumidorRepository } from './consumidor.repository.js';
 import { datosPersonalesRepository } from './datos-personales.respository.js';
@@ -155,6 +155,14 @@ class AuthRepositoryClass {
     } finally {
       client.release();
     }
+  }
+
+  async setRolActual(id_usuario: string, rol_actual: Rol) {
+    const query = `
+      UPDATE public.usuarios SET rol_actual=$2
+      WHERE id_usuario=$1
+    `;
+    await myPool.query(query, [id_usuario, rol_actual]);
   }
 }
 

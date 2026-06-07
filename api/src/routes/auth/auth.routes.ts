@@ -1,4 +1,4 @@
-import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
+import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import authRepository from '@repositories/auth.repository.js';
 import { randomUUID } from 'node:crypto';
 
@@ -7,6 +7,8 @@ import {
   LoginUsernameSchema,
   ProfileSchema,
   RegisterSchema,
+  Rol,
+  RolLiteral,
   TokenPayload,
   TokenSchema,
   User,
@@ -17,6 +19,8 @@ import { CookieSerializeOptions } from '@fastify/cookie';
 import { AdicionalesConsumidor, AdicionalesProductor } from '@schemas/usuarios.schema.js';
 import { productorRepository } from '@repositories/productor.repository.js';
 import { consumidorRepository } from '@repositories/consumidor.repository.js';
+import { request } from 'node:http';
+import { DeAcaBadRequest } from '@errors/response.errors.js';
 
 //Para manejar las mismas opciones en ambas rutas
 const accessTokenOptions = {
@@ -145,6 +149,44 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
     },
   });
 
+  fastify.put('/user/:rol', {
+    schema: {
+      tags: ['Auth'],
+      summary: 'Cambiar a Rol',
+      description: 'Cambia el rol actual para un usuario que ya tiene dicho rol asignado.',
+      security: [{ bearerAuth: [] }],
+      params: Type.Object({
+        rol: RolLiteral,
+      }),
+      body: Type.Object({
+        rol: RolLiteral,
+      }),
+      response: {
+        204: Type.Null(),
+        401: DeAcaErrorResponse,
+        500: DeAcaErrorResponse,
+      },
+    },
+    onRequest: [fastify.authenticate],
+    preValidation: async (req, rep) => {
+      //Paso a mayúsculas el rol de params
+      if (!req.params) throw new DeAcaBadRequest('Falta params');
+      if (!req.params.rol) throw new DeAcaBadRequest('Falta rol');
+      const rol: Rol = req.params.rol.toUpperCase() as Rol;
+      req.params.rol = rol;
+    },
+    preHandler: [
+      fastify.matchParamsWithBody,
+      async function (req, rep) {
+        await fastify.hasAllRoles(req.body.rol)(req, rep);
+      },
+    ],
+    handler: async function (req, rep) {
+      rep.code(204);
+      await authRepository.setRolActual(req.user.id_usuario, req.body.rol);
+    },
+  });
+
   fastify.get('/refresh', {
     schema: {
       tags: ['Auth'],
@@ -173,7 +215,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
     },
   });
 
-  fastify.post('/logout', {
+  fastify.get('/logout', {
     schema: {
       summary: 'Logout',
       description: 'Hacer logout e invalidar el refresh token.',

@@ -17,10 +17,6 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { tokenInterceptor } from '@core/interceptors/token-interceptor';
 import { AuthService } from '@shared/services/auth.service';
 
-function initializeAuth(authService: AuthService) {
-  return () => authService.cargarSesionAlArrancar();
-}
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
