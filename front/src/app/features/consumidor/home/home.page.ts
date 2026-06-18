@@ -7,6 +7,7 @@ import {
   OnInit,
   resource,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
@@ -45,6 +46,7 @@ interface SortOption {
     MultiSelectModule,
   ],
   templateUrl: './home.page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './home.page.css',
 })
 export class HomePage implements OnInit {

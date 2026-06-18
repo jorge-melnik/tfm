@@ -1,5 +1,13 @@
 import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
-import { Component, computed, input, model, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  input,
+  model,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Table, TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
@@ -35,6 +43,7 @@ import { Etiqueta } from '@shared/types/etiqueta';
     MultiSelectModule,
   ],
   templateUrl: './admin.table.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './admin.table.css',
 })
 export class AdminTable {

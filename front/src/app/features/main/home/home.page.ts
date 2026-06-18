@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
@@ -7,6 +7,7 @@ import { Card } from 'primeng/card';
   selector: 'app-home-main',
   imports: [RouterLink, Button, Card],
   templateUrl: './home.page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './home.page.css',
 })
 export class HomePage {

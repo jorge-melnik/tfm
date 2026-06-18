@@ -1,12 +1,12 @@
 <div class="card">
   <p-dataview
     #dv
-    [value]="this.productosResource.value()?.data"
+    [value]="$safeNavigationMigration(this.productosResource.value()?.data)"
     [layout]="this.layout()"
     [paginator]="true"
     [rows]="this.limit()"
     [first]="this.first()"
-    [totalRecords]="this.productosResource.value()?.meta?.total"
+    [totalRecords]="$safeNavigationMigration(this.productosResource.value()?.meta?.total)"
     [lazy]="true"
     [rowsPerPageOptions]="[6, 12, 24]"
     (onPage)="this.onPageChange($event)"

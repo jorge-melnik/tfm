@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-unauthorized',
   imports: [],
   templateUrl: './unauthorized.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './unauthorized.component.css',
 })
 export class UnauthorizedComponent {}

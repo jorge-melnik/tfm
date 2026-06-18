@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CardModule } from 'primeng/card';
 
 import { ButtonModule } from 'primeng/button';
@@ -34,6 +34,7 @@ import { DialogService } from '@shared/services/dialog.service';
     RouterLink,
   ],
   templateUrl: './login.page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './login.page.css',
 })
 export class LoginPage {

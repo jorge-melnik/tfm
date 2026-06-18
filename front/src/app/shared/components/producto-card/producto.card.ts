@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
@@ -11,6 +11,7 @@ import { TooltipModule } from 'primeng/tooltip';
   selector: 'app-producto-card',
   imports: [CommonModule, CardModule, ButtonModule, TagModule, FotoCarrusel, TooltipModule],
   templateUrl: './producto.card.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './producto.card.css',
 })
 export class ProductoCard {

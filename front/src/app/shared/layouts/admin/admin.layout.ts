@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { Tabs, TabList, Tab } from 'primeng/tabs';
 import { TopBarComponent } from '@shared/components/top-bar/top-bar.component';
@@ -20,6 +20,7 @@ import { AuthService } from '@shared/services/auth.service';
     ToastModule,
   ],
   templateUrl: './admin.layout.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './admin.layout.css',
 })
 export class AdminLayout implements OnInit {

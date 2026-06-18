@@ -1,4 +1,4 @@
-import { Component, inject, model, resource } from '@angular/core';
+import { Component, inject, model, resource, ChangeDetectionStrategy } from '@angular/core';
 import { CategoriasService } from '@shared/services/admin/categorias.service';
 import { TableModule } from 'primeng/table';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -28,6 +28,7 @@ import { EtiquetasService } from '@shared/services/admin/etiquetas.service';
     AdminTable,
   ],
   templateUrl: './subcategorias.page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './subcategorias.page.css',
 })
 export class SubcategoriasPage extends AdminBasePage<Subcategoria> {

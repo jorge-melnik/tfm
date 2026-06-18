@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { Tabs, TabList, Tab } from 'primeng/tabs';
 import { TopBarComponent } from '@shared/components/top-bar/top-bar.component';
@@ -9,6 +9,7 @@ import { AuthService } from '@shared/services/auth.service';
   selector: 'app-productor-layout',
   imports: [RouterOutlet, Tabs, TabList, Tab, RouterLink, TopBarComponent],
   templateUrl: './productor.layout.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './productor.layout.css',
 })
 export class ProductorLayout implements OnInit {

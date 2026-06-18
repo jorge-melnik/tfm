@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { EtiquetasService } from '@shared/services/admin/etiquetas.service';
 import { AdminTable } from '@shared/components/admin-table/admin.table';
 import { TableColumn } from '@shared/types/util';
@@ -9,6 +9,7 @@ import { AdminBasePage } from '../admin-base.page';
   selector: 'app-etiquetas',
   imports: [AdminTable],
   templateUrl: './etiquetas.page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './etiquetas.page.css',
 })
 export class EtiquetasPage extends AdminBasePage<Etiqueta> {

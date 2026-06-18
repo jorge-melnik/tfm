@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -25,6 +25,7 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
   ],
   templateUrl: './register.page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './register.page.css',
 })
 export class RegisterPage {
