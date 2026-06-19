@@ -1,10 +1,24 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, resource } from '@angular/core';
+import { CarritoService } from '@shared/services/carrito.service';
+import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
+import { DataView } from 'primeng/dataview';
+import { ItemCarritoComponent } from './item-carrito/item-carrito.component';
+import { environment } from '@env/environment';
+import { Tag } from 'primeng/tag';
 
 @Component({
   selector: 'app-carrito',
-  imports: [],
+  imports: [DataView, ItemCarritoComponent, Tag],
   templateUrl: './carrito.page.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './carrito.page.css',
 })
-export class CarritoPage {}
+export class CarritoPage {
+  private _carritoService = inject(CarritoService);
+  private readonly _preferenciasStore = inject(PreferenciasStore);
+  protected readonly cdnUrl = environment.cdnUrl;
+
+  public limit = this._preferenciasStore.limit;
+
+  protected items = this._carritoService.items;
+}

@@ -17,7 +17,18 @@
 
         <p-tab [value]="1" class="grow" [routerLink]="['/', 'consumidor', 'carrito']">
           <div class="flex flex-col items-center gap-1">
-            <i class="pi pi-shopping-cart text-xl"></i>
+            <div class="relative">
+              <i class="pi pi-shopping-cart text-xl"></i>
+
+              @if (this._carritoService.cantidadItems() >= 0) {
+                <p-badge
+                  [value]="this._carritoService.cantidadItems()"
+                  severity="danger"
+                  class="absolute -top-2 -right-8"
+                />
+              }
+            </div>
+
             <span class="text-xs">Carrito</span>
           </div>
         </p-tab>

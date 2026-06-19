@@ -27,6 +27,10 @@ import { ApiQueryParams } from '@shared/types/api.types';
 import { Etiqueta } from '@shared/types/etiqueta';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
+import { CarritoService } from '@shared/services/carrito.service';
+import { ItemCarrito } from '@shared/types/item-carrito';
+import { UserStore } from '@shared/services/stores/user.store';
+import { DialogService } from '@shared/services/dialog.service';
 
 interface SortOption {
   label: string;
@@ -56,6 +60,9 @@ export class HomePage implements OnInit {
   private readonly _preferenciasStore = inject(PreferenciasStore);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
+  private readonly _carritoService = inject(CarritoService);
+  private readonly _userStore = inject(UserStore);
+  private readonly _dialogService = inject(DialogService);
 
   private _queryParams = toSignal(this._route.queryParamMap, {
     initialValue: convertToParamMap({}),
@@ -163,8 +170,28 @@ export class HomePage implements OnInit {
     this.subcategoriaSeleccionada.set(this._pathParams().get('slug_subcategoria'));
   }
 
-  public agregarAlCarrito(producto: any) {
-    console.log('Agregado al carrito:', producto.nombre);
+  public async agregarAlCarrito(
+    item: Pick<ItemCarrito, 'id_productor' | 'id_producto' | 'cantidad'>,
+  ) {
+    const usuario = this._userStore.user();
+    if (!usuario) return;
+    const itemConConsumidor = {
+      id_consumidor: usuario.id_usuario,
+      ...item,
+    };
+    const existente = this._carritoService.items
+      .value()
+      .find((i) => i.id_producto === item.id_producto);
+    try {
+      if (!existente) await this._carritoService.addItem(itemConConsumidor);
+      if (existente) {
+        itemConConsumidor.cantidad = itemConConsumidor.cantidad + existente.cantidad;
+        await this._carritoService.updateItem(itemConConsumidor);
+      }
+    } catch (error: any) {
+      console.error(error);
+      this._dialogService.addError(error.message);
+    }
   }
 
   public onSortChange(event: any) {

@@ -25,7 +25,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
     },
   });
 
-  fastify.post('/productores/:id_productor/producto', {
+  fastify.post('/productores/:id_productor/productos', {
     schema: {
       tags: ['Consumidores'],
       summary: 'CREATE item carrito',
@@ -36,21 +36,28 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
         id_consumidor: Consumidor.properties.id_consumidor,
         id_productor: Productor.properties.id_productor,
       }),
-      body: ItemCarrito,
+      // body: Type.Pick(ItemCarrito, ['id_productor', 'id_producto', 'id_consumidor', 'cantidad']),
+      body: Type.Object({
+        id_productor: ItemCarrito.properties.id_productor,
+        id_producto: ItemCarrito.properties.id_producto,
+        id_consumidor: ItemCarrito.properties.id_consumidor,
+        cantidad: ItemCarrito.properties.cantidad,
+      }),
       response: {
-        201: ItemCarrito,
+        204: Type.Null(),
         500: DeAcaErrorResponse,
       },
     },
     // onRequest : //FIXME: Solo para consumidor autenticado.
     //preHandler: Coincide params con body y con usuario logueado
     handler: async function (req, reply) {
-      reply.code(201);
-      return consumidorRepository.addItemCarrito(req.body);
+      reply.code(204);
+      const item = req.body;
+      await consumidorRepository.addItemCarrito(item);
     },
   });
 
-  fastify.put('/productores/:id_productor/producto/:id_producto', {
+  fastify.put('/productores/:id_productor/productos/:id_producto', {
     schema: {
       tags: ['Consumidores'],
       summary: 'UPDATE item carrito',
@@ -62,7 +69,13 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
         id_productor: Productor.properties.id_productor,
         id_producto: Producto.properties.id_producto,
       }),
-      body: ItemCarrito,
+      // body: Type.Pick(ItemCarrito, ['id_productor', 'id_producto', 'id_consumidor', 'cantidad']),
+      body: Type.Object({
+        id_productor: ItemCarrito.properties.id_productor,
+        id_producto: ItemCarrito.properties.id_producto,
+        id_consumidor: ItemCarrito.properties.id_consumidor,
+        cantidad: ItemCarrito.properties.cantidad,
+      }),
       response: {
         204: Type.Null(),
         500: DeAcaErrorResponse,
@@ -76,7 +89,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
     },
   });
 
-  fastify.delete('/productores/:id_productor/producto/:id_producto', {
+  fastify.delete('/productores/:id_productor/productos/:id_producto', {
     schema: {
       tags: ['Consumidores'],
       summary: 'DELETE item carrito',

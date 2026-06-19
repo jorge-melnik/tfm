@@ -15,6 +15,12 @@ export const ItemCarrito = Type.Object({
   cantidad: Type.Integer({ minimum: 1 }),
   precio: Producto.properties.precio,
   subtotal: Producto.properties.precio,
+  username: Producto.properties.username,
+  nombre: Producto.properties.nombre,
+  descripcion: Producto.properties.descripcion,
+  slug_producto: Producto.properties.slug_producto,
+  fotos: Producto.properties.fotos,
+  cantidad_disponible: Producto.properties.cantidad_disponible,
 });
 
 export type Consumidor = Static<typeof Consumidor>;

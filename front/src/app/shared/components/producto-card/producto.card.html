@@ -71,6 +71,7 @@
             icon="pi pi-shopping-cart"
             label="Agregar"
             class="p-button-rounded p-button-sm bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-3.5 py-2 border-none transition-colors text-xs whitespace-nowrap"
+            (click)="this.enviarAlCarrito(producto())"
           ></button>
         } @else {
           <button

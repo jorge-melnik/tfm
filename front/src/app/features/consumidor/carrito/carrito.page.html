@@ -1,1 +1,62 @@
-<p>carrito works!</p>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div
+    class="lg:col-span-2 card p-0 rounded-2xl overflow-hidden border border-surface-200 dark:border-surface-700"
+  >
+    <p-dataview #dv [value]="this.items.value()" layout="list">
+      <ng-template #header>
+        <div class="flex justify-between items-center px-4 py-3 bg-surface-50 dark:bg-surface-850">
+          <h3 class="text-base font-bold text-surface-800 dark:text-surface-200 m-0">Mi Carrito</h3>
+          <p-tag [value]="this.items.value().length + ' Productos'" severity="secondary" />
+        </div>
+      </ng-template>
+
+      <ng-template #list let-myitems>
+        <div class="flex flex-col">
+          @for (item of myitems; track item.id_item) {
+            <app-item-carrito [item]="item" [cdnUrl]="this.cdnUrl" />
+          } @empty {
+            <div class="flex flex-col items-center justify-center py-12 text-surface-400">
+              <i class="pi pi-shopping-cart text-5xl mb-3"></i>
+              <p class="m-0 font-medium">Tu carrito está vacío</p>
+            </div>
+          }
+        </div>
+      </ng-template>
+    </p-dataview>
+  </div>
+
+  @if (this.items.value().length > 0) {
+    <div
+      class="h-fit card p-5 border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 rounded-2xl shadow-xs"
+    >
+      <h3 class="text-lg font-bold text-surface-900 dark:text-surface-0 mb-4 m-0">
+        Resumen del pedido
+      </h3>
+
+      <div class="flex flex-col gap-3">
+        <div class="flex justify-between text-sm text-surface-500">
+          <span>Subtotal productos</span>
+          <span> EL TOTAL</span>
+        </div>
+        <div class="flex justify-between text-sm text-surface-500">
+          <span>Envío / Entrega</span>
+          <span class="text-emerald-650 font-medium">A coordinar</span>
+        </div>
+
+        <div class="w-full h-[1px] bg-surface-200 dark:bg-surface-700 my-2"></div>
+
+        <div class="flex justify-between items-baseline">
+          <span class="text-base font-bold text-surface-900 dark:text-surface-0">Total</span>
+          <span class="text-2xl font-black text-emerald-600 dark:text-emerald-400"> EL TOTAL </span>
+        </div>
+
+        <button
+          pButton
+          label="Continuar Compra"
+          icon="pi pi-check"
+          class="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl border-none transition-colors"
+        ></button>
+      </div>
+    </div>
+  }
+</div>

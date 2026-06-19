@@ -2,7 +2,6 @@ import { Consumidor, ItemCarrito } from '@schemas/consumidores.schema.js';
 import { BaseRepository } from './base.repository.js';
 import { AdicionalesProductor } from '@schemas/usuarios.schema.js';
 import { DeAcaInternal } from '@errors/response.errors.js';
-import { myPool } from '@database/pool.js';
 
 export class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
   protected readonly tableName = 'consumidores';
@@ -53,9 +52,20 @@ export class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
 
   async getCarrito(id_consumidor: string): Promise<ItemCarrito[]> {
     const consulta = `
-      SELECT PC.* , P.precio, P.precio*PC.cantidad as subtotal
+      -- Seleccionaos todas las columnas de producto y que se filtren en el esquema.
+      SELECT P.*, PC.id_consumidor ,PC.cantidad, P.precio*PC.cantidad as subtotal, DP.username,
+      (
+        SELECT COALESCE(
+          json_agg(PI.path ORDER BY PI.posicion),
+          '[]'::json
+        )
+        FROM public.producto_imagenes PI
+        WHERE PI.id_productor = P.id_productor
+        AND PI.id_producto = P.id_producto
+      ) AS fotos
       FROM public.productos_carrito PC
-      LEFT JOIN public.productos P ON P.id_productor = PC.id_productor AND P.id_producto=PC.id_producto
+      JOIN public.productos P ON P.id_productor = PC.id_productor AND P.id_producto=PC.id_producto
+      JOIN public.datos_personales DP ON DP.id_usuario = PC.id_productor
       WHERE id_consumidor=$1
     `;
     const res = await this.executor.query(consulta, [id_consumidor]);
@@ -67,7 +77,9 @@ export class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
    * @param item
    * @returns
    */
-  async addItemCarrito(item: Omit<ItemCarrito, 'precio,subtotal'>): Promise<void> {
+  async addItemCarrito(
+    item: Pick<ItemCarrito, 'id_productor' | 'id_producto' | 'id_consumidor' | 'cantidad'>,
+  ): Promise<void> {
     const consulta = `
       INSERT INTO public.productos_carrito(id_productor,id_producto,id_consumidor,cantidad)
       VALUES ($1,$2,$3,$4)
@@ -87,7 +99,9 @@ export class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
    * @param item
    * @returns
    */
-  async updateItemCarrito(item: Omit<ItemCarrito, 'precio,subtotal'>): Promise<void> {
+  async updateItemCarrito(
+    item: Pick<ItemCarrito, 'id_productor' | 'id_producto' | 'id_consumidor' | 'cantidad'>,
+  ): Promise<void> {
     const consulta = `
       UPDATE public.productos_carrito
       SET cantidad=$4
@@ -105,10 +119,13 @@ export class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
 
   /**
    * Permite quitar un producto (sin importar su cantidad) del carrito de un consumidor.
+   * O sea, elimina todas las cantidades del carrito
    * @param item
    * @returns
    */
-  async removeItemCarrito(item: Omit<ItemCarrito, 'precio,subtotal,cantidad'>): Promise<void> {
+  async removeItemCarrito(
+    item: Pick<ItemCarrito, 'id_productor' | 'id_producto' | 'id_consumidor'>,
+  ): Promise<void> {
     const consulta = `
       DELETE FROM public.productos_carrito
       WHERE id_productor=$1 AND id_producto=$2 AND id_consumidor=$3

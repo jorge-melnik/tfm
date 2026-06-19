@@ -6,6 +6,7 @@ import { TagModule } from 'primeng/tag';
 import { FotoCarrusel } from '../foto-carrusel/foto.carrusel';
 import { Producto } from '@shared/types/producto';
 import { TooltipModule } from 'primeng/tooltip';
+import { ItemCarrito } from '@shared/types/item-carrito';
 
 @Component({
   selector: 'app-producto-card',
@@ -19,5 +20,13 @@ export class ProductoCard {
   layout = input<'grid' | 'list'>('grid'); // <-- Recibe el modo del DataView
   cdnUrl = input.required<string>();
 
-  agregarAlCarrito = output<Producto>();
+  agregarAlCarrito = output<Pick<ItemCarrito, 'id_productor' | 'id_producto' | 'cantidad'>>();
+
+  enviarAlCarrito(producto: Producto) {
+    this.agregarAlCarrito.emit({
+      id_productor: producto.id_productor,
+      id_producto: producto.id_producto,
+      cantidad: 1,
+    });
+  }
 }
