@@ -13,7 +13,12 @@
       <ng-template #list let-myitems>
         <div class="flex flex-col">
           @for (item of myitems; track item.id_item) {
-            <app-item-carrito [item]="item" [cdnUrl]="this.cdnUrl" />
+            <app-item-carrito
+              [item]="item"
+              [cdnUrl]="this.cdnUrl"
+              (actualizar)="this.onActualizar($event)"
+              (borrar)="this.onBorrar($event)"
+            />
           } @empty {
             <div class="flex flex-col items-center justify-center py-12 text-surface-400">
               <i class="pi pi-shopping-cart text-5xl mb-3"></i>

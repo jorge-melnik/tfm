@@ -5,6 +5,7 @@ import { DataView } from 'primeng/dataview';
 import { ItemCarritoComponent } from './item-carrito/item-carrito.component';
 import { environment } from '@env/environment';
 import { Tag } from 'primeng/tag';
+import { ItemCarrito } from '@shared/types/item-carrito';
 
 @Component({
   selector: 'app-carrito',
@@ -21,4 +22,12 @@ export class CarritoPage {
   public limit = this._preferenciasStore.limit;
 
   protected items = this._carritoService.items;
+
+  public onBorrar(item: ItemCarrito) {
+    this._carritoService.removeItem(item);
+  }
+
+  public onActualizar(item: ItemCarrito) {
+    this._carritoService.updateItem(item);
+  }
 }

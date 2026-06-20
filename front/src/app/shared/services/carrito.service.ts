@@ -3,7 +3,7 @@ import { environment } from '@env/environment';
 import { UserStore } from './stores/user.store';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { ItemCarrito } from '@shared/types/item-carrito';
+import { ItemCarrito, ItemCarritoVerbose } from '@shared/types/item-carrito';
 import { DialogService } from './dialog.service';
 
 @Service()
@@ -18,15 +18,15 @@ export class CarritoService {
     return `${environment.apiUrl}/consumidores/${usuario.id_usuario}/carrito`;
   });
 
-  public readonly items = resource<ItemCarrito[], { url: string | undefined }>({
-    defaultValue: [] as ItemCarrito[],
+  public readonly items = resource<ItemCarritoVerbose[], { url: string | undefined }>({
+    defaultValue: [] as ItemCarritoVerbose[],
     params: () => {
       return { url: this._baseUrl() };
     },
     loader: async ({ params }) => {
       if (!params.url) return [];
       try {
-        const res = await firstValueFrom(this._http.get<ItemCarrito[]>(params.url));
+        const res = await firstValueFrom(this._http.get<ItemCarritoVerbose[]>(params.url));
         return res;
       } catch (error: any) {
         this._dialog.addError(error.error.message);
@@ -39,23 +39,27 @@ export class CarritoService {
     this.items.value().reduce((total, item) => total + item.cantidad, 0),
   );
 
-  public async addItem(
-    item: Pick<ItemCarrito, 'id_productor' | 'id_producto' | 'id_consumidor' | 'cantidad'>,
-  ) {
+  public async addItem(item: ItemCarrito) {
     const baseUrl = this._baseUrl();
     if (!baseUrl) throw new Error('No hay usuario consumidor autenticado.');
     const url = `${baseUrl}/productores/${item.id_productor}/productos`;
-    await firstValueFrom(this._http.post<ItemCarrito>(url, item));
+    await firstValueFrom(this._http.post(url, item));
     this.items.reload();
   }
 
-  public async updateItem(
-    item: Pick<ItemCarrito, 'id_productor' | 'id_producto' | 'id_consumidor' | 'cantidad'>,
-  ) {
+  public async updateItem(item: ItemCarrito) {
     const baseUrl = this._baseUrl();
     if (!baseUrl) throw new Error('No hay usuario consumidor autenticado.');
     const url = `${baseUrl}/productores/${item.id_productor}/productos/${item.id_producto}`;
-    await firstValueFrom(this._http.put<ItemCarrito>(url, item));
+    await firstValueFrom(this._http.put(url, item));
+    this.items.reload();
+  }
+
+  public async removeItem(item: ItemCarrito) {
+    const baseUrl = this._baseUrl();
+    if (!baseUrl) throw new Error('No hay usuario consumidor autenticado.');
+    const url = `${baseUrl}/productores/${item.id_productor}/productos/${item.id_producto}`;
+    await firstValueFrom(this._http.delete(url));
     this.items.reload();
   }
 }

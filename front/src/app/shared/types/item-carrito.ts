@@ -1,4 +1,4 @@
-export type ItemCarrito = {
+export type ItemCarritoVerbose = {
   id_productor: string;
   id_producto: number;
   id_consumidor: string;
@@ -12,3 +12,5 @@ export type ItemCarrito = {
   fotos: string[];
   cantidad_disponible: number;
 };
+
+export type ItemCarrito = Pick<ItemCarritoVerbose, 'id_productor' | 'id_producto' | 'cantidad'>;

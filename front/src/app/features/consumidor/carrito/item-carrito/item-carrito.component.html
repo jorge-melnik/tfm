@@ -1,11 +1,12 @@
+@let item = this.item();
 <div
   class="flex flex-col sm:flex-row items-center gap-4 p-4 border-b border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 last:border-b-0"
 >
   <div class="w-20 h-20 bg-surface-100 dark:bg-surface-800 rounded-xl overflow-hidden shrink-0">
-    @if (item().fotos && item().fotos.length > 0) {
+    @if (item.fotos && item.fotos.length > 0) {
       <img
-        [src]="cdnUrl() + '/' + item().fotos[0]"
-        [alt]="item().nombre"
+        [src]="cdnUrl() + '/' + item.fotos[0]"
+        [alt]="item.nombre"
         class="w-full h-full object-cover"
       />
     } @else {
@@ -19,27 +20,32 @@
     <span
       class="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider"
     >
-      {{ item().username }}
+      {{ item.username }}
     </span>
     <h4 class="text-base font-bold text-surface-900 dark:text-surface-0 truncate m-0 capitalize">
-      {{ item().nombre }}
+      {{ item.nombre }}
     </h4>
     <span class="text-xs text-surface-400 dark:text-surface-500 block mt-0.5">
-      Prec. Unit: {{ item().precio | currency: '$' }}
+      Prec. Unit: {{ item.precio | currency: '$' }}
+    </span>
+    <span class="text-xs text-surface-400 dark:text-surface-500 block mt-0.5">
+      Stock: {{ item.cantidad_disponible }}
     </span>
   </div>
 
   <div
     class="flex items-center gap-2 bg-surface-50 dark:bg-surface-800 p-1 rounded-full border border-surface-200 dark:border-surface-700"
   >
-    @if (item().cantidad > 1) {
+    @if (item.cantidad > 1) {
       <button
+        (click)="this.cambiarCantidad(item.cantidad - 1)"
         class="w-7 h-7 rounded-full flex items-center justify-center hover:bg-surface-200 dark:hover:bg-surface-700 text-surface-600 dark:text-surface-300 transition-colors"
       >
         <i class="pi pi-minus text-[10px]"></i>
       </button>
     } @else {
       <button
+        (click)="this.emitBorrar()"
         class="w-7 h-7 rounded-full flex items-center justify-center hover:bg-red-50 dark:hover:bg-red-950/30 text-red-500 transition-colors"
       >
         <i class="pi pi-trash text-[10px]"></i>
@@ -47,11 +53,12 @@
     }
 
     <span class="w-8 text-center text-sm font-bold text-surface-800 dark:text-surface-200">
-      {{ item().cantidad }}
+      {{ item.cantidad }}
     </span>
 
     <button
-      [disabled]="item().cantidad >= item().cantidad_disponible"
+      (click)="this.cambiarCantidad(item.cantidad + 1)"
+      [disabled]="item.cantidad >= item.cantidad_disponible"
       class="w-7 h-7 rounded-full flex items-center justify-center hover:bg-surface-200 dark:hover:bg-surface-700 text-surface-600 dark:text-surface-300 disabled:opacity-30 transition-colors"
     >
       <i class="pi pi-plus text-[10px]"></i>
@@ -63,7 +70,7 @@
       >Subtotal</span
     >
     <span class="text-lg font-black text-emerald-600 dark:text-emerald-400">
-      {{ item().precio * item().cantidad | currency: '$' }}
+      {{ item.precio * item.cantidad | currency: '$' }}
     </span>
   </div>
 </div>

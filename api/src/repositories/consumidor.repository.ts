@@ -67,6 +67,7 @@ export class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
       JOIN public.productos P ON P.id_productor = PC.id_productor AND P.id_producto=PC.id_producto
       JOIN public.datos_personales DP ON DP.id_usuario = PC.id_productor
       WHERE id_consumidor=$1
+      ORDER BY P.nombre
     `;
     const res = await this.executor.query(consulta, [id_consumidor]);
     return res.rows;
