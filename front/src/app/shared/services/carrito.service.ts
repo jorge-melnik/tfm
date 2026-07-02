@@ -39,6 +39,10 @@ export class CarritoService {
     this.items.value().reduce((total, item) => total + item.cantidad, 0),
   );
 
+  public readonly totalCarrito = computed(() =>
+    this.items.value().reduce((total, item) => total + item.subtotal, 0),
+  );
+
   public async addItem(item: ItemCarrito) {
     const baseUrl = this._baseUrl();
     if (!baseUrl) throw new Error('No hay usuario consumidor autenticado.');

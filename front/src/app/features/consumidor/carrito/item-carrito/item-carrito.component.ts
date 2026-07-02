@@ -15,7 +15,7 @@ export class ItemCarritoComponent {
   public borrar = output<ItemCarrito>();
 
   cambiarCantidad(nuevaCantidad: number) {
-    const item: ItemCarrito = this.item();
+    const item: ItemCarrito = { ...this.item() };
     item.cantidad = nuevaCantidad; //Evitamos modificar la cantidad que muestra el componente.
     this.actualizar.emit(item);
   }
