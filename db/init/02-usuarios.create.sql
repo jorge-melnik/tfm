@@ -28,23 +28,6 @@ CREATE TABLE IF NOT EXISTS datos_personales (
     celular_validado BOOLEAN NOT NULL DEFAULT false
 );
 
-CREATE TABLE IF NOT EXISTS productores (
-    id_productor UUID PRIMARY KEY REFERENCES usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE, -- Misma clave que usuarios
-    presentacion TEXT NOT NULL,
-    fecha_creacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    fecha_eliminacion TIMESTAMP WITH TIME ZONE,
-    activo BOOLEAN GENERATED ALWAYS AS (fecha_eliminacion IS NULL) STORED
-);
-
-CREATE TABLE IF NOT EXISTS consumidores (
-    id_consumidor UUID PRIMARY KEY REFERENCES usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE, -- Misma clave que usuarios
-    fecha_creacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    fecha_eliminacion TIMESTAMP WITH TIME ZONE,
-    activo BOOLEAN GENERATED ALWAYS AS (fecha_eliminacion IS NULL) STORED
-);
-
 CREATE TABLE IF NOT EXISTS ubicaciones (
     id_ubicacion UUID PRIMARY KEY DEFAULT uuidv7(),
     id_usuario UUID NOT NULL REFERENCES usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -65,3 +48,23 @@ CREATE TABLE IF NOT EXISTS ubicaciones (
 
 CREATE INDEX IF NOT EXISTS idx_ubicaciones_punto ON ubicaciones USING GIST (punto);
 CREATE INDEX IF NOT EXISTS idx_usuarios_roles ON usuarios USING GIN (roles);
+
+CREATE TABLE IF NOT EXISTS productores (
+    id_productor UUID PRIMARY KEY REFERENCES usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE, -- Misma clave que usuarios
+    presentacion TEXT NOT NULL,
+    -- TODO: Falta asignarle una ubicación al productor, de las existentes en el usuario.
+    -- id_ubicacion UUID REFERENCES ubicaciones(id_ubicacion) ON DELETE SET NULL ON UPDATE CASCADE
+    calificacion SMALLINT CHECK (calificacion BETWEEN 1 AND 5), -- TODO. Hacer trigger para cargar esto en base al promedio de calificaciónes de sus productos
+    fecha_creacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fecha_eliminacion TIMESTAMP WITH TIME ZONE,
+    activo BOOLEAN GENERATED ALWAYS AS (fecha_eliminacion IS NULL) STORED
+);
+
+CREATE TABLE IF NOT EXISTS consumidores (
+    id_consumidor UUID PRIMARY KEY REFERENCES usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE, -- Misma clave que usuarios
+    fecha_creacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fecha_eliminacion TIMESTAMP WITH TIME ZONE,
+    activo BOOLEAN GENERATED ALWAYS AS (fecha_eliminacion IS NULL) STORED
+);

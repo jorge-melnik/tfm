@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS departamentos (
 CREATE TABLE IF NOT EXISTS localidades (
     id_localidad INTEGER PRIMARY KEY, -- El id de ideuy
     id_departamento INTEGER NOT NULL REFERENCES departamentos(id_departamento) ON DELETE CASCADE ON UPDATE CASCADE,
-    nombre CITEXT NOT NULL UNIQUE CHECK (
+    nombre CITEXT NOT NULL CHECK (
         char_length(nombre) BETWEEN 2 AND 32
     ),
     slug_localidad CITEXT NOT NULL UNIQUE CHECK (
