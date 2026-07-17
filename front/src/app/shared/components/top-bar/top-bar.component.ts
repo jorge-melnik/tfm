@@ -2,12 +2,12 @@ import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/c
 import { RouterLink } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
-import { Button } from 'primeng/button';
+import { ButtonDirective } from 'primeng/button';
 import { UserStore } from '@shared/services/stores/user.store';
 
 @Component({
   selector: 'app-top-bar',
-  imports: [RouterLink, MenuModule, Button],
+  imports: [RouterLink, MenuModule, ButtonDirective],
   templateUrl: './top-bar.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './top-bar.component.css',

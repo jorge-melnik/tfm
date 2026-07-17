@@ -20,7 +20,7 @@
 
     <form #loginForm class="flex flex-col gap-12" (ngSubmit)="this.doLogin()">
       <div class="flex justify-center mb-2">
-        <p-selectButton
+        <p-select-button
           [options]="this.loginOptions"
           [(ngModel)]="this.selectedMethod"
           optionLabel="label"
@@ -32,7 +32,7 @@
             <i [class]="item.icon" class="mr-2"></i>
             <span>{{ item.label }}</span>
           </ng-template>
-        </p-selectButton>
+        </p-select-button>
       </div>
       @if (this.selectedMethod() === 'email') {
         <p-floatlabel variant="on">
@@ -81,7 +81,7 @@
         </p-iconfield>
       </p-floatlabel>
 
-      <p-button type="submit" label="Ingresar" styleClass="w-full" />
+      <button pButton type="submit" styleClass="w-full">INGRESAR</button>
     </form>
 
     <ng-template #footer>

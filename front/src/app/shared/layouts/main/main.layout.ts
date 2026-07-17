@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TopBarComponent } from '@shared/components/top-bar/top-bar.component';
-import { Button } from 'primeng/button';
+import { ButtonDirective } from 'primeng/button';
 import { TabsModule, Tabs, TabList, Tab, TabPanel, TabPanels } from 'primeng/tabs';
 
 @Component({

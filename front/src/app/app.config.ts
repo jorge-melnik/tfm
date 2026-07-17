@@ -26,6 +26,8 @@ export const appConfig: ApplicationConfig = {
       theme: {
         preset: Aura,
       },
+      license:
+        'eyJpZCI6ImExMWVjOWNjLWExYmUtNDA0Mi05MDQ4LTFmZjJlMDY3MDliNSIsInByb2R1Y3QiOiJwcmltZXVpIiwidGllciI6ImNvbW11bml0eSIsInR5cGUiOiJkZXYiLCJpYXQiOjE3ODQzMTU1MTgsImV4cCI6MTgxNTg1MTUxOH0.Az3vPUIjI4lf9XE_5uCIlv_P_YTWZOLP3JX50uwyjeBYkbirzY92lU2OZJVEugMbF41B7g1ym3lzlTXVJjmuAA',
     }),
     MessageService,
     ConfirmationService,

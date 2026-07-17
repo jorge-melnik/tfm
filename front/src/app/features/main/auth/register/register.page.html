@@ -1,7 +1,4 @@
-<div
-  id="main"
-  class="flex flex-col grow justify-center items-center h-full p-1"
->
+<div id="main" class="flex flex-col grow justify-center items-center h-full p-1">
   <p-card class="shadow-lg rounded-xl w-full md:w-[30rem]">
     <ng-template #header>
       <div class="flex justify-center pt-12 hide-on-short-screen">
@@ -10,12 +7,14 @@
     </ng-template>
 
     <ng-template #title>
-      <div class="text-center text-surface-900 dark:text-surface-0 text-3xl font-medium mb-1">Crear Cuenta</div>
+      <div class="text-center text-surface-900 dark:text-surface-0 text-3xl font-medium mb-1">
+        Crear Cuenta
+      </div>
     </ng-template>
 
     <form class="flex flex-col gap-12">
       <div class="flex justify-center mb-6">
-        <p-selectButton
+        <p-select-button
           [options]="[
             { label: 'Quiero Comprar', value: 'consumer' },
             { label: 'Quiero Vender', value: 'producer' },
@@ -34,7 +33,7 @@
               <span class="font-bold">{{ item.label }}</span>
             </div>
           </ng-template>
-        </p-selectButton>
+        </p-select-button>
       </div>
 
       <div class="flex flex-col md:flex-row gap-12">
@@ -102,7 +101,7 @@
         </p-iconfield>
       </p-floatlabel>
 
-      <p-button label="Registrarme" styleClass="w-full" severity="primary" />
+      <button pButton label="Registrarme" styleClass="w-full" severity="primary"></button>
     </form>
 
     <ng-template #footer>

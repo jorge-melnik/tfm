@@ -47,7 +47,6 @@ interface SortOption {
     FormsModule,
     ProductoCard,
     SelectModule,
-    MultiSelectModule,
   ],
   templateUrl: './home.page.html',
   changeDetection: ChangeDetectionStrategy.Eager,

@@ -9,6 +9,7 @@ import { CardModule } from 'primeng/card';
 import { RouterLink } from '@angular/router';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
+import { Select } from 'primeng/select';
 
 @Component({
   selector: 'app-register',

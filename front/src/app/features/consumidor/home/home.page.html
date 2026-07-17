@@ -50,7 +50,8 @@
             placeholder="Subcategoría"
           />
 
-          <p-multiSelect
+          <p-select
+            multiple="true"
             [options]="this.etiquetasResource.value()"
             [(ngModel)]="this.etiquetasSeleccionadas"
             (onChange)="this.onEtiquetasChange($event.value)"
@@ -61,14 +62,13 @@
             optionValue="slug_etiqueta"
             appendTo="body"
             [showClear]="true"
-            [maxSelectedLabels]="3"
           />
 
           <!-- <button
             pButton
             label="Limpiar Filtros"
             icon="pi pi-filter-slash"
-            class="p-button-outlined w-full"
+            class="button pButton-outlined w-full"
           ></button> -->
           <div class="relative w-full">
             <input

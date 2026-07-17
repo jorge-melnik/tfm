@@ -15,22 +15,25 @@
     <ng-template #caption>
       <div class="flex items-center justify-between">
         <h3>
-          <p-button
+          <button
+            pButton
             icon="pi pi-refresh"
             severity="secondary"
             text="Recargar text"
             (onClick)="refresh.emit()"
-            styleClass="p-button-sm"
-          />
+            styleClass="button-sm"
+          ></button>
 
-          {{ this.title() }}
-          <p-button
+          <button
+            pButton
             icon="pi pi-plus"
             severity="primary"
             text="Recargar text"
-            styleClass="p-button-sm"
+            styleClass="button-sm"
             (click)="this.createInit()"
-          />
+          ></button>
+
+          {{ this.title() }}
         </h3>
         <p-iconfield>
           <p-inputicon class="pi pi-search" />
@@ -66,21 +69,24 @@
           }
           <td>
             <div class="flex items-center justify-center gap-2">
-              <p-button
+              <button
+                pButton
                 icon="pi pi-check"
                 [rounded]="true"
                 [text]="true"
                 severity="success"
                 [disabled]="!createForm.valid"
                 (onClick)="this.createSave()"
-              />
-              <p-button
+              ></button>
+
+              <button
+                pButton
                 icon="pi pi-times"
                 [rounded]="true"
                 [text]="true"
                 severity="danger"
                 (onClick)="this.createCancel()"
-              />
+              ></button>
             </div>
           </td>
         </tr>
@@ -92,7 +98,7 @@
         @for (col of columns(); track col.key) {
           <td>
             @if (this.editableColumns().includes(col.key)) {
-              <p-cellEditor>
+              <p-cell-editor>
                 <ng-template #input>
                   <ng-container
                     *ngTemplateOutlet="renderInput; context: { col: col, group: rowData }"
@@ -103,7 +109,7 @@
                     *ngTemplateOutlet="renderOutput; context: { col: col, rowData: rowData }"
                   ></ng-container>
                 </ng-template>
-              </p-cellEditor>
+              </p-cell-editor>
             } @else {
               <ng-container
                 *ngTemplateOutlet="renderOutput; context: { col: col, rowData: rowData }"
@@ -115,7 +121,7 @@
           <td>
             <div class="flex justify-center w-full">
               @if (editing) {
-                <p-button
+                <button
                   pButton
                   pRipple
                   type="button"
@@ -127,8 +133,9 @@
                   severity="success"
                   title="Guardar"
                   size="small"
-                ></p-button>
-                <p-button
+                ></button>
+
+                <button
                   pButton
                   pRipple
                   type="button"
@@ -140,9 +147,9 @@
                   severity="secondary"
                   title="Cancelar"
                   size="small"
-                ></p-button>
+                ></button>
               } @else {
-                <p-button
+                <button
                   pButton
                   pRipple
                   type="button"
@@ -154,8 +161,8 @@
                   severity="primary"
                   title="Editar"
                   size="small"
-                ></p-button>
-                <p-button
+                ></button>
+                <button
                   pButton
                   pRipple
                   type="button"
@@ -166,9 +173,9 @@
                   severity="danger"
                   title="Borrar"
                   size="small"
-                ></p-button>
+                ></button>
                 @if (rowData.activo === true) {
-                  <p-button
+                  <button
                     pButton
                     pRipple
                     type="button"
@@ -179,10 +186,10 @@
                     severity="danger"
                     title="Desactivar"
                     size="small"
-                  ></p-button>
+                  ></button>
                 }
                 @if (rowData.activo === false) {
-                  <p-button
+                  <button
                     pButton
                     pRipple
                     type="button"
@@ -193,7 +200,7 @@
                     severity="danger"
                     title="Activar"
                     size="small"
-                  ></p-button>
+                  ></button>
                 }
               }
             </div>
@@ -306,7 +313,8 @@
 
     @case ('etiquetas') {
       <div class="flex items-center gap-2">
-        <p-multiselect
+        <p-select
+          multiple="true"
           [options]="this.etiquetas()"
           [(ngModel)]="group[col.key]"
           optionLabel="nombre"

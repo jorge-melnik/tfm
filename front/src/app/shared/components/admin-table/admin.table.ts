@@ -1,19 +1,10 @@
 import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
-import {
-  Component,
-  computed,
-  input,
-  model,
-  output,
-  signal,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, computed, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Table, TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { FormsModule } from '@angular/forms';
 import { InputText } from 'primeng/inputtext';
-import { Button } from 'primeng/button';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableColumn } from '@shared/types/util';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
@@ -22,6 +13,7 @@ import { Categoria, Subcategoria } from '@shared/types/categoria';
 import { Select } from 'primeng/select';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { Etiqueta } from '@shared/types/etiqueta';
+import { ButtonDirective, Button } from 'primeng/button';
 
 @Component({
   selector: 'app-admin-table',
@@ -34,13 +26,13 @@ import { Etiqueta } from '@shared/types/etiqueta';
     InputIcon,
     FormsModule,
     InputText,
-    Button,
     FormsModule,
     ProgressSpinnerModule,
     ToggleSwitchModule,
     ColorPickerModule,
     Select,
     MultiSelectModule,
+    ButtonDirective,
   ],
   templateUrl: './admin.table.html',
   changeDetection: ChangeDetectionStrategy.Eager,

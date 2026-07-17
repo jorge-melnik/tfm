@@ -7,12 +7,12 @@ import { environment } from '@env/environment';
 import { Tag } from 'primeng/tag';
 import { ItemCarrito } from '@shared/types/item-carrito';
 import { DialogService } from '@shared/services/dialog.service';
-import { Button } from 'primeng/button';
 import { CurrencyPipe } from '@angular/common';
+import { ButtonDirective } from 'primeng/button';
 
 @Component({
   selector: 'app-carrito',
-  imports: [DataView, ItemCarritoComponent, Tag, Button, CurrencyPipe],
+  imports: [DataView, ItemCarritoComponent, Tag, CurrencyPipe, ButtonDirective],
   templateUrl: './carrito.page.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './carrito.page.css',
