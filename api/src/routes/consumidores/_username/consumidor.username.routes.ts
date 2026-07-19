@@ -1,0 +1,32 @@
+import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
+import { consumidorRepository } from '@repositories/consumidor.repository.js';
+import { Consumidor } from '@schemas/consumidores.schema.js';
+
+import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { DatosPersonales } from '@schemas/usuarios.schema.js';
+
+const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
+  fastify.get('/', {
+    schema: {
+      tags: ['Consumidores'],
+      summary: 'READ consumidor',
+      description: `Devuelve el consumidor a partir del slug en params.`,
+      params: Type.Object({
+        username: DatosPersonales.properties.username,
+      }),
+      response: {
+        200: Consumidor,
+        500: DeAcaErrorResponse,
+      },
+    },
+    // onRequest : //FIXME: Solo para admin.
+    handler: async function (req, reply) {
+      //FIXME: Eventualmente esto no conviene que devuelva TODO. paginar.
+      return consumidorRepository.getOneBy({ username: req.params.username });
+    },
+  });
+};
+
+export default rutasConsumidorPorUsername;
+//TODO: Necesario esta ruta?
+//Mejor hacer un /admin/usuarios y ya.

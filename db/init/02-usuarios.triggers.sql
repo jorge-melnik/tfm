@@ -1,30 +1,33 @@
-
 CREATE OR REPLACE FUNCTION fn_sincronizar_roles()
 RETURNS TRIGGER AS $$
 DECLARE
     v_rol ROL;
+    v_id UUID; -- O INTEGER, según sea tu tipo de ID
 BEGIN
-    -- Determinar qué rol estamos manejando según la tabla que disparó el trigger
+    -- Determinar qué rol e id estamos manejando según la tabla que disparó el trigger
     IF TG_TABLE_NAME = 'productores' THEN
         v_rol := 'PRODUCTOR';
+        v_id := CASE WHEN TG_OP = 'DELETE' THEN OLD.id_productor ELSE NEW.id_productor END;
     ELSIF TG_TABLE_NAME = 'consumidores' THEN
         v_rol := 'CONSUMIDOR';
+        v_id := CASE WHEN TG_OP = 'DELETE' THEN OLD.id_consumidor ELSE NEW.id_consumidor END;
     END IF;
 
-    IF (TG_OP = 'DELETE' OR NEW.activo = FALSE) THEN    --delete fisico o lógico
+    IF (TG_OP = 'DELETE' OR (TG_OP = 'UPDATE' AND NEW.activo = FALSE)) THEN
         UPDATE usuarios 
         SET roles = array_remove(roles, v_rol)
-        WHERE id_usuario = OLD.id_usuario;
-    ELSE -- Si entra acá, NEW.activo = TRUE
+        WHERE id_usuario = v_id;
+    ELSIF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NEW.activo = TRUE)) THEN
         UPDATE usuarios 
-        SET roles = array_append(array_remove(roles, v_rol), v_rol) -- Hacemos un remove antes por si las moscas
-        WHERE id_usuario = NEW.id_usuario;
+        SET roles = array_append(array_remove(roles, v_rol), v_rol)-- Hacemos un remove antes por si las moscas
+        WHERE id_usuario = v_id;
     END IF;
-    RETURN NULL;
+
+    RETURN NULL; 
 END;
 $$ LANGUAGE plpgsql;
 
--- Triggers para productores
+-- TODO: TRIGGERs para productores
 CREATE OR REPLACE TRIGGER tr_sync_productores_lifecycle
 AFTER INSERT OR DELETE ON productores
 FOR EACH ROW 
@@ -36,7 +39,7 @@ FOR EACH ROW
 WHEN (OLD.activo IS DISTINCT FROM NEW.activo)
 EXECUTE FUNCTION fn_sincronizar_roles();
 
--- Triggers para consumidores
+-- TODO: TRIGGERs para consumidores
 CREATE OR REPLACE TRIGGER tr_sync_consumidores_lifecycle
 AFTER INSERT OR DELETE ON consumidores
 FOR EACH ROW 
@@ -47,3 +50,7 @@ AFTER UPDATE OF activo ON consumidores
 FOR EACH ROW 
 WHEN (OLD.activo IS DISTINCT FROM NEW.activo)
 EXECUTE FUNCTION fn_sincronizar_roles();
+
+
+--TODO: Trigger para que si cambia email en datos_personales setear email_validado en false
+--TODO: Trigger para que si cambia celular en datos_personales setear celular_validado en false

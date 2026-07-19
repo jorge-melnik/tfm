@@ -1,0 +1,34 @@
+<div class="flex flex-col h-full">
+  <app-top-bar></app-top-bar>
+
+  <main class="grow overflow-y-auto bg-surface-ground">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="bg-white border-t border-surface-300 dark:border-surface-500 shadow-xl">
+    <p-tabs [value]="0">
+      <p-tablist>
+        <p-tab [value]="0" class="grow" [routerLink]="['/', 'productor']">
+          <div class="flex flex-col items-center gap-1">
+            <i class="pi pi-home text-xl"></i>
+            <span class="text-xs">Inicio</span>
+          </div>
+        </p-tab>
+
+        <p-tab [value]="1" class="grow" [routerLink]="['/', 'productor', 'productos']">
+          <div class="flex flex-col items-center gap-1">
+            <i class="pi pi-objects-column text-xl"></i>
+            <span class="text-xs">Productos</span>
+          </div>
+        </p-tab>
+
+        <p-tab [value]="2" class="grow" [routerLink]="['/', 'productor', 'pedidos']">
+          <div class="flex flex-col items-center gap-1">
+            <i class="pi pi-receipt text-xl"></i>
+            <span class="text-xs">Pedidos</span>
+          </div>
+        </p-tab>
+      </p-tablist>
+    </p-tabs>
+  </footer>
+</div>

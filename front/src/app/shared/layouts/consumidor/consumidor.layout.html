@@ -1,0 +1,45 @@
+<div class="flex flex-col h-full">
+  <app-top-bar></app-top-bar>
+
+  <main class="grow overflow-y-auto bg-surface-ground">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="bg-white border-t border-surface-300 dark:border-surface-500 shadow-xl">
+    <p-tabs [value]="0">
+      <p-tablist>
+        <p-tab [value]="0" class="grow" [routerLink]="['/', 'consumidor']">
+          <div class="flex flex-col items-center gap-1">
+            <i class="pi pi-home text-xl"></i>
+            <span class="text-xs">Inicio</span>
+          </div>
+        </p-tab>
+
+        <p-tab [value]="1" class="grow" [routerLink]="['/', 'consumidor', 'carrito']">
+          <div class="flex flex-col items-center gap-1">
+            <div class="relative">
+              <i class="pi pi-shopping-cart text-xl"></i>
+
+              @if (this._carritoService.cantidadItems() >= 0) {
+                <p-badge
+                  [value]="this._carritoService.cantidadItems()"
+                  severity="danger"
+                  class="absolute -top-2 -right-8"
+                />
+              }
+            </div>
+
+            <span class="text-xs">Carrito</span>
+          </div>
+        </p-tab>
+
+        <p-tab [value]="2" class="grow" [routerLink]="['/', 'consumidor', 'compras']">
+          <div class="flex flex-col items-center gap-1">
+            <i class="pi pi-box text-xl"></i>
+            <span class="text-xs">Compras</span>
+          </div>
+        </p-tab>
+      </p-tablist>
+    </p-tabs>
+  </footer>
+</div>

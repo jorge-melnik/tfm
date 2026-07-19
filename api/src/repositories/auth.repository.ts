@@ -1,7 +1,10 @@
 import { myPool } from '@database/pool.js';
 import type { QueryResult } from 'pg';
 import { DeAcaInternal, DeAcaNotFound, DeAcaUnAuthenticated } from '@errors/response.errors.js';
-import { Profile, Rol, TokenPayload, User } from '@schemas/auth.schema.js';
+import { Profile, RegisterSchema, Rol, TokenPayload, User } from '@schemas/auth.schema.js';
+import { productorRepository } from './productor.repository.js';
+import { consumidorRepository } from './consumidor.repository.js';
+import { datosPersonalesRepository } from './datos-personales.respository.js';
 import { DatosPersonales } from '@schemas/usuarios.schema.js';
 
 class AuthRepositoryClass {
@@ -10,7 +13,7 @@ class AuthRepositoryClass {
    */
   async emailLogin(email: string, password: string): Promise<TokenPayload> {
     const query = `
-      SELECT U.id_usuario, roles 
+      SELECT U.id_usuario, to_jsonb(roles) as roles 
       FROM public.usuarios U
       JOIN public.credenciales C ON C.id_usuario = U.id_usuario
       JOIN public.datos_personales DP ON DP.id_usuario = U.id_usuario
@@ -29,7 +32,7 @@ class AuthRepositoryClass {
    */
   async usernameLogin(username: string, password: string): Promise<TokenPayload> {
     const query = `
-      SELECT U.id_usuario, roles 
+      SELECT U.id_usuario, to_jsonb(roles) as roles 
       FROM public.usuarios U
       JOIN public.credenciales C ON C.id_usuario = U.id_usuario
       JOIN public.datos_personales DP ON DP.id_usuario = U.id_usuario
@@ -58,9 +61,6 @@ class AuthRepositoryClass {
     const { rows }: QueryResult<Profile> = await myPool.query(query, [id_usuario]);
     if (rows.length === 0) {
       throw new DeAcaNotFound('Usuario con id_usuario ' + id_usuario);
-    }
-    if (rows.length > 1) {
-      throw new DeAcaInternal('Usuario duplicado');
     }
     return rows[0];
   }
@@ -112,26 +112,57 @@ class AuthRepositoryClass {
    * Registrar un nuevo usuario como consumidor y/o productor.
    * @param dp
    */
-  async register(dp: DatosPersonales, roles: Rol[]): Promise<void> {
-    // const queryUsuario = 'INSERT INTO usuarios (rol_actual, roles) VALUES ($1, $2) RETURNING *';
-    // const queryDP = `
-    //     INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username,celular,fotoUrl) VALUES ($1, $2, $3, $4,$5, $6,$7);
-    //   `;
-    // try {
-    //   await myPool.query('BEGIN;');
-    //   const { rows: rows }: QueryResult<{ id_usuario: string }> = await myPool.query(queryUsuario, [
-    //     roles[0],
-    //     roles,
-    //   ]);
-    //   await myPool.query(queryDP, [usuario.]);
-    //   const queryConsumidor = `
-    //   INSERT INTO productores (id_usuario, presentación) VALUES (id_productor, 'Productor de hortalizas orgánicas y miel pura de campo.');
-    // `;
-    //   const queryProductor = `
-    //   INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_productor, crypt('Contraseña', gen_salt('bf', 10)));
-    // `;
-    //   await myPool.query(query, [decoded.jti]);
-    // } catch (error) {}
+  async register(dp: RegisterSchema): Promise<void> {
+    const client = await myPool.connect(); //Obtenemos un cliente para poder hacer una transacción
+    const dpRepoWT = datosPersonalesRepository.withTransaction(client);
+    const productorRepoWT = productorRepository.withTransaction(client);
+    const consumidorRepoWT = consumidorRepository.withTransaction(client);
+
+    try {
+      await client.query('BEGIN;');
+      //Primero crear el usuario
+      const queryUsuario = 'INSERT INTO usuarios (rol_actual, roles) VALUES ($1, $2) RETURNING *';
+      const { rows }: QueryResult<{ id_usuario: string }> = await client.query(queryUsuario, [
+        dp.roles[0],
+        dp.roles,
+      ]);
+      const { id_usuario } = rows[0]; //Tengo el id_usuario creado
+      const datosPersonales: DatosPersonales = {
+        id_usuario,
+        nombres: dp.nombres,
+        apellidos: dp.apellidos,
+        email: dp.email,
+        username: dp.username,
+        celular: dp.celular,
+      };
+      //Segundo guardar datos personales.
+      await dpRepoWT.add(datosPersonales);
+      //Tercero, activar consumidor y/o productor según corresponda.
+      if (dp.consumidor) await productorRepoWT.activarConsumidor(id_usuario, dp.consumidor);
+      if (dp.productor) await consumidorRepoWT.activarProductor(id_usuario, dp.productor);
+
+      //Último: insertar credenciales
+      const credencialesQuery = `
+        INSERT INTO credenciales (id_usuario, password_hash) 
+        VALUES ($1, crypt($2, gen_salt('bf', 10)))
+        ;
+      `;
+      await client.query(credencialesQuery, [id_usuario, dp.password]);
+      await client.query('COMMIT;'); //Confirmar transacción
+    } catch (error: any) {
+      await client.query('ROLLBACK;');
+      throw new DeAcaInternal(error.message);
+    } finally {
+      client.release();
+    }
+  }
+
+  async setRolActual(id_usuario: string, rol_actual: Rol) {
+    const query = `
+      UPDATE public.usuarios SET rol_actual=$2
+      WHERE id_usuario=$1
+    `;
+    await myPool.query(query, [id_usuario, rol_actual]);
   }
 }
 

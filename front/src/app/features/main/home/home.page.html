@@ -1,0 +1,46 @@
+<div class="flex flex-col h-full">
+  <main class="grow overflow-y-auto bg-surface-ground">
+    <ul>
+      <li><a [routerLink]="['admin']">Admin</a></li>
+      <li><a [routerLink]="['consumidor']">Consumidor</a></li>
+      <li><a [routerLink]="['productor']">Productor</a></li>
+
+      <li><a [routerLink]="['auth', 'login']">Login</a></li>
+      <li><a [routerLink]="['auth', 'register']">Registro</a></li>
+    </ul>
+
+    <section class="px-12">
+      <h2 class="text-xl font-bold mb-6">Recién cosechado</h2>
+
+      <div class="grid grid-cols-12 gap-4 grid-cols-12 gap-6">
+        @for (producto of productos; track producto.id) {
+          <div class="col-span-6 md:col-span-3">
+            <p-card>
+              <ng-template #header>
+                <img
+                  src="https://img.rawpixel.com/s3fs-private/rawpixel_images/website_content/pdwatercolorfruitbatch1-295-gloy-a_1.jpg?w=1200&h=1200&fit=clip&crop=default&dpr=1&q=75&vib=3&con=3&usm=15&cs=srgb&bg=F4F4F3&ixlib=js-2.2.1&s=a9ba1d710e08b5d2889881099014ebb9"
+                  class="w-full rounded-t"
+                />
+              </ng-template>
+
+              <div class="flex flex-col gap-1">
+                <span class="text-sm text-secondary">{{ producto.productor }}</span>
+                <span class="font-bold">{{ producto.nombre }}</span>
+                <span class="text-primary font-bold text-lg">${{ producto.precio }}</span>
+              </div>
+
+              <ng-template #footer>
+                <button pButton icon="pi pi-plus" class="w-full">Agregar</button>
+              </ng-template>
+            </p-card>
+          </div>
+        } @empty {
+          <div class="col-span-12 text-center p-20">
+            <i class="pi pi-search text-4xl text-surface-300 dark:text-surface-500"></i>
+            <p>No hay productos cerca en este momento.</p>
+          </div>
+        }
+      </div>
+    </section>
+  </main>
+</div>

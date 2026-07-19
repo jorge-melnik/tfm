@@ -19,7 +19,8 @@
       "settings": {
         "git.openRepositoryInParentFolders": "always",
         "editor.formatOnSave": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "window.title": "FRONT"
       }
     }
   }

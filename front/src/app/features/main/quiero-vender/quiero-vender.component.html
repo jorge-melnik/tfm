@@ -1,0 +1,45 @@
+<div class="flex flex-col grow justify-center items-center h-full p-1">
+  <p-card class="shadow-lg rounded-xl w-full md:w-[30rem]">
+    <ng-template #header>
+      <div class="flex justify-center pt-12">
+        <i class="pi pi-shopping-bag text-primary text-6xl"></i>
+      </div>
+    </ng-template>
+
+    <ng-template #title>
+      <div class="text-center text-surface-900 dark:text-surface-0 text-3xl font-medium mb-1">
+        Quiero Vender
+      </div>
+    </ng-template>
+
+    <ng-template #subtitle>
+      <div class="text-center text-surface-600 dark:text-surface-200 mb-20">
+        Ingresa la presentación de tu negocio
+      </div>
+    </ng-template>
+
+    <form #loginForm class="flex flex-col gap-12">
+      <p-iftalabel class="w-full">
+        <textarea
+          pTextarea
+          id="presentacion"
+          rows="5"
+          [autoResize]="true"
+          class="w-full"
+        ></textarea>
+        <label for="presentacion">Presentacion</label>
+      </p-iftalabel>
+
+      <button pButton type="submit" styleClass="w-full">Ingresar</button>
+    </form>
+
+    <ng-template #footer>
+      <p class="text-center text-surface-600 dark:text-surface-200 mt-2">
+        ¿Aún no tienes cuenta?
+        <a routerLink="/auth/register" class="text-primary font-bold cursor-pointer no-underline"
+          >Regístrate</a
+        >
+      </p>
+    </ng-template>
+  </p-card>
+</div>

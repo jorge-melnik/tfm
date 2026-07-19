@@ -1,8 +1,8 @@
 // This file contains code that we reuse between our tests.
-import Fastify from "fastify";
-import { app, options } from "../src/app.ts";
-import fp from "fastify-plugin";
-import * as test from "node:test";
+import Fastify from 'fastify';
+import { app, options } from '../src/app.ts';
+import fp from 'fastify-plugin';
+import * as test from 'node:test';
 
 export type TestContext = {
   after: typeof test.after;

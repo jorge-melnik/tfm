@@ -1,0 +1,41 @@
+<div class="flex flex-col h-full">
+  <app-top-bar></app-top-bar>
+
+  <main class="grow overflow-y-auto bg-surface-ground">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="bg-white border-t border-surface-300 dark:border-surface-500 shadow-xl">
+    <p-tabs [value]="0">
+      <p-tablist>
+        <p-tab [value]="0" class="grow" [routerLink]="['/', 'admin']">
+          <div class="flex flex-col items-center gap-1">
+            <i class="pi pi-home text-xl"></i>
+            <span class="text-xs">Inicio</span>
+          </div>
+        </p-tab>
+
+        <p-tab [value]="1" class="grow" [routerLink]="['/', 'admin', 'categorias']">
+          <div class="flex flex-col items-center gap-1">
+            <i class="pi pi-tags text-xl"></i>
+            <span class="text-xs">Categorias</span>
+          </div>
+        </p-tab>
+
+        <p-tab [value]="2" class="grow" [routerLink]="['/', 'admin', 'subcategorias']">
+          <div class="flex flex-col items-center gap-1">
+            <i class="pi pi-tags text-xl"></i>
+            <span class="text-xs">Subcategorias</span>
+          </div>
+        </p-tab>
+
+        <p-tab [value]="3" class="grow" [routerLink]="['/', 'admin', 'etiquetas']">
+          <div class="flex flex-col items-center gap-1">
+            <i class="pi pi-bookmark text-xl"></i>
+            <span class="text-xs">Etiquetas</span>
+          </div>
+        </p-tab>
+      </p-tablist>
+    </p-tabs>
+  </footer>
+</div>

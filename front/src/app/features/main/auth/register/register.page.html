@@ -1,0 +1,116 @@
+<div id="main" class="flex flex-col grow justify-center items-center h-full p-1">
+  <p-card class="shadow-lg rounded-xl w-full md:w-[30rem]">
+    <ng-template #header>
+      <div class="flex justify-center pt-12 hide-on-short-screen">
+        <i class="pi pi-user-plus text-primary text-6xl"></i>
+      </div>
+    </ng-template>
+
+    <ng-template #title>
+      <div class="text-center text-surface-900 dark:text-surface-0 text-3xl font-medium mb-1">
+        Crear Cuenta
+      </div>
+    </ng-template>
+
+    <form class="flex flex-col gap-12">
+      <div class="flex justify-center mb-6">
+        <p-select-button
+          [options]="[
+            { label: 'Quiero Comprar', value: 'consumer' },
+            { label: 'Quiero Vender', value: 'producer' },
+          ]"
+          [(ngModel)]="this.selectedRoles"
+          optionLabel="label"
+          optionValue="value"
+          name="roleSelector"
+          [multiple]="true"
+          [allowEmpty]="false"
+          styleClass="w-full"
+        >
+          <ng-template #item let-item>
+            <div class="flex flex-col items-center p-2" style="min-width: 100px">
+              <i [class]="item.icon" class="text-2xl mb-2"></i>
+              <span class="font-bold">{{ item.label }}</span>
+            </div>
+          </ng-template>
+        </p-select-button>
+      </div>
+
+      <div class="flex flex-col md:flex-row gap-12">
+        <p-floatlabel variant="on" class="w-full">
+          <p-iconfield iconPosition="right">
+            <p-inputicon class="pi pi-id-card" />
+            <input pInputText name="nombres" autocomplete="off" class="w-full" />
+            <label for="nombres">Nombres</label>
+          </p-iconfield>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on" class="w-full">
+          <p-iconfield iconPosition="right">
+            <p-inputicon class="pi pi-id-card" />
+            <input pInputText name="apellidos" autocomplete="off" class="w-full" />
+            <label for="apellidos">Apellidos</label>
+          </p-iconfield>
+        </p-floatlabel>
+      </div>
+
+      <p-floatlabel variant="on">
+        <p-iconfield iconPosition="right">
+          <p-inputicon class="pi pi-envelope" />
+          <input pInputText name="email" type="email" autocomplete="off" class="w-full" />
+          <label for="email">Email</label>
+        </p-iconfield>
+      </p-floatlabel>
+
+      <p-floatlabel variant="on">
+        <p-iconfield iconPosition="right">
+          <p-inputicon class="pi pi-phone" />
+          <input pInputText name="celular" type="tel" autocomplete="off" class="w-full" />
+          <label for="celular">Celular</label>
+        </p-iconfield>
+      </p-floatlabel>
+
+      <p-floatlabel variant="on">
+        <p-iconfield iconPosition="right">
+          <p-inputicon class="pi pi-key" />
+          <p-password
+            name="password"
+            [toggleMask]="true"
+            [fluid]="true"
+            promptLabel="Elige una contraseña"
+            weakLabel="Débil"
+            mediumLabel="Media"
+            strongLabel="Fuerte"
+            autocomplete="new-password"
+          />
+          <label for="password">Contraseña</label>
+        </p-iconfield>
+      </p-floatlabel>
+
+      <p-floatlabel variant="on">
+        <p-iconfield iconPosition="right">
+          <p-inputicon class="pi pi-key" />
+          <p-password
+            name="password"
+            [toggleMask]="true"
+            [fluid]="true"
+            promptLabel="Repita la contraseña"
+            feedback="false"
+          />
+          <label for="password">Contraseña</label>
+        </p-iconfield>
+      </p-floatlabel>
+
+      <button pButton styleClass="w-full" severity="primary">Registrarme</button>
+    </form>
+
+    <ng-template #footer>
+      <p class="text-center text-surface-600 dark:text-surface-200 mt-2">
+        ¿Ya tienes una cuenta?
+        <a routerLink="/auth/login" class="text-primary font-bold cursor-pointer no-underline">
+          Inicia sesión
+        </a>
+      </p>
+    </ng-template>
+  </p-card>
+</div>

@@ -19,7 +19,8 @@
         "js.tsdk": "node_modules/typescript/lib",
         "git.openRepositoryInParentFolders": "always",
         "editor.formatOnSave": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "window.title": "API"
       }
     }
   }

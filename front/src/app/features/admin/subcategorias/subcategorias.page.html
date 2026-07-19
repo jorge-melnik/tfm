@@ -1,0 +1,14 @@
+<app-admin-table
+  [isLoading]="this.resource.isLoading()"
+  [data]="this.resource.value()"
+  [editableColumns]="['nombre', 'id_categoria', 'id_etiquetas']"
+  id="id_subcategoria"
+  title="Subcategorias"
+  [columns]="this.columns"
+  (refresh)="this.resource.reload()"
+  (remove)="this.remove($event)"
+  (create)="this.createSubcategoria($event)"
+  (update)="this.updateSubcategoria($event)"
+  [categorias]="this.categoriasResource.value()"
+  [etiquetas]="this.etiquetasResource.value()"
+></app-admin-table>

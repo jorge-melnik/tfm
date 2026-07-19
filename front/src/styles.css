@@ -1,2 +1,48 @@
 @import 'primeicons/primeicons.css'; /* Para los iconos de los botones */
-@import 'primeflex/primeflex.css';
+@import 'tailwindcss';
+@import 'tailwindcss-primeui';
+
+@source "src/**/*.html";
+@source "src/**/*.ts";
+
+/* Capa de compatibilidad para los componentes de PrimeNG */
+@layer primeng {
+  /* Si el día de mañana necesitás pisar estilos de PrimeNG, van acá */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100svh; /* El único con altura fija */
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+app-main-layout,
+app-admin-layout,
+app-productor-layout,
+app-consumidor-layout {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Esto estira el componente dentro de app-root */
+  height: 100%;
+}
+
+footer {
+  /* Redefinimos los tokens de PrimeNG para este contenedor */
+  --p-tabs-active-bar-height: 3px;
+  --p-tabs-active-bar-top: 0;
+  --p-tabs-active-bar-bottom: auto;
+  --p-tabs-active-bar-background: var(--p-primary-color);
+  --p-tabs-tablist-border-width: 0;
+}
