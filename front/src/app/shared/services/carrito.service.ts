@@ -46,7 +46,7 @@ export class CarritoService {
   public async addItem(item: ItemCarrito) {
     const baseUrl = this._baseUrl();
     if (!baseUrl) throw new Error('No hay usuario consumidor autenticado.');
-    const url = `${baseUrl}/productores/${item.id_productor}/productos`;
+    const url = `${baseUrl}/productos`;
     await firstValueFrom(this._http.post(url, item));
     this.items.reload();
   }
@@ -54,7 +54,7 @@ export class CarritoService {
   public async updateItem(item: ItemCarrito) {
     const baseUrl = this._baseUrl();
     if (!baseUrl) throw new Error('No hay usuario consumidor autenticado.');
-    const url = `${baseUrl}/productores/${item.id_productor}/productos/${item.id_producto}`;
+    const url = `${baseUrl}/productos/${item.id_producto}`;
     await firstValueFrom(this._http.put(url, item));
     this.items.reload();
   }
@@ -62,7 +62,7 @@ export class CarritoService {
   public async removeItem(item: ItemCarrito) {
     const baseUrl = this._baseUrl();
     if (!baseUrl) throw new Error('No hay usuario consumidor autenticado.');
-    const url = `${baseUrl}/productores/${item.id_productor}/productos/${item.id_producto}`;
+    const url = `${baseUrl}/productos/${item.id_producto}`;
     await firstValueFrom(this._http.delete(url));
     this.items.reload();
   }

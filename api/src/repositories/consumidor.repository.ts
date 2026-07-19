@@ -60,12 +60,12 @@ export class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
           '[]'::json
         )
         FROM public.producto_imagenes PI
-        WHERE PI.id_productor = P.id_productor
-        AND PI.id_producto = P.id_producto
+        WHERE PI.id_producto = P.id_producto
       ) AS fotos
-      FROM public.productos_carrito PC
-      JOIN public.productos P ON P.id_productor = PC.id_productor AND P.id_producto=PC.id_producto
-      JOIN public.datos_personales DP ON DP.id_usuario = PC.id_productor
+      FROM public.carrito_productos PC
+      JOIN public.productos P ON P.id_producto=PC.id_producto
+      JOIN Public.productores PR ON PR.id_productor=P.id_productor
+      JOIN public.datos_personales DP ON DP.id_usuario = PR.id_productor
       WHERE id_consumidor=$1
       ORDER BY P.nombre
     `;
@@ -78,21 +78,14 @@ export class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
    * @param item
    * @returns
    */
-  async addItemCarrito(
-    item: Pick<ItemCarrito, 'id_productor' | 'id_producto' | 'id_consumidor' | 'cantidad'>,
-  ): Promise<void> {
+  async addItemCarrito(item: Pick<ItemCarrito, 'id_producto' | 'id_consumidor' | 'cantidad'>): Promise<void> {
     const consulta = `
-      INSERT INTO public.productos_carrito(id_productor,id_producto,id_consumidor,cantidad)
-      VALUES ($1,$2,$3,$4)
+      INSERT INTO public.carrito_productos(id_producto,id_consumidor,cantidad)
+      VALUES ($1,$2,$3)
       RETURNING *
       ;
     `;
-    await this.executor.query(consulta, [
-      item.id_productor,
-      item.id_producto,
-      item.id_consumidor,
-      item.cantidad,
-    ]);
+    await this.executor.query(consulta, [item.id_producto, item.id_consumidor, item.cantidad]);
   }
 
   /**
@@ -101,21 +94,16 @@ export class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
    * @returns
    */
   async updateItemCarrito(
-    item: Pick<ItemCarrito, 'id_productor' | 'id_producto' | 'id_consumidor' | 'cantidad'>,
+    item: Pick<ItemCarrito, 'id_producto' | 'id_consumidor' | 'cantidad'>,
   ): Promise<void> {
     const consulta = `
-      UPDATE public.productos_carrito
-      SET cantidad=$4
-      WHERE id_productor=$1 AND id_producto=$2 AND id_consumidor=$3
+      UPDATE public.carrito_productos
+      SET cantidad=$3
+      WHERE id_producto=$1 AND id_consumidor=$2
       RETURNING *
       ;
     `;
-    await this.executor.query(consulta, [
-      item.id_productor,
-      item.id_producto,
-      item.id_consumidor,
-      item.cantidad,
-    ]);
+    await this.executor.query(consulta, [item.id_producto, item.id_consumidor, item.cantidad]);
   }
 
   /**
@@ -124,16 +112,14 @@ export class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
    * @param item
    * @returns
    */
-  async removeItemCarrito(
-    item: Pick<ItemCarrito, 'id_productor' | 'id_producto' | 'id_consumidor'>,
-  ): Promise<void> {
+  async removeItemCarrito(item: Pick<ItemCarrito, 'id_producto' | 'id_consumidor'>): Promise<void> {
     const consulta = `
-      DELETE FROM public.productos_carrito
-      WHERE id_productor=$1 AND id_producto=$2 AND id_consumidor=$3
+      DELETE FROM public.carrito_productos
+      WHERE id_producto=$1 AND id_consumidor=$2
       RETURNING *
       ;
     `;
-    await this.executor.query(consulta, [item.id_productor, item.id_producto, item.id_consumidor]);
+    await this.executor.query(consulta, [item.id_producto, item.id_consumidor]);
   }
 }
 

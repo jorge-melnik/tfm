@@ -28,7 +28,7 @@
           name="methodSelector"
           allowEmpty="false"
         >
-          <ng-template let-item pTemplate="item">
+          <ng-template let-item #item>
             <i [class]="item.icon" class="mr-2"></i>
             <span>{{ item.label }}</span>
           </ng-template>

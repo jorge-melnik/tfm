@@ -17,6 +17,7 @@ BEGIN
     INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username, celular) 
         VALUES (id_superadministrador, 'superadmin', 'superadmin', 'superadmin@deaca.com', 'superadmin', '+59899111662');
     INSERT INTO consumidores (id_consumidor) VALUES (id_superadministrador);
+    INSERT INTO carritos (id_consumidor) VALUES (id_superadministrador);
     INSERT INTO productores (id_productor, presentacion) VALUES (id_superadministrador, 'Productor artesanal de cosas.');
     INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_superadministrador, crypt('Contraseña', gen_salt('bf', 10)));
 
@@ -32,6 +33,7 @@ BEGIN
     INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username, celular) 
         VALUES (id_consumidor, 'María', 'Compradora', 'maria.cliente@email.com', 'consumidor' ,'+59899555666');
     INSERT INTO consumidores (id_consumidor) VALUES (id_consumidor);
+    INSERT INTO carritos (id_consumidor) VALUES (id_consumidor);
     INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_consumidor, crypt('Contraseña', gen_salt('bf', 10)));
 
 
@@ -40,6 +42,7 @@ BEGIN
     INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username, celular) 
         VALUES (id_ambos, 'Juan', 'Ambos', 'ambos@email.com', 'ambos' ,'+59899555777');
     INSERT INTO consumidores (id_consumidor) VALUES (id_ambos);
+    INSERT INTO carritos (id_consumidor) VALUES (id_ambos);
     INSERT INTO productores (id_productor, presentacion) VALUES (id_ambos, 'Productor artesanal de cosas.');
     INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_ambos, crypt('Contraseña', gen_salt('bf', 10)));
 

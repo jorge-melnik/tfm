@@ -3,7 +3,6 @@ import { consumidorRepository } from '@repositories/consumidor.repository.js';
 import { Consumidor, ItemCarrito } from '@schemas/consumidores.schema.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 import { Producto } from '@schemas/producto.schema.js';
-import { Productor } from '@schemas/productores.schema.js';
 
 const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
@@ -25,7 +24,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
     },
   });
 
-  fastify.post('/productores/:id_productor/productos', {
+  fastify.post('/productos', {
     schema: {
       tags: ['Consumidores'],
       summary: 'CREATE item carrito',
@@ -34,11 +33,8 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
       `,
       params: Type.Object({
         id_consumidor: Consumidor.properties.id_consumidor,
-        id_productor: Productor.properties.id_productor,
       }),
-      // body: Type.Pick(ItemCarrito, ['id_productor', 'id_producto', 'id_consumidor', 'cantidad']),
       body: Type.Object({
-        id_productor: ItemCarrito.properties.id_productor,
         id_producto: ItemCarrito.properties.id_producto,
         id_consumidor: ItemCarrito.properties.id_consumidor,
         cantidad: ItemCarrito.properties.cantidad,
@@ -57,7 +53,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
     },
   });
 
-  fastify.put('/productores/:id_productor/productos/:id_producto', {
+  fastify.put('/productos/:id_producto', {
     schema: {
       tags: ['Consumidores'],
       summary: 'UPDATE item carrito',
@@ -66,12 +62,10 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
       `,
       params: Type.Object({
         id_consumidor: Consumidor.properties.id_consumidor,
-        id_productor: Productor.properties.id_productor,
         id_producto: Producto.properties.id_producto,
       }),
       // body: Type.Pick(ItemCarrito, ['id_productor', 'id_producto', 'id_consumidor', 'cantidad']),
       body: Type.Object({
-        id_productor: ItemCarrito.properties.id_productor,
         id_producto: ItemCarrito.properties.id_producto,
         id_consumidor: ItemCarrito.properties.id_consumidor,
         cantidad: ItemCarrito.properties.cantidad,
@@ -89,7 +83,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
     },
   });
 
-  fastify.delete('/productores/:id_productor/productos/:id_producto', {
+  fastify.delete('/productos/:id_producto', {
     schema: {
       tags: ['Consumidores'],
       summary: 'DELETE item carrito',
@@ -98,7 +92,6 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
       `,
       params: Type.Object({
         id_consumidor: Consumidor.properties.id_consumidor,
-        id_productor: Productor.properties.id_productor,
         id_producto: Producto.properties.id_producto,
       }),
       response: {
