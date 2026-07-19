@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS categorias (
 CREATE TABLE IF NOT EXISTS subcategorias (
     id_subcategoria INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     id_categoria SMALLINT NOT NULL REFERENCES categorias(id_categoria) ON DELETE CASCADE ON UPDATE CASCADE,
-    nombre CITEXT NOT NULL UNIQUE CHECK (
+    nombre CITEXT NOT NULL CHECK (  -- el nombre es único únicamente en la subcategoría.
         char_length(nombre) BETWEEN 3 AND 35
     ),
     slug_subcategoria CITEXT NOT NULL UNIQUE CHECK (
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS etiquetas (
         char_length(slug_etiqueta) BETWEEN 3 AND 35
         AND slug_etiqueta ~ '^[a-zA-Z0-9-]+$' 
     ),-- TODO: TRIGGER para asegurarse que no se cambia el slug_etiqueta
-    imagen TEXT, --FIXME: Podría ser clase icono o url de imagen. --FIXME: Hacer not null
+    imagen TEXT, --FIXME: Podría ser clase icono o url de imagen. --FIXME: Hacer not null  usar el id o slug para persistir la imagen?
     color VARCHAR(7) NOT NULL DEFAULT '#6366F1' -- Color hexadecimal FIME: Sacar el default. Creo que no va a ser necesario color, porque ya la imagen tiene todo lo necesario.
 );
 
