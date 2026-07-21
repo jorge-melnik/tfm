@@ -1,20 +1,17 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { subcategoriasRepository } from '@repositories/subcategorias.repository.js';
-import { Categoria, Subcategoria } from '@schemas/categoria.schema.js';
+import { Subcategoria } from '@schemas/categoria.schema.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 
-const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
+const rutasSlugCategoriaSubcategorias: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
     schema: {
-      tags: ['Admin: Subcategorias'],
+      tags: ['Subcategorias'],
       summary: 'READ subcategorias',
       description: `
-Devuelve el listado de subcategorias en la categoría con el id especificado. 
-Estas subcategorias pueden ser usadas en los productos. 
-          `,
-      params: Type.Object({
-        id_categoria: Categoria.properties.id_categoria,
-      }),
+        Devuelve el listado de subcategorias en la categoría con el slug_categoria estpecificado. 
+        Estas subcategorias pueden ser usadas en los productos. 
+      `,
       response: {
         200: Type.Array(Subcategoria, {
           examples: [
@@ -40,18 +37,15 @@ Estas subcategorias pueden ser usadas en los productos.
       },
     },
     handler: async function (req, reply) {
-      return (await subcategoriasRepository.getBy({ id_categoria: req.params.id_categoria })).data;
+      return await subcategoriasRepository.getAll();
     },
   });
 
   fastify.post('/', {
     schema: {
-      tags: ['Admin: Subcategorias'],
+      tags: ['Subcategorias'],
       summary: 'CREATE subcategoria',
       description: 'Permite crear una nueva subcategoria dentro de la categoría especificada.',
-      params: Type.Object({
-        id_categoria: Categoria.properties.id_categoria,
-      }),
       body: Type.Object(
         {
           nombre: Subcategoria.properties.nombre,
@@ -77,4 +71,4 @@ Estas subcategorias pueden ser usadas en los productos.
   });
 };
 
-export default rutasEtiquetas;
+export default rutasSlugCategoriaSubcategorias;

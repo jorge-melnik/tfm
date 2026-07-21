@@ -12,15 +12,15 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
       description: `
         Devuelve el listado completo de productos y cantidades en el carrito. 
       `,
-      params: Type.Object({ id_consumidor: Consumidor.properties.id_consumidor }),
+      params: Type.Object({ username: Consumidor.properties.username }),
       response: {
         200: Type.Array(ItemCarrito, { description: 'Listado de ItemCarrito.' }),
         500: DeAcaErrorResponse,
       },
     },
-    // onRequest : //FIXME: Solo para admin.
+    // onRequest : //FIXME: Solo para si mismo
     handler: async function (req, reply) {
-      return consumidorRepository.getCarrito(req.params.id_consumidor);
+      return consumidorRepository.getCarrito(req.user.id_usuario);
     },
   });
 
@@ -32,7 +32,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
         Permite agregar un nuevo item al carrito asociado al consumidor. 
       `,
       params: Type.Object({
-        id_consumidor: Consumidor.properties.id_consumidor,
+        username: Consumidor.properties.username,
       }),
       body: Type.Object({
         id_producto: ItemCarrito.properties.id_producto,
@@ -61,7 +61,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
         Permite cambiar la cantidad de un item del carrito asociado al consumidor autenticado. 
       `,
       params: Type.Object({
-        id_consumidor: Consumidor.properties.id_consumidor,
+        username: Consumidor.properties.username,
         id_producto: Producto.properties.id_producto,
       }),
       // body: Type.Pick(ItemCarrito, ['id_productor', 'id_producto', 'id_consumidor', 'cantidad']),
@@ -91,7 +91,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
         Permite eliminar un item del carrito asociado al consumidor autenticado. 
       `,
       params: Type.Object({
-        id_consumidor: Consumidor.properties.id_consumidor,
+        username: Consumidor.properties.username,
         id_producto: Producto.properties.id_producto,
       }),
       response: {
@@ -103,7 +103,10 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
     //preHandler: Coincide params con body y con usuario logueado
     handler: async function (req, reply) {
       reply.code(204);
-      await consumidorRepository.removeItemCarrito(req.params);
+      await consumidorRepository.removeItemCarrito({
+        id_consumidor: req.user.id_usuario,
+        id_producto: req.params.id_producto,
+      });
     },
   });
 };
