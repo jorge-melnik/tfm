@@ -12,7 +12,7 @@ export class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
     SELECT C.*,DP.* 
     FROM public.consumidores C
     JOIN public.usuarios U ON U.id_usuario = C.id_consumidor
-    JOIN public.datos_personales DP ON DP.id_usuario = U.id_usuario
+    LEFT JOIN public.datos_personales DP ON DP.id_usuario = U.id_usuario
     WHERE 1=1
   `;
 

@@ -47,7 +47,6 @@ test('Producto Repository', async (t) => {
     slug_producto: '',
     precio: 100,
     cantidad_disponible: 10,
-    fotos: ['no-foto'],
   });
 
   const etiqueta1 = await etiquetasRepository.add({ nombre: `etpr-1${aleatorio}`, slug_etiqueta: '' });
@@ -55,7 +54,7 @@ test('Producto Repository', async (t) => {
 
   await t.test('addEtiquetas vacio', async () => {
     //ACT
-    await productoRepository.addEtiquetas(productorCreado.id_productor, productoA.id_producto, []);
+    await productoRepository.addEtiquetas(productoA.id_producto, []);
     const productoModificado = await productoRepository.getOneBy({
       id_productor: productorCreado.id_productor,
       id_producto: productoA.id_producto,
@@ -64,7 +63,7 @@ test('Producto Repository', async (t) => {
   });
   await t.test('removeEtiquetas vacio', async () => {
     //ACT
-    await productoRepository.removeEtiquetas(productorCreado.id_productor, productoA.id_producto, []);
+    await productoRepository.removeEtiquetas(productoA.id_producto, []);
     const productoModificado = await productoRepository.getOneBy({
       id_productor: productorCreado.id_productor,
       id_producto: productoA.id_producto,
@@ -77,7 +76,7 @@ test('Producto Repository', async (t) => {
     const arrayAgregar = [etiqueta1.id_etiqueta, etiqueta2.id_etiqueta];
 
     //ACT
-    await productoRepository.addEtiquetas(productorCreado.id_productor, productoA.id_producto, arrayAgregar);
+    await productoRepository.addEtiquetas(productoA.id_producto, arrayAgregar);
     const productoModificado = await productoRepository.getOneBy({
       id_productor: productorCreado.id_productor,
       id_producto: productoA.id_producto,
@@ -87,9 +86,7 @@ test('Producto Repository', async (t) => {
 
   await t.test('addEtiquetas', async () => {
     //ACT
-    await productoRepository.removeEtiquetas(productorCreado.id_productor, productoA.id_producto, [
-      etiqueta1.id_etiqueta,
-    ]);
+    await productoRepository.removeEtiquetas(productoA.id_producto, [etiqueta1.id_etiqueta]);
     const productoModificado = await productoRepository.getOneBy({
       id_productor: productorCreado.id_productor,
       id_producto: productoA.id_producto,

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import * as assert from 'node:assert';
-import { build } from '../../helper.js';
+import { build } from '../helper.js';
 import authRepository from '@repositories/auth.repository.js';
 import { productorRepository } from '@repositories/productor.repository.js';
 import { Productor } from '@schemas/productores.schema.js';

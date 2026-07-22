@@ -2,12 +2,7 @@ import { myPool } from '@database/pool.js';
 import { DeAcaBadRequest, DeAcaInternal, DeAcaNotFound } from '@errors/response.errors.js';
 import { DeAcaListResponseType, keysPaginacion } from '@schemas/core.schemas.js';
 import { Pool, PoolClient } from 'pg';
-
-interface DatosBase {
-  nombre?: string;
-  username?: string;
-  id_compra: number; //Solo para que no me patee typescript
-}
+import { DatosBase } from '../types/datos-base.js';
 
 /**
  * Clase Base para los repositorios.
@@ -70,7 +65,6 @@ export abstract class BaseReadRepository<T extends DatosBase> {
 
     const keys = Object.keys(filters);
     const values = Object.values(filters);
-    console.log({ filters });
 
     // Construimos las condiciones solo si hay filtros
     let condiciones = '';
@@ -96,7 +90,6 @@ export abstract class BaseReadRepository<T extends DatosBase> {
     }
 
     let query = `${this.baseQuery} ${condiciones}`;
-    console.log({ condiciones });
     const countQuery = `SELECT COUNT(*)::INT as total FROM (${this.baseQuery} ${condiciones}) AS count_query`;
     const countValues = [...values];
 
@@ -131,6 +124,7 @@ export abstract class BaseReadRepository<T extends DatosBase> {
   }
   async getOneBy(filters: Partial<T>): Promise<T> {
     const keys = Object.keys(filters);
+
     if (keys.length === 0) throw new DeAcaBadRequest('No especificaste el filtro');
     const { data } = (await this.getBy({ ...filters, limit: 2, page: 1 })) as { data: T[] };
     if (data.length > 1)

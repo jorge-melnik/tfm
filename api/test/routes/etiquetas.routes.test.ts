@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import * as assert from 'node:assert';
 import { Etiqueta } from '@schemas/categoria.schema.js';
 import { etiquetasRepository } from '@repositories/etiquetas.repository.js';
-import { build } from '../../helper.js';
+import { build } from '../helper.js';
 
 test('API /etiquetas', async (t) => {
   const app = await build(t);

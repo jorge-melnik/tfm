@@ -1,11 +1,6 @@
 import { DeAcaBadRequest, DeAcaNotFound } from '@errors/response.errors.js';
 import { BaseReadRepository } from './base.read.repository.js';
-
-interface DatosBase {
-  nombre?: string;
-  username?: string;
-  id_compra?: number; //Solo para que no me patee typescript
-}
+import { DatosBase } from '../types/datos-base.js';
 
 export abstract class BaseRepository<T extends DatosBase> extends BaseReadRepository<T> {
   async add(data: Partial<T>): Promise<T> {
@@ -24,7 +19,6 @@ export abstract class BaseRepository<T extends DatosBase> extends BaseReadReposi
       VALUES (${placeholders}) 
       RETURNING *
     `;
-
     const res = await this.executor.query(query, values);
     //Sintaxis Computada [this.idName]: valor
     const filtro = { [this.idName]: res.rows[0][this.idName] } as Partial<T>;

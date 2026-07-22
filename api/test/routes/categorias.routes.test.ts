@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import * as assert from 'node:assert';
 import { Categoria } from '@schemas/categoria.schema.js';
-import { build } from '../../helper.js';
+import { build } from '../helper.js';
 import { categoriasRepository } from '@repositories/categorias.repository.js';
 
 test('/admin/categorias', async (t) => {
