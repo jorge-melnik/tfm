@@ -11,7 +11,7 @@ import { CarritoService } from '@shared/services/carrito.service';
   selector: 'app-consumidor-layout',
   imports: [RouterOutlet, Tabs, TabList, Tab, RouterLink, TopBarComponent, Badge],
   templateUrl: './consumidor.layout.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './consumidor.layout.css',
 })
 export class ConsumidorLayout implements OnInit {

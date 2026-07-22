@@ -9,7 +9,7 @@ import { AuthService } from '@shared/services/auth.service';
   selector: 'app-productor-layout',
   imports: [RouterOutlet, Tabs, TabList, Tab, RouterLink, TopBarComponent],
   templateUrl: './productor.layout.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './productor.layout.css',
 })
 export class ProductorLayout implements OnInit {

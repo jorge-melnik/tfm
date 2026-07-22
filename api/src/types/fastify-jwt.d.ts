@@ -1,5 +1,5 @@
 import '@fastify/jwt';
-import { TokenPayloadSchema, User } from '@schemas/auth.schema.ts';
+import { TokenPayload, TokenPayloadSchema, User } from '@schemas/auth.schema.ts';
 
 declare module 'fastify' {
   interface FastifyInstance extends FastifyJwtNamespace<{

@@ -19,7 +19,6 @@ import { CookieSerializeOptions } from '@fastify/cookie';
 import { AdicionalesConsumidor, AdicionalesProductor } from '@schemas/usuarios.schema.js';
 import { productorRepository } from '@repositories/productor.repository.js';
 import { consumidorRepository } from '@repositories/consumidor.repository.js';
-import { request } from 'node:http';
 import { DeAcaBadRequest } from '@errors/response.errors.js';
 
 //Para manejar las mismas opciones en ambas rutas

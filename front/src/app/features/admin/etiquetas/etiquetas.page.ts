@@ -1,5 +1,5 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-import { EtiquetasService } from '@shared/services/admin/etiquetas.service';
+import { EtiquetasService } from '@shared/services/etiquetas.service';
 import { AdminTable } from '@shared/components/admin-table/admin.table';
 import { TableColumn } from '@shared/types/util';
 import { Etiqueta } from '@shared/types/etiqueta';
@@ -9,11 +9,11 @@ import { AdminBasePage } from '../admin-base.page';
   selector: 'app-etiquetas',
   imports: [AdminTable],
   templateUrl: './etiquetas.page.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './etiquetas.page.css',
 })
 export class EtiquetasPage extends AdminBasePage<Etiqueta> {
-  protected override idKey: keyof Etiqueta = 'id_etiqueta';
+  protected override idKey: keyof Etiqueta = 'slug_etiqueta';
   public override entidadName: string = 'etiqueta';
 
   protected _dataService = inject(EtiquetasService);

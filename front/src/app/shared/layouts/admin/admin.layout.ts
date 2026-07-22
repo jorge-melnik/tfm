@@ -20,7 +20,7 @@ import { AuthService } from '@shared/services/auth.service';
     ToastModule,
   ],
   templateUrl: './admin.layout.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './admin.layout.css',
 })
 export class AdminLayout implements OnInit {

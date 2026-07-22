@@ -4,7 +4,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   selector: 'app-pedidos',
   imports: [],
   templateUrl: './pedidos.page.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './pedidos.page.css',
 })
 export class PedidosPage {}

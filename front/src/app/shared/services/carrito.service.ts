@@ -15,7 +15,7 @@ export class CarritoService {
   private _baseUrl = computed<string | undefined>(() => {
     const usuario = this._usuarioStore.user();
     if (!usuario) return;
-    return `${environment.apiUrl}/consumidores/${usuario.id_usuario}/carrito`;
+    return `${environment.apiUrl}/consumidores/${usuario.username}/carrito`;
   });
 
   public readonly items = resource<ItemCarritoVerbose[], { url: string | undefined }>({

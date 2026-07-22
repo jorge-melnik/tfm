@@ -23,8 +23,7 @@ export class SubcategoriasRepositoryClass extends BaseRepository<Subcategoria> {
     super();
   }
 
-  async getEtiquetas(categoria: number | string, subcategoria: number | string): Promise<Etiqueta[]> {
-    const claveCategoria = typeof categoria === 'number' ? 'id_categoria' : 'slug_categoria';
+  async getEtiquetas(subcategoria: number | string): Promise<Etiqueta[]> {
     const claveSubcategoria = typeof subcategoria === 'number' ? 'id_subcategoria' : 'slug_subcategoria';
     const query = `
       SELECT E.* , SC.slug_subcategoria, C.slug_categoria
@@ -32,56 +31,54 @@ export class SubcategoriasRepositoryClass extends BaseRepository<Subcategoria> {
       JOIN public.categorias C ON SC.id_categoria = C.id_categoria
       JOIN public.subcategoria_etiquetas SE ON SE.id_subcategoria = SC.id_subcategoria
       JOIN public.etiquetas E ON E.id_etiqueta = SE.id_etiqueta
-      WHERE C.${claveCategoria} = $1 AND SC.${claveSubcategoria}=$2
+      WHERE SC.${claveSubcategoria}=$1
       ;
     `;
-    const res = await this.executor.query(query, [categoria, subcategoria]);
+    const res = await this.executor.query(query, [subcategoria]);
     return res.rows;
   }
 
-  async addEtiqueta(id_categoria: number, id_subcategoria: number, id_etiqueta: number) {
+  async addEtiqueta(id_subcategoria: number, id_etiqueta: number) {
     const query = `
       INSERT INTO subcategoria_etiquetas(id_subcategoria,id_etiqueta)
-      SELECT id_subcategoria, $3
+      SELECT id_subcategoria, $2
       FROM public.subcategorias S
-      WHERE id_categoria = $1 AND id_subcategoria = $2
+      WHERE id_subcategoria = $1
       ;
     `;
-    await this.executor.query(query, [id_categoria, id_subcategoria, id_etiqueta]);
+    await this.executor.query(query, [id_subcategoria, id_etiqueta]);
   }
 
-  async removeEtiqueta(id_categoria: number, id_subcategoria: number, id_etiqueta: number) {
+  async removeEtiqueta(id_subcategoria: number, id_etiqueta: number) {
     const query = `
       DELETE FROM subcategoria_etiquetas SE
       USING public.subcategorias S
-      WHERE S.id_categoria = $1  
-        AND S.id_subcategoria = $2
-        AND SE.id_etiqueta = $3
+      WHERE S.id_subcategoria = $1
+        AND SE.id_etiqueta = $2
         AND SE.id_subcategoria = S.id_subcategoria -- clave para JOINEAR
         ;
     `;
-    await this.executor.query(query, [id_categoria, id_subcategoria, id_etiqueta]);
+    await this.executor.query(query, [id_subcategoria, id_etiqueta]);
   }
 
-  async setEtiquetas(id_categoria: number, id_subcategoria: number, id_etiquetas: number[]) {
+  async setEtiquetas(id_subcategoria: number, id_etiquetas: number[]) {
     const query = `
       WITH PARA_INSERTAR as (
         SELECT S.id_subcategoria, E.id_etiqueta
         FROM public.subcategorias S
-        CROSS JOIN unnest($3::INT[]) AS E(id_etiqueta)
+        CROSS JOIN unnest($2::INT[]) AS E(id_etiqueta)
         LEFT JOIN public.subcategoria_etiquetas SE on SE.id_subcategoria = S.id_subcategoria and SE.id_etiqueta = E.id_etiqueta
-        WHERE S.id_categoria =$1
-        AND S.id_subcategoria =$2
+        WHERE S.id_subcategoria =$1
         AND SE.id_etiqueta is null -- Solo me interesan las que hay que insertar
       ),
       INSERCION as (
         INSERT INTO public.subcategoria_etiquetas (id_subcategoria,id_etiqueta)
         SELECT * FROM PARA_INSERTAR
       )
-      DELETE FROM public.subcategoria_etiquetas where id_subcategoria=$2 and id_etiqueta <>ALL($3::INT[])
+      DELETE FROM public.subcategoria_etiquetas where id_subcategoria=$1 and id_etiqueta <>ALL($2::INT[])
   `;
 
-    await this.executor.query(query, [id_categoria, id_subcategoria, id_etiquetas]);
+    await this.executor.query(query, [id_subcategoria, id_etiquetas]);
   }
 }
 

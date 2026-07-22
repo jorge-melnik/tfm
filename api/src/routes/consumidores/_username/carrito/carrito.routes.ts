@@ -19,6 +19,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
       },
     },
     // onRequest : //FIXME: Solo para si mismo
+    onRequest: [fastify.authenticate], //FIXME: Solo para consumidor autenticado.
     handler: async function (req, reply) {
       return consumidorRepository.getCarrito(req.user.id_usuario);
     },

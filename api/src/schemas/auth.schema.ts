@@ -1,11 +1,5 @@
 import { Type, Static } from '@sinclair/typebox';
-import {
-  AdicionalesConsumidor,
-  AdicionalesProductor,
-  Consumidor,
-  DatosPersonales,
-  Productor,
-} from './usuarios.schema.js';
+import { AdicionalesConsumidor, AdicionalesProductor, DatosPersonales } from './usuarios.schema.js';
 
 export const RolLiteral = Type.Union(
   [
@@ -69,6 +63,7 @@ export const TokenSchema = Type.Object(
 
 export const TokenPayloadSchema = Type.Object({
   id_usuario: Type.String({ format: 'uuid', description: 'Id (UUID) del usuario autenticado.' }),
+  username: Type.String({ description: 'Username del usuario autenticado.' }),
   jti: Type.String({ format: 'uuid', description: 'JWT Id.' }),
   roles: Type.Array(RolLiteral, {
     minItems: 1,
@@ -80,6 +75,7 @@ export const TokenPayloadSchema = Type.Object({
 export const UserSchema = Type.Object(
   {
     id_usuario: Type.String({ format: 'uuid', description: 'Id (UUID) del usuario autenticado.' }),
+    username: Type.String({ description: 'Username del usuario autenticado.' }),
     jti: Type.String({ format: 'uuid', description: 'JWT Id.' }),
     roles: Type.Array(RolLiteral, {
       minItems: 1,

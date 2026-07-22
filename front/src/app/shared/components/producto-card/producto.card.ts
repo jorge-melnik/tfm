@@ -12,7 +12,7 @@ import { ItemCarrito } from '@shared/types/item-carrito';
   selector: 'app-producto-card',
   imports: [CommonModule, CardModule, ButtonModule, TagModule, FotoCarrusel, TooltipModule],
   templateUrl: './producto.card.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './producto.card.css',
 })
 export class ProductoCard {

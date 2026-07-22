@@ -35,7 +35,7 @@ import { ButtonDirective, Button } from 'primeng/button';
     ButtonDirective,
   ],
   templateUrl: './admin.table.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './admin.table.css',
 })
 export class AdminTable {

@@ -1,6 +1,6 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { subcategoriasRepository } from '@repositories/subcategorias.repository.js';
-import { Categoria, Etiqueta, Subcategoria } from '@schemas/categoria.schema.js';
+import { Etiqueta, Subcategoria } from '@schemas/categoria.schema.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 
 const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -12,7 +12,6 @@ const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, o
         Devuelve el listado completo de etiquetas globales existentes en el sistema. 
       `,
       params: Type.Object({
-        slug_categoria: Categoria.properties.slug_categoria,
         slug_subcategoria: Subcategoria.properties.slug_subcategoria,
       }),
       response: {
@@ -28,7 +27,7 @@ const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, o
       },
     },
     handler: async function (req, reply) {
-      return subcategoriasRepository.getEtiquetas(req.params.slug_categoria, req.params.slug_subcategoria);
+      return subcategoriasRepository.getEtiquetas(req.params.slug_subcategoria);
     },
   });
 
@@ -38,7 +37,6 @@ const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, o
       summary: 'ADD etiqueta',
       description: 'Permite asociar una subcategoría con una etiqueta ya existente.',
       params: Type.Object({
-        slug_categoria: Categoria.properties.slug_categoria,
         slug_subcategoria: Subcategoria.properties.slug_subcategoria,
       }),
       body: Type.Object({
@@ -53,14 +51,9 @@ const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, o
     handler: async function (req, reply) {
       reply.code(204);
       const subcategoria = await subcategoriasRepository.getOneBy({
-        slug_categoria: req.params.slug_categoria,
         slug_subcategoria: req.params.slug_subcategoria,
       });
-      return subcategoriasRepository.addEtiqueta(
-        subcategoria.id_categoria,
-        subcategoria.id_subcategoria,
-        req.body.id_etiqueta,
-      );
+      return subcategoriasRepository.addEtiqueta(subcategoria.id_subcategoria, req.body.id_etiqueta);
     },
   });
 
@@ -71,11 +64,9 @@ const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, o
       description:
         'Permite determinar en una única solicitud las etiquetas que deben quedar asociadas a la subcategoria.',
       params: Type.Object({
-        slug_categoria: Categoria.properties.slug_categoria,
         slug_subcategoria: Subcategoria.properties.slug_subcategoria,
       }),
       body: Type.Object({
-        slug_categoria: Categoria.properties.slug_categoria,
         slug_subcategoria: Subcategoria.properties.slug_subcategoria,
         id_etiquetas: Type.Array(Etiqueta.properties.id_etiqueta),
       }),
@@ -88,14 +79,9 @@ const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, o
     handler: async function (req, reply) {
       reply.code(204);
       const subcategoria = await subcategoriasRepository.getOneBy({
-        slug_categoria: req.params.slug_categoria,
         slug_subcategoria: req.params.slug_subcategoria,
       });
-      return subcategoriasRepository.setEtiquetas(
-        subcategoria.id_categoria,
-        subcategoria.id_subcategoria,
-        req.body.id_etiquetas,
-      );
+      return subcategoriasRepository.setEtiquetas(subcategoria.id_subcategoria, req.body.id_etiquetas);
     },
   });
 
@@ -105,7 +91,6 @@ const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, o
       summary: 'REMOVE etiqueta',
       description: 'Permite desasociar una subcategoría con una etiqueta.',
       params: Type.Object({
-        slug_categoria: Categoria.properties.slug_categoria,
         slug_subcategoria: Subcategoria.properties.slug_subcategoria,
         id_etiqueta: Etiqueta.properties.id_etiqueta,
       }),
@@ -118,14 +103,9 @@ const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, o
     handler: async function (req, reply) {
       reply.code(204);
       const subcategoria = await subcategoriasRepository.getOneBy({
-        slug_categoria: req.params.slug_categoria,
         slug_subcategoria: req.params.slug_subcategoria,
       });
-      return subcategoriasRepository.removeEtiqueta(
-        subcategoria.id_categoria,
-        subcategoria.id_subcategoria,
-        req.params.id_etiqueta,
-      );
+      return subcategoriasRepository.removeEtiqueta(subcategoria.id_subcategoria, req.params.id_etiqueta);
     },
   });
 };

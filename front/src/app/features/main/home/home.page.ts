@@ -7,7 +7,7 @@ import { Card } from 'primeng/card';
   selector: 'app-home-main',
   imports: [RouterLink, ButtonDirective, Card],
   templateUrl: './home.page.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './home.page.css',
 })
 export class HomePage {
