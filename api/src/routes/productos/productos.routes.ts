@@ -1,5 +1,5 @@
 import { myPool } from '@database/pool.js';
-import { DeAcaInternal } from '@errors/response.errors.js';
+import { DeAcaBadRequest, DeAcaInternal } from '@errors/response.errors.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { productoRepository } from '@repositories/producto.repository.js';
 
@@ -7,7 +7,7 @@ import { DeAcaErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schema
 import { POSTProducto, Producto } from '@schemas/producto.schema.js';
 import { Productor } from '@schemas/productores.schema.js';
 
-const usernameProductosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
+const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
     schema: {
       tags: ['Productos'],
@@ -18,7 +18,8 @@ const usernameProductosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
       querystring: Type.Intersect([
         DeAcaQueryString,
         Type.Object({
-          // Mantenemos la lógica de la unión de strings/arrays para etiquetas
+          username: Type.Optional(Type.String()),
+          id_productor: Type.Optional(Type.Integer()),
           etiquetas: Type.Optional(Type.Array(Type.String())),
           slug_categoria: Type.Optional(Type.String()),
           slug_subcategoria: Type.Optional(Type.String()),
@@ -30,9 +31,8 @@ const usernameProductosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
         500: DeAcaErrorResponse,
       },
     },
-    // onRequest : //FIXME: Solo para admin.
+    // onRequest: [fastify.authenticate], //FIXME descomentar.
     handler: async (req, reply) => {
-      console.log(req.query);
       return productoRepository.getBy(req.query); //Paginado
     },
   });
@@ -89,4 +89,4 @@ const usernameProductosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
   });
 };
 
-export default usernameProductosRoutes;
+export default productosRoutes;

@@ -1,6 +1,6 @@
 import { myPool } from '@database/pool.js';
 import { DeAcaBadRequest, DeAcaInternal, DeAcaNotFound } from '@errors/response.errors.js';
-import { DeAcaListResponseType, keyGenericas } from '@schemas/core.schemas.js';
+import { DeAcaListResponseType, keysPaginacion } from '@schemas/core.schemas.js';
 import { Pool, PoolClient } from 'pg';
 
 interface DatosBase {
@@ -63,7 +63,7 @@ export abstract class BaseReadRepository<T extends DatosBase> {
     const { limit, page, sort, sort_direction } = routeQuery;
     const filters: Partial<T> = {};
     for (const [key, value] of Object.entries(routeQuery)) {
-      if (!keyGenericas.includes(key)) {
+      if (!keysPaginacion.includes(key)) {
         filters[key as keyof T] = value as any;
       }
     }
