@@ -7,7 +7,7 @@ import { Toast } from 'primeng/toast';
   selector: 'app-root',
   imports: [RouterOutlet, ConfirmDialog, Toast],
   templateUrl: './app.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './app.css',
 })
 export class App {

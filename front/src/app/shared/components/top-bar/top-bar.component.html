@@ -5,13 +5,7 @@
 
   <p-menu #menu [model]="items()" [popup]="true" />
 
-  <button
-    pButton
-    icon="pi pi-user"
-    [rounded]="true"
-    [text]="true"
-    severity="secondary"
-    styleClass="hover:bg-emerald-700 p-2 transition-colors duration-200"
-    (onClick)="menu.toggle($event)"
-  ></button>
+  <button pButton [rounded]="true" [text]="true" severity="secondary" (click)="menu.toggle($event)">
+    <i class="pi pi-user"></i>
+  </button>
 </header>

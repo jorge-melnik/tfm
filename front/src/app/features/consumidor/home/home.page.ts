@@ -49,7 +49,7 @@ interface SortOption {
     SelectModule,
   ],
   templateUrl: './home.page.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './home.page.css',
 })
 export class HomePage implements OnInit {
@@ -110,7 +110,7 @@ export class HomePage implements OnInit {
       if (!slug_subcategoria) return this._categoriaService.getEtiquetas(slug_categoria);
 
       //Hay ambos slug
-      return this._subcategoriaService.getEtiquetas(slug_categoria, slug_subcategoria);
+      return this._subcategoriaService.getEtiquetas(slug_subcategoria);
     },
   });
 

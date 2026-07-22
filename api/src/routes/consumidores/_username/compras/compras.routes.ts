@@ -1,9 +1,4 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
-import { consumidorRepository } from '@repositories/consumidor.repository.js';
-import { Consumidor } from '@schemas/consumidores.schema.js';
-
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
-import { DatosPersonales } from '@schemas/usuarios.schema.js';
 
 const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   // fastify.get('/', {

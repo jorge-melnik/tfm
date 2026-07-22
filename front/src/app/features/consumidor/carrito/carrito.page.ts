@@ -14,7 +14,7 @@ import { ButtonDirective } from 'primeng/button';
   selector: 'app-carrito',
   imports: [DataView, ItemCarritoComponent, Tag, CurrencyPipe, ButtonDirective],
   templateUrl: './carrito.page.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './carrito.page.css',
 })
 export class CarritoPage {

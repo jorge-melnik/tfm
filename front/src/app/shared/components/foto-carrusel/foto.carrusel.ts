@@ -4,7 +4,7 @@ import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core
   selector: 'app-foto-carrusel',
   imports: [],
   templateUrl: './foto.carrusel.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './foto.carrusel.css',
 })
 export class FotoCarrusel {

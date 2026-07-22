@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BaseService } from '../base-service.service';
+import { BaseService } from './base-service.service';
 import { environment } from '@env/environment';
 import { Etiqueta } from '@shared/types/etiqueta';
 
@@ -7,5 +7,5 @@ import { Etiqueta } from '@shared/types/etiqueta';
   providedIn: 'root',
 })
 export class EtiquetasService extends BaseService<Etiqueta> {
-  protected override serviceUrl: string = `${environment.apiUrl}/admin/etiquetas`;
+  protected override serviceUrl: string = `${environment.apiUrl}/etiquetas`;
 }

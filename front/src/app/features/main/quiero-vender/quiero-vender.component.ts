@@ -9,7 +9,7 @@ import { IftaLabelModule, IftaLabel } from 'primeng/iftalabel';
   selector: 'app-quiero-vender',
   imports: [TextareaModule, Card, ButtonDirective, IftaLabel],
   templateUrl: './quiero-vender.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './quiero-vender.component.css',
 })
 export class QuieroVenderComponent {}

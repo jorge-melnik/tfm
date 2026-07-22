@@ -17,22 +17,23 @@
         <h3>
           <button
             pButton
-            icon="pi pi-refresh"
             severity="secondary"
             text="Recargar text"
-            (onClick)="refresh.emit()"
-            styleClass="button-sm"
-          ></button>
+            (click)="refresh.emit()"
+            class="button-sm"
+          >
+            <i class="pi pi-refresh"></i>
+          </button>
 
           <button
             pButton
-            icon="pi pi-plus"
             severity="primary"
             text="Recargar text"
-            styleClass="button-sm"
+            class="button-sm"
             (click)="this.createInit()"
-          ></button>
-
+          >
+            <i class="pi pi-plus"></i>
+          </button>
           {{ this.title() }}
         </h3>
         <p-iconfield>
@@ -71,22 +72,24 @@
             <div class="flex items-center justify-center gap-2">
               <button
                 pButton
-                icon="pi pi-check"
                 [rounded]="true"
                 [text]="true"
                 severity="success"
                 [disabled]="!createForm.valid"
-                (onClick)="this.createSave()"
-              ></button>
+                (click)="this.createSave()"
+              >
+                <i class="pi pi-check"></i>
+              </button>
 
               <button
                 pButton
-                icon="pi pi-times"
                 [rounded]="true"
                 [text]="true"
                 severity="danger"
-                (onClick)="this.createCancel()"
-              ></button>
+                (click)="this.createCancel()"
+              >
+                <i class="pi pi-times"></i>
+              </button>
             </div>
           </td>
         </tr>
@@ -126,81 +129,87 @@
                   pRipple
                   type="button"
                   pSaveEditableRow
-                  icon="pi pi-check"
                   (click)="editSave(rowData)"
                   text
                   rounded
                   severity="success"
                   title="Guardar"
                   size="small"
-                ></button>
+                >
+                  <i class="pi pi-check"></i>
+                </button>
 
                 <button
                   pButton
                   pRipple
                   type="button"
                   pCancelEditableRow
-                  icon="pi pi-times"
                   (click)="editCancel(rowData, ri)"
                   text
                   rounded
                   severity="secondary"
                   title="Cancelar"
                   size="small"
-                ></button>
+                >
+                  <i class="pi pi-times"></i>
+                </button>
               } @else {
                 <button
                   pButton
                   pRipple
                   type="button"
                   pInitEditableRow
-                  icon="pi pi-pencil"
                   (click)="editInit(rowData)"
                   text
                   rounded
                   severity="primary"
                   title="Editar"
                   size="small"
-                ></button>
+                >
+                  <i class="pi pi-pencil"></i>
+                </button>
                 <button
                   pButton
                   pRipple
                   type="button"
-                  icon="pi pi-trash"
                   (click)="removeInit(rowData)"
                   text
                   rounded
                   severity="danger"
                   title="Borrar"
                   size="small"
-                ></button>
+                >
+                  <i class="pi pi-trash"></i>
+                </button>
                 @if (rowData.activo === true) {
                   <button
                     pButton
                     pRipple
                     type="button"
-                    icon="pi pi-ban"
                     (click)="deactivateInit(rowData)"
                     text
                     rounded
                     severity="danger"
                     title="Desactivar"
                     size="small"
-                  ></button>
+                  >
+                    <i class="pi pi-ban"></i>
+                  </button>
                 }
                 @if (rowData.activo === false) {
                   <button
                     pButton
                     pRipple
                     type="button"
-                    icon="pi pi-times"
                     (click)="activateInit(rowData)"
                     text
                     rounded
                     severity="danger"
                     title="Activar"
                     size="small"
-                  ></button>
+                  >
+                    <i class="pi pi-times"></i>
+                  </button>
                 }
               }
             </div>

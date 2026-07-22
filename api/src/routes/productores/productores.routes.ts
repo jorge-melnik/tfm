@@ -4,7 +4,7 @@ import { productorRepository } from '@repositories/productor.repository.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 import { Productor } from '@schemas/productores.schema.js';
 
-const rutasProductores: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
+const productoresRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
     schema: {
       tags: ['Productores'],
@@ -25,6 +25,6 @@ const rutasProductores: FastifyPluginAsyncTypebox = async (fastify, opts): Promi
   });
 };
 
-export default rutasProductores;
+export default productoresRoutes;
 //TODO: Necesario esta ruta?
 //Mejor hacer un /admin/usuarios y ya.

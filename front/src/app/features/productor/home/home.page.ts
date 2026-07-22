@@ -5,7 +5,7 @@ import { AuthService } from '@shared/services/auth.service';
   selector: 'app-home-productor',
   imports: [],
   templateUrl: './home.page.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './home.page.css',
 })
 export class HomePage implements OnInit {

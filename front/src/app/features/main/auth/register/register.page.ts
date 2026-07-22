@@ -26,7 +26,7 @@ import { Select } from 'primeng/select';
     FormsModule,
   ],
   templateUrl: './register.page.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './register.page.css',
 })
 export class RegisterPage {

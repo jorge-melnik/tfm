@@ -6,7 +6,7 @@ import { DialogService } from '@shared/services/dialog.service';
   selector: 'app-logout',
   imports: [],
   templateUrl: './logout.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './logout.component.css',
 })
 export class LogoutComponent implements OnInit {

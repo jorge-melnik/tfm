@@ -62,11 +62,15 @@ export abstract class BaseService<T> implements CrudServiceInterface<T> {
     return await firstValueFrom(this.http.post<T>(this.buildUrl(pathParams), data));
   }
 
-  async update(id: number | string, data: Partial<T>, pathParams?: PathParams): Promise<void> {
-    await firstValueFrom(this.http.put<T>(`${this.buildUrl(pathParams)}/${id}`, data));
+  async update(
+    idOrSlug: number | string,
+    data: Partial<T>,
+    pathParams?: PathParams,
+  ): Promise<void> {
+    await firstValueFrom(this.http.put<T>(`${this.buildUrl(pathParams)}/${idOrSlug}`, data));
   }
 
-  async remove(id: number | string, pathParams?: PathParams): Promise<void> {
-    await firstValueFrom(this.http.delete<void>(`${this.buildUrl(pathParams)}/${id}`));
+  async remove(idOrSlug: number | string, pathParams?: PathParams): Promise<void> {
+    await firstValueFrom(this.http.delete<void>(`${this.buildUrl(pathParams)}/${idOrSlug}`));
   }
 }

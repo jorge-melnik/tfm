@@ -4,7 +4,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   selector: 'app-productos',
   imports: [],
   templateUrl: './productos.page.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './productos.page.css',
 })
 export class ProductosPage {}

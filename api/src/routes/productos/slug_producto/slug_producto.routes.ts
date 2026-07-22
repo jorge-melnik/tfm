@@ -8,7 +8,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
   //GET .../id_producto es con username
   fastify.put('/', {
     schema: {
-      tags: ['Productores'],
+      tags: ['Productos'],
       summary: 'UPDATE producto',
       description: `Permite al PRODUCTOR modificar un producto a su catálogo.`,
       params: Type.Object({
@@ -30,7 +30,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
 
   fastify.delete('/', {
     schema: {
-      tags: ['Productores'],
+      tags: ['Productos'],
       summary: 'DELETE producto',
       description: `Permite al PRODUCTOR borrar (si nunca fue vendido) un producto a su catálogo.`,
       params: Type.Object({
@@ -51,7 +51,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
 
   fastify.patch('/', {
     schema: {
-      tags: ['Productores'],
+      tags: ['Productos'],
       summary: 'ACTIVAR/DESACTIVAR producto',
       description: `Permite al PRODUCTOR activar o desactivar`,
       params: Type.Object({

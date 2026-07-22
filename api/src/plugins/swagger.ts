@@ -38,25 +38,20 @@ Slugs
 
       tags: [
         {
-          name: 'Admin: Categorias',
-          description: 'Rutas de categorias solo para el administrador.',
-        },
-        {
-          name: 'Admin: Subcategorias',
-          description: 'Rutas de subcategorias solo para el administrador.',
-        },
-        {
-          name: 'Admin: Etiquetas',
-          description: 'Rutas de etiquetas solo para el administrador.',
-        },
-        {
           name: 'Auth',
           description: 'Operaciones de autenticación, login y gestión de tokens.',
         },
         {
           name: 'Categorias',
-          description:
-            'Gestión de categorías, subcategorías de categorías y etiquetas permitidas en cada subcategoria para usuarios.',
+          description: 'Gestión de categorías.',
+        },
+        {
+          name: 'Subcategorias',
+          description: 'Gestión de subcategorias.',
+        },
+        {
+          name: 'Etiquetas',
+          description: 'Gestión de etiquetas.',
         },
         {
           name: 'Productores',
@@ -71,7 +66,12 @@ No se puede hacer POST de productores, ya que se corresponde con el registro o c
           `,
         },
         {
-          name: 'productos',
+          name: 'Consumidores',
+          description:
+            'Endpoint para que los consumidores administren sus datos y para que los productores vean la info del consumidor.',
+        },
+        {
+          name: 'Productos',
           description: 'Catálogo de productos orgánicos y regenerativos de todos los productores.',
         },
       ],

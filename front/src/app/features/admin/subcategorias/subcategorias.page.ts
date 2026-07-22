@@ -1,5 +1,4 @@
 import { Component, inject, model, resource, ChangeDetectionStrategy } from '@angular/core';
-import { CategoriasService } from '@shared/services/admin/categorias.service';
 import { TableModule } from 'primeng/table';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { AdminTable } from '@shared/components/admin-table/admin.table';
@@ -9,12 +8,12 @@ import { CommonModule } from '@angular/common';
 import { TableColumn } from '@shared/types/util';
 import { AdminBasePage } from '../admin-base.page';
 import { Categoria, Subcategoria } from '@shared/types/categoria';
-import { SubcategoriasService } from '@shared/services/admin/subcategorias.service';
 import { firstValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@env/environment';
-import { Etiqueta } from '@shared/types/etiqueta';
-import { EtiquetasService } from '@shared/services/admin/etiquetas.service';
+import { EtiquetasService } from '@shared/services/etiquetas.service';
+import { SubcategoriasService } from '@shared/services/subcategorias.service';
+import { CategoriasService } from '@shared/services/categorias.service';
 
 @Component({
   selector: 'app-categorias',
@@ -28,11 +27,11 @@ import { EtiquetasService } from '@shared/services/admin/etiquetas.service';
     AdminTable,
   ],
   templateUrl: './subcategorias.page.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+
   styleUrl: './subcategorias.page.css',
 })
 export class SubcategoriasPage extends AdminBasePage<Subcategoria> {
-  protected override idKey: keyof Subcategoria = 'id_subcategoria';
+  protected override idKey: keyof Subcategoria = 'slug_subcategoria';
   public override entidadName: string = 'etiqueta';
 
   protected _dataService = inject(SubcategoriasService);
@@ -84,6 +83,11 @@ export class SubcategoriasPage extends AdminBasePage<Subcategoria> {
     loader: () => this._categoriaService.getAll(),
   });
 
+  public subcategoriasResource = resource({
+    defaultValue: [] as Subcategoria[],
+    loader: () => this._subcategoriaService.getAll(),
+  });
+
   public etiquetasResource = resource({
     defaultValue: [],
     loader: async () => {
@@ -95,41 +99,29 @@ export class SubcategoriasPage extends AdminBasePage<Subcategoria> {
   private readonly _http = inject(HttpClient);
   //
   protected override async getAll(): Promise<Subcategoria[]> {
-    const url = `${environment.apiUrl}/admin/subcategorias`;
+    const url = `${environment.apiUrl}/subcategorias`;
     return firstValueFrom(this._http.get<Subcategoria[]>(url));
   }
 
   protected async createSubcategoria(data: Partial<Subcategoria>): Promise<void> {
     if (!data.id_categoria) return;
-    this.pathParams = { id_categoria: data.id_categoria };
     const subcategoria = await super.create(data);
 
     if (!subcategoria) return;
     if (!data.id_etiquetas) return;
 
-    await this._subcategoriaService.setEtiquetas(
-      data.id_categoria,
-      subcategoria.id_subcategoria,
-      data.id_etiquetas,
-    );
+    await this._subcategoriaService.setEtiquetas(subcategoria.slug_subcategoria, data.id_etiquetas);
   }
 
   protected async updateSubcategoria(data: Partial<Subcategoria>): Promise<void> {
-    if (!data.id_categoria) return;
-    if (!data.id_subcategoria) return;
-    this.pathParams = { id_categoria: data.id_categoria };
+    if (!data.slug_subcategoria) return;
     await super.update(data);
     if (!data.id_etiquetas) return;
-    await this._subcategoriaService.setEtiquetas(
-      data.id_categoria,
-      data.id_subcategoria,
-      data.id_etiquetas,
-    );
+    await this._subcategoriaService.setEtiquetas(data.slug_subcategoria, data.id_etiquetas);
   }
 
   protected override async remove(data: Subcategoria): Promise<void> {
-    if (!data.id_categoria) return;
-    this.pathParams = { id_categoria: data.id_categoria };
+    if (!data.slug_subcategoria) return;
     await super.remove(data);
   }
 }
