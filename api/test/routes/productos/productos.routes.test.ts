@@ -10,6 +10,9 @@ import { Productor } from '@schemas/productores.schema.js';
 import assert from 'node:assert';
 import test from 'node:test';
 import { build } from '../../helper.js';
+import { DeAcaNotFound } from '@errors/response.errors.js';
+
+const baseUrl = '/productos';
 
 test('Producto Repository', async (t) => {
   const app = await build(t);
@@ -70,16 +73,17 @@ test('Producto Repository', async (t) => {
 
   await t.test('GET /productos', async () => {
     //ACT
+    const url = `${baseUrl}?id_productor=${productorCreado.id_productor}`;
     const res = await app.inject({
       method: 'GET',
-      url: `/productos`,
+      url,
     });
 
     const productos: Producto[] = JSON.parse(res.payload).data;
+
     const productoBuscadoA = productos.find((p) => p.id_producto === productoA.id_producto);
     const productoBuscadoB = productos.find((p) => p.id_producto === productoB.id_producto);
 
-    console.log({ productos });
     //ASSERT
     assert.equal(res.statusCode, 200);
     assert.equal(productoBuscadoA?.id_productor, productorCreado.id_productor);
@@ -88,209 +92,190 @@ test('Producto Repository', async (t) => {
     assert.equal(productoBuscadoB?.id_producto, productoB.id_producto);
   });
 
-  // await t.test(`POST /productores/${productorCreado.id_productor}/productos`, async () => {
-  //   //Arrange
-  //   const nombre = 'Prod C ' + aleatorio;
-  //   //ACT
-  //   const res = await app.inject({
-  //     method: 'POST',
-  //     url: `/productores/${productorCreado.id_productor}/productos`,
-  //     payload: {
-  //       id_subcategoria: subcategoria.id_subcategoria,
-  //       id_productor: productorCreado.id_productor,
-  //       nombre,
-  //       descripcion: 'La descripcion',
-  //       slug_producto: '',
-  //       precio: 100,
-  //       cantidad_disponible: 10,
-  //       id_etiquetas: [etiqueta1.id_etiqueta],
-  //       fotos: ['no-foto'],
-  //     },
-  //   });
+  await t.test(`POST /productos`, async () => {
+    //Arrange
+    const nombre = 'Prod C ' + aleatorio;
+    //ACT
+    const res = await app.inject({
+      method: 'POST',
+      url: `${baseUrl}`,
+      payload: {
+        id_subcategoria: subcategoria.id_subcategoria,
+        id_productor: productorCreado.id_productor,
+        nombre,
+        descripcion: 'La descripcion',
+        slug_producto: '',
+        precio: 100,
+        cantidad_disponible: 10,
+        id_etiquetas: [etiqueta1.id_etiqueta],
+        fotos: ['no-foto'],
+      },
+    });
 
-  //   const producto: Producto = JSON.parse(res.payload);
+    const producto: Producto = JSON.parse(res.payload);
+    //ASSERT
+    assert.equal(res.statusCode, 201);
+    assert.equal(producto?.nombre, nombre);
+  });
 
-  //   //ASSERT
-  //   assert.equal(res.statusCode, 201);
-  //   assert.equal(producto?.nombre, nombre);
-  // });
+  //POST fallido
+  await t.test(`POST ${baseUrl}`, async () => {
+    //Arrange
+    const nombre = 'Prod C ' + aleatorio;
+    //ACT
+    const res = await app.inject({
+      method: 'POST',
+      url: `${baseUrl}`,
+      payload: {
+        id_subcategoria: subcategoria.id_subcategoria,
+        id_productor: productorCreado.id_productor,
+        nombre,
+        descripcion: 'La descripcion',
+        slug_producto: '',
+        precio: 100,
+        cantidad_disponible: 10,
+        id_etiquetas: [-4],
+        fotos: ['no-foto'],
+      },
+    });
 
-  // //POST fallido
-  // await t.test(`POST /productores/${productorCreado.id_productor}/productos`, async () => {
-  //   //Arrange
-  //   const nombre = 'Prod C ' + aleatorio;
-  //   //ACT
-  //   const res = await app.inject({
-  //     method: 'POST',
-  //     url: `/productores/${productorCreado.id_productor}/productos`,
-  //     payload: {
-  //       id_subcategoria: subcategoria.id_subcategoria,
-  //       id_productor: productorCreado.id_productor,
-  //       nombre,
-  //       descripcion: 'La descripcion',
-  //       slug_producto: '',
-  //       precio: 100,
-  //       cantidad_disponible: 10,
-  //       id_etiquetas: [-4],
-  //       fotos: ['no-foto'],
-  //     },
-  //   });
+    //ASSERT
+    assert.equal(res.statusCode, 500);
+  });
 
-  //   //ASSERT
-  //   assert.equal(res.statusCode, 500);
-  // });
+  await t.test(`PUT ${baseUrl}/${productoA.slug_producto}`, async () => {
+    //Arrange
+    const nombre = 'Prod Cambiado ' + aleatorio;
+    //ACT
+    const res = await app.inject({
+      method: 'PUT',
+      url: `${baseUrl}/${productoA.slug_producto}`,
+      payload: {
+        ...datosA,
+        nombre,
+        id_productor: productoA.id_productor,
+        id_producto: productoA.id_producto,
+      },
+    });
 
-  // await t.test(
-  //   `PUT /productores/${productorCreado.id_productor}/productos/${productoA.id_producto}`,
-  //   async () => {
-  //     //Arrange
-  //     const nombre = 'Prod Cambiado ' + aleatorio;
-  //     //ACT
-  //     const res = await app.inject({
-  //       method: 'PUT',
-  //       url: `/productores/${productorCreado.id_productor}/productos/${productoA.id_producto}`,
-  //       payload: {
-  //         ...datosA,
-  //         nombre,
-  //         id_productor: productoA.id_productor,
-  //         id_producto: productoA.id_producto,
-  //       },
-  //     });
+    const productoACambiado = await productoRepository.getOneBy({
+      id_productor: productoA.id_productor,
+      id_producto: productoA.id_producto,
+    });
 
-  //     const productoACambiado = await productoRepository.getOneBy({
-  //       id_productor: productoA.id_productor,
-  //       id_producto: productoA.id_producto,
-  //     });
+    //ASSERT
+    assert.equal(res.statusCode, 204);
+    assert.equal(productoACambiado?.nombre, nombre);
+    assert.equal(productoACambiado?.slug_producto, productoA.slug_producto);
+  });
 
-  //     //ASSERT
-  //     assert.equal(res.statusCode, 204);
-  //     assert.equal(productoACambiado?.nombre, nombre);
-  //     assert.equal(productoACambiado?.slug_producto, productoA.slug_producto);
-  //   },
-  // );
+  await t.test(`DELETE ${baseUrl}/${productoB.slug_producto}`, async () => {
+    //ACT
+    const res = await app.inject({
+      method: 'DELETE',
+      url: `${baseUrl}/${productoB.slug_producto}`,
+    });
 
-  // await t.test(
-  //   `DELETE /productores/${productorCreado.id_productor}/productos/${productoB.id_producto}`,
-  //   async () => {
-  //     //ACT
-  //     const res = await app.inject({
-  //       method: 'DELETE',
-  //       url: `/productores/${productorCreado.id_productor}/productos/${productoB.id_producto}`,
-  //     });
+    //ASSERT
+    assert.equal(res.statusCode, 204);
+    await assert.rejects(
+      productoRepository.getOneBy({
+        id_productor: productoB.id_productor,
+        id_producto: productoB.id_producto,
+      }),
+      (err: any) => {
+        assert.ok(err instanceof DeAcaNotFound);
+        return true;
+      },
+    );
+  });
 
-  //     //ASSERT
-  //     assert.equal(res.statusCode, 204);
-  //     await assert.rejects(
-  //       productoRepository.getOneBy({
-  //         id_productor: productoB.id_productor,
-  //         id_producto: productoB.id_producto,
-  //       }),
-  //       (err: any) => {
-  //         assert.ok(err instanceof DeAcaNotFound);
-  //         return true;
-  //       },
-  //     );
-  //   },
-  // );
+  //desactivar.
+  await t.test(`PATCH ${baseUrl}/${productoA.slug_producto}`, async () => {
+    //ACT
+    const res = await app.inject({
+      method: 'PATCH',
+      url: `${baseUrl}/${productoA.slug_producto}`,
+      payload: {
+        activo: false,
+        id_productor: productoA.id_productor,
+        id_producto: productoA.id_producto,
+      },
+    });
+    const productoACambiado: Producto = await productoRepository.getOneBy({
+      id_productor: productoA.id_productor,
+      id_producto: productoA.id_producto,
+    });
 
-  // //desactivar.
-  // await t.test(
-  //   `PATCH /productores/${productoA.id_productor}/productos/${productoA.id_producto}`,
-  //   async () => {
-  //     //ACT
-  //     const res = await app.inject({
-  //       method: 'PATCH',
-  //       url: `/productores/${productoA.id_productor}/productos/${productoA.id_producto}`,
-  //       payload: {
-  //         activo: false,
-  //         id_productor: productoA.id_productor,
-  //         id_producto: productoA.id_producto,
-  //       },
-  //     });
-  //     const productoACambiado: Producto = await productoRepository.getOneBy({
-  //       id_productor: productoA.id_productor,
-  //       id_producto: productoA.id_producto,
-  //     });
+    //ASSERT
+    assert.equal(res.statusCode, 204);
+    assert.equal(productoACambiado?.activo, false);
+  });
 
-  //     //ASSERT
-  //     assert.equal(res.statusCode, 204);
-  //     assert.equal(productoACambiado?.activo, false);
-  //   },
-  // );
+  //activar.
+  await t.test(`PATCH ${baseUrl}/${productoA.slug_producto}`, async () => {
+    //ACT
+    const res = await app.inject({
+      method: 'PATCH',
+      url: `${baseUrl}/${productoA.slug_producto}`,
+      payload: {
+        activo: true,
+        id_productor: productoA.id_productor,
+        id_producto: productoA.id_producto,
+      },
+    });
+    const productoACambiado: Producto = await productoRepository.getOneBy({
+      id_productor: productoA.id_productor,
+      id_producto: productoA.id_producto,
+    });
 
-  // //activar.
-  // await t.test(
-  //   `PATCH /productores/${productoA.id_productor}/productos/${productoA.id_producto}`,
-  //   async () => {
-  //     //ACT
-  //     const res = await app.inject({
-  //       method: 'PATCH',
-  //       url: `/productores/${productoA.id_productor}/productos/${productoA.id_producto}`,
-  //       payload: {
-  //         activo: true,
-  //         id_productor: productoA.id_productor,
-  //         id_producto: productoA.id_producto,
-  //       },
-  //     });
-  //     const productoACambiado: Producto = await productoRepository.getOneBy({
-  //       id_productor: productoA.id_productor,
-  //       id_producto: productoA.id_producto,
-  //     });
+    //ASSERT
+    assert.equal(res.statusCode, 204);
+    assert.equal(productoACambiado?.activo, true);
+  });
 
-  //     //ASSERT
-  //     assert.equal(res.statusCode, 204);
-  //     assert.equal(productoACambiado?.activo, true);
-  //   },
-  // );
+  //etiquetas
+  await t.test(`PATCH ${baseUrl}/${productoA.slug_producto}/etiquetas`, async () => {
+    //ARRANGE:
+    const etiqueta3 = await etiquetasRepository.add({ nombre: `prods-3${aleatorio}`, slug_etiqueta: '' });
 
-  // //etiquetas
-  // await t.test(
-  //   `PATCH /productores/${productoA.id_productor}/productos/${productoA.id_producto}/etiquetas`,
-  //   async () => {
-  //     //ARRANGE:
-  //     const etiqueta3 = await etiquetasRepository.add({ nombre: `prods-3${aleatorio}`, slug_etiqueta: '' });
+    //ACT
+    const res = await app.inject({
+      method: 'PATCH',
+      url: `${baseUrl}/${productoA.slug_producto}/etiquetas`,
+      payload: {
+        id_productor: productoA.id_productor,
+        id_producto: productoA.id_producto,
+        ids_borrar: [etiqueta1.id_etiqueta],
+        ids_agregar: [etiqueta3.id_etiqueta],
+      },
+    });
+    const productoACambiado: Producto = await productoRepository.getOneBy({
+      id_productor: productoA.id_productor,
+      id_producto: productoA.id_producto,
+    });
 
-  //     //ACT
-  //     const res = await app.inject({
-  //       method: 'PATCH',
-  //       url: `/productores/${productoA.id_productor}/productos/${productoA.id_producto}/etiquetas`,
-  //       payload: {
-  //         id_productor: productoA.id_productor,
-  //         id_producto: productoA.id_producto,
-  //         ids_borrar: [etiqueta1.id_etiqueta],
-  //         ids_agregar: [etiqueta3.id_etiqueta],
-  //       },
-  //     });
-  //     const productoACambiado: Producto = await productoRepository.getOneBy({
-  //       id_productor: productoA.id_productor,
-  //       id_producto: productoA.id_producto,
-  //     });
+    //ASSERT
+    assert.equal(res.statusCode, 204);
+    assert.equal(productoACambiado?.id_etiquetas.length, 2);
+    assert.deepStrictEqual(productoACambiado?.id_etiquetas, [etiqueta2.id_etiqueta, etiqueta3.id_etiqueta]);
+  });
 
-  //     //ASSERT
-  //     assert.equal(res.statusCode, 204);
-  //     assert.equal(productoACambiado?.id_etiquetas.length, 2);
-  //     assert.deepStrictEqual(productoACambiado?.id_etiquetas, [etiqueta2.id_etiqueta, etiqueta3.id_etiqueta]);
-  //   },
-  // );
+  //etiquetas que falla
+  await t.test(`PATCH ${baseUrl}}/${productoA.slug_producto}/etiquetas`, async () => {
+    //ACT
+    const res = await app.inject({
+      method: 'PATCH',
+      url: `${baseUrl}/${productoA.slug_producto}/etiquetas`,
+      payload: {
+        id_productor: productoA.id_productor,
+        id_producto: productoA.id_producto,
+        ids_borrar: [],
+        ids_agregar: [-1, -2],
+      },
+    });
 
-  // //etiquetas que falla
-  // await t.test(
-  //   `PATCH /productores/${productoA.id_productor}/productos/${productoA.id_producto}/etiquetas`,
-  //   async () => {
-  //     //ACT
-  //     const res = await app.inject({
-  //       method: 'PATCH',
-  //       url: `/productores/${productoA.id_productor}/productos/${productoA.id_producto}/etiquetas`,
-  //       payload: {
-  //         id_productor: productoA.id_productor,
-  //         id_producto: productoA.id_producto,
-  //         ids_borrar: [],
-  //         ids_agregar: [-1, -2],
-  //       },
-  //     });
-
-  //     //ASSERT
-  //     assert.equal(res.statusCode, 500);
-  //   },
-  // );
+    //ASSERT
+    assert.equal(res.statusCode, 500);
+  });
 });

@@ -12,11 +12,9 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       summary: 'ADD REMOVE etiquetas',
       description: `Permite al PRODUCTOR agregar o quitar etiquetas a un producto.`,
       params: Type.Object({
-        id_productor: Type.String(),
-        id_producto: Type.Integer(),
+        slug_producto: Producto.properties.slug_producto,
       }),
       body: Type.Object({
-        id_productor: Producto.properties.id_productor,
         id_producto: Producto.properties.id_producto,
         ids_borrar: Type.Array(Type.Integer(), { description: 'ids etiquetas a desasociar del producto.' }),
         ids_agregar: Type.Array(Type.Integer(), { description: 'ids etiquetas a asociar al producto.' }),
@@ -28,14 +26,14 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
     },
     // preHandler : //FIXME: fastify.seModificaASiMismo y el coincide id_productor en body y params. Params coincide con body o bad Request
     handler: async function (req, reply) {
-      const { id_productor, id_producto, ids_borrar, ids_agregar } = req.body;
+      const { id_producto, ids_borrar, ids_agregar } = req.body;
 
       const client = await myPool.connect();
       try {
         const productoRepoWT = productoRepository.withTransaction(client);
         await client.query('BEGIN;');
-        await productoRepoWT.removeEtiquetas(id_productor, id_producto, ids_borrar);
-        await productoRepoWT.addEtiquetas(id_productor, id_producto, ids_agregar);
+        await productoRepoWT.removeEtiquetas(id_producto, ids_borrar);
+        await productoRepoWT.addEtiquetas(id_producto, ids_agregar);
         await client.query('COMMIT;');
       } catch (error: any) {
         client.query('ROLLBACK');

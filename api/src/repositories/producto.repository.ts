@@ -1,3 +1,4 @@
+import { DeAcaBadRequest } from '@errors/response.errors.js';
 import { BaseRepository } from './base.repository.js';
 import { Producto } from '@schemas/producto.schema.js';
 
@@ -65,7 +66,8 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
    * @returns
    */
   async addEtiquetas(id_producto: number, id_etiquetas: number[]) {
-    if (id_etiquetas.length === 0) return;
+    if (id_etiquetas.length === 0)
+      throw new DeAcaBadRequest('No se indicaron ids de etiquetas a asociar al producto.');
     const query = `
       INSERT INTO public.producto_etiquetas (id_producto, id_etiqueta )
       SELECT $1, id_etiqueta
@@ -84,7 +86,8 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
    * @returns
    */
   async removeEtiquetas(id_producto: number, id_etiquetas: number[]) {
-    if (id_etiquetas.length === 0) return;
+    if (id_etiquetas.length === 0)
+      throw new DeAcaBadRequest('No se indicaron ids de etiquetas a asociar al producto.');
     const query = `
       DELETE FROM public.producto_etiquetas
       WHERE id_producto=$1 AND id_etiqueta =ANY($2::int[])
