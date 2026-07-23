@@ -1,11 +1,10 @@
 import { myPool } from '@database/pool.js';
-import { DeAcaBadRequest, DeAcaInternal } from '@errors/response.errors.js';
+import { DeAcaInternal } from '@errors/response.errors.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { productoRepository } from '@repositories/producto.repository.js';
 
 import { DeAcaErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
 import { POSTProducto, Producto } from '@schemas/producto.schema.js';
-import { Productor } from '@schemas/productores.schema.js';
 
 const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
@@ -19,7 +18,7 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
         DeAcaQueryString,
         Type.Object({
           username: Type.Optional(Type.String()),
-          id_productor: Type.Optional(Type.Integer()),
+          id_productor: Type.Optional(Type.String()),
           etiquetas: Type.Optional(Type.Array(Type.String())),
           slug_categoria: Type.Optional(Type.String()),
           slug_subcategoria: Type.Optional(Type.String()),
@@ -42,7 +41,6 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
       tags: ['Productos'],
       summary: 'ADD producto',
       description: `Permite al PRODUCTOR agregar un producto a su catálogo.`,
-      params: Type.Object({ username: Productor.properties.username }),
       body: POSTProducto,
       response: {
         201: Producto,
@@ -62,7 +60,6 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
         precio,
         cantidad_disponible,
         id_etiquetas,
-        fotos,
       } = req.body;
       try {
         await client.query('BEGIN;');
@@ -74,9 +71,8 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
           descripcion,
           precio,
           cantidad_disponible,
-          fotos,
         });
-        await prodRepoWT.addEtiquetas(id_productor, id_producto, id_etiquetas);
+        await prodRepoWT.addEtiquetas(id_producto, id_etiquetas);
         await client.query('COMMIT;'); //Confirmar transacción
         return productoRepository.getOneBy({ id_productor, id_producto });
       } catch (error: any) {

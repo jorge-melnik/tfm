@@ -11,7 +11,7 @@ export class SubcategoriasRepositoryClass extends BaseRepository<Subcategoria> {
       SELECT SC.*, C.slug_categoria, C.color, C.icono, json_agg(SE.id_etiqueta) as id_etiquetas
       FROM subcategorias SC
       JOIN public.categorias C ON C.id_categoria = SC.id_categoria
-      JOIN public.subcategoria_etiquetas SE ON SE.id_subcategoria=SC.id_subcategoria
+      LEFT JOIN public.subcategoria_etiquetas SE ON SE.id_subcategoria=SC.id_subcategoria
       GROUP BY SC.id_subcategoria, C.id_categoria
       ORDER BY C.id_categoria, SC.id_subcategoria
     )

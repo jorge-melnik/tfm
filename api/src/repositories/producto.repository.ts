@@ -1,3 +1,4 @@
+import { DeAcaBadRequest } from '@errors/response.errors.js';
 import { BaseRepository } from './base.repository.js';
 import { Producto } from '@schemas/producto.schema.js';
 
@@ -40,7 +41,8 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
         COALESCE(ME.id_etiquetas, ARRAY[]::INT[] ) AS id_etiquetas,
         COALESCE(ME.etiquetas, ARRAY[]::TEXT[] ) AS etiquetas,
         COALESCE(MF.fotos, '[]') AS fotos
-      FROM productos P JOIN productores PP ON PP.id_productor = P.id_productor
+      FROM productos P 
+      JOIN productores PP ON PP.id_productor = P.id_productor
       JOIN public.usuarios U ON U.id_usuario = PP.id_productor
       JOIN public.datos_personales DP ON DP.id_usuario = U.id_usuario
       JOIN public.subcategorias SC ON SC.id_subcategoria = P.id_subcategoria
@@ -63,16 +65,17 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
    * @param id_etiquetas
    * @returns
    */
-  async addEtiquetas(id_productor: string, id_producto: number, id_etiquetas: number[]) {
-    if (id_etiquetas.length === 0) return;
+  async addEtiquetas(id_producto: number, id_etiquetas: number[]) {
+    if (id_etiquetas.length === 0)
+      throw new DeAcaBadRequest('No se indicaron ids de etiquetas a asociar al producto.');
     const query = `
-      INSERT INTO public.producto_etiquetas (id_productor, id_producto, id_etiqueta )
-      SELECT $1, $2, id_etiqueta
-      FROM UNNEST($3::int[]) AS id_etiqueta
-      ON CONFLICT (id_productor, id_producto, id_etiqueta) DO NOTHING
+      INSERT INTO public.producto_etiquetas (id_producto, id_etiqueta )
+      SELECT $1, id_etiqueta
+      FROM UNNEST($2::int[]) AS id_etiqueta
+      ON CONFLICT (id_producto, id_etiqueta) DO NOTHING
       ;
     `;
-    await this.executor.query(query, [id_productor, id_producto, id_etiquetas]);
+    await this.executor.query(query, [id_producto, id_etiquetas]);
   }
 
   /**
@@ -82,13 +85,14 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
    * @param id_etiquetas
    * @returns
    */
-  async removeEtiquetas(id_productor: string, id_producto: number, id_etiquetas: number[]) {
-    if (id_etiquetas.length === 0) return;
+  async removeEtiquetas(id_producto: number, id_etiquetas: number[]) {
+    if (id_etiquetas.length === 0)
+      throw new DeAcaBadRequest('No se indicaron ids de etiquetas a asociar al producto.');
     const query = `
       DELETE FROM public.producto_etiquetas
-      WHERE id_productor = $1 AND id_producto=$2 AND id_etiqueta =ANY($3::int[])
+      WHERE id_producto=$1 AND id_etiqueta =ANY($2::int[])
     `;
-    await this.executor.query(query, [id_productor, id_producto, id_etiquetas]);
+    await this.executor.query(query, [id_producto, id_etiquetas]);
   }
 }
 

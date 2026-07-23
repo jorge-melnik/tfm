@@ -1,6 +1,6 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { subcategoriasRepository } from '@repositories/subcategorias.repository.js';
-import { Categoria, Subcategoria } from '@schemas/categoria.schema.js';
+import { Subcategoria } from '@schemas/categoria.schema.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 
 const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -11,7 +11,6 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       description:
         'Permite obtener una subcategoría a partir del slug de la categoría y el slug de la subcategoría.',
       params: Type.Object({
-        slug_categoria: Categoria.properties.slug_categoria,
         slug_subcategoria: Subcategoria.properties.slug_subcategoria,
       }),
       response: {
