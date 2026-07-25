@@ -319,6 +319,25 @@
         </p-select>
       </div>
     }
+    @case ('subcategoria') {
+      <div class="flex items-center gap-2">
+        <p-select
+          [options]="this.subcategorias()"
+          [(ngModel)]="group[col.key]"
+          optionLabel="nombre"
+          optionValue="id_subcategoria"
+          appendTo="body"
+          class="w-full"
+        >
+          <ng-template let-subcategoria #item>
+            <div class="flex items-center gap-2">
+              <i [class]="subcategoria.icono" style="font-size: 1.2rem"></i>
+              <div>{{ subcategoria.nombre }}</div>
+            </div>
+          </ng-template>
+        </p-select>
+      </div>
+    }
 
     @case ('etiquetas') {
       <div class="flex items-center gap-2">

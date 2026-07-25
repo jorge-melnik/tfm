@@ -6,7 +6,7 @@ CREATE TABLE productos (
     nombre CITEXT NOT NULL CHECK (
         char_length(nombre) BETWEEN 3 AND 35
     ), -- TODO: Regex para permitir solo letras y números ? No olvidarse eñes y acentos.
-    slug_producto CITEXT NOT NULL UNIQUE CHECK (
+    slug_producto CITEXT NOT NULL CHECK (
         char_length(slug_producto) BETWEEN 3 AND 35
         AND slug_producto ~ '^[a-zA-Z0-9-]+$' 
     ),-- TODO: TRIGGER para asegurarse que no se cambia el slug_producto
@@ -25,6 +25,7 @@ CREATE TABLE productos (
     ) STORED,
     UNIQUE (id_productor, id_producto), -- Producto es entidad debil a Productor pero no es necesario que la PK sea compuesta. Hacemos esta clave para que pueda ser usada para las fk en otras tablas.
     UNIQUE (id_productor, nombre)       -- Para que un productor no pueda tener dos productos con el mismo nombre.
+    UNIQUE (id_productor, slug_producto)-- Para que un productor no pueda tener dos productos con el mismo slug.
 );
 -- TODO: Trigger para actualizar la calificación el productor en base al promedio  de calificaciones del producto
 -- Indice para búsquedas avanzadas con el campo busqueda

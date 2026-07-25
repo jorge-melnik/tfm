@@ -1,6 +1,6 @@
 import { Type, Static } from '@sinclair/typebox';
 import { Productor } from './productores.schema.js';
-import { Subcategoria } from './categoria.schema.js';
+import { Categoria, Subcategoria } from './categoria.schema.js';
 import { DatosPersonales } from './usuarios.schema.js';
 
 export const POSTProducto = Type.Object({
@@ -17,12 +17,15 @@ export const POSTProducto = Type.Object({
 
 export const Producto = Type.Object({
   ...POSTProducto.properties,
+  id_categoria: Categoria.properties.id_categoria,
   id_producto: Type.Integer(),
   fotos: Type.Array(Type.String()),
   video: Type.Optional(Type.String()),
   etiquetas: Type.Array(Type.String()), //slug etiquetas
   username: DatosPersonales.properties.username,
   activo: Type.Optional(Type.Boolean()),
+  categoria: Categoria.properties.nombre,
+  subcategoria: Subcategoria.properties.nombre,
 });
 
 export type Producto = Static<typeof Producto>;

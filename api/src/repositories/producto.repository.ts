@@ -36,8 +36,10 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
     MIS_PRODUCTOS AS (
       SELECT 
         P.*,
+        C.nombre as categoria,
+        SC.nombre as subcategoria,
         DP.username,
-        SC.slug_subcategoria, C.slug_categoria,
+        SC.slug_subcategoria,SC.id_categoria, C.slug_categoria,
         COALESCE(ME.id_etiquetas, ARRAY[]::INT[] ) AS id_etiquetas,
         COALESCE(ME.etiquetas, ARRAY[]::TEXT[] ) AS etiquetas,
         COALESCE(MF.fotos, '[]') AS fotos
