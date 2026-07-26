@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Categoria } from '@shared/types/categoria';
+import { Categoria, Subcategoria } from '@shared/types/categoria';
 import { environment } from '@env/environment';
 import { BaseService } from './base-service.service';
 import { firstValueFrom } from 'rxjs';
@@ -10,6 +10,11 @@ import { Etiqueta } from '@shared/types/etiqueta';
 })
 export class CategoriasService extends BaseService<Categoria> {
   protected override serviceUrl: string = `${environment.apiUrl}/categorias`;
+
+  async getSubcategorias (slug_categoria: string){
+    const url = `${this.serviceUrl}/${slug_categoria}/subcategorias`;
+    return firstValueFrom(this.http.get<Subcategoria[]>(url));
+  }
 
   async getEtiquetas(slug_categoria: string) {
     const url = `${this.serviceUrl}/${slug_categoria}/etiquetas`;

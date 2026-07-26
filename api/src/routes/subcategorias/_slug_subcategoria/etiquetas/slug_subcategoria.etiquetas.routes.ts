@@ -4,7 +4,7 @@ import { Etiqueta, Subcategoria } from '@schemas/categoria.schema.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 
 const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
-  fastify.get('/etiquetas', {
+  fastify.get('/', {
     schema: {
       tags: ['Subcategorias'],
       summary: 'READ etiquetas.',

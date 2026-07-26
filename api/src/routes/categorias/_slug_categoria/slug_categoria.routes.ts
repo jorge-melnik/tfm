@@ -1,6 +1,7 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { categoriasRepository } from '@repositories/categorias.repository.js';
-import { Categoria, Etiqueta } from '@schemas/categoria.schema.js';
+import { subcategoriasRepository } from '@repositories/subcategorias.repository.js';
+import { Categoria, Etiqueta, Subcategoria } from '@schemas/categoria.schema.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 
 const rutasSlugCategorias: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -100,6 +101,27 @@ const rutasSlugCategorias: FastifyPluginAsyncTypebox = async (fastify, opts): Pr
       const categoria = await categoriasRepository.getOneBy({ slug_categoria: req.params.slug_categoria });
       if (req.body.activo) return categoriasRepository.activate(categoria.id_categoria);
       return categoriasRepository.deactivate(categoria.id_categoria);
+    },
+  });
+
+  fastify.get('/subcategorias', {
+    schema: {
+      tags: ['Subcategorias'],
+      summary: 'READ subcategorias',
+      description: `
+        Devuelve el listado de subcategorias de la categoría con el slug_categoria especificado. 
+      `,
+
+      params: Type.Object({
+        slug_categoria: Categoria.properties.slug_categoria,
+      }),
+      response: {
+        200: Type.Array(Subcategoria),
+        500: DeAcaErrorResponse,
+      },
+    },
+    handler: async function (req, reply) {
+      return (await subcategoriasRepository.getBy({ slug_categoria: req.params.slug_categoria })).data;
     },
   });
 

@@ -2,12 +2,9 @@ import {
   Component,
   computed,
   inject,
-  input,
-  InputSignal,
   OnInit,
   resource,
   signal,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
@@ -24,7 +21,7 @@ import { Categoria, Subcategoria } from '@shared/types/categoria';
 import { SubcategoriasService } from '@shared/services/subcategorias.service';
 import { ApiQueryParams } from '@shared/types/api.types';
 import { Etiqueta } from '@shared/types/etiqueta';
-import { ActivatedRoute, convertToParamMap, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute,  ParamMap, Router } from '@angular/router';
 import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
 import { CarritoService } from '@shared/services/carrito.service';
 import { ItemCarrito } from '@shared/types/item-carrito';
@@ -45,7 +42,6 @@ import { EtiquetasService } from '@shared/services/etiquetas.service';
     SelectModule,
   ],
   templateUrl: './home.page.html',
-
   styleUrl: './home.page.css',
 })
 export class HomePage implements OnInit {
@@ -70,43 +66,60 @@ export class HomePage implements OnInit {
 
   public categoriasResource = resource({
     defaultValue: [] as Categoria[],
-    loader: async () => this._categoriaService.getAll(),
+    loader: async () => {
+      try {
+        return this._categoriaService.getAll();
+      }catch(error:any){
+        this._dialogService.addError(error.message);
+        return [] as Categoria [];
+      }
+    },
   });
-
-  private _queryParams = toSignal<ParamMap>(this._route.queryParamMap);
 
   public subcategoriasResource = resource({
     defaultValue: [] as Subcategoria[],
-    params: () => ({ slug_categoria: this._queryParams()?.get('slug_categoria') }),
+    params: () => ({ slug_categoria: this.categoriaSeleccionada() }),
     loader: async ({ params }) => {
-      const { slug_categoria } = params;
-      if (!slug_categoria) return this._subcategoriaService.getAll();
-      return this._subcategoriaService.getBy({ queryParams: { slug_categoria: slug_categoria } });
+      try {
+        const { slug_categoria } = params;
+        if (!slug_categoria) return this._subcategoriaService.getAll();
+        return this._categoriaService.getSubcategorias(slug_categoria);
+      }catch(error:any){
+        this._dialogService.addError(error.message);
+        return [] as Subcategoria [];
+      }
     },
   });
 
   public etiquetasResource = resource({
     defaultValue: [] as Etiqueta[],
     params: () => ({
-      slug_categoria: this._queryParams()?.get('slug_categoria'),
-      slug_subcategoria: this._queryParams()?.get('slug_subcategoria'),
+      slug_categoria: this.categoriaSeleccionada(),
+      slug_subcategoria: this.subcategoriaSeleccionada(),
     }),
-    loader: async ({ params }) => {
-      const { slug_categoria, slug_subcategoria } = params;
+    loader: async ({ params }) => {      
+      try {
 
-      if (slug_subcategoria) return this._subcategoriaService.getEtiquetas(slug_subcategoria);
-      if (slug_categoria) return this._categoriaService.getEtiquetas(slug_categoria);
+        const { slug_categoria, slug_subcategoria } = params;
 
-      //No hay ninguno de los slug
-      return this._etiquetasService.getAll();
+        if (slug_subcategoria) return this._subcategoriaService.getEtiquetas(slug_subcategoria);
+        if (slug_categoria) return this._categoriaService.getEtiquetas(slug_categoria);
+
+        //No hay ninguno de los slug
+        return this._etiquetasService.getAll();
+      }catch(error:any){
+        this._dialogService.addError(error.message);
+        return [] as Etiqueta [];
+      }
     },
   });
 
   public productosResource = resource({
     params: () => ({
-      slug_categoria: this._queryParams()?.get('slug_categoria'),
-      slug_subcategoria: this._queryParams()?.get('slug_subcategoria'),
-      etiquetas: this._queryParams()?.getAll('etiquetas'),
+      
+      slug_categoria: this.categoriaSeleccionada(),
+      slug_subcategoria: this.subcategoriaSeleccionada(),
+      etiquetas: this.etiquetasSeleccionadas(),
       limit: this.limit(),
       page: this.page(),
       sort: this.sortField(),
@@ -152,9 +165,17 @@ export class HomePage implements OnInit {
       { label: 'Menor a mayor precio', value: 'precio' },
       { label: 'Mayor a menor precio', value: '!precio' },
     ];
-    const slug_categoria = this._queryParams()?.get('slug_categoria');
+    const queryParams = this._route.snapshot.queryParamMap;
+    const slug_categoria = queryParams.get('slug_categoria') ?? undefined;
+    const slug_subcategoria = queryParams.get('slug_subcategoria') ?? undefined;
+    const etiquetas = queryParams.getAll('etiquetas') ?? [];
+
+    console.log({slug_categoria,slug_subcategoria,etiquetas});
+    
     this.categoriaSeleccionada.set(slug_categoria);
-    this.subcategoriaSeleccionada.set(this._queryParams()?.get('slug_subcategoria'));
+    this.subcategoriaSeleccionada.set(slug_subcategoria);
+    this.etiquetasSeleccionadas.set(etiquetas);
+    //TODO: faltan busqueda, limit, etc.
   }
 
   public async agregarAlCarrito(
@@ -206,35 +227,42 @@ export class HomePage implements OnInit {
     this.page.set(nuevaPagina);
   }
 
-  public onCategoriaChange(slug: string | undefined) {
-    this.page.set(1);
-    if (!slug) {
-      this._router.navigate(['consumidor']);
-      return;
-    }
-    this._router.navigate(['consumidor', slug]);
+  public onCategoriaChange(slug_categoria: string | undefined) {
+    this.categoriaSeleccionada.set(slug_categoria);
+    this.subcategoriaSeleccionada.set(undefined);
+    this.etiquetasSeleccionadas.set([]);
+    this.queryParamsChange();
   }
 
   public onSubcategoriaChange(
     slug_categoria: string | undefined,
     slug_subcategoria: string | undefined,
   ) {
-    this.page.set(1);
-    if (!slug_subcategoria || !slug_categoria) {
-      return this.onCategoriaChange(slug_categoria);
-    }
-    this._router.navigate(['consumidor', slug_categoria, slug_subcategoria]);
+    console.log("onSubcategoriaChange");
+    this.etiquetasSeleccionadas.set([]);
+    
+    this.queryParamsChange();
   }
 
   public onEtiquetasChange(etiquetas: string[]) {
-    this.page.set(1); // Siempre volvemos a la página 1 al filtrar
+    console.log("onEtiquetasChange");
+    this.queryParamsChange();
+  }
 
-    this._router.navigate([], {
-      relativeTo: this._route,
-      queryParams: {
-        etiquetas: etiquetas.length > 0 ? etiquetas : undefined,
-      },
-      queryParamsHandling: 'merge',
+  public queryParamsChange(){
+    this.page.set(1); // Siempre volvemos a la página 1 al filtrar
+    const slug_categoria = this.categoriaSeleccionada();
+    const slug_subcategoria = this.subcategoriaSeleccionada();
+    const etiquetas = this.etiquetasSeleccionadas();
+
+    const queryParams : ApiQueryParams = {}
+    if (slug_categoria) queryParams["slug_categoria"] = slug_categoria;
+    if (slug_subcategoria) queryParams["slug_subcategoria"] = slug_subcategoria;
+    if(etiquetas?.length>0) queryParams["etiquetas"] = etiquetas
+    this._router.navigate(["consumidor"], {
+      // relativeTo: this._route,
+      queryParams,
+      // queryParamsHandling: 'merge',
     });
   }
 }
