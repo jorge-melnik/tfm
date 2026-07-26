@@ -11,8 +11,8 @@ import { Etiqueta } from '@shared/types/etiqueta';
 export class CategoriasService extends BaseService<Categoria> {
   protected override serviceUrl: string = `${environment.apiUrl}/categorias`;
 
-  async getEtiquetas(claveCategoria: number | string) {
-    const url = `${this.serviceUrl}/${claveCategoria}/etiquetas`;
+  async getEtiquetas(slug_categoria: string) {
+    const url = `${this.serviceUrl}/${slug_categoria}/etiquetas`;
     return await firstValueFrom(this.http.get<Etiqueta[]>(url));
   }
 }

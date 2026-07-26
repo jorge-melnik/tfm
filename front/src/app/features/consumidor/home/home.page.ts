@@ -17,7 +17,6 @@ import { FormsModule } from '@angular/forms';
 import { ProductosService } from '@shared/services/productos.service';
 import { environment } from '@env/environment';
 import { ProductoCard } from '@shared/components/producto-card/producto.card';
-import { MultiSelectModule } from 'primeng/multiselect';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SelectModule } from 'primeng/select';
 import { CategoriasService } from '@shared/services/categorias.service';
@@ -25,13 +24,14 @@ import { Categoria, Subcategoria } from '@shared/types/categoria';
 import { SubcategoriasService } from '@shared/services/subcategorias.service';
 import { ApiQueryParams } from '@shared/types/api.types';
 import { Etiqueta } from '@shared/types/etiqueta';
-import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, ParamMap, Router } from '@angular/router';
 import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
 import { CarritoService } from '@shared/services/carrito.service';
 import { ItemCarrito } from '@shared/types/item-carrito';
 import { UserStore } from '@shared/services/stores/user.store';
 import { DialogService } from '@shared/services/dialog.service';
 import { SortOption } from '@shared/types/util';
+import { EtiquetasService } from '@shared/services/etiquetas.service';
 
 @Component({
   selector: 'app-home-consumidor',
@@ -52,6 +52,7 @@ export class HomePage implements OnInit {
   private readonly _productoService = inject(ProductosService);
   private readonly _categoriaService = inject(CategoriasService);
   private readonly _subcategoriaService = inject(SubcategoriasService);
+  private readonly _etiquetasService = inject(EtiquetasService);
   private readonly _preferenciasStore = inject(PreferenciasStore);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
@@ -59,24 +60,12 @@ export class HomePage implements OnInit {
   private readonly _userStore = inject(UserStore);
   private readonly _dialogService = inject(DialogService);
 
-  private _queryParams = toSignal(this._route.queryParamMap, {
-    initialValue: convertToParamMap({}),
-  });
-
-  private _pathParams = toSignal(this._route.paramMap, {
-    initialValue: convertToParamMap({}),
-  });
-
-  //Params
-  public slug_categoria: InputSignal<string | undefined> = input();
-  public slug_subcategoria: InputSignal<string | undefined> = input();
-
   public cdnUrl = environment.cdnUrl;
 
   //Signals para filtros.
   public filtroBusqueda = signal<string>('');
-  public categoriaSeleccionada = signal<string | null>(null);
-  public subcategoriaSeleccionada = signal<string | null>(null);
+  public categoriaSeleccionada = signal<string | undefined>(undefined);
+  public subcategoriaSeleccionada = signal<string | undefined>(undefined);
   public etiquetasSeleccionadas = signal<string[]>([]);
 
   public categoriasResource = resource({
@@ -84,37 +73,40 @@ export class HomePage implements OnInit {
     loader: async () => this._categoriaService.getAll(),
   });
 
+  private _queryParams = toSignal<ParamMap>(this._route.queryParamMap);
+
   public subcategoriasResource = resource({
     defaultValue: [] as Subcategoria[],
-    params: () => ({ slug_categoria: this._pathParams().get('slug_categoria') }),
+    params: () => ({ slug_categoria: this._queryParams()?.get('slug_categoria') }),
     loader: async ({ params }) => {
       const { slug_categoria } = params;
-      if (!slug_categoria) return [];
-      return this._subcategoriaService.getAll({ slug_categoria });
+      if (!slug_categoria) return this._subcategoriaService.getAll();
+      return this._subcategoriaService.getBy({ queryParams: { slug_categoria: slug_categoria } });
     },
   });
 
   public etiquetasResource = resource({
     defaultValue: [] as Etiqueta[],
     params: () => ({
-      slug_categoria: this._pathParams().get('slug_categoria'),
-      slug_subcategoria: this._pathParams().get('slug_subcategoria'),
+      slug_categoria: this._queryParams()?.get('slug_categoria'),
+      slug_subcategoria: this._queryParams()?.get('slug_subcategoria'),
     }),
     loader: async ({ params }) => {
       const { slug_categoria, slug_subcategoria } = params;
-      if (!slug_categoria) return [];
-      if (!slug_subcategoria) return this._categoriaService.getEtiquetas(slug_categoria);
 
-      //Hay ambos slug
-      return this._subcategoriaService.getEtiquetas(slug_subcategoria);
+      if (slug_subcategoria) return this._subcategoriaService.getEtiquetas(slug_subcategoria);
+      if (slug_categoria) return this._categoriaService.getEtiquetas(slug_categoria);
+
+      //No hay ninguno de los slug
+      return this._etiquetasService.getAll();
     },
   });
 
   public productosResource = resource({
     params: () => ({
-      slug_categoria: this._pathParams().get('slug_categoria'),
-      slug_subcategoria: this._pathParams().get('slug_subcategoria'),
-      etiquetas: this._queryParams().getAll('etiquetas'),
+      slug_categoria: this._queryParams()?.get('slug_categoria'),
+      slug_subcategoria: this._queryParams()?.get('slug_subcategoria'),
+      etiquetas: this._queryParams()?.getAll('etiquetas'),
       limit: this.limit(),
       page: this.page(),
       sort: this.sortField(),
@@ -134,7 +126,6 @@ export class HomePage implements OnInit {
       } = params;
       const queryParams: ApiQueryParams = {};
       const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
-      console.log({ pagination });
 
       if (slug_categoria) queryParams['slug_categoria'] = slug_categoria;
       if (slug_subcategoria) queryParams['slug_subcategoria'] = slug_subcategoria;
@@ -161,8 +152,9 @@ export class HomePage implements OnInit {
       { label: 'Menor a mayor precio', value: 'precio' },
       { label: 'Mayor a menor precio', value: '!precio' },
     ];
-    this.categoriaSeleccionada.set(this._pathParams().get('slug_categoria'));
-    this.subcategoriaSeleccionada.set(this._pathParams().get('slug_subcategoria'));
+    const slug_categoria = this._queryParams()?.get('slug_categoria');
+    this.categoriaSeleccionada.set(slug_categoria);
+    this.subcategoriaSeleccionada.set(this._queryParams()?.get('slug_subcategoria'));
   }
 
   public async agregarAlCarrito(
@@ -214,7 +206,7 @@ export class HomePage implements OnInit {
     this.page.set(nuevaPagina);
   }
 
-  public onCategoriaChange(slug: string | null) {
+  public onCategoriaChange(slug: string | undefined) {
     this.page.set(1);
     if (!slug) {
       this._router.navigate(['consumidor']);
@@ -223,7 +215,10 @@ export class HomePage implements OnInit {
     this._router.navigate(['consumidor', slug]);
   }
 
-  public onSubcategoriaChange(slug_categoria: string | null, slug_subcategoria: string | null) {
+  public onSubcategoriaChange(
+    slug_categoria: string | undefined,
+    slug_subcategoria: string | undefined,
+  ) {
     this.page.set(1);
     if (!slug_subcategoria || !slug_categoria) {
       return this.onCategoriaChange(slug_categoria);
@@ -237,7 +232,7 @@ export class HomePage implements OnInit {
     this._router.navigate([], {
       relativeTo: this._route,
       queryParams: {
-        etiquetas: etiquetas.length > 0 ? etiquetas : null,
+        etiquetas: etiquetas.length > 0 ? etiquetas : undefined,
       },
       queryParamsHandling: 'merge',
     });
