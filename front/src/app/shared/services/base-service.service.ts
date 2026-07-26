@@ -24,11 +24,12 @@ export abstract class BaseService<T> implements CrudServiceInterface<T> {
   }
 
   async getBy(options?: DeAcaRequestOptions): Promise<PaginatedResponse<T>> {
+    console.log({ options });
     let params = new HttpParams();
     if (options?.pagination) {
       if (!options?.pagination) throw new Error('Tienes que especificar la paginación.');
-      if (!options?.pagination.page || !options?.pagination.limit)
-        throw new Error('Tienes que especificar page y limit.');
+      if (!options?.pagination.page) throw new Error('Tienes que especificar page.');
+      if (!options?.pagination.limit) throw new Error('Tienes que especificar limit.');
       const { page, limit, sort, sort_direction } = options?.pagination;
       console.log('PAGINATION: ', options?.pagination);
       params = params.set('page', page);
