@@ -196,13 +196,16 @@ export class HomePage implements OnInit {
     const categoria = this.categoria();
     const subcategoria = this.subcategoria();
     const etiquetas = this.etiquetas();
+    const busqueda = this.busqueda();
 
     const queryParams: ApiQueryParams = {};
     if (categoria) queryParams['categoria'] = categoria;
     if (subcategoria) queryParams['subcategoria'] = subcategoria;
     if (etiquetas?.length > 0) queryParams['etiquetas'] = etiquetas;
-    this._router.navigate(['consumidor'], {
-      // relativeTo: this._route,
+    if (busqueda) queryParams['busqueda']=busqueda;
+    
+    this._router.navigate([], {
+      relativeTo: this._route,
       queryParams,
       // queryParamsHandling: 'merge',
     });
