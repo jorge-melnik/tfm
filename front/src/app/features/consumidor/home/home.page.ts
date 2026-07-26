@@ -31,11 +31,7 @@ import { CarritoService } from '@shared/services/carrito.service';
 import { ItemCarrito } from '@shared/types/item-carrito';
 import { UserStore } from '@shared/services/stores/user.store';
 import { DialogService } from '@shared/services/dialog.service';
-
-interface SortOption {
-  label: string;
-  value: string;
-}
+import { SortOption } from '@shared/types/util';
 
 @Component({
   selector: 'app-home-consumidor',

@@ -1,6 +1,7 @@
 export interface Producto {
   id_productor: string;
   id_producto: number;
+  id_categoria: number;
   id_subcategoria: number;
   nombre: string;
   slug_producto: string;
