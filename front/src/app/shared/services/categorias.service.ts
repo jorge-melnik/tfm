@@ -11,13 +11,13 @@ import { Etiqueta } from '@shared/types/etiqueta';
 export class CategoriasService extends BaseService<Categoria> {
   protected override serviceUrl: string = `${environment.apiUrl}/categorias`;
 
-  async getSubcategorias (slug_categoria: string){
-    const url = `${this.serviceUrl}/${slug_categoria}/subcategorias`;
+  async getSubcategorias (categoria: string){
+    const url = `${this.serviceUrl}/${categoria}/subcategorias`;
     return firstValueFrom(this.http.get<Subcategoria[]>(url));
   }
 
-  async getEtiquetas(slug_categoria: string) {
-    const url = `${this.serviceUrl}/${slug_categoria}/etiquetas`;
+  async getEtiquetas(categoria: string) {
+    const url = `${this.serviceUrl}/${categoria}/etiquetas`;
     return await firstValueFrom(this.http.get<Etiqueta[]>(url));
   }
 }

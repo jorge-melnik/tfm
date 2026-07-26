@@ -6,73 +6,73 @@ import { categoriasRepository } from '@repositories/categorias.repository.js';
 import { subcategoriasRepository } from '@repositories/subcategorias.repository.js';
 import { etiquetasRepository } from '@repositories/etiquetas.repository.js';
 
-test('/categorias/:slug_categoria', async (t) => {
+test('/categorias/:categoria', async (t) => {
   //ARRANGE
   const app = await build(t);
 
   const nombre = 'slug cat ' + Date.now();
-  const slug_categoria = categoriasRepository.createSlug(nombre);
+  const categoria = categoriasRepository.createSlug(nombre);
 
   const categoriaCreada = await categoriasRepository.add({
     nombre,
-    slug_categoria,
+    categoria,
     descripcion: 'Descripción slug test',
   });
 
-  const slug_subcategoria = subcategoriasRepository.createSlug(nombre);
+  const subcategoria = subcategoriasRepository.createSlug(nombre);
 
   const subcategoriaCreada = await subcategoriasRepository.add({
     id_categoria: categoriaCreada.id_categoria,
     nombre,
-    slug_subcategoria,
+    subcategoria,
   });
 
-  await t.test('GET /categorias/:slug_categoria', async () => {
+  await t.test('GET /categorias/:categoria', async () => {
     //ACT
     const res = await app.inject({
       method: 'GET',
-      url: `/categorias/${slug_categoria}`,
+      url: `/categorias/${categoria}`,
     });
 
     const categoria: Categoria = JSON.parse(res.payload);
 
     assert.equal(res.statusCode, 200);
-    assert.equal(categoria.slug_categoria, slug_categoria);
+    assert.equal(categoria.categoria, categoria);
     assert.equal(categoria.nombre, nombre);
   });
 
-  await t.test('GET /categorias/:slug_categoria/subcategorias', async () => {
+  await t.test('GET /categorias/:categoria/subcategorias', async () => {
     const res = await app.inject({
       method: 'GET',
-      url: `/categorias/${slug_categoria}/subcategorias`,
+      url: `/categorias/${categoria}/subcategorias`,
     });
 
     const subcategorias: Subcategoria[] = JSON.parse(res.payload);
 
     assert.equal(res.statusCode, 200);
     assert.ok(Array.isArray(subcategorias));
-    assert.ok(subcategorias.some((s) => s.slug_subcategoria === slug_subcategoria));
+    assert.ok(subcategorias.some((s) => s.subcategoria === subcategoria));
   });
 
-  await t.test('GET /categorias/:slug_categoria/subcategorias/:slug_subcategoria', async () => {
+  await t.test('GET /categorias/:categoria/subcategorias/:subcategoria', async () => {
     //Act
     const res = await app.inject({
       method: 'GET',
-      url: `/categorias/${slug_categoria}/subcategorias/${slug_subcategoria}`,
+      url: `/categorias/${categoria}/subcategorias/${subcategoria}`,
     });
 
     const subcategoria: Subcategoria = JSON.parse(res.payload);
 
     //Assert
     assert.equal(res.statusCode, 200);
-    assert.equal(subcategoria.slug_subcategoria, slug_subcategoria);
+    assert.equal(subcategoria.subcategoria, subcategoria);
     assert.equal(subcategoria.id_categoria, categoriaCreada.id_categoria);
   });
 
-  await t.test('GET /categorias/:slug_categoria/subcategorias/:slug_subcategoria/etiquetas', async () => {
+  await t.test('GET /categorias/:categoria/subcategorias/:subcategoria/etiquetas', async () => {
     //Arrange
     const nombre = 'etiquetas ' + Date.now();
-    const etiquetaCreada = await etiquetasRepository.add({ nombre, slug_etiqueta: '' });
+    const etiquetaCreada = await etiquetasRepository.add({ nombre, etiqueta: '' });
     await subcategoriasRepository.addEtiqueta(
       categoriaCreada.id_categoria,
       subcategoriaCreada.id_subcategoria,
@@ -82,7 +82,7 @@ test('/categorias/:slug_categoria', async (t) => {
     //Act
     const res = await app.inject({
       method: 'GET',
-      url: `/categorias/${slug_categoria}/subcategorias/${slug_subcategoria}/etiquetas`,
+      url: `/categorias/${categoria}/subcategorias/${subcategoria}/etiquetas`,
     });
 
     const etiquetas: Etiqueta[] = JSON.parse(res.payload);

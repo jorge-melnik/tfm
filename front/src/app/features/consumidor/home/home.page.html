@@ -6,7 +6,7 @@
     [paginator]="true"
     [rows]="this.limit()"
     [first]="this.first()"
-    [totalRecords]="$safeNavigationMigration(this.productosResource.value()?.meta?.total)"
+    [totalRecords]="this.productosResource.value()?.meta?.total||0"
     [lazy]="true"
     [rowsPerPageOptions]="[6, 12, 24]"
     (onPage)="this.onPageChange($event)"

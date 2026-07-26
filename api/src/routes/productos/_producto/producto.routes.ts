@@ -11,10 +11,10 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       tags: ['Productos'],
       summary: 'READ productos',
       description: `
-          Devuelve el producto con el slug_producto especificado. 
+          Devuelve el producto con el producto especificado. 
         `,
       params: Type.Object({
-        slug_producto: Producto.properties.slug_producto,
+        producto: Producto.properties.producto,
       }),
       response: {
         200: Producto,
@@ -23,7 +23,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
     },
     // onRequest: [fastify.authenticate], //FIXME descomentar.
     handler: async (req, reply) => {
-      return productoRepository.getOneBy({ slug_producto: req.params.slug_producto });
+      return productoRepository.getOneBy({ producto: req.params.producto });
     },
   });
 
@@ -33,9 +33,9 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       summary: 'UPDATE producto',
       description: `Permite al PRODUCTOR modificar un producto a su catálogo.`,
       params: Type.Object({
-        slug_producto: Producto.properties.slug_producto,
+        producto: Producto.properties.producto,
       }),
-      body: Type.Omit(Producto, ['id_etiquetas', 'etiquetas', 'slug_producto', 'fotos', 'videos']), //FIXME: Con fotos y video?
+      body: Type.Omit(Producto, ['id_etiquetas', 'etiquetas', 'producto', 'fotos', 'videos']), //FIXME: Con fotos y video?
       response: {
         204: Type.Null(),
         500: DeAcaErrorResponse,
@@ -44,7 +44,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
     // preHandler : //FIXME: fastify.seModificaASiMismo y el coincide id_productor en body y params
     handler: async function (req, reply) {
       reply.code(204);
-      const producto = await productoRepository.getOneBy({ slug_producto: req.params.slug_producto });
+      const producto = await productoRepository.getOneBy({ producto: req.params.producto });
       await productoRepository.update(producto.id_producto, req.body);
     },
   });
@@ -55,7 +55,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       summary: 'DELETE producto',
       description: `Permite al PRODUCTOR borrar (si nunca fue vendido) un producto a su catálogo.`,
       params: Type.Object({
-        slug_producto: Producto.properties.slug_producto,
+        producto: Producto.properties.producto,
       }),
       response: {
         204: Type.Null(),
@@ -65,7 +65,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
     // preHandler : //FIXME: fastify.seModificaASiMismo y el coincide id_productor en body y params
     handler: async function (req, reply) {
       reply.code(204);
-      const producto = await productoRepository.getOneBy({ slug_producto: req.params.slug_producto });
+      const producto = await productoRepository.getOneBy({ producto: req.params.producto });
       await productoRepository.remove(producto.id_producto);
     },
   });
@@ -76,7 +76,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       summary: 'ACTIVAR/DESACTIVAR producto',
       description: `Permite al PRODUCTOR activar o desactivar`,
       params: Type.Object({
-        slug_producto: Producto.properties.slug_producto,
+        producto: Producto.properties.producto,
       }),
       body: Type.Object({ activo: Type.Boolean() }), //FIXME: Con fotos y video?
       response: {
@@ -87,7 +87,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
     // preHandler : //FIXME: fastify.seModificaASiMismo y el coincide id_productor en body y params
     handler: async function (req, reply) {
       reply.code(204);
-      const producto = await productoRepository.getOneBy({ slug_producto: req.params.slug_producto });
+      const producto = await productoRepository.getOneBy({ producto: req.params.producto });
 
       if (req.body.activo) await productoRepository.activate(producto.id_producto);
       if (!req.body.activo) await productoRepository.deactivate(producto.id_producto);

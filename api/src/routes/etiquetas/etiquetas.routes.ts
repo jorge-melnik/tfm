@@ -30,13 +30,13 @@ const rutasAdminEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Pr
     },
   });
 
-  fastify.get('/:slug_etiqueta', {
+  fastify.get('/:etiqueta', {
     schema: {
       tags: ['Etiquetas'],
       summary: 'READ etiqueta',
       description: 'Permite actualizar una etiqueta global.',
       params: Type.Object({
-        slug_etiqueta: Etiqueta.properties.slug_etiqueta,
+        etiqueta: Etiqueta.properties.etiqueta,
       }),
       response: {
         200: Etiqueta,
@@ -45,7 +45,7 @@ const rutasAdminEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Pr
       },
     },
     handler: async function (req, reply) {
-      return etiquetasRepository.getOneBy({ slug_etiqueta: req.params.slug_etiqueta });
+      return etiquetasRepository.getOneBy({ etiqueta: req.params.etiqueta });
     },
   });
 
@@ -54,7 +54,7 @@ const rutasAdminEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Pr
       tags: ['Etiquetas'],
       summary: 'CREATE etiqueta.',
       description: 'Permite crear una nueva etiqueta global.',
-      body: Type.Omit(Etiqueta, ['id_etiqueta', 'slug_categoria'], {
+      body: Type.Omit(Etiqueta, ['id_etiqueta', 'categoria'], {
         description: 'Datos necesarios para crear una nueva etiqueta.',
         examples: [{ nombre: 'nueva Etiqueta 1' }, { nombre: 'nueva Etiqueta 2' }],
       }),
@@ -67,20 +67,20 @@ const rutasAdminEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Pr
       reply.code(201);
       return await etiquetasRepository.add({
         ...req.body,
-        slug_etiqueta: '', //Para que sepa que tiene que calcularlo.
+        etiqueta: '', //Para que sepa que tiene que calcularlo.
       });
     },
   });
 
-  fastify.put('/:slug_etiqueta', {
+  fastify.put('/:etiqueta', {
     schema: {
       tags: ['Etiquetas'],
       summary: 'UPDATE etiqueta',
       description: 'Permite actualizar una etiqueta global.',
       params: Type.Object({
-        slug_etiqueta: Etiqueta.properties.slug_etiqueta,
+        etiqueta: Etiqueta.properties.etiqueta,
       }),
-      body: Type.Omit(Etiqueta, ['slug_categoria']),
+      body: Type.Omit(Etiqueta, ['categoria']),
       response: {
         204: Type.Null(),
         404: DeAcaErrorResponse,
@@ -89,18 +89,18 @@ const rutasAdminEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Pr
     },
     handler: async function (req, reply) {
       reply.code(204);
-      const etiqueta = await etiquetasRepository.getOneBy({ slug_etiqueta: req.params.slug_etiqueta });
+      const etiqueta = await etiquetasRepository.getOneBy({ etiqueta: req.params.etiqueta });
       await etiquetasRepository.update(etiqueta.id_etiqueta, req.body);
     },
   });
 
-  fastify.delete('/:slug_etiqueta', {
+  fastify.delete('/:etiqueta', {
     schema: {
       tags: ['Etiquetas'],
       summary: 'DELETE etiqueta',
       description: 'Permite actualizar una etiqueta global.',
       params: Type.Object({
-        slug_etiqueta: Etiqueta.properties.slug_etiqueta,
+        etiqueta: Etiqueta.properties.etiqueta,
       }),
       response: {
         204: Type.Null(),
@@ -110,7 +110,7 @@ const rutasAdminEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Pr
     },
     handler: async function (req, reply) {
       reply.code(204);
-      const etiqueta = await etiquetasRepository.getOneBy({ slug_etiqueta: req.params.slug_etiqueta });
+      const etiqueta = await etiquetasRepository.getOneBy({ etiqueta: req.params.etiqueta });
       await etiquetasRepository.remove(etiqueta.id_etiqueta);
     },
   });

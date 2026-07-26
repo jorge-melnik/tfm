@@ -4,7 +4,7 @@ export interface Producto {
   id_categoria: number;
   id_subcategoria: number;
   nombre: string;
-  slug_producto: string;
+  producto: string;
   descripcion: string;
   precio: number;
   cantidad_disponible: number;

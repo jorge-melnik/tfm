@@ -12,7 +12,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       summary: 'ADD REMOVE etiquetas',
       description: `Permite al PRODUCTOR agregar o quitar etiquetas a un producto.`,
       params: Type.Object({
-        slug_producto: Producto.properties.slug_producto,
+        producto: Producto.properties.producto,
       }),
       body: Type.Object({
         id_producto: Producto.properties.id_producto,

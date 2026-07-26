@@ -9,7 +9,7 @@ const rutasSlugCategoriaSubcategorias: FastifyPluginAsyncTypebox = async (fastif
       tags: ['Subcategorias'],
       summary: 'READ subcategorias',
       description: `
-        Devuelve el listado de subcategorias en la categoría con el slug_categoria estpecificado. 
+        Devuelve el listado de subcategorias en la categoría con el categoria estpecificado. 
         Estas subcategorias pueden ser usadas en los productos. 
       `,
       response: {
@@ -53,8 +53,8 @@ const rutasSlugCategoriaSubcategorias: FastifyPluginAsyncTypebox = async (fastif
         {
           description: 'Datos necesarios para crear una nueva subcategoria.',
           examples: [
-            { id_categoria: 1, nombre: 'subcategoria 1', slug_subcategoria: 'subcategoria-1' },
-            { id_categoria: 2, nombre: 'subcategoria 2', slug_subcategoria: 'subcategoria-2' },
+            { id_categoria: 1, nombre: 'subcategoria 1', subcategoria: 'subcategoria-1' },
+            { id_categoria: 2, nombre: 'subcategoria 2', subcategoria: 'subcategoria-2' },
           ],
         },
       ),

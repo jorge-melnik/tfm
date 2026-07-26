@@ -4,10 +4,10 @@ CREATE TABLE IF NOT EXISTS departamentos (
     nombre CITEXT NOT NULL UNIQUE CHECK (
         char_length(nombre) BETWEEN 2 AND 32
     ),
-    slug_departamento CITEXT NOT NULL UNIQUE CHECK (
-        char_length(slug_departamento) BETWEEN 2 AND 32
-        AND slug_departamento ~ '^[a-zA-Z0-9-]+$' 
-    )-- TODO: TRIGGER para asegurarse que no se cambia el slug_departamento
+    departamento CITEXT NOT NULL UNIQUE CHECK (
+        char_length(departamento) BETWEEN 2 AND 32
+        AND departamento ~ '^[a-zA-Z0-9-]+$' 
+    )-- TODO: TRIGGER para asegurarse que no se cambia el departamento
 );
 
 CREATE TABLE IF NOT EXISTS localidades (
@@ -16,9 +16,9 @@ CREATE TABLE IF NOT EXISTS localidades (
     nombre CITEXT NOT NULL CHECK (
         char_length(nombre) BETWEEN 2 AND 32
     ),
-    slug_localidad CITEXT NOT NULL UNIQUE CHECK (
-        char_length(slug_localidad) BETWEEN 2 AND 32
-        AND slug_localidad ~ '^[a-zA-Z0-9-]+$' 
-    ),-- TODO: TRIGGER para asegurarse que no se cambia el slug_localidad?
+    localidad CITEXT NOT NULL UNIQUE CHECK (
+        char_length(localidad) BETWEEN 2 AND 32
+        AND localidad ~ '^[a-zA-Z0-9-]+$' 
+    ),-- TODO: TRIGGER para asegurarse que no se cambia el localidad?
     UNIQUE(nombre, id_departamento)
 );

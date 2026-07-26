@@ -35,16 +35,16 @@ export class ProductosFilter {
 
   public filtroCambiado = output();
 
-  public onCategoriaChange(slug_categoria: string | undefined) {
-    this.categoriaSeleccionada.set(slug_categoria);
+  public onCategoriaChange(categoria: string | undefined) {
+    this.categoriaSeleccionada.set(categoria);
     this.subcategoriaSeleccionada.set(undefined);
     this.etiquetasSeleccionadas.set([]);
     this.filtroCambiado.emit();
   }
 
   public onSubcategoriaChange(
-    slug_categoria: string | undefined,
-    slug_subcategoria: string | undefined,
+    categoria: string | undefined,
+    subcategoria: string | undefined,
   ) {
     console.log('onSubcategoriaChange');
     this.etiquetasSeleccionadas.set([]);

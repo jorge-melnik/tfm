@@ -10,7 +10,7 @@ test('/admin/categorias', async (t) => {
   const datosCategoria = {
     nombre,
     descripcion: 'Descripcion ' + Date.now(),
-    slug_categoria: '',
+    categoria: '',
   };
 
   // CREATE:
@@ -28,7 +28,7 @@ test('/admin/categorias', async (t) => {
     assert.equal(res.statusCode, 201);
     assert.ok(categoriaCreada.id_categoria, 'Debería devolver un ID generado');
     assert.equal(categoriaCreada.nombre, nombre);
-    assert.ok(categoriaCreada.slug_categoria, 'El slug debería haberse generado automáticamente');
+    assert.ok(categoriaCreada.categoria, 'El slug debería haberse generado automáticamente');
   });
 
   // READ:
@@ -63,7 +63,7 @@ test('/admin/categorias', async (t) => {
     assert.equal(res.statusCode, 200);
     assert.equal(categoria.id_categoria, categoriaCreada.id_categoria);
     assert.equal(categoria.nombre, categoriaCreada.nombre);
-    assert.equal(categoria.slug_categoria, categoriaCreada.slug_categoria);
+    assert.equal(categoria.categoria, categoriaCreada.categoria);
   });
 
   //UPDATE:

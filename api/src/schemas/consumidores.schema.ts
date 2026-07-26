@@ -18,7 +18,7 @@ export const ItemCarrito = Type.Object({
   username: Producto.properties.username,
   nombre: Producto.properties.nombre,
   descripcion: Producto.properties.descripcion,
-  slug_producto: Producto.properties.slug_producto,
+  producto: Producto.properties.producto,
   fotos: Producto.properties.fotos,
   cantidad_disponible: Producto.properties.cantidad_disponible,
 });

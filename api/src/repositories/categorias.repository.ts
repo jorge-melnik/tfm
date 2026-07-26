@@ -4,7 +4,7 @@ import { BaseRepository } from './base.repository.js';
 class CategoriasRepositoryClass extends BaseRepository<Categoria> {
   protected readonly tableName = 'categorias';
   protected readonly idName = 'id_categoria';
-  protected readonly slugName?: keyof Categoria = 'slug_categoria';
+  protected readonly slugName?: keyof Categoria = 'categoria';
 
   protected readonly baseQuery = `
     SELECT * FROM categorias c
@@ -16,7 +16,7 @@ class CategoriasRepositoryClass extends BaseRepository<Categoria> {
   }
 
   async getEtiquetas(categoria: number | string): Promise<Etiqueta[]> {
-    const claveCategoria = typeof categoria === 'number' ? 'id_categoria' : 'slug_categoria';
+    const claveCategoria = typeof categoria === 'number' ? 'id_categoria' : 'categoria';
     const query = `
         SELECT E.* 
         FROM public.subcategorias SC

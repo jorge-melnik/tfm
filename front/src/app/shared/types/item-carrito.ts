@@ -8,7 +8,7 @@ export type ItemCarritoVerbose = {
   username: string;
   nombre: string;
   descripcion: string;
-  slug_producto: string;
+  producto: string;
   fotos: string[];
   cantidad_disponible: number;
 };

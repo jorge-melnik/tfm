@@ -24,12 +24,12 @@ export const consumidorRoutes: Routes = [
       },
 
       {
-        path: ':slug_categoria/:slug_subcategoria',
+        path: ':categoria/:subcategoria',
         title: 'Consumidor',
         loadComponent: () => import('@features/consumidor/home/home.page').then((m) => m.HomePage),
       },
       {
-        path: ':slug_categoria',
+        path: ':categoria',
         title: 'Consumidor',
         loadComponent: () => import('@features/consumidor/home/home.page').then((m) => m.HomePage),
       },

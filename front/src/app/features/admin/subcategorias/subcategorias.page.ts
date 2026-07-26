@@ -31,7 +31,7 @@ import { CategoriasService } from '@shared/services/categorias.service';
   styleUrl: './subcategorias.page.css',
 })
 export class SubcategoriasPage extends AdminBasePage<Subcategoria> {
-  protected override idKey: keyof Subcategoria = 'slug_subcategoria';
+  protected override idKey: keyof Subcategoria = 'subcategoria';
   public override entidadName: string = 'etiqueta';
 
   protected _dataService = inject(SubcategoriasService);
@@ -110,18 +110,18 @@ export class SubcategoriasPage extends AdminBasePage<Subcategoria> {
     if (!subcategoria) return;
     if (!data.id_etiquetas) return;
 
-    await this._subcategoriaService.setEtiquetas(subcategoria.slug_subcategoria, data.id_etiquetas);
+    await this._subcategoriaService.setEtiquetas(subcategoria.subcategoria, data.id_etiquetas);
   }
 
   protected async updateSubcategoria(data: Partial<Subcategoria>): Promise<void> {
-    if (!data.slug_subcategoria) return;
+    if (!data.subcategoria) return;
     await super.update(data);
     if (!data.id_etiquetas) return;
-    await this._subcategoriaService.setEtiquetas(data.slug_subcategoria, data.id_etiquetas);
+    await this._subcategoriaService.setEtiquetas(data.subcategoria, data.id_etiquetas);
   }
 
   protected override async remove(data: Subcategoria): Promise<void> {
-    if (!data.slug_subcategoria) return;
+    if (!data.subcategoria) return;
     await super.remove(data);
   }
 }

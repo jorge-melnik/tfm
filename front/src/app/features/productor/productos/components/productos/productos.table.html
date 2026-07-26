@@ -35,7 +35,7 @@
             <ng-template #output>
               <div class="flex items-center gap-3 w-15">
                 <app-foto-carrusel
-                  [altText]="producto.slug_producto"
+                  [altText]="producto.producto"
                   [cdnUrl]="this.cdnUrl"
                   [fotos]="producto.fotos"
                 ></app-foto-carrusel>
@@ -69,7 +69,7 @@
                 <div class="flex flex-col">
                   <span class="font-medium">{{ producto.nombre }}</span>
                   <span class="text-xs text-surface-500 dark:text-surface-400">{{
-                    producto.slug_producto
+                    producto.producto
                   }}</span>
                 </div>
               </div>

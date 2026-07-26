@@ -11,7 +11,7 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       description:
         'Permite obtener una subcategoría a partir del slug de la categoría y el slug de la subcategoría.',
       params: Type.Object({
-        slug_subcategoria: Subcategoria.properties.slug_subcategoria,
+        subcategoria: Subcategoria.properties.subcategoria,
       }),
       response: {
         200: Subcategoria,
@@ -21,7 +21,7 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
     },
     handler: async function (req, reply) {
       return subcategoriasRepository.getOneBy({
-        slug_subcategoria: req.params.slug_subcategoria,
+        subcategoria: req.params.subcategoria,
       });
     },
   });
@@ -32,11 +32,11 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       summary: 'UPDATE subcategoria',
       description: 'Permite actualizar una subcategoria global.',
       params: Type.Object({
-        slug_subcategoria: Subcategoria.properties.slug_subcategoria,
+        subcategoria: Subcategoria.properties.subcategoria,
       }),
       body: Type.Object(
         {
-          slug_categoria: Subcategoria.properties.slug_categoria,
+          categoria: Subcategoria.properties.categoria,
           nombre: Subcategoria.properties.nombre,
         },
         {
@@ -52,7 +52,7 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
     handler: async function (req, reply) {
       reply.code(204);
       const subcategoria = await subcategoriasRepository.getOneBy({
-        slug_subcategoria: req.params.slug_subcategoria,
+        subcategoria: req.params.subcategoria,
       });
       await subcategoriasRepository.update(subcategoria.id_subcategoria, req.body);
     },
@@ -64,7 +64,7 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       summary: 'DELETE subcategoria',
       description: 'Permite actualizar una subcategoria global.',
       params: Type.Object({
-        slug_subcategoria: Subcategoria.properties.slug_subcategoria,
+        subcategoria: Subcategoria.properties.subcategoria,
       }),
       response: {
         204: Type.Null(),
@@ -75,7 +75,7 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
     handler: async function (req, reply) {
       reply.code(204);
       const subcategoria = await subcategoriasRepository.getOneBy({
-        slug_subcategoria: req.params.slug_subcategoria,
+        subcategoria: req.params.subcategoria,
       });
       await subcategoriasRepository.remove(subcategoria.id_subcategoria);
     },
@@ -87,7 +87,7 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       summary: 'ACTIVAR/DESACTIVAR Subcategoria',
       description: `Permite al ADMIN activar o desactivar Subcategoría`,
       params: Type.Object({
-        slug_subcategoria: Subcategoria.properties.slug_subcategoria,
+        subcategoria: Subcategoria.properties.subcategoria,
       }),
       body: Type.Object({ activo: Type.Boolean() }),
       response: {
@@ -100,7 +100,7 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
     handler: async function (req, reply) {
       reply.code(204);
       const subcategoria = await subcategoriasRepository.getOneBy({
-        slug_subcategoria: req.params.slug_subcategoria,
+        subcategoria: req.params.subcategoria,
       });
       if (req.body.activo) return subcategoriasRepository.activate(subcategoria.id_subcategoria);
       return subcategoriasRepository.deactivate(subcategoria.id_subcategoria);

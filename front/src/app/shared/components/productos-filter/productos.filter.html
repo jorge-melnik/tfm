@@ -7,8 +7,8 @@
       [options]="this.categorias()"
       [(ngModel)]="this.categoriaSeleccionada"
       (onChange)="this.onCategoriaChange($event.value)"
-      optionLabel="slug_categoria"
-      optionValue="slug_categoria"
+      optionLabel="categoria"
+      optionValue="categoria"
       appendTo="body"
       class="w-full"
       [showClear]="true"
@@ -17,7 +17,7 @@
       <ng-template let-categoria #item>
         <div class="flex items-center gap-2">
           <i [class]="categoria.icono" style="font-size: 1.2rem"></i>
-          <div>{{ categoria.slug_categoria }}</div>
+          <div>{{ categoria.categoria }}</div>
         </div>
       </ng-template>
     </p-select>
@@ -26,8 +26,8 @@
       [options]="this.subcategorias()"
       [(ngModel)]="subcategoriaSeleccionada"
       (onChange)="this.onSubcategoriaChange(slugCategoria.value, $event.value)"
-      optionLabel="slug_subcategoria"
-      optionValue="slug_subcategoria"
+      optionLabel="subcategoria"
+      optionValue="subcategoria"
       appendTo="body"
       class="w-full"
       [showClear]="true"
@@ -43,7 +43,7 @@
       class="w-full"
       display="chip"
       optionLabel="nombre"
-      optionValue="slug_etiqueta"
+      optionValue="etiqueta"
       appendTo="body"
       [showClear]="true"
     />

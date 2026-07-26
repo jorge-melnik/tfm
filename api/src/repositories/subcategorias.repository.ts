@@ -4,11 +4,11 @@ import { BaseRepository } from './base.repository.js';
 export class SubcategoriasRepositoryClass extends BaseRepository<Subcategoria> {
   protected readonly tableName = 'subcategorias';
   protected readonly idName = 'id_subcategoria';
-  protected readonly slugName?: keyof Subcategoria = 'slug_subcategoria';
+  protected readonly slugName?: keyof Subcategoria = 'subcategoria';
 
   protected readonly baseQuery = `
     WITH MIS_SUBCATEGORIAS AS (
-      SELECT SC.*, C.slug_categoria, C.color, C.icono, json_agg(SE.id_etiqueta) as id_etiquetas
+      SELECT SC.*, C.categoria, C.color, C.icono, json_agg(SE.id_etiqueta) as id_etiquetas
       FROM subcategorias SC
       JOIN public.categorias C ON C.id_categoria = SC.id_categoria
       LEFT JOIN public.subcategoria_etiquetas SE ON SE.id_subcategoria=SC.id_subcategoria
@@ -25,9 +25,9 @@ export class SubcategoriasRepositoryClass extends BaseRepository<Subcategoria> {
 
   async getEtiquetas(subcategoria: number | string): Promise<Etiqueta[]> {
     console.log('getEtiquetas');
-    const claveSubcategoria = typeof subcategoria === 'number' ? 'id_subcategoria' : 'slug_subcategoria';
+    const claveSubcategoria = typeof subcategoria === 'number' ? 'id_subcategoria' : 'subcategoria';
     const query = `
-      SELECT E.* , SC.slug_subcategoria, C.slug_categoria
+      SELECT E.* , SC.subcategoria, C.categoria
       FROM public.subcategorias SC
       JOIN public.categorias C ON SC.id_categoria = C.id_categoria
       JOIN public.subcategoria_etiquetas SE ON SE.id_subcategoria = SC.id_subcategoria

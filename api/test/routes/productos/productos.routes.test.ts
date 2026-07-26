@@ -34,13 +34,13 @@ test('Producto Repository', async (t) => {
 
   const categoria: Categoria = await categoriasRepository.add({
     nombre: 'pr' + aleatorio,
-    slug_categoria: '',
+    categoria: '',
     descripcion: 'la descripcion',
   });
   const subcategoria: Subcategoria = await subcategoriasRepository.add({
     id_categoria: categoria.id_categoria,
     nombre: 'prod' + aleatorio,
-    slug_subcategoria: '',
+    subcategoria: '',
   });
   const productorCreado: Productor = await productorRepository.getOneBy({ email });
 
@@ -49,7 +49,7 @@ test('Producto Repository', async (t) => {
     id_productor: productorCreado.id_productor,
     nombre: 'Prod A ' + aleatorio,
     descripcion: 'La descripcion',
-    slug_producto: '',
+    producto: '',
     precio: 100,
     cantidad_disponible: 10,
   };
@@ -59,13 +59,13 @@ test('Producto Repository', async (t) => {
     id_productor: productorCreado.id_productor,
     nombre: 'Prod B ' + aleatorio,
     descripcion: 'La descripcion',
-    slug_producto: '',
+    producto: '',
     precio: 100,
     cantidad_disponible: 10,
   });
 
-  const etiqueta1 = await etiquetasRepository.add({ nombre: `prods-1${aleatorio}`, slug_etiqueta: '' });
-  const etiqueta2 = await etiquetasRepository.add({ nombre: `prods-2${aleatorio}`, slug_etiqueta: '' });
+  const etiqueta1 = await etiquetasRepository.add({ nombre: `prods-1${aleatorio}`, etiqueta: '' });
+  const etiqueta2 = await etiquetasRepository.add({ nombre: `prods-2${aleatorio}`, etiqueta: '' });
   await productoRepository.addEtiquetas(productoA.id_producto, [
     etiqueta1.id_etiqueta,
     etiqueta2.id_etiqueta,
@@ -104,7 +104,7 @@ test('Producto Repository', async (t) => {
         id_productor: productorCreado.id_productor,
         nombre,
         descripcion: 'La descripcion',
-        slug_producto: '',
+        producto: '',
         precio: 100,
         cantidad_disponible: 10,
         id_etiquetas: [etiqueta1.id_etiqueta],
@@ -131,7 +131,7 @@ test('Producto Repository', async (t) => {
         id_productor: productorCreado.id_productor,
         nombre,
         descripcion: 'La descripcion',
-        slug_producto: '',
+        producto: '',
         precio: 100,
         cantidad_disponible: 10,
         id_etiquetas: [-4],
@@ -143,13 +143,13 @@ test('Producto Repository', async (t) => {
     assert.equal(res.statusCode, 500);
   });
 
-  await t.test(`PUT ${baseUrl}/${productoA.slug_producto}`, async () => {
+  await t.test(`PUT ${baseUrl}/${productoA.producto}`, async () => {
     //Arrange
     const nombre = 'Prod Cambiado ' + aleatorio;
     //ACT
     const res = await app.inject({
       method: 'PUT',
-      url: `${baseUrl}/${productoA.slug_producto}`,
+      url: `${baseUrl}/${productoA.producto}`,
       payload: {
         ...datosA,
         nombre,
@@ -166,14 +166,14 @@ test('Producto Repository', async (t) => {
     //ASSERT
     assert.equal(res.statusCode, 204);
     assert.equal(productoACambiado?.nombre, nombre);
-    assert.equal(productoACambiado?.slug_producto, productoA.slug_producto);
+    assert.equal(productoACambiado?.producto, productoA.producto);
   });
 
-  await t.test(`DELETE ${baseUrl}/${productoB.slug_producto}`, async () => {
+  await t.test(`DELETE ${baseUrl}/${productoB.producto}`, async () => {
     //ACT
     const res = await app.inject({
       method: 'DELETE',
-      url: `${baseUrl}/${productoB.slug_producto}`,
+      url: `${baseUrl}/${productoB.producto}`,
     });
 
     //ASSERT
@@ -191,11 +191,11 @@ test('Producto Repository', async (t) => {
   });
 
   //desactivar.
-  await t.test(`PATCH ${baseUrl}/${productoA.slug_producto}`, async () => {
+  await t.test(`PATCH ${baseUrl}/${productoA.producto}`, async () => {
     //ACT
     const res = await app.inject({
       method: 'PATCH',
-      url: `${baseUrl}/${productoA.slug_producto}`,
+      url: `${baseUrl}/${productoA.producto}`,
       payload: {
         activo: false,
         id_productor: productoA.id_productor,
@@ -213,11 +213,11 @@ test('Producto Repository', async (t) => {
   });
 
   //activar.
-  await t.test(`PATCH ${baseUrl}/${productoA.slug_producto}`, async () => {
+  await t.test(`PATCH ${baseUrl}/${productoA.producto}`, async () => {
     //ACT
     const res = await app.inject({
       method: 'PATCH',
-      url: `${baseUrl}/${productoA.slug_producto}`,
+      url: `${baseUrl}/${productoA.producto}`,
       payload: {
         activo: true,
         id_productor: productoA.id_productor,
@@ -235,14 +235,14 @@ test('Producto Repository', async (t) => {
   });
 
   //etiquetas
-  await t.test(`PATCH ${baseUrl}/${productoA.slug_producto}/etiquetas`, async () => {
+  await t.test(`PATCH ${baseUrl}/${productoA.producto}/etiquetas`, async () => {
     //ARRANGE:
-    const etiqueta3 = await etiquetasRepository.add({ nombre: `prods-3${aleatorio}`, slug_etiqueta: '' });
+    const etiqueta3 = await etiquetasRepository.add({ nombre: `prods-3${aleatorio}`, etiqueta: '' });
 
     //ACT
     const res = await app.inject({
       method: 'PATCH',
-      url: `${baseUrl}/${productoA.slug_producto}/etiquetas`,
+      url: `${baseUrl}/${productoA.producto}/etiquetas`,
       payload: {
         id_productor: productoA.id_productor,
         id_producto: productoA.id_producto,
@@ -262,11 +262,11 @@ test('Producto Repository', async (t) => {
   });
 
   //etiquetas que falla
-  await t.test(`PATCH ${baseUrl}}/${productoA.slug_producto}/etiquetas`, async () => {
+  await t.test(`PATCH ${baseUrl}}/${productoA.producto}/etiquetas`, async () => {
     //ACT
     const res = await app.inject({
       method: 'PATCH',
-      url: `${baseUrl}/${productoA.slug_producto}/etiquetas`,
+      url: `${baseUrl}/${productoA.producto}/etiquetas`,
       payload: {
         id_productor: productoA.id_productor,
         id_producto: productoA.id_producto,

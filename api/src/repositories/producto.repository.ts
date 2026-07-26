@@ -5,7 +5,7 @@ import { Producto } from '@schemas/producto.schema.js';
 export class ProductosRepositoryClass extends BaseRepository<Producto> {
   protected readonly tableName = 'productos';
   protected readonly idName = 'id_producto';
-  protected readonly slugName?: keyof Producto = 'slug_producto';
+  protected readonly slugName?: keyof Producto = 'producto';
 
   protected readonly baseQuery = `
     WITH MIS_ETIQUETAS AS (
@@ -16,7 +16,7 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
           ARRAY[]::INT[] 
         ) AS id_etiquetas,
         COALESCE(
-          array_agg(E.slug_etiqueta ORDER BY E.id_etiqueta) FILTER (WHERE E.slug_etiqueta IS NOT NULL), 
+          array_agg(E.etiqueta ORDER BY E.id_etiqueta) FILTER (WHERE E.etiqueta IS NOT NULL), 
           ARRAY[]::TEXT[] 
         ) AS etiquetas
       FROM public.producto_etiquetas PE
@@ -36,11 +36,10 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
     MIS_PRODUCTOS AS (
       SELECT 
         P.*,
-        C.slug_categoria as categoria,
-        SC.slug_subcategoria as subcategoria,
-        SC.nombre as subcategoria,
-        DP.username,
-        SC.slug_subcategoria, SC.id_categoria, C.slug_categoria,
+        C.categoria,
+        SC.subcategoria,
+        SC.id_categoria,
+        DP.username, 
         COALESCE(ME.id_etiquetas, ARRAY[]::INT[] ) AS id_etiquetas,
         COALESCE(ME.etiquetas, ARRAY[]::TEXT[] ) AS etiquetas,
         COALESCE(MF.fotos, '[]') AS fotos

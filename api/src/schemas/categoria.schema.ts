@@ -8,7 +8,7 @@ export const Categoria = Type.Object(
     nombre: Type.String({
       description: 'Nombre de la categoría',
     }),
-    slug_categoria: Type.String({
+    categoria: Type.String({
       description: 'Identificador SEO friendly para URLs. Una vez seteado, no se puede cambiar.',
     }),
     descripcion: Type.String({
@@ -46,8 +46,8 @@ export const Subcategoria = Type.Object(
     nombre: Type.String({
       description: 'Nombre de la subcategoría',
     }),
-    slug_categoria: Categoria.properties.slug_categoria,
-    slug_subcategoria: Type.String({
+    categoria: Categoria.properties.categoria,
+    subcategoria: Type.String({
       description: 'Identificador SEO friendly para URLs. Una vez seteado, no se puede cambiar.',
     }),
     activo: Type.Boolean({
@@ -71,7 +71,7 @@ export const Etiqueta = Type.Object(
     nombre: Type.String({
       description: 'Nombre de la etiqueta',
     }),
-    slug_etiqueta: Type.String({
+    etiqueta: Type.String({
       description: 'Identificador SEO friendly para URLs. Una vez seteado, no se puede cambiar.',
     }),
     color: Type.String({

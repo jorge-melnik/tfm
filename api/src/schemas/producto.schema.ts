@@ -7,7 +7,7 @@ export const POSTProducto = Type.Object({
   id_productor: Productor.properties.id_productor,
   id_subcategoria: Subcategoria.properties.id_subcategoria,
   nombre: Type.String(),
-  slug_producto: Type.String(),
+  producto: Type.String(),
   descripcion: Type.String(),
   precio: Type.Number(),
   cantidad_disponible: Type.Number(),

@@ -9,7 +9,7 @@ test('Categorias Repository', async (t) => {
     const nombre = 'Cat ' + Date.now();
     const categoria = {
       nombre,
-      slug_categoria: categoriasRepository.createSlug(nombre),
+      categoria: categoriasRepository.createSlug(nombre),
       descripcion: 'Descripcion' + Date.now(),
     };
 
@@ -26,7 +26,7 @@ test('Categorias Repository', async (t) => {
     const nombre = 'Nombre ' + Date.now();
     const categoria = {
       nombre,
-      slug_categoria: categoriasRepository.createSlug(nombre),
+      categoria: categoriasRepository.createSlug(nombre),
       descripcion: 'Descripcion' + Date.now(),
     };
 
@@ -43,7 +43,7 @@ test('Categorias Repository', async (t) => {
     const nombre = 'Nombre ' + Date.now();
     const categoria = {
       nombre,
-      slug_categoria: categoriasRepository.createSlug(nombre),
+      categoria: categoriasRepository.createSlug(nombre),
       descripcion: 'Descripcion' + Date.now(),
     };
 
@@ -62,7 +62,7 @@ test('Categorias Repository', async (t) => {
     const nombre = 'Nombre ' + Date.now();
     const categoria = {
       nombre,
-      slug_categoria: categoriasRepository.createSlug(nombre),
+      categoria: categoriasRepository.createSlug(nombre),
       descripcion: 'Descripcion' + Date.now(),
     };
     const pagination: any = { page: 's', limit: 's', orderBy: 'id_categoria', orderDirection: 'DESC' };
@@ -89,7 +89,7 @@ test('Categorias Repository', async (t) => {
     const nombre = 'Nombre ' + Date.now();
     const categoria = {
       nombre,
-      slug_categoria: categoriasRepository.createSlug(nombre),
+      categoria: categoriasRepository.createSlug(nombre),
       descripcion: 'Descripcion' + Date.now(),
     };
 
@@ -106,13 +106,13 @@ test('Categorias Repository', async (t) => {
     const nombre1 = 'Nombre ' + Date.now();
     const categoria1 = {
       nombre: nombre1,
-      slug_categoria: categoriasRepository.createSlug(nombre1),
+      categoria: categoriasRepository.createSlug(nombre1),
       descripcion: 'Descripcion' + Date.now(),
     };
     const nombre2 = 'Nombre2 ' + Date.now();
     const categoria2 = {
       nombre: nombre2,
-      slug_categoria: categoriasRepository.createSlug(nombre2),
+      categoria: categoriasRepository.createSlug(nombre2),
       descripcion: 'Descripcion' + Date.now(),
     };
 
@@ -146,7 +146,7 @@ test('Categorias Repository', async (t) => {
     const nombre = 'Nombre ' + Date.now();
     const categoria = {
       nombre,
-      slug_categoria: categoriasRepository.createSlug(nombre),
+      categoria: categoriasRepository.createSlug(nombre),
       descripcion: 'Descripcion' + Date.now(),
     };
 
@@ -163,7 +163,7 @@ test('Categorias Repository', async (t) => {
     const nombre = 'Nombre ' + Date.now();
     const categoria = {
       nombre,
-      slug_categoria: categoriasRepository.createSlug(nombre),
+      categoria: categoriasRepository.createSlug(nombre),
       descripcion: 'Descripcion' + Date.now(),
     };
 
@@ -200,7 +200,7 @@ test('Categorias Repository', async (t) => {
     const nombre = 'Nombre u ' + Date.now();
     const categoria = {
       nombre,
-      slug_categoria: categoriasRepository.createSlug(nombre),
+      categoria: categoriasRepository.createSlug(nombre),
       descripcion: 'Descripcion' + Date.now(),
     };
 
@@ -228,7 +228,7 @@ test('Categorias Repository', async (t) => {
     const nombre = 'Nombre ' + Date.now();
     const categoria = {
       nombre,
-      slug_categoria: categoriasRepository.createSlug(nombre),
+      categoria: categoriasRepository.createSlug(nombre),
       descripcion: 'Descripcion' + Date.now(),
     };
 
@@ -254,7 +254,7 @@ test('Categorias Repository', async (t) => {
     const nombre = 'Nombre ' + Date.now();
     const categoria = {
       nombre,
-      slug_categoria: categoriasRepository.createSlug(nombre),
+      categoria: categoriasRepository.createSlug(nombre),
       descripcion: 'Descripcion' + Date.now(),
     };
     const contadorAnterior = await categoriasRepository.getCount();
@@ -272,7 +272,7 @@ test('Categorias Repository', async (t) => {
     const nombre = 'Nombre ' + Date.now();
     const categoria = {
       nombre,
-      slug_categoria: categoriasRepository.createSlug(nombre),
+      categoria: categoriasRepository.createSlug(nombre),
       descripcion: 'Descripcion' + Date.now(),
     };
     const contadorAnterior = await categoriasRepository.getCount();

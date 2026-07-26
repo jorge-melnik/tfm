@@ -1,5 +1,5 @@
 
-INSERT INTO public.categorias (nombre, slug_categoria, descripcion, color, icono) VALUES 
+INSERT INTO public.categorias (nombre, categoria, descripcion, color, icono) VALUES 
 (
   'Alimentos frescos', 
   'alimentos-frescos', 
@@ -36,7 +36,7 @@ INSERT INTO public.categorias (nombre, slug_categoria, descripcion, color, icono
   'pi pi-globe'
 );
 
-INSERT INTO public.subcategorias(id_categoria, nombre, slug_subcategoria) VALUES 
+INSERT INTO public.subcategorias(id_categoria, nombre, subcategoria) VALUES 
 (1, 'Verduras', 'verduras'),
 (1, 'Frutas', 'frutas'),
 (1, 'Huevos', 'huevos'),
@@ -62,7 +62,7 @@ INSERT INTO public.subcategorias(id_categoria, nombre, slug_subcategoria) VALUES
 (5, 'insumos agroecológicos', 'insumos-agroecologicos')
 ;
 
-INSERT INTO public.etiquetas (nombre, slug_etiqueta, imagen) VALUES 
+INSERT INTO public.etiquetas (nombre, etiqueta, imagen) VALUES 
 ('Local', 'local', 'images/local.png'),
 ('Producción familiar', 'produccion-familiar', 'images/produccion-familiar.png'),
 ('Sin agroquímicos', 'sin-agroquimicos', 'images/sin-agroquimicos.png'),
