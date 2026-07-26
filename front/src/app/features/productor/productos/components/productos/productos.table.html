@@ -1,7 +1,7 @@
 <form #productoForm="ngForm">
   <p-table
     #productosTable
-    [value]="this.productosResource.value()?.data || []"
+    [value]="this.productos()"
     dataKey="id_producto"
     editMode="row"
     size="small"
@@ -9,7 +9,7 @@
     [paginator]="true"
     [rows]="this.limit()"
     [first]="this.first()"
-    [totalRecords]="this.productosResource.value()?.meta?.total || 0"
+    [totalRecords]="this.total()"
     [lazy]="true"
     [rowsPerPageOptions]="[6, 12, 24]"
     (onPage)="this.onPageChange($event)"
@@ -82,7 +82,7 @@
               <div class="flex flex-col gap-2 py-1">
                 <!-- Select Categoría -->
                 <p-select
-                  [options]="categoriasResource.value()"
+                  [options]="this.categorias()"
                   optionLabel="nombre"
                   optionValue="id_categoria"
                   placeholder="Categoría"
@@ -100,7 +100,7 @@
 
                 <!-- Select Subcategoría -->
                 <p-select
-                  [options]="subcategoriasResource.value()"
+                  [options]="this.subcategorias()"
                   optionLabel="nombre"
                   optionValue="id_subcategoria"
                   placeholder="Subcategoría"
@@ -153,7 +153,7 @@
                 <p-select
                   name="id_etiquetas"
                   multiple="true"
-                  [options]="this.etiquetasResource.value()"
+                  [options]="this.etiquetas()"
                   [(ngModel)]="producto.id_etiquetas"
                   optionLabel="nombre"
                   optionValue="id_etiqueta"

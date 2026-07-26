@@ -1,2 +1,25 @@
 <p>PRODUCTOS PAGE WORKS</p>
-<app-productos-table></app-productos-table>
+<app-productos-filter
+  [categorias]="this.categoriasResource.value()"
+  [subcategorias]="this.subcategoriasResource.value()"
+  [etiquetas]="this.etiquetasResource.value()"
+  [(categoriaSeleccionada)]="this.categoria"
+  [(subcategoriaSeleccionada)]="this.subcategoria"
+  [(etiquetasSeleccionadas)]="this.etiquetas"
+  [(page)]="this.page"
+  [(sortField)]="this.sortField"
+  [(sortOrder)]="this.sortOrder"
+  [(sortKey)]="this.sortKey"
+  [(layout)]="this.layout"
+  [(filtroBusqueda)]="this.busqueda"
+></app-productos-filter>
+<app-productos-table
+  [categorias]="this.categoriasResource.value() || []"
+  [subcategorias]="this.subcategoriasResource.value() || []"
+  [etiquetas]="this.etiquetasResource.value() || []"
+  [productos]="this.productosResource.value()?.data || []"
+  [total]="this.totalProductos()"
+  [(page)]="this.page"
+  [(limit)]="this.limit"
+  [first]="this.first()"
+></app-productos-table>
