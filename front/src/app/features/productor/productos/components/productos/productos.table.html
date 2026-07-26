@@ -252,7 +252,7 @@
                 title="Editar"
                 size="small"
                 iconOnly
-                [disabled]="this.productoSeleccionado()"
+                [disabled]="!!this.productoSeleccionado()"
                 (click)="onRowEditInit(producto)"
               >
                 <svg data-p-icon="pencil" />

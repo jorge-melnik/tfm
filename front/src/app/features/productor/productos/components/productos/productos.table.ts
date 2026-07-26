@@ -1,4 +1,4 @@
-import { Component, inject, input, model, signal } from '@angular/core';
+import { Component, inject, input, model, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -35,7 +35,7 @@ import { Etiqueta } from '@shared/types/etiqueta';
   templateUrl: './productos.table.html',
   styleUrl: './productos.table.css',
 })
-export class ProductosTable {
+export class ProductosTable implements OnInit {
   private _preferenciasStore = inject(PreferenciasStore);
   public cdnUrl = environment.cdnUrl;
 
@@ -50,6 +50,10 @@ export class ProductosTable {
   public etiquetas = input.required<Etiqueta[]>();
 
   public productoSeleccionado = signal<Producto | null>(null);
+
+  ngOnInit(): void {
+    this.productoSeleccionado.set(null);
+  }
 
   onRowEditInit(producto: Producto) {
     this.productoSeleccionado.set({ ...producto });

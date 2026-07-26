@@ -28,9 +28,6 @@ export class ProductosPage implements OnInit {
   private readonly _subcategoriaService = inject(SubcategoriasService);
   private readonly _etiquetasService = inject(EtiquetasService);
   private readonly _preferenciasStore = inject(PreferenciasStore);
-  private readonly _router = inject(Router);
-  private readonly _route = inject(ActivatedRoute);
-  private readonly _carritoService = inject(CarritoService);
   private readonly _userStore = inject(UserStore);
   private readonly _dialogService = inject(DialogService);
 
@@ -130,10 +127,6 @@ export class ProductosPage implements OnInit {
 
       const queryParams: ApiQueryParams = { id_productor: user.id_usuario };
       const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
-      // if (limit) pagination['limit'] = limit;
-      // if (page) pagination['page'] = page;
-      // if (sort) pagination['sort'] = sort;
-      // if (sort_direction) pagination['sort_direction'] = sort_direction;
 
       if (categoria) queryParams['categoria'] = categoria;
       if (subcategoria) queryParams['subcategoria'] = subcategoria;
