@@ -13,10 +13,10 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
         Devuelve el listado completo de productos y cantidades en el carrito. 
       `,
       params: Type.Object({ username: Consumidor.properties.username }),
-      response: {
-        200: Type.Array(ItemCarrito, { description: 'Listado de ItemCarrito.' }),
-        500: DeAcaErrorResponse,
-      },
+      // response: {
+      //   200: Type.Array(ItemCarrito, { description: 'Listado de ItemCarrito.' }),
+      //   500: DeAcaErrorResponse,
+      // },
     },
     // onRequest : //FIXME: Solo para si mismo
     onRequest: [fastify.authenticate], //FIXME: Solo para consumidor autenticado.

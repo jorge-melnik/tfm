@@ -20,9 +20,9 @@
           class="absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 z-20"
         />
 
-        @if (producto().etiquetas && producto().id_etiquetas.length > 0) {
+        @if (producto().etiquetas && producto().etiquetas.length > 0) {
           <div class="absolute top-2 right-2 flex flex-col w-[15%]">
-            @for (id_etiqueta of producto().id_etiquetas; track id_etiqueta) {
+            @for (id_etiqueta of producto().etiquetas; track id_etiqueta) {
               <img
                 [src]="this.cdnUrl() + '/etiquetas/' + id_etiqueta + '.webp'"
                 [alt]="producto().etiquetas?.[$index] || id_etiqueta"
@@ -111,9 +111,9 @@
           class="absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 z-20"
         />
 
-        @if (producto().id_etiquetas && producto().id_etiquetas.length > 0) {
+        @if (producto().etiquetas && producto().etiquetas.length > 0) {
           <div class="absolute top-2 right-2 flex flex-col gap-1.5 z-20">
-            @for (id_etiqueta of producto().id_etiquetas; track id_etiqueta) {
+            @for (id_etiqueta of producto().etiquetas; track id_etiqueta) {
               <img
                 [src]="this.cdnUrl() + '/etiquetas/' + id_etiqueta + '.webp'"
                 [alt]="producto().etiquetas?.[$index] || id_etiqueta"

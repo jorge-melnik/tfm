@@ -54,11 +54,10 @@
           <p-cell-editor>
             <ng-template #input>
               <textarea
+                name="nombre"
                 pInputText
                 type="text"
-                name="nombre"
-                [(ngModel)]="producto.nombre"
-                required
+                [(ngModel)]="this.productoSeleccionado().nombre"
                 class="w-full"
                 pSize="small"
                 rows="3"
@@ -82,13 +81,15 @@
               <div class="flex flex-col gap-2 py-1">
                 <!-- Select Categoría -->
                 <p-select
-                  [options]="this.categorias()"
+                  name="categoria"
+                  [options]="this.categoriasResource.value() || []"
                   optionLabel="nombre"
-                  optionValue="id_categoria"
+                  optionValue="categoria"
                   placeholder="Categoría"
                   appendTo="body"
                   class="w-full"
                   size="small"
+                  [(ngModel)]="this.productoSeleccionado().categoria"
                 >
                   <ng-template let-categoria #item>
                     <div class="flex items-center gap-2">
@@ -100,13 +101,15 @@
 
                 <!-- Select Subcategoría -->
                 <p-select
-                  [options]="this.subcategorias()"
+                  name="subcategoria"
+                  [options]="this.subcategoriasResource.value() || []"
                   optionLabel="nombre"
-                  optionValue="id_subcategoria"
+                  optionValue="subcategoria"
                   placeholder="Subcategoría"
                   appendTo="body"
                   class="w-full"
                   size="small"
+                  [(ngModel)]="this.productoSeleccionado().subcategoria"
                 >
                   <ng-template let-subcategoria #item>
                     <div class="flex items-center gap-2">
@@ -131,11 +134,10 @@
           <p-cell-editor>
             <ng-template #input>
               <textarea
+                name="descripcion"
                 pInputText
                 type="text"
-                name="descripcion"
-                [(ngModel)]="producto.descripcion"
-                required
+                [(ngModel)]="this.productoSeleccionado().descripcion"
                 class="w-full"
                 pSize="small"
                 rows="3"
@@ -151,12 +153,12 @@
             <ng-template #input>
               <div class="flex justify-center">
                 <p-select
-                  name="id_etiquetas"
+                  name="etiquetas"
                   multiple="true"
-                  [options]="this.etiquetas()"
-                  [(ngModel)]="producto.id_etiquetas"
+                  [options]="this.etiquetasResource.value() || []"
+                  [(ngModel)]="this.productoSeleccionado().etiquetas"
                   optionLabel="nombre"
-                  optionValue="id_etiqueta"
+                  optionValue="etiqueta"
                   placeholder="Selecciona las etiquetas"
                   appendTo="body"
                   class="w-full"
@@ -178,7 +180,7 @@
             <ng-template #input>
               <p-inputnumber
                 name="cantidad_disponible"
-                [(ngModel)]="producto.cantidad_disponible"
+                [(ngModel)]="this.productoSeleccionado().cantidad_disponible"
                 fluid
                 size="small"
                 [maxlength]="10"
@@ -194,7 +196,7 @@
             <ng-template #input>
               <p-inputnumber
                 name="precio"
-                [(ngModel)]="producto.precio"
+                [(ngModel)]="this.productoSeleccionado().precio"
                 mode="currency"
                 currency="UYU"
                 fluid
@@ -214,11 +216,11 @@
               <button
                 pButton
                 pRipple
-                type="button"
                 pSaveEditableRow
+                [severity]="'success'"
+                type="submit"
                 text
                 rounded
-                [severity]="'success'"
                 title="Guardar"
                 size="small"
                 (click)="onRowEditSave(producto)"
@@ -229,8 +231,8 @@
               <button
                 pButton
                 pRipple
-                type="button"
                 pCancelEditableRow
+                type="button"
                 text
                 rounded
                 severity="secondary"
@@ -252,7 +254,6 @@
                 title="Editar"
                 size="small"
                 iconOnly
-                [disabled]="!!this.productoSeleccionado()"
                 (click)="onRowEditInit(producto)"
               >
                 <svg data-p-icon="pencil" />

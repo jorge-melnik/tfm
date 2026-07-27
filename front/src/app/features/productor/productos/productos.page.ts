@@ -9,11 +9,11 @@ import { CategoriasService } from '@shared/services/categorias.service';
 import { SubcategoriasService } from '@shared/services/subcategorias.service';
 import { EtiquetasService } from '@shared/services/etiquetas.service';
 import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
-import { ActivatedRoute, Router } from '@angular/router';
-import { CarritoService } from '@shared/services/carrito.service';
 import { UserStore } from '@shared/services/stores/user.store';
 import { DialogService } from '@shared/services/dialog.service';
 import { Etiqueta } from '@shared/types/etiqueta';
+import { Producto } from '@shared/types/producto';
+import { ProductosProductorService } from '@shared/services/productos-productor.service';
 
 @Component({
   selector: 'app-productoos',
@@ -23,7 +23,7 @@ import { Etiqueta } from '@shared/types/etiqueta';
   styleUrl: './productos.page.css',
 })
 export class ProductosPage implements OnInit {
-  private readonly _productoService = inject(ProductosService);
+  private readonly _productoService = inject(ProductosProductorService);
   private readonly _categoriaService = inject(CategoriasService);
   private readonly _subcategoriaService = inject(SubcategoriasService);
   private readonly _etiquetasService = inject(EtiquetasService);
@@ -44,55 +44,8 @@ export class ProductosPage implements OnInit {
   public sortKey = model<string>('');
   public sortOrder = model<number>(0);
   public sortField = model<string>('');
-
-  public categoriasResource = resource({
-    defaultValue: [] as Categoria[],
-    loader: async () => {
-      try {
-        return this._categoriaService.getAll();
-      } catch (error: any) {
-        this._dialogService.addError(error.message);
-        return [] as Categoria[];
-      }
-    },
-  });
-
-  public subcategoriasResource = resource({
-    defaultValue: [] as Subcategoria[],
-    params: () => ({ categoria: this.categoria() }),
-    loader: async ({ params }) => {
-      try {
-        const { categoria } = params;
-        if (!categoria) return this._subcategoriaService.getAll();
-        return this._categoriaService.getSubcategorias(categoria);
-      } catch (error: any) {
-        this._dialogService.addError(error.message);
-        return [] as Subcategoria[];
-      }
-    },
-  });
-
-  public etiquetasResource = resource({
-    defaultValue: [] as Etiqueta[],
-    params: () => ({
-      categoria: this.categoria(),
-      subcategoria: this.subcategoria(),
-    }),
-    loader: async ({ params }) => {
-      try {
-        const { categoria, subcategoria } = params;
-
-        if (subcategoria) return this._subcategoriaService.getEtiquetas(subcategoria);
-        if (categoria) return this._categoriaService.getEtiquetas(categoria);
-
-        //No hay ninguno de los slug
-        return this._etiquetasService.getAll();
-      } catch (error: any) {
-        this._dialogService.addError(error.message);
-        return [] as Etiqueta[];
-      }
-    },
-  });
+  public user = this._userStore.user;
+  //Señales para el formulario de edición.
 
   public totalProductos = computed<number>(() => {
     const productos = this.productosResource.value()?.data || [];
@@ -133,8 +86,10 @@ export class ProductosPage implements OnInit {
       if (etiquetas) queryParams['etiquetas'] = etiquetas;
       if (busqueda) queryParams['busqueda'] = busqueda;
 
+      const pathParams = {productor : user.username};
+
       try {
-        const response = await this._productoService.getBy({ queryParams, pagination });
+        const response = await this._productoService.getBy({ queryParams, pagination, pathParams });
 
         console.log({ response });
 
@@ -150,5 +105,10 @@ export class ProductosPage implements OnInit {
 
   ngOnInit(): void {
     if (!this.limit()) this.limit.set(this._preferenciasStore.limit());
+  }
+
+  public cambioUnProducto(producto: Producto) {
+    console.log('CambioUnProducto: ', { producto });
+    this.productosResource.reload();
   }
 }

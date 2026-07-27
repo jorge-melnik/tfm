@@ -1,6 +1,6 @@
-import { DeAcaBadRequest } from '@errors/response.errors.js';
+import { DeAcaBadRequest, DeAcaNotFound } from '@errors/response.errors.js';
 import { BaseRepository } from './base.repository.js';
-import { Producto } from '@schemas/producto.schema.js';
+import { POSTProducto, Producto } from '@schemas/producto.schema.js';
 
 export class ProductosRepositoryClass extends BaseRepository<Producto> {
   protected readonly tableName = 'productos';
@@ -39,7 +39,7 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
         C.categoria,
         SC.subcategoria,
         SC.id_categoria,
-        DP.username, 
+        DP.username as productor, 
         COALESCE(ME.id_etiquetas, ARRAY[]::INT[] ) AS id_etiquetas,
         COALESCE(ME.etiquetas, ARRAY[]::TEXT[] ) AS etiquetas,
         COALESCE(MF.fotos, '[]') AS fotos
@@ -95,6 +95,68 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
       WHERE id_producto=$1 AND id_etiqueta =ANY($2::int[])
     `;
     await this.executor.query(query, [id_producto, id_etiquetas]);
+  }
+
+  override async update(id_producto: number, data: POSTProducto): Promise<void> {
+    const { productor, subcategoria, etiquetas, nombre, descripcion, precio, cantidad_disponible } = data;
+
+    const query = `
+      WITH PRODUCTOR_VALIDADO AS (
+        SELECT id_producto
+        FROM public.productos P1
+        JOIN public.productores PROD ON PROD.id_productor=P1.id_productor
+        JOIN public.datos_personales DP ON DP.id_usuario = PROD.id_productor
+        WHERE P1.id_producto=$1 AND DP.username = $2 -- Acá ya aseguramos que coinciden id_producto con username especificado
+      ),
+      PRODUCTO_ACTUALIZADO AS (
+        UPDATE public.productos P
+        SET 
+          id_subcategoria = (SELECT id_subcategoria FROM public.subcategorias WHERE subcategoria=$3),
+          nombre = $5,
+          descripcion = $6,
+          precio = $7,
+          cantidad_disponible = $8,
+          fecha_actualizacion = CURRENT_TIMESTAMP
+        FROM PRODUCTOR_VALIDADO PV
+        WHERE P.id_producto = PV.id_producto 
+        RETURNING P.id_productor, P.id_producto
+      ),
+      ID_ETIQUETAS AS (
+        SELECT PA.id_producto, E.id_etiqueta, PE.id_etiqueta IS NOT NULL as YA_ESTA, PE.id_etiqueta IS NULL as INSERTAR
+        FROM public.etiquetas E
+        CROSS JOIN PRODUCTO_ACTUALIZADO PA -- solo hay uno, no genera filas extras.
+        LEFT JOIN public.producto_etiquetas PE ON PE.id_producto=PA.id_producto AND PE.id_etiqueta=E.id_etiqueta
+        WHERE E.etiqueta = ANY($4::TEXT[])
+      ),
+      ETIQUETAS_BORRADAS AS (
+        DELETE FROM public.producto_etiquetas PE
+        USING PRODUCTO_ACTUALIZADO PA
+        WHERE PE.id_producto = PA.id_producto
+        AND PE.id_etiqueta NOT IN (SELECT id_etiqueta FROM ID_ETIQUETAS) 
+      ),
+      ETIQUETAS_INSERTADAS AS (
+        INSERT INTO public.producto_etiquetas (id_producto, id_etiqueta)
+        SELECT id_producto, id_etiqueta
+        FROM ID_ETIQUETAS ID_E
+        WHERE INSERTAR -- ya se calculó antes si había que insertar
+      )
+      SELECT * FROM PRODUCTO_ACTUALIZADO
+    `;
+
+    const res = await this.executor.query(query, [
+      id_producto,
+      productor,
+      subcategoria,
+      etiquetas,
+      nombre,
+      descripcion,
+      precio,
+      cantidad_disponible,
+    ]);
+
+    if (res.rows.length === 0) {
+      throw new DeAcaNotFound(`productor ${productor} con id_producto:${id_producto}`);
+    }
   }
 }
 

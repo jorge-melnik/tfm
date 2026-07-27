@@ -1,7 +1,4 @@
 <app-productos-filter
-  [categorias]="this.categoriasResource.value()"
-  [subcategorias]="this.subcategoriasResource.value()"
-  [etiquetas]="this.etiquetasResource.value()"
   [(categoriaSeleccionada)]="this.categoria"
   [(subcategoriaSeleccionada)]="this.subcategoria"
   [(etiquetasSeleccionadas)]="this.etiquetas"
@@ -13,12 +10,11 @@
   [(filtroBusqueda)]="this.busqueda"
 ></app-productos-filter>
 <app-productos-table
-  [categorias]="this.categoriasResource.value() || []"
-  [subcategorias]="this.subcategoriasResource.value() || []"
-  [etiquetas]="this.etiquetasResource.value() || []"
   [productos]="this.productosResource.value()?.data || []"
   [total]="this.totalProductos()"
   [(page)]="this.page"
   [(limit)]="this.limit"
   [first]="this.first()"
+  (cambioUnProducto)="this.cambioUnProducto($event)"
+  [productor]="this.user()?.username || 'FIXME'"
 ></app-productos-table>

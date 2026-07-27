@@ -61,55 +61,6 @@ export class HomePage implements OnInit {
   public sortOrder = model<number>(0);
   public sortField = model<string>('');
 
-  public categoriasResource = resource({
-    defaultValue: [] as Categoria[],
-    loader: async () => {
-      try {
-        return this._categoriaService.getAll();
-      } catch (error: any) {
-        this._dialogService.addError(error.message);
-        return [] as Categoria[];
-      }
-    },
-  });
-
-  public subcategoriasResource = resource({
-    defaultValue: [] as Subcategoria[],
-    params: () => ({ categoria: this.categoria() }),
-    loader: async ({ params }) => {
-      try {
-        const { categoria } = params;
-        if (!categoria) return this._subcategoriaService.getAll();
-        return this._categoriaService.getSubcategorias(categoria);
-      } catch (error: any) {
-        this._dialogService.addError(error.message);
-        return [] as Subcategoria[];
-      }
-    },
-  });
-
-  public etiquetasResource = resource({
-    defaultValue: [] as Etiqueta[],
-    params: () => ({
-      categoria: this.categoria(),
-      subcategoria: this.subcategoria(),
-    }),
-    loader: async ({ params }) => {
-      try {
-        const { categoria, subcategoria } = params;
-
-        if (subcategoria) return this._subcategoriaService.getEtiquetas(subcategoria);
-        if (categoria) return this._categoriaService.getEtiquetas(categoria);
-
-        //No hay ninguno de los slug
-        return this._etiquetasService.getAll();
-      } catch (error: any) {
-        this._dialogService.addError(error.message);
-        return [] as Etiqueta[];
-      }
-    },
-  });
-
   public productosResource = resource({
     params: () => ({
       categoria: this.categoria(),
@@ -202,8 +153,8 @@ export class HomePage implements OnInit {
     if (categoria) queryParams['categoria'] = categoria;
     if (subcategoria) queryParams['subcategoria'] = subcategoria;
     if (etiquetas?.length > 0) queryParams['etiquetas'] = etiquetas;
-    if (busqueda) queryParams['busqueda']=busqueda;
-    
+    if (busqueda) queryParams['busqueda'] = busqueda;
+
     this._router.navigate([], {
       relativeTo: this._route,
       queryParams,
