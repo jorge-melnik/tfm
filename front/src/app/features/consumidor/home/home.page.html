@@ -1,4 +1,16 @@
 <div class="card">
+  <app-productos-filter
+    [(categoriaSeleccionada)]="this.categoria"
+    [(subcategoriaSeleccionada)]="this.subcategoria"
+    [(etiquetasSeleccionadas)]="this.etiquetas"
+    [(page)]="this.page"
+    [(sortField)]="this.sortField"
+    [(sortOrder)]="this.sortOrder"
+    [(sortKey)]="this.sortKey"
+    [(layout)]="this.layout"
+    [(filtroBusqueda)]="this.busqueda"
+    (filtroCambiado)="this.queryParamsChange()"
+  ></app-productos-filter>
   <p-dataview
     #dv
     [value]="this.productosResource.value()?.data || []"
@@ -13,20 +25,7 @@
     [sortField]="this.sortField()"
     [sortOrder]="this.sortOrder()"
   >
-    <ng-template #header>
-      <app-productos-filter
-        [(categoriaSeleccionada)]="this.categoria"
-        [(subcategoriaSeleccionada)]="this.subcategoria"
-        [(etiquetasSeleccionadas)]="this.etiquetas"
-        [(page)]="this.page"
-        [(sortField)]="this.sortField"
-        [(sortOrder)]="this.sortOrder"
-        [(sortKey)]="this.sortKey"
-        [(layout)]="this.layout"
-        [(filtroBusqueda)]="this.busqueda"
-        (filtroCambiado)="this.queryParamsChange()"
-      ></app-productos-filter>
-    </ng-template>
+    <ng-template #header> </ng-template>
 
     <ng-template #list let-productos>
       <div class="flex flex-col gap-4 mt-4">

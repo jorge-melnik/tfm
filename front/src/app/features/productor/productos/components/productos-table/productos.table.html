@@ -6,13 +6,10 @@
     editMode="row"
     size="small"
     [scrollable]="true"
-    [paginator]="true"
     [rows]="this.limit()"
     [first]="this.first()"
     [totalRecords]="this.total()"
     [lazy]="true"
-    [rowsPerPageOptions]="[6, 12, 24]"
-    (onPage)="this.onPageChange($event)"
     [rowHover]="true"
   >
     <ng-template #caption>

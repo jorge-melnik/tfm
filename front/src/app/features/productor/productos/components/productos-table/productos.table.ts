@@ -74,6 +74,7 @@ export class ProductosTable implements OnInit {
     etiquetas: [],
     fotos: [],
     id_etiquetas: [],
+    activo: true,
   };
 
   public productoSeleccionado = signal<Producto>({ ...this.productoVacio });
@@ -175,12 +176,6 @@ export class ProductosTable implements OnInit {
   onRowEditCancel(producto: Producto, index: number) {
     // this.productoSeleccionado.set(null);
     console.log('onRowEditCancel  ');
-  }
-
-  onPageChange(event: any) {
-    this._preferenciasStore.setLimit(event.rows);
-    const nuevaPagina = event.first / event.rows + 1;
-    this.page.set(nuevaPagina);
   }
 
   public cambioUnProducto = output<Producto>();

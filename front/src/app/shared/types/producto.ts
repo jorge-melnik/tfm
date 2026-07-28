@@ -15,4 +15,5 @@ export interface Producto {
   categoria: string;
   subcategoria: string;
   etiquetas: string[];
+  activo: boolean;
 }

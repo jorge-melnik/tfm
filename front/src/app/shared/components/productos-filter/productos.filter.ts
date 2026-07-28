@@ -31,7 +31,7 @@ export class ProductosFilter {
   public sortKey = model.required<string>();
   public sortOrder = model.required<number>();
   public sortField = model.required<string>();
-  public layout = model.required<'grid' | 'list'>(); // Estado del diseño (tarjeta o lista)
+  public layout = model.required<'grid' | 'list' | 'table'>(); // Estado del diseño (tarjeta o lista)
 
   public categoriasResource = resource({
     defaultValue: [] as Categoria[],

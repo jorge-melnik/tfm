@@ -8,10 +8,12 @@ import { UserStore } from '@shared/services/stores/user.store';
 import { DialogService } from '@shared/services/dialog.service';
 import { Producto } from '@shared/types/producto';
 import { ProductosProductorService } from '@shared/services/productos-productor.service';
+import { DataViewModule } from 'primeng/dataview';
+import { ProductoCard } from '@shared/components/producto-card/producto.card';
 
 @Component({
   selector: 'app-productoos',
-  imports: [ProductosTable, ProductosFilter],
+  imports: [ProductosTable, ProductosFilter, DataViewModule, ProductoCard],
   templateUrl: './productos-productor.page.html',
   styleUrl: './productos-productor.page.css',
 })
@@ -91,7 +93,7 @@ export class ProductosPage implements OnInit {
     },
   });
 
-  public layout = signal<'grid' | 'list'>('grid'); // Estado del diseño (tarjeta o lista)
+  public layout = signal<'grid' | 'list' | 'table'>('table'); // Estado del diseño (tarjeta o lista)
 
   ngOnInit(): void {
     if (!this.limit()) this.limit.set(this._preferenciasStore.limit());
@@ -100,5 +102,11 @@ export class ProductosPage implements OnInit {
   public cambioUnProducto(producto: Producto) {
     console.log('CambioUnProducto: ', { producto });
     this.productosResource.reload();
+  }
+
+  onPageChange(event: any) {
+    this._preferenciasStore.setLimit(event.rows);
+    const nuevaPagina = event.first / event.rows + 1;
+    this.page.set(nuevaPagina);
   }
 }

@@ -23,7 +23,10 @@ export class ProductoForm {
     etiquetas: [],
     fotos: [],
     id_etiquetas: [],
+    activo: true,
   };
+
+  //TODO: Poner productoVacío en una store o service ?
 
   public producto = input<Producto>({ ...this.productoVacio });
 }

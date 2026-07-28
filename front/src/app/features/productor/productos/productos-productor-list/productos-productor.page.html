@@ -1,20 +1,73 @@
-<app-productos-filter
-  [(categoriaSeleccionada)]="this.categoria"
-  [(subcategoriaSeleccionada)]="this.subcategoria"
-  [(etiquetasSeleccionadas)]="this.etiquetas"
-  [(page)]="this.page"
-  [(sortField)]="this.sortField"
-  [(sortOrder)]="this.sortOrder"
-  [(sortKey)]="this.sortKey"
-  [(layout)]="this.layout"
-  [(filtroBusqueda)]="this.busqueda"
-></app-productos-filter>
-<app-productos-table
-  [productos]="this.productosResource.value()?.data || []"
-  [total]="this.totalProductos()"
-  [(page)]="this.page"
-  [(limit)]="this.limit"
-  [first]="this.first()"
-  (cambioUnProducto)="this.cambioUnProducto($event)"
-  [productor]="this.user()?.username || 'FIXME'"
-></app-productos-table>
+<div class="card">
+  @let layout = this.layout();
+  <app-productos-filter
+    [(categoriaSeleccionada)]="this.categoria"
+    [(subcategoriaSeleccionada)]="this.subcategoria"
+    [(etiquetasSeleccionadas)]="this.etiquetas"
+    [(page)]="this.page"
+    [(sortField)]="this.sortField"
+    [(sortOrder)]="this.sortOrder"
+    [(sortKey)]="this.sortKey"
+    [(layout)]="this.layout"
+    [(filtroBusqueda)]="this.busqueda"
+  ></app-productos-filter>
+
+  @if (layout === 'table') {
+    <app-productos-table
+      [productos]="this.productosResource.value()?.data || []"
+      [total]="this.totalProductos()"
+      [(page)]="this.page"
+      [(limit)]="this.limit"
+      [first]="this.first()"
+      (cambioUnProducto)="this.cambioUnProducto($event)"
+      [productor]="this.user()?.username || 'FIXME'"
+    ></app-productos-table>
+  }
+
+  @if (layout !== 'table') {
+    <p-dataview
+      #dv
+      [value]="this.productosResource.value()?.data || []"
+      [layout]="layout"
+      [paginator]="true"
+      [rows]="this.limit()"
+      [first]="this.first()"
+      [totalRecords]="this.productosResource.value()?.meta?.total || 0"
+      [lazy]="true"
+      [rowsPerPageOptions]="[6, 12, 24]"
+      (onPage)="this.onPageChange($event)"
+      [sortField]="this.sortField()"
+      [sortOrder]="this.sortOrder()"
+    >
+      <ng-template #header> </ng-template>
+
+      <ng-template #list let-productos>
+        <div class="flex flex-col gap-4 mt-4">
+          @for (producto of productos; track producto.id_producto) {
+            <app-producto-card
+              [producto]="producto"
+              [layout]="'list'"
+              [cdnUrl]="this.cdnUrl"
+              /* (agregarAlCarrito)="this.agregarAlCarrito($event)" */
+            />
+          }
+        </div>
+      </ng-template>
+
+      <ng-template #grid let-items>
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 mt-4"
+        >
+          @for (producto of items; track producto.id_producto) {
+            <app-producto-card
+              [producto]="producto"
+              [layout]="'grid'"
+              [cdnUrl]="this.cdnUrl"
+              /* (agregarAlCarrito)="this.agregarAlCarrito($event)" */
+            />
+          }
+        </div>
+      </ng-template>
+    </p-dataview>
+  }
+</div>

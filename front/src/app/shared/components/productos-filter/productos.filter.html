@@ -72,9 +72,20 @@
     />
 
     <div class="flex justify-end">
-      <p-selectbutton [(ngModel)]="this.layout" [options]="['grid', 'list']" [allowEmpty]="false">
+      <p-selectbutton
+        [(ngModel)]="this.layout"
+        [options]="['grid', 'list', 'table']"
+        [allowEmpty]="false"
+      >
         <ng-template #item let-item>
-          <i class="pi" [class]="{ 'pi-bars': item === 'list', 'pi-table': item === 'grid' }"></i>
+          <i
+            class="pi"
+            [class]="{
+              'pi-bars': item === 'list',
+              'pi-th-large': item === 'grid',
+              'pi-table': item === 'table',
+            }"
+          ></i>
         </ng-template>
       </p-selectbutton>
     </div>

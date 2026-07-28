@@ -2,13 +2,13 @@ import { Routes } from '@angular/router';
 
 export const productorRoutes: Routes = [
   {
-    path: '',
-    title: 'Dashboard Productor',
-    loadComponent: () => import('@features/productor/home/home.page').then((m) => m.HomePage),
-  },
-  {
     path: ':productor',
     children: [
+      {
+        path: '',
+        title: 'Dashboard Productor',
+        loadComponent: () => import('@features/productor/home/home.page').then((m) => m.HomePage),
+      },
       {
         path: 'productos',
         title: 'Listar Productos',

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { Tabs, TabList, Tab } from 'primeng/tabs';
 import { TopBarComponent } from '@shared/components/top-bar/top-bar.component';
@@ -15,7 +15,7 @@ import { AuthService } from '@shared/services/auth.service';
 export class ProductorLayout implements OnInit {
   private userStore = inject(UserStore);
   private authService = inject(AuthService);
-
+  public user = this.userStore.user;
   async ngOnInit(): Promise<void> {
     const user = this.userStore.user();
     if (!user) return;

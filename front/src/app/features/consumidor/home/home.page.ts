@@ -37,9 +37,6 @@ import { ProductosFilter } from '@shared/components/productos-filter/productos.f
 })
 export class HomePage implements OnInit {
   private readonly _productoService = inject(ProductosService);
-  private readonly _categoriaService = inject(CategoriasService);
-  private readonly _subcategoriaService = inject(SubcategoriasService);
-  private readonly _etiquetasService = inject(EtiquetasService);
   private readonly _preferenciasStore = inject(PreferenciasStore);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
