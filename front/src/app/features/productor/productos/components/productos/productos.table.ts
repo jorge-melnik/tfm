@@ -18,6 +18,9 @@ import { DialogService } from '@shared/services/dialog.service';
 import { FormsModule } from '@angular/forms';
 import { ProductosProductorService } from '@shared/services/productos-productor.service';
 
+import { Inbox } from '@primeicons/angular/inbox';
+import { Plus } from '@primeicons/angular/plus';
+
 @Component({
   selector: 'app-productos-table',
   imports: [
@@ -34,6 +37,8 @@ import { ProductosProductorService } from '@shared/services/productos-productor.
     BanIcon,
     FotoCarrusel,
     FormsModule,
+    Inbox,
+    Plus,
   ],
   templateUrl: './productos.table.html',
   styleUrl: './productos.table.css',
@@ -154,9 +159,12 @@ export class ProductosTable implements OnInit {
       return;
     }
     try {
-      
-      const pathParams = {productor : producto.productor};
-      await this._productoService.update(productoActualizado.producto, productoActualizado,pathParams);
+      const pathParams = { productor: producto.productor };
+      await this._productoService.update(
+        productoActualizado.producto,
+        productoActualizado,
+        pathParams,
+      );
       this.productoSeleccionado.set({ ...this.productoVacio });
       this.cambioUnProducto.emit(productoActualizado);
     } catch (error: any) {
@@ -183,8 +191,8 @@ export class ProductosTable implements OnInit {
   //   }
   //   const productoActualizado = this.productoForm().value();
   //   try {
-  
-      // const pathParams = {productor : producto.productor};
+
+  // const pathParams = {productor : producto.productor};
   //     await this._productoService.update(productoActualizado.id_producto, productoActualizado,pathParams);
   //     this.cambioUnProducto.emit(productoActualizado);
   //   } catch (error: any) {
