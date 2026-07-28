@@ -1,32 +1,22 @@
 import { Component, computed, inject, model, OnInit, resource, signal } from '@angular/core';
-import { ProductosTable } from './components/productos/productos.table';
+import { ProductosTable } from '../components/productos-table/productos.table';
 import { ProductosFilter } from '@shared/components/productos-filter/productos.filter';
 import { ApiQueryParams } from '@shared/types/api.types';
 import { environment } from '@env/environment';
-import { Categoria, Subcategoria } from '@shared/types/categoria';
-import { ProductosService } from '@shared/services/productos.service';
-import { CategoriasService } from '@shared/services/categorias.service';
-import { SubcategoriasService } from '@shared/services/subcategorias.service';
-import { EtiquetasService } from '@shared/services/etiquetas.service';
 import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
 import { UserStore } from '@shared/services/stores/user.store';
 import { DialogService } from '@shared/services/dialog.service';
-import { Etiqueta } from '@shared/types/etiqueta';
 import { Producto } from '@shared/types/producto';
 import { ProductosProductorService } from '@shared/services/productos-productor.service';
 
 @Component({
   selector: 'app-productoos',
   imports: [ProductosTable, ProductosFilter],
-  templateUrl: './productos.page.html',
-
-  styleUrl: './productos.page.css',
+  templateUrl: './productos-productor.page.html',
+  styleUrl: './productos-productor.page.css',
 })
 export class ProductosPage implements OnInit {
   private readonly _productoService = inject(ProductosProductorService);
-  private readonly _categoriaService = inject(CategoriasService);
-  private readonly _subcategoriaService = inject(SubcategoriasService);
-  private readonly _etiquetasService = inject(EtiquetasService);
   private readonly _preferenciasStore = inject(PreferenciasStore);
   private readonly _userStore = inject(UserStore);
   private readonly _dialogService = inject(DialogService);
@@ -86,7 +76,7 @@ export class ProductosPage implements OnInit {
       if (etiquetas) queryParams['etiquetas'] = etiquetas;
       if (busqueda) queryParams['busqueda'] = busqueda;
 
-      const pathParams = {productor : user.username};
+      const pathParams = { productor: user.username };
 
       try {
         const response = await this._productoService.getBy({ queryParams, pagination, pathParams });

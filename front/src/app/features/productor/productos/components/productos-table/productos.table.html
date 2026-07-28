@@ -15,6 +15,20 @@
     (onPage)="this.onPageChange($event)"
     [rowHover]="true"
   >
+    <ng-template #caption>
+      <div class="flex justify-between items-center">
+        <span class="text-xl font-bold">Mis productos</span>
+        <button
+          pButton
+          type="button"
+          size="small"
+          label="Nuevo Producto"
+          /* (click)="agregarFilaInline()" */
+        >
+          <svg data-p-icon="plus" />
+        </button>
+      </div>
+    </ng-template>
     <ng-template #emptymessage>
       <tr>
         <td colspan="8">
