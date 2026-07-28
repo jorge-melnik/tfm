@@ -15,7 +15,7 @@ export const ItemCarrito = Type.Object({
   cantidad: Type.Integer({ minimum: 1 }),
   precio: Producto.properties.precio,
   subtotal: Producto.properties.precio,
-  username: Producto.properties.username,
+  productor: Producto.properties.productor,
   nombre: Producto.properties.nombre,
   descripcion: Producto.properties.descripcion,
   producto: Producto.properties.producto,

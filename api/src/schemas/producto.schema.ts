@@ -8,7 +8,7 @@ export const POSTProducto = Type.Object({
   etiquetas: Type.Array(Type.String()),
   nombre: Type.String(),
   descripcion: Type.String(),
-  precio: Type.Number(),
+  precio: Type.String(),
   cantidad_disponible: Type.Number(),
 });
 
