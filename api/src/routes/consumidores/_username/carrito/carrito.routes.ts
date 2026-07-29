@@ -120,7 +120,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
         500: DeAcaErrorResponse,
       },
     },
-    // onRequest : //FIXME: Solo para consumidor autenticado.
+    onRequest: [fastify.authenticate], //FIXME: Solo para consumidor autenticado.
     //preHandler: Coincide params con body y con usuario logueado
     handler: async function (req, reply) {
       reply.code(204);
