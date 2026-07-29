@@ -20,8 +20,7 @@ import { Menu } from 'primeng/menu';
 })
 export class ProductoCard {
   private userStore = inject(UserStore);
-
-  public esProductor = computed(() => this.userStore.user()?.rol_actual === 'PRODUCTOR');
+  public esProductor = this.userStore.esProductor;
 
   producto = input.required<Producto>();
   layout = input<'grid' | 'list'>('grid'); // <-- Recibe el modo del DataView

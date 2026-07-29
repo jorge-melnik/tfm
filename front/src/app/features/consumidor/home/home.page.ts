@@ -7,9 +7,6 @@ import { ProductosService } from '@shared/services/productos.service';
 import { environment } from '@env/environment';
 import { ProductoCard } from '@shared/components/producto-card/producto.card';
 import { SelectModule } from 'primeng/select';
-import { CategoriasService } from '@shared/services/categorias.service';
-import { Categoria, Subcategoria } from '@shared/types/categoria';
-import { SubcategoriasService } from '@shared/services/subcategorias.service';
 import { ApiQueryParams } from '@shared/types/api.types';
 import { Etiqueta } from '@shared/types/etiqueta';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -117,7 +114,7 @@ export class HomePage implements OnInit {
       id_consumidor: usuario.id_usuario,
       ...item,
     };
-    const existente = this._carritoService.items
+    const existente = this._carritoService.productos
       .value()
       .find((i) => i.id_producto === item.id_producto);
     try {

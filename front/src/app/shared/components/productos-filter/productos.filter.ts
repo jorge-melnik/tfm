@@ -1,8 +1,9 @@
-import { Component, inject, input, model, output, resource } from '@angular/core';
+import { Component, computed, inject, input, model, output, resource } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CategoriasService } from '@shared/services/categorias.service';
 import { DialogService } from '@shared/services/dialog.service';
 import { EtiquetasService } from '@shared/services/etiquetas.service';
+import { UserStore } from '@shared/services/stores/user.store';
 import { SubcategoriasService } from '@shared/services/subcategorias.service';
 import { Categoria, Subcategoria } from '@shared/types/categoria';
 import { Etiqueta } from '@shared/types/etiqueta';
@@ -21,6 +22,13 @@ export class ProductosFilter {
   private readonly _subcategoriaService = inject(SubcategoriasService);
   private readonly _etiquetasService = inject(EtiquetasService);
   private readonly _dialogService = inject(DialogService);
+  private userStore = inject(UserStore);
+  public esProductor = this.userStore.esProductor;
+
+  opcionesLayout = computed(() => {
+    const base = ['grid', 'list'];
+    return this.esProductor() ? [...base, 'table'] : base;
+  });
 
   public filtroBusqueda = model<string>('');
   public categoriaSeleccionada = model<string | undefined>(undefined);

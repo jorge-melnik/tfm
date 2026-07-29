@@ -1,11 +1,31 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { consumidorRepository } from '@repositories/consumidor.repository.js';
-import { Consumidor, ItemCarrito } from '@schemas/consumidores.schema.js';
+import { Carrito, Consumidor, ItemCarrito } from '@schemas/consumidores.schema.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 import { Producto } from '@schemas/producto.schema.js';
 
 const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
+    schema: {
+      tags: ['Consumidores'],
+      summary: 'READ carrito',
+      description: `
+        Devuelve el resumen del carrito.. 
+      `,
+      params: Type.Object({ username: Consumidor.properties.username }),
+      response: {
+        200: Carrito,
+        500: DeAcaErrorResponse,
+      },
+    },
+    // onRequest : //FIXME: Solo para si mismo
+    onRequest: [fastify.authenticate], //FIXME: Solo para consumidor autenticado.
+    handler: async function (req, reply) {
+      return consumidorRepository.getCarrito(req.user.id_usuario);
+    },
+  });
+
+  fastify.get('/productos', {
     schema: {
       tags: ['Consumidores'],
       summary: 'READ carrito',
@@ -21,7 +41,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
     // onRequest : //FIXME: Solo para si mismo
     onRequest: [fastify.authenticate], //FIXME: Solo para consumidor autenticado.
     handler: async function (req, reply) {
-      return consumidorRepository.getCarrito(req.user.id_usuario);
+      return consumidorRepository.getProductosCarrito(req.user.id_usuario);
     },
   });
 

@@ -8,6 +8,13 @@ export const Consumidor = Type.Object({
   id_consumidor: DatosPersonales.properties.id_usuario,
 });
 
+export const Carrito = Type.Object({
+  id_consumidor: Consumidor.properties.id_consumidor,
+  cantidad_items: Type.Integer(),
+  cantidad_productos_distintos: Type.Integer(),
+  total: Producto.properties.precio,
+});
+
 export const ItemCarrito = Type.Object({
   id_productor: DatosPersonales.properties.id_usuario,
   id_producto: Producto.properties.id_producto,
@@ -25,3 +32,4 @@ export const ItemCarrito = Type.Object({
 
 export type Consumidor = Static<typeof Consumidor>;
 export type ItemCarrito = Static<typeof ItemCarrito>;
+export type Carrito = Static<typeof Carrito>;

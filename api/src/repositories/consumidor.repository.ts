@@ -1,4 +1,4 @@
-import { Consumidor, ItemCarrito } from '@schemas/consumidores.schema.js';
+import { Carrito, Consumidor, ItemCarrito } from '@schemas/consumidores.schema.js';
 import { BaseRepository } from './base.repository.js';
 import { AdicionalesProductor } from '@schemas/usuarios.schema.js';
 import { DeAcaInternal } from '@errors/response.errors.js';
@@ -50,10 +50,26 @@ export class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
     }
   }
 
-  async getCarrito(id_consumidor: string): Promise<ItemCarrito[]> {
+  async getCarrito(id_consumidor: string): Promise<Carrito> {
+    const consulta = `
+      SELECT C.*
+        ,SUM(PC.cantidad) as cantidad_items
+        ,COUNT(P.id_producto) as cantidad_productos_distintos 
+        ,SUM(P.precio*PC.cantidad) as total
+      from public.carritos C 
+      join public.carrito_productos PC on PC.id_consumidor  = C.id_consumidor
+      JOIN public.productos P ON P.id_producto=PC.id_producto
+      WHERE C.id_consumidor=$1
+      group by C.id_consumidor
+    `;
+    const res = await this.executor.query(consulta, [id_consumidor]);
+    return res.rows[0];
+  }
+
+  async getProductosCarrito(id_consumidor: string): Promise<ItemCarrito[]> {
     const consulta = `
       -- Seleccionaos todas las columnas de producto y que se filtren en el esquema.
-      SELECT P.*, PC.id_consumidor ,PC.cantidad, P.precio*PC.cantidad as subtotal, DP.username,
+      SELECT P.*, PC.id_consumidor ,PC.cantidad, P.precio*PC.cantidad as subtotal, DP.username as productor,
       (
         SELECT COALESCE(
           json_agg(PI.path ORDER BY PI.posicion),

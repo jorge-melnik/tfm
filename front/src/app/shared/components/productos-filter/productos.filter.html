@@ -74,7 +74,7 @@
     <div class="flex justify-end">
       <p-selectbutton
         [(ngModel)]="this.layout"
-        [options]="['grid', 'list', 'table']"
+        [options]="this.opcionesLayout()"
         [allowEmpty]="false"
       >
         <ng-template #item let-item>

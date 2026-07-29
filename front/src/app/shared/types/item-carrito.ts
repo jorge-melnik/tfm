@@ -13,4 +13,11 @@ export type ItemCarritoVerbose = {
   cantidad_disponible: number;
 };
 
+export type Carrito = {
+  id_consumidor: string;
+  cantidad_items: number;
+  cantidad_productos_distintos: number;
+  total: string;
+};
+
 export type ItemCarrito = Pick<ItemCarritoVerbose, 'id_productor' | 'id_producto' | 'cantidad'>;
