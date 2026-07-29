@@ -26,7 +26,7 @@ import { CategoriasService } from '@shared/services/categorias.service';
   styleUrl: './categorias.page.css',
 })
 export class CategoriasPage extends AdminBasePage<Categoria> {
-  protected override idKey: keyof Categoria = 'slug_categoria';
+  protected override idKey: keyof Categoria = 'categoria';
   public override entidadName: string = 'etiqueta';
 
   protected _dataService = inject(CategoriasService);
@@ -42,7 +42,7 @@ export class CategoriasPage extends AdminBasePage<Categoria> {
       type: 'text',
     },
     {
-      key: 'slug_categoria',
+      key: 'categoria',
       keyTitle: 'Slug',
       type: 'text',
     },

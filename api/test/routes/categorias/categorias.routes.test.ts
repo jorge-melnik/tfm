@@ -13,7 +13,7 @@ test('/categorias', async (t) => {
     await categoriasRepository.add({
       nombre,
       descripcion: 'Test de listado',
-      slug_categoria: '',
+      categoria: '',
     });
 
     //ACT

@@ -13,13 +13,13 @@ test('/categorias/:id_categoria/subcategorias/:id_subcategoria', async (t) => {
     const categoriaPadre = await categoriasRepository.add({
       nombre: 'Cat Padre ' + Date.now(),
       descripcion: 'Padre para sub PUT',
-      slug_categoria: '',
+      categoria: '',
     });
 
     const subcategoriaCreada = await subcategoriasRepository.add({
       id_categoria: categoriaPadre.id_categoria,
       nombre: 'Sub original ' + Date.now(),
-      slug_subcategoria: '',
+      subcategoria: '',
     });
 
     const nuevoNombreSub = 'Sub editada ' + Date.now();
@@ -57,13 +57,13 @@ test('/categorias/:id_categoria/subcategorias/:id_subcategoria', async (t) => {
     const categoriaPadre = await categoriasRepository.add({
       nombre: 'Cat Padre ' + Date.now(),
       descripcion: 'Padre para sub DELETE',
-      slug_categoria: '',
+      categoria: '',
     });
 
     const subcategoriaABorrar = await subcategoriasRepository.add({
       id_categoria: categoriaPadre.id_categoria,
       nombre: 'Sub a borrar ' + Date.now(),
-      slug_subcategoria: '',
+      subcategoria: '',
     });
 
     // Act

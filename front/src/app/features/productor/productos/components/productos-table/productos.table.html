@@ -1,0 +1,348 @@
+<form #productoForm="ngForm">
+  <p-table
+    #productosTable
+    [value]="this.productos()"
+    dataKey="id_producto"
+    editMode="row"
+    size="small"
+    [scrollable]="true"
+    [rows]="this.limit()"
+    [first]="this.first()"
+    [totalRecords]="this.total()"
+    [lazy]="true"
+    [rowHover]="true"
+  >
+    <ng-template #caption>
+      <div class="flex justify-between items-center">
+        <span class="text-xl font-bold">Mis productos</span>
+        <button
+          pButton
+          type="button"
+          size="small"
+          label="Nuevo Producto"
+          /* (click)="agregarFilaInline()" */
+        >
+          <svg data-p-icon="plus" />
+        </button>
+      </div>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="8">
+          <div class="flex flex-col items-center justify-center gap-3 py-10 text-center">
+            <div
+              class="w-14 h-14 rounded-full bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
+            >
+              <svg
+                data-p-icon="inbox"
+                width="28"
+                height="28"
+                class="text-surface-400 dark:text-surface-500"
+              />
+            </div>
+            <div>
+              <p class="m-0 font-semibold text-surface-900 dark:text-surface-0">
+                Aún no hay productos publicados por ti.
+              </p>
+              <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">
+                Puedes ingresar tu primer producto.
+              </p>
+            </div>
+            <button type="button" pButton size="small">
+              <svg data-p-icon="plus" />
+              Add product
+            </button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #header>
+      <tr>
+        <th class="w15">Foto</th>
+        <th style="width: 18rem">Producto</th>
+        <th style="width: 12rem">Subcategoría</th>
+        <th style="width: 20rem">Descripción</th>
+        <th style="width: 5rem">Etiquetas</th>
+        <th style="width: 4.7rem">Stock</th>
+        <th style="width: 6rem">Precio</th>
+        <th style="width: 3rem">Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-producto let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="producto">
+        <td>
+          <p-cell-editor>
+            <ng-template #input> inputfile? </ng-template>
+            <ng-template #output>
+              <div class="flex items-center gap-3 w-15">
+                <app-foto-carrusel
+                  [altText]="producto.producto"
+                  [cdnUrl]="this.cdnUrl"
+                  [fotos]="producto.fotos"
+                ></app-foto-carrusel>
+                <!-- <img
+                  [src]="this.cdnUrl + producto.fotos[0]"
+                  [alt]="producto.nombre"
+                  width="40"
+                  height="40"
+                  class="rounded-md shadow"
+                /> -->
+              </div>
+            </ng-template>
+          </p-cell-editor>
+        </td>
+        <td>
+          <p-cell-editor>
+            <ng-template #input>
+              <textarea
+                name="nombre"
+                pInputText
+                type="text"
+                [(ngModel)]="this.productoSeleccionado().nombre"
+                class="w-full"
+                pSize="small"
+                rows="3"
+              ></textarea>
+            </ng-template>
+            <ng-template #output>
+              <div class="flex items-center gap-3">
+                <div class="flex flex-col">
+                  <span class="font-medium">{{ producto.nombre }}</span>
+                  <span class="text-xs text-surface-500 dark:text-surface-400">{{
+                    producto.producto
+                  }}</span>
+                </div>
+              </div>
+            </ng-template>
+          </p-cell-editor>
+        </td>
+        <td>
+          <p-cell-editor>
+            <ng-template #input>
+              <div class="flex flex-col gap-2 py-1">
+                <!-- Select Categoría -->
+                <p-select
+                  name="categoria"
+                  [options]="this.categoriasResource.value() || []"
+                  optionLabel="nombre"
+                  optionValue="categoria"
+                  placeholder="Categoría"
+                  appendTo="body"
+                  class="w-full"
+                  size="small"
+                  [(ngModel)]="this.productoSeleccionado().categoria"
+                >
+                  <ng-template let-categoria #item>
+                    <div class="flex items-center gap-2">
+                      <i [class]="categoria.icono" style="font-size: 1.1rem"></i>
+                      <span>{{ categoria.nombre }}</span>
+                    </div>
+                  </ng-template>
+                </p-select>
+
+                <!-- Select Subcategoría -->
+                <p-select
+                  name="subcategoria"
+                  [options]="this.subcategoriasResource.value() || []"
+                  optionLabel="nombre"
+                  optionValue="subcategoria"
+                  placeholder="Subcategoría"
+                  appendTo="body"
+                  class="w-full"
+                  size="small"
+                  [(ngModel)]="this.productoSeleccionado().subcategoria"
+                >
+                  <ng-template let-subcategoria #item>
+                    <div class="flex items-center gap-2">
+                      <i [class]="subcategoria.icono" style="font-size: 1.1rem"></i>
+                      <span>{{ subcategoria.nombre }}</span>
+                    </div>
+                  </ng-template>
+                </p-select>
+              </div>
+            </ng-template>
+            <ng-template #output>
+              <div class="flex flex-col">
+                <span class="text-xs text-surface-500 dark:text-surface-400">{{
+                  producto.categoria
+                }}</span>
+                <span class="font-medium">{{ producto.subcategoria }}</span>
+              </div>
+            </ng-template>
+          </p-cell-editor>
+        </td>
+        <td>
+          <p-cell-editor>
+            <ng-template #input>
+              <textarea
+                name="descripcion"
+                pInputText
+                type="text"
+                [(ngModel)]="this.productoSeleccionado().descripcion"
+                class="w-full"
+                pSize="small"
+                rows="3"
+              ></textarea>
+            </ng-template>
+            <ng-template #output>
+              {{ producto.descripcion }}
+            </ng-template>
+          </p-cell-editor>
+        </td>
+        <td>
+          <p-cell-editor>
+            <ng-template #input>
+              <div class="flex justify-center">
+                <p-select
+                  name="etiquetas"
+                  multiple="true"
+                  [options]="this.etiquetasResource.value() || []"
+                  [(ngModel)]="this.productoSeleccionado().etiquetas"
+                  optionLabel="nombre"
+                  optionValue="etiqueta"
+                  placeholder="Selecciona las etiquetas"
+                  appendTo="body"
+                  class="w-full"
+                  size="small"
+                  [checkmark]="true"
+                  [showClear]="true"
+                  styleClass="w-full overflow-y-auto"
+                  class="w-full md:w-56"
+                />
+              </div>
+            </ng-template>
+            <ng-template #output>
+              {{ producto.etiquetas }}
+            </ng-template>
+          </p-cell-editor>
+        </td>
+        <td>
+          <p-cell-editor>
+            <ng-template #input>
+              <p-inputnumber
+                name="cantidad_disponible"
+                [(ngModel)]="this.productoSeleccionado().cantidad_disponible"
+                fluid
+                size="small"
+                [maxlength]="10"
+              />
+            </ng-template>
+            <ng-template #output>
+              {{ producto.cantidad_disponible }}
+            </ng-template>
+          </p-cell-editor>
+        </td>
+        <td>
+          <p-cell-editor>
+            <ng-template #input>
+              <p-inputnumber
+                name="precio"
+                [(ngModel)]="this.productoSeleccionado().precio"
+                mode="currency"
+                currency="UYU"
+                fluid
+                size="small"
+                maxFractionDigits="1"
+                [maxlength]="10"
+              />
+            </ng-template>
+            <ng-template #output>
+              <span class="font-semibold">{{ '$' + producto.precio }}</span>
+            </ng-template>
+          </p-cell-editor>
+        </td>
+        <td>
+          <div class="flex justify-center w-full">
+            @if (editing) {
+              <button
+                pButton
+                pRipple
+                pSaveEditableRow
+                [severity]="'success'"
+                type="submit"
+                text
+                rounded
+                title="Guardar"
+                size="small"
+                (click)="onRowEditSave(producto)"
+              >
+                <svg data-p-icon="check" />
+              </button>
+
+              <button
+                pButton
+                pRipple
+                pCancelEditableRow
+                type="button"
+                text
+                rounded
+                severity="secondary"
+                title="Cancelar"
+                size="small"
+                (click)="onRowEditCancel(producto, ri)"
+              >
+                <svg data-p-icon="times" />
+              </button>
+            } @else {
+              <button
+                pButton
+                pRipple
+                pInitEditableRow
+                type="button"
+                text
+                rounded
+                severity="primary"
+                title="Editar"
+                size="small"
+                iconOnly
+                (click)="onRowEditInit(producto)"
+              >
+                <svg data-p-icon="pencil" />
+              </button>
+              <button
+                pButton
+                pRipple
+                type="button"
+                text
+                rounded
+                severity="danger"
+                title="Borrar"
+                size="small"
+              >
+                <svg data-p-icon="trash" />
+              </button>
+              @if (producto.activo === true) {
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  text
+                  rounded
+                  severity="danger"
+                  title="Desactivar"
+                  size="small"
+                >
+                  <svg data-p-icon="ban" />
+                </button>
+              }
+              @if (producto.activo === false) {
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  text
+                  rounded
+                  severity="danger"
+                  title="Activar"
+                  size="small"
+                >
+                  <svg data-p-icon="times" />
+                </button>
+              }
+            }
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</form>

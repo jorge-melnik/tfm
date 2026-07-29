@@ -46,3 +46,12 @@ footer {
   --p-tabs-active-bar-background: var(--p-primary-color);
   --p-tabs-tablist-border-width: 0;
 }
+
+/* Estilo para todas las tablas */
+p-table {
+  min-width: 70rem;
+}
+
+p-cell-editor p-inputnumber input {
+  text-align: right;
+}

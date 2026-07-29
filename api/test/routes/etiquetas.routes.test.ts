@@ -11,7 +11,7 @@ test('API /etiquetas', async (t) => {
   //CREATE
   await t.test('POST /admin/etiquetas', async () => {
     // Arrange
-    const slug_etiqueta = etiquetasRepository.createSlug(nombre); //Necesario para chequearlo
+    const etiqueta = etiquetasRepository.createSlug(nombre); //Necesario para chequearlo
 
     // Act
     const res = await app.inject({
@@ -19,7 +19,7 @@ test('API /etiquetas', async (t) => {
       url: '/admin/etiquetas',
       payload: {
         nombre,
-        slug_etiqueta: '',
+        etiqueta: '',
       },
     });
 
@@ -29,7 +29,7 @@ test('API /etiquetas', async (t) => {
     assert.equal(res.statusCode, 201, 'No coincide statusCode');
     assert.ok(etiquetaCreada.id_etiqueta, 'Debería tener id_etiqueta');
     assert.equal(etiquetaCreada.nombre, nombre, 'No coincide el nombre enviado');
-    assert.equal(etiquetaCreada.slug_etiqueta, slug_etiqueta, 'No coincide el slug');
+    assert.equal(etiquetaCreada.etiqueta, etiqueta, 'No coincide el slug');
   });
 
   //READ
@@ -37,7 +37,7 @@ test('API /etiquetas', async (t) => {
     // Arrange
     await etiquetasRepository.add({
       nombre: 'Etiqueta List Test ' + Date.now(),
-      slug_etiqueta: 'list-test-' + Date.now(),
+      etiqueta: 'list-test-' + Date.now(),
     });
 
     // Act
@@ -77,7 +77,7 @@ test('API /etiquetas', async (t) => {
     const slugOriginal = etiquetasRepository.createSlug(nombreOriginal);
     const creada = await etiquetasRepository.add({
       nombre: nombreOriginal,
-      slug_etiqueta: slugOriginal,
+      etiqueta: slugOriginal,
     });
 
     const nuevoNombre = 'Actualizada ' + Date.now();
@@ -98,14 +98,14 @@ test('API /etiquetas', async (t) => {
     assert.equal(res.statusCode, 204, 'No coincide statusCode');
     assert.equal(editada.id_etiqueta, creada.id_etiqueta, 'No coincide el ID');
     assert.equal(editada.nombre, nuevoNombre, 'El nombre no se actualizó');
-    assert.equal(editada.slug_etiqueta, slugOriginal, 'El slug no debería haber cambiado');
+    assert.equal(editada.etiqueta, slugOriginal, 'El slug no debería haber cambiado');
   });
 
   await t.test('DELETE /:id_etiqueta - debería borrar la etiqueta por ID (204)', async () => {
     // Arrange
     const creada = await etiquetasRepository.add({
       nombre: 'Para Borrar ' + Date.now(),
-      slug_etiqueta: 'borrar-' + Date.now(),
+      etiqueta: 'borrar-' + Date.now(),
     });
 
     // Act

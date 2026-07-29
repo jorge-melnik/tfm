@@ -13,3 +13,8 @@ export interface TableColumn {
     | 'subcategoria'
     | 'etiquetas';
 }
+
+export interface SortOption {
+  label: string;
+  value: string;
+}

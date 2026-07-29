@@ -12,14 +12,14 @@ test('/admin/categorias/:id_categoria/subcategorias', async (t) => {
   const datosCategoria = {
     nombre,
     descripcion: 'Descripcion ' + Date.now(),
-    slug_categoria: '',
+    categoria: '',
   };
 
   const categoriaPadre = await categoriasRepository.add(datosCategoria); //Asumimos que esto funciona.
   const datosSubcategoria = {
     id_categoria: categoriaPadre.id_categoria,
     nombre,
-    slug_subcategoria: '',
+    subcategoria: '',
   };
 
   //CREATE
@@ -82,7 +82,7 @@ test('/admin/categorias/:id_categoria/subcategorias', async (t) => {
       assert.equal(res.statusCode, 200);
       assert.equal(subcategoria.id_categoria, subcategoriaCreada.id_categoria);
       assert.equal(subcategoria.nombre, subcategoriaCreada.nombre);
-      assert.equal(subcategoria.slug_categoria, subcategoriaCreada.slug_categoria);
+      assert.equal(subcategoria.categoria, subcategoriaCreada.categoria);
     },
   );
 
@@ -207,16 +207,16 @@ test('/admin/categorias/:id_categoria/subcategorias/:id_subcategoria/etiquetas',
   const categoriaPadre: Categoria = await categoriasRepository.add({
     nombre,
     descripcion: 'Desc ' + Date.now(),
-    slug_categoria: '',
+    categoria: '',
   });
 
   const subcategoria: Subcategoria = await subcategoriasRepository.add({
     id_categoria: categoriaPadre.id_categoria,
     nombre: 'Sub ' + nombre,
-    slug_subcategoria: '',
+    subcategoria: '',
   });
 
-  const etiqueta = await etiquetasRepository.add({ nombre, slug_etiqueta: '' });
+  const etiqueta = await etiquetasRepository.add({ nombre, etiqueta: '' });
   const idEtiquetaPrueba = etiqueta.id_etiqueta;
   const baseUrl = `/admin/categorias/${categoriaPadre.id_categoria}/subcategorias/${subcategoria.id_subcategoria}/etiquetas`;
 

@@ -12,14 +12,14 @@ test('Subcategorias Repository', async (t) => {
     const nombre = 'Nombre ' + Date.now();
     const categoria: Categoria = await categoriasRepository.add({
       nombre,
-      slug_categoria: categoriasRepository.createSlug(nombre),
+      categoria: categoriasRepository.createSlug(nombre),
       descripcion: 'Descripcion' + Date.now(),
     });
     const cantidadAnterior = await subcategoriasRepository.getCount(true);
     await subcategoriasRepository.add({
       id_categoria: categoria.id_categoria,
       nombre,
-      slug_subcategoria: subcategoriasRepository.createSlug(nombre),
+      subcategoria: subcategoriasRepository.createSlug(nombre),
     });
     const cantidadActual = await subcategoriasRepository.getCount(true);
 
@@ -32,14 +32,14 @@ test('Subcategorias Repository', async (t) => {
     const nombre = 'Nombre deactivate' + Date.now();
     const categoria: Categoria = await categoriasRepository.add({
       nombre,
-      slug_categoria: categoriasRepository.createSlug(nombre),
+      categoria: categoriasRepository.createSlug(nombre),
       descripcion: 'Descripcion' + Date.now(),
     });
 
     const subcategoria = await subcategoriasRepository.add({
       id_categoria: categoria.id_categoria,
       nombre,
-      slug_subcategoria: subcategoriasRepository.createSlug(nombre),
+      subcategoria: subcategoriasRepository.createSlug(nombre),
     });
 
     await subcategoriasRepository.deactivate(subcategoria.id_subcategoria);
@@ -71,14 +71,14 @@ test('Subcategorias Repository', async (t) => {
     const nombre = 'Nombre activate ' + Date.now();
     const categoria: Categoria = await categoriasRepository.add({
       nombre,
-      slug_categoria: categoriasRepository.createSlug(nombre),
+      categoria: categoriasRepository.createSlug(nombre),
       descripcion: 'Descripcion' + Date.now(),
     });
 
     const subcategoria = await subcategoriasRepository.add({
       id_categoria: categoria.id_categoria,
       nombre,
-      slug_subcategoria: subcategoriasRepository.createSlug(nombre),
+      subcategoria: subcategoriasRepository.createSlug(nombre),
     });
 
     await subcategoriasRepository.deactivate(subcategoria.id_subcategoria);
@@ -102,19 +102,19 @@ test('Subcategorias Repository (Etiquetas)', async (t) => {
     const nombre = 'CatAdd ' + Date.now();
     const categoria: Categoria = await categoriasRepository.add({
       nombre,
-      slug_categoria: '',
+      categoria: '',
       descripcion: 'Desc',
     });
 
     const subcategoria = await subcategoriasRepository.add({
       id_categoria: categoria.id_categoria,
       nombre: 'Sub ' + nombre,
-      slug_subcategoria: '',
+      subcategoria: '',
     });
 
     const etiqueta = await etiquetasRepository.add({
       nombre,
-      slug_etiqueta: '',
+      etiqueta: '',
     });
 
     // Act
@@ -138,19 +138,19 @@ test('Subcategorias Repository (Etiquetas)', async (t) => {
     const nombre = 'Cat Remove ' + Date.now();
     const categoria: Categoria = await categoriasRepository.add({
       nombre,
-      slug_categoria: categoriasRepository.createSlug(nombre),
+      categoria: categoriasRepository.createSlug(nombre),
       descripcion: 'Desc',
     });
 
     const subcategoria = await subcategoriasRepository.add({
       id_categoria: categoria.id_categoria,
       nombre: 'Sub ' + nombre,
-      slug_subcategoria: subcategoriasRepository.createSlug('Sub ' + nombre),
+      subcategoria: subcategoriasRepository.createSlug('Sub ' + nombre),
     });
 
     const etiqueta = await etiquetasRepository.add({
       nombre,
-      slug_etiqueta: '',
+      etiqueta: '',
     });
     await subcategoriasRepository.addEtiqueta(
       categoria.id_categoria,

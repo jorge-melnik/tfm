@@ -4,7 +4,7 @@ import { Etiqueta, Subcategoria } from '@schemas/categoria.schema.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 
 const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
-  fastify.get('/etiquetas', {
+  fastify.get('/', {
     schema: {
       tags: ['Subcategorias'],
       summary: 'READ etiquetas.',
@@ -12,7 +12,7 @@ const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, o
         Devuelve el listado completo de etiquetas globales existentes en el sistema. 
       `,
       params: Type.Object({
-        slug_subcategoria: Subcategoria.properties.slug_subcategoria,
+        subcategoria: Subcategoria.properties.subcategoria,
       }),
       response: {
         200: Type.Array(Etiqueta, {
@@ -27,7 +27,7 @@ const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, o
       },
     },
     handler: async function (req, reply) {
-      return subcategoriasRepository.getEtiquetas(req.params.slug_subcategoria);
+      return subcategoriasRepository.getEtiquetas(req.params.subcategoria);
     },
   });
 
@@ -37,7 +37,7 @@ const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, o
       summary: 'ADD etiqueta',
       description: 'Permite asociar una subcategoría con una etiqueta ya existente.',
       params: Type.Object({
-        slug_subcategoria: Subcategoria.properties.slug_subcategoria,
+        subcategoria: Subcategoria.properties.subcategoria,
       }),
       body: Type.Object({
         id_etiqueta: Etiqueta.properties.id_etiqueta,
@@ -51,7 +51,7 @@ const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, o
     handler: async function (req, reply) {
       reply.code(204);
       const subcategoria = await subcategoriasRepository.getOneBy({
-        slug_subcategoria: req.params.slug_subcategoria,
+        subcategoria: req.params.subcategoria,
       });
       return subcategoriasRepository.addEtiqueta(subcategoria.id_subcategoria, req.body.id_etiqueta);
     },
@@ -64,10 +64,10 @@ const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, o
       description:
         'Permite determinar en una única solicitud las etiquetas que deben quedar asociadas a la subcategoria.',
       params: Type.Object({
-        slug_subcategoria: Subcategoria.properties.slug_subcategoria,
+        subcategoria: Subcategoria.properties.subcategoria,
       }),
       body: Type.Object({
-        slug_subcategoria: Subcategoria.properties.slug_subcategoria,
+        subcategoria: Subcategoria.properties.subcategoria,
         id_etiquetas: Type.Array(Etiqueta.properties.id_etiqueta),
       }),
       response: {
@@ -79,7 +79,7 @@ const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, o
     handler: async function (req, reply) {
       reply.code(204);
       const subcategoria = await subcategoriasRepository.getOneBy({
-        slug_subcategoria: req.params.slug_subcategoria,
+        subcategoria: req.params.subcategoria,
       });
       return subcategoriasRepository.setEtiquetas(subcategoria.id_subcategoria, req.body.id_etiquetas);
     },
@@ -91,7 +91,7 @@ const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, o
       summary: 'REMOVE etiqueta',
       description: 'Permite desasociar una subcategoría con una etiqueta.',
       params: Type.Object({
-        slug_subcategoria: Subcategoria.properties.slug_subcategoria,
+        subcategoria: Subcategoria.properties.subcategoria,
         id_etiqueta: Etiqueta.properties.id_etiqueta,
       }),
       response: {
@@ -103,7 +103,7 @@ const etiquetasSubcategoriaRoutes: FastifyPluginAsyncTypebox = async (fastify, o
     handler: async function (req, reply) {
       reply.code(204);
       const subcategoria = await subcategoriasRepository.getOneBy({
-        slug_subcategoria: req.params.slug_subcategoria,
+        subcategoria: req.params.subcategoria,
       });
       return subcategoriasRepository.removeEtiqueta(subcategoria.id_subcategoria, req.params.id_etiqueta);
     },

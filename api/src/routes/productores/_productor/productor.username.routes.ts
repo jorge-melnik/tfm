@@ -16,9 +16,9 @@ const productorUsernameRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
       tags: ['Productores'],
       summary: 'READ productor.',
       description: `
-        Busca y devuelve un productor por su username (slug). Todos los usuarios pueden obtener la info de un productor (incluido el mismo) con este endpoint
+        Busca y devuelve un productor por su productor (slug). Todos los usuarios pueden obtener la info de un productor (incluido el mismo) con este endpoint
       `,
-      params: Type.Object({ username: Productor.properties.username }),
+      params: Type.Object({ productor: Productor.properties.username }),
       response: {
         200: Productor,
         500: DeAcaErrorResponse,
@@ -26,7 +26,7 @@ const productorUsernameRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
     },
     // preHandler: //FIXME No se que verificar aca:
     handler: async function (req, reply) {
-      return productorRepository.getOneBy({ username: req.params.username });
+      return productorRepository.getOneBy({ username: req.params.productor });
     },
   });
 
@@ -37,7 +37,7 @@ const productorUsernameRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
       description: `
         Permite que el productor autenticado actualice sus propios datos. 
       `,
-      params: Type.Object({ username: Productor.properties.username }),
+      params: Type.Object({ productor: Productor.properties.username }),
       body: Productor,
       response: {
         204: Type.Null(),
@@ -47,13 +47,12 @@ const productorUsernameRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
     // preHandler : //FIXME: fastify.seModificaASiMismo
     handler: async function (req, reply) {
       reply.code(204);
-      const { username } = req.params;
       const { presentacion, nombres, apellidos, email, celular } = req.body;
       const client = await myPool.connect();
       try {
         const prodRepoWT: ProductorRepositoryClass = productorRepository.withTransaction(client);
         const dpRepoWT: DatosPersonalessRepositoryClass = datosPersonalesRepository.withTransaction(client);
-        const productor = await prodRepoWT.getOneBy({ username });
+        const productor = await prodRepoWT.getOneBy({ username: req.params.productor });
         const id_productor = productor.id_productor;
         await client.query('BEGIN;');
         await prodRepoWT.update(id_productor, { presentacion }); //Actualizo datos específicos del productor
@@ -80,7 +79,7 @@ const productorUsernameRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
       description: `
         Permite que el usuario se de de baja como productor, desactivando (no borrando) sus rol de productor. 
       `,
-      params: Type.Object({ username: Productor.properties.username }),
+      params: Type.Object({ productor: Productor.properties.username }),
       response: {
         204: Type.Null(),
         500: DeAcaErrorResponse,
@@ -89,7 +88,7 @@ const productorUsernameRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
     // preHandler : //FIXME: fastify.seModificaASiMismo
     handler: async function (req, reply) {
       reply.code(204);
-      const productor = await productorRepository.getOneBy({ username: req.params.username });
+      const productor = await productorRepository.getOneBy({ username: req.params.productor });
       await productorRepository.deactivate(productor.id_productor);
     },
   });

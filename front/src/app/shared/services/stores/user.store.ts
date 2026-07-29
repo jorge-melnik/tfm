@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { Profile, Rol } from '@shared/types/user.types';
 
 @Injectable({
@@ -14,6 +14,10 @@ export class UserStore {
    */
   private _token = signal<string | null>(null);
   public token = this._token.asReadonly();
+
+  public esProductor = computed(() => this._user()?.rol_actual === 'PRODUCTOR');
+  public esConsumidor = computed(() => this._user()?.rol_actual === 'CONSUMIDOR');
+  public esAdministrador = computed(() => this._user()?.rol_actual === 'ADMIN');
 
   public setUser(usuario: Profile | null) {
     this._user.set(usuario);

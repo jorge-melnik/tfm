@@ -40,13 +40,13 @@ test('/productores', async (t) => {
   });
   const categoria: Categoria = await categoriasRepository.add({
     nombre: 'cat' + aleatorio,
-    slug_categoria: '',
+    categoria: '',
     descripcion: 'la descripcion',
   });
   const subcategoria: Subcategoria = await subcategoriasRepository.add({
     id_categoria: categoria.id_categoria,
     nombre: 'sub' + aleatorio,
-    slug_subcategoria: '',
+    subcategoria: '',
   });
   const productorCreado: Productor = await productorRepository.getOneBy({ email });
   productorCreado.foto_url = 'http://algo.com/foto.jpg';
@@ -56,7 +56,7 @@ test('/productores', async (t) => {
     id_productor: productorCreado.id_productor,
     nombre: 'Producto A ' + aleatorio,
     descripcion: 'La descripcion',
-    slug_producto: '',
+    producto: '',
     precio: 100,
     cantidad_disponible: 10,
     fotos: ['no-foto'],
@@ -66,7 +66,7 @@ test('/productores', async (t) => {
     id_productor: productorCreado.id_productor,
     nombre: 'Producto B ' + aleatorio,
     descripcion: 'La descripcion',
-    slug_producto: '',
+    producto: '',
     precio: 100,
     cantidad_disponible: 10,
     fotos: ['no-foto'],

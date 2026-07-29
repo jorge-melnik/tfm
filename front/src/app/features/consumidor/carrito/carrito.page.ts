@@ -25,7 +25,7 @@ export class CarritoPage {
 
   public limit = this._preferenciasStore.limit;
 
-  protected items = this._carritoService.items;
+  protected items = this._carritoService.productos;
 
   protected totalCarrito = this._carritoService.totalCarrito;
 

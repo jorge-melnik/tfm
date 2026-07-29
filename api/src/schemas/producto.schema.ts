@@ -1,28 +1,27 @@
 import { Type, Static } from '@sinclair/typebox';
 import { Productor } from './productores.schema.js';
-import { Subcategoria } from './categoria.schema.js';
-import { DatosPersonales } from './usuarios.schema.js';
+import { Categoria, Subcategoria } from './categoria.schema.js';
 
 export const POSTProducto = Type.Object({
-  id_productor: Productor.properties.id_productor,
-  id_subcategoria: Subcategoria.properties.id_subcategoria,
+  productor: Productor.properties.username,
+  subcategoria: Subcategoria.properties.subcategoria,
+  etiquetas: Type.Array(Type.String()),
   nombre: Type.String(),
-  slug_producto: Type.String(),
   descripcion: Type.String(),
-  precio: Type.Number(),
+  precio: Type.String(),
   cantidad_disponible: Type.Number(),
-  fotos: Type.Array(Type.String(), { description: 'las de urls de fotos.', minItems: 1, maxItems: 5 }),
-  id_etiquetas: Type.Array(Type.Integer()),
 });
 
 export const Producto = Type.Object({
   ...POSTProducto.properties,
   id_producto: Type.Integer(),
-  fotos: Type.Array(Type.String()),
-  video: Type.Optional(Type.String()),
-  etiquetas: Type.Array(Type.String()), //slug etiquetas
-  username: DatosPersonales.properties.username,
+  etiquetas: Type.Array(Type.String()),
   activo: Type.Optional(Type.Boolean()),
+  categoria: Categoria.properties.categoria,
+  producto: Type.String(),
+  fotos: Type.Array(Type.String(), { description: 'las de urls de fotos.', minItems: 1, maxItems: 5 }),
+  video: Type.Optional(Type.String()),
 });
 
 export type Producto = Static<typeof Producto>;
+export type POSTProducto = Static<typeof POSTProducto>;

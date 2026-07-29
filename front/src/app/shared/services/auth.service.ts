@@ -82,7 +82,7 @@ export class AuthService {
   public async cargarSesionAlArrancar(): Promise<void> {
     try {
       await this.refreshToken();
-      this.goToUserHome();
+      // this.goToUserHome(); TODO: Si hago esto pierdo los queryParams. Borrar línea?
     } catch (error) {
       return Promise.resolve();
     }

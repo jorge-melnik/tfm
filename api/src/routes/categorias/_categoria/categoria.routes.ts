@@ -1,16 +1,17 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { categoriasRepository } from '@repositories/categorias.repository.js';
-import { Categoria, Etiqueta } from '@schemas/categoria.schema.js';
+import { subcategoriasRepository } from '@repositories/subcategorias.repository.js';
+import { Categoria, Etiqueta, Subcategoria } from '@schemas/categoria.schema.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 
-const rutasSlugCategorias: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
+const categoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
     schema: {
       tags: ['Categorias'],
       summary: 'READ categoria',
-      description: 'Permite obtener una categoría por su slug.',
+      description: 'Permite obtener una categoría por su slug categoria.',
       params: Type.Object({
-        slug_categoria: Categoria.properties.slug_categoria,
+        categoria: Categoria.properties.categoria,
       }),
       response: {
         200: Categoria,
@@ -19,7 +20,7 @@ const rutasSlugCategorias: FastifyPluginAsyncTypebox = async (fastify, opts): Pr
       },
     },
     handler: async function (req, reply) {
-      return categoriasRepository.getOneBy({ slug_categoria: req.params.slug_categoria });
+      return categoriasRepository.getOneBy({ categoria: req.params.categoria });
     },
   });
 
@@ -29,9 +30,9 @@ const rutasSlugCategorias: FastifyPluginAsyncTypebox = async (fastify, opts): Pr
       summary: 'UPDATE categoria',
       description: 'Permite actualizar una categoria global.',
       params: Type.Object({
-        slug_categoria: Categoria.properties.slug_categoria,
+        categoria: Categoria.properties.categoria,
       }),
-      body: Type.Omit(Categoria, ['slug_categoria'], {
+      body: Type.Omit(Categoria, ['categoria'], {
         description: 'Datos necesarios para editar una categoria.',
         examples: [
           {
@@ -54,7 +55,7 @@ const rutasSlugCategorias: FastifyPluginAsyncTypebox = async (fastify, opts): Pr
     },
     handler: async function (req, reply) {
       reply.code(204);
-      const categoria = await categoriasRepository.getOneBy({ slug_categoria: req.params.slug_categoria });
+      const categoria = await categoriasRepository.getOneBy({ categoria: req.params.categoria });
       await categoriasRepository.update(categoria.id_categoria, req.body);
     },
   });
@@ -65,7 +66,7 @@ const rutasSlugCategorias: FastifyPluginAsyncTypebox = async (fastify, opts): Pr
       summary: 'DELETE categoria',
       description: 'Permite borrar una categoria global.',
       params: Type.Object({
-        slug_categoria: Categoria.properties.slug_categoria,
+        categoria: Categoria.properties.categoria,
       }),
       response: {
         204: Type.Null(),
@@ -75,7 +76,7 @@ const rutasSlugCategorias: FastifyPluginAsyncTypebox = async (fastify, opts): Pr
     },
     handler: async function (req, reply) {
       reply.code(204);
-      const categoria = await categoriasRepository.getOneBy({ slug_categoria: req.params.slug_categoria });
+      const categoria = await categoriasRepository.getOneBy({ categoria: req.params.categoria });
       await categoriasRepository.remove(categoria.id_categoria);
     },
   });
@@ -86,7 +87,7 @@ const rutasSlugCategorias: FastifyPluginAsyncTypebox = async (fastify, opts): Pr
       summary: 'ACTIVAR/DESACTIVAR Categoria',
       description: `Permite al ADMIN activar o desactivar Categoría`,
       params: Type.Object({
-        slug_categoria: Categoria.properties.slug_categoria,
+        categoria: Categoria.properties.categoria,
       }),
       body: Type.Object({ activo: Type.Boolean() }), //FIXME: Con fotos y video?
       response: {
@@ -97,9 +98,30 @@ const rutasSlugCategorias: FastifyPluginAsyncTypebox = async (fastify, opts): Pr
     // preHandler : //FIXME: Solo admin
     handler: async function (req, reply) {
       reply.code(204);
-      const categoria = await categoriasRepository.getOneBy({ slug_categoria: req.params.slug_categoria });
+      const categoria = await categoriasRepository.getOneBy({ categoria: req.params.categoria });
       if (req.body.activo) return categoriasRepository.activate(categoria.id_categoria);
       return categoriasRepository.deactivate(categoria.id_categoria);
+    },
+  });
+
+  fastify.get('/subcategorias', {
+    schema: {
+      tags: ['Subcategorias'],
+      summary: 'READ subcategorias',
+      description: `
+        Devuelve el listado de subcategorias de la categoría con el categoria especificado. 
+      `,
+
+      params: Type.Object({
+        categoria: Categoria.properties.categoria,
+      }),
+      response: {
+        200: Type.Array(Subcategoria),
+        500: DeAcaErrorResponse,
+      },
+    },
+    handler: async function (req, reply) {
+      return (await subcategoriasRepository.getBy({ categoria: req.params.categoria })).data;
     },
   });
 
@@ -111,7 +133,7 @@ const rutasSlugCategorias: FastifyPluginAsyncTypebox = async (fastify, opts): Pr
         Devuelve el listado completo de etiquetas globales existentes en el sistema. 
       `,
       params: Type.Object({
-        slug_categoria: Categoria.properties.slug_categoria,
+        categoria: Categoria.properties.categoria,
       }),
       response: {
         200: Type.Array(Etiqueta, {
@@ -126,9 +148,9 @@ const rutasSlugCategorias: FastifyPluginAsyncTypebox = async (fastify, opts): Pr
       },
     },
     handler: async function (req, reply) {
-      return categoriasRepository.getEtiquetas(req.params.slug_categoria);
+      return categoriasRepository.getEtiquetas(req.params.categoria);
     },
   });
 };
 
-export default rutasSlugCategorias;
+export default categoriasRoutes;

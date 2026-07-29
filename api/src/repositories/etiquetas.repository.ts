@@ -4,7 +4,7 @@ import { BaseRepository } from './base.repository.js';
 export class EtiquetasRepositoryClass extends BaseRepository<Etiqueta> {
   protected readonly tableName = 'etiquetas';
   protected readonly idName = 'id_etiqueta';
-  protected readonly slugName?: keyof Etiqueta = 'slug_etiqueta';
+  protected readonly slugName?: keyof Etiqueta = 'etiqueta';
 
   protected readonly baseQuery = `
     SELECT * 

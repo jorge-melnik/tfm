@@ -252,7 +252,7 @@
       <a [href]="rowData[col.key]">{{ rowData[col.key] }}</a>
     }
     @case ('categoria') {
-      {{ rowData['slug_categoria'] }}
+      {{ rowData['categoria'] }}
     }
     @case ('etiquetas') {
       <div class="flex flex-wrap gap-1">
@@ -314,6 +314,25 @@
             <div class="flex items-center gap-2">
               <i [class]="categoria.icono" style="font-size: 1.2rem"></i>
               <div>{{ categoria.nombre }}</div>
+            </div>
+          </ng-template>
+        </p-select>
+      </div>
+    }
+    @case ('subcategoria') {
+      <div class="flex items-center gap-2">
+        <p-select
+          [options]="this.subcategorias()"
+          [(ngModel)]="group[col.key]"
+          optionLabel="nombre"
+          optionValue="id_subcategoria"
+          appendTo="body"
+          class="w-full"
+        >
+          <ng-template let-subcategoria #item>
+            <div class="flex items-center gap-2">
+              <i [class]="subcategoria.icono" style="font-size: 1.2rem"></i>
+              <div>{{ subcategoria.nombre }}</div>
             </div>
           </ng-template>
         </p-select>

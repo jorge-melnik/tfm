@@ -17,12 +17,40 @@
               : 'Agotado'
           "
           [severity]="producto().cantidad_disponible > 0 ? 'success' : 'danger'"
-          class="absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 z-20"
+          class="absolute top-2.5 left-2.5 text-[10px] font-bold px-2 py-0.5 z-20 shadow-xs"
         />
 
-        @if (producto().etiquetas && producto().id_etiquetas.length > 0) {
+        <!-- MENÚ PRODUCTOR (Esquina Superior Derecha) -->
+        @if (esProductor()) {
+          <div class="absolute top-2.5 right-2.5 z-30">
+            <button
+              pButton
+              type="button"
+              icon="pi pi-ellipsis-v"
+              class="!w-8 !h-8 !p-0 rounded-full bg-surface-0/90 dark:bg-surface-900/90 backdrop-blur-md text-surface-700 dark:text-surface-200 border border-surface-200/80 dark:border-surface-700/80 hover:bg-surface-100 dark:hover:bg-surface-800 shadow-sm flex items-center justify-center"
+              (click)="menuGrid.toggle($event)"
+              pTooltip="Opciones"
+              tooltipPosition="left"
+            ></button>
+
+            <p-menu #menuGrid [model]="itemsProductor()" [popup]="true" appendTo="body">
+              <ng-template #item let-item>
+                <a
+                  pRipple
+                  class="flex items-center px-3 py-2 text-xs rounded-lg cursor-pointer transition-colors text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800"
+                  [ngClass]="item.styleClass"
+                >
+                  <i [class]="item.icon"></i>
+                  <span class="ms-2.5">{{ item.label }}</span>
+                </a>
+              </ng-template>
+            </p-menu>
+          </div>
+        }
+
+        @if (producto().etiquetas && producto().etiquetas.length > 0) {
           <div class="absolute top-2 right-2 flex flex-col w-[15%]">
-            @for (id_etiqueta of producto().id_etiquetas; track id_etiqueta) {
+            @for (id_etiqueta of producto().etiquetas; track id_etiqueta) {
               <img
                 [src]="this.cdnUrl() + '/etiquetas/' + id_etiqueta + '.webp'"
                 [alt]="producto().etiquetas?.[$index] || id_etiqueta"
@@ -40,7 +68,7 @@
       <span
         class="text-[11px] font-semibold tracking-wide text-emerald-600 dark:text-emerald-400 uppercase"
       >
-        Productor: {{ producto().username }}
+        Productor: {{ producto().productor }}
       </span>
 
       <h3
@@ -111,9 +139,9 @@
           class="absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 z-20"
         />
 
-        @if (producto().id_etiquetas && producto().id_etiquetas.length > 0) {
+        @if (producto().etiquetas && producto().etiquetas.length > 0) {
           <div class="absolute top-2 right-2 flex flex-col gap-1.5 z-20">
-            @for (id_etiqueta of producto().id_etiquetas; track id_etiqueta) {
+            @for (id_etiqueta of producto().etiquetas; track id_etiqueta) {
               <img
                 [src]="this.cdnUrl() + '/etiquetas/' + id_etiqueta + '.webp'"
                 [alt]="producto().etiquetas?.[$index] || id_etiqueta"
@@ -163,6 +191,7 @@
             pButton
             icon="pi pi-shopping-cart"
             class="button pButton-rounded bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2.5 border-none transition-colors text-sm whitespace-nowrap w-auto sm:w-full"
+            (click)="this.enviarAlCarrito(producto())"
           >
             Agregar
           </button>

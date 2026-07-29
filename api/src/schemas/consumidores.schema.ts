@@ -8,6 +8,13 @@ export const Consumidor = Type.Object({
   id_consumidor: DatosPersonales.properties.id_usuario,
 });
 
+export const Carrito = Type.Object({
+  id_consumidor: Consumidor.properties.id_consumidor,
+  cantidad_items: Type.Integer(),
+  cantidad_productos_distintos: Type.Integer(),
+  total: Producto.properties.precio,
+});
+
 export const ItemCarrito = Type.Object({
   id_productor: DatosPersonales.properties.id_usuario,
   id_producto: Producto.properties.id_producto,
@@ -15,13 +22,14 @@ export const ItemCarrito = Type.Object({
   cantidad: Type.Integer({ minimum: 1 }),
   precio: Producto.properties.precio,
   subtotal: Producto.properties.precio,
-  username: Producto.properties.username,
+  productor: Producto.properties.productor,
   nombre: Producto.properties.nombre,
   descripcion: Producto.properties.descripcion,
-  slug_producto: Producto.properties.slug_producto,
+  producto: Producto.properties.producto,
   fotos: Producto.properties.fotos,
   cantidad_disponible: Producto.properties.cantidad_disponible,
 });
 
 export type Consumidor = Static<typeof Consumidor>;
 export type ItemCarrito = Static<typeof ItemCarrito>;
+export type Carrito = Static<typeof Carrito>;

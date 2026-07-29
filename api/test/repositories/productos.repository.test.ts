@@ -29,13 +29,13 @@ test('Producto Repository', async (t) => {
 
   const categoria: Categoria = await categoriasRepository.add({
     nombre: 'pr' + aleatorio,
-    slug_categoria: '',
+    categoria: '',
     descripcion: 'la descripcion',
   });
   const subcategoria: Subcategoria = await subcategoriasRepository.add({
     id_categoria: categoria.id_categoria,
     nombre: 'pr' + aleatorio,
-    slug_subcategoria: '',
+    subcategoria: '',
   });
   const productorCreado: Productor = await productorRepository.getOneBy({ email });
 
@@ -44,13 +44,13 @@ test('Producto Repository', async (t) => {
     id_productor: productorCreado.id_productor,
     nombre: 'Producto A ' + aleatorio,
     descripcion: 'La descripcion',
-    slug_producto: '',
+    producto: '',
     precio: 100,
     cantidad_disponible: 10,
   });
 
-  const etiqueta1 = await etiquetasRepository.add({ nombre: `etpr-1${aleatorio}`, slug_etiqueta: '' });
-  const etiqueta2 = await etiquetasRepository.add({ nombre: `etpr-2${aleatorio}`, slug_etiqueta: '' });
+  const etiqueta1 = await etiquetasRepository.add({ nombre: `etpr-1${aleatorio}`, etiqueta: '' });
+  const etiqueta2 = await etiquetasRepository.add({ nombre: `etpr-2${aleatorio}`, etiqueta: '' });
 
   await t.test('addEtiquetas vacio', async () => {
     //ACT

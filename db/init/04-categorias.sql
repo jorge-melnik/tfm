@@ -3,10 +3,10 @@ CREATE TABLE IF NOT EXISTS categorias (
     nombre CITEXT NOT NULL UNIQUE CHECK (
         char_length(nombre) BETWEEN 3 AND 35
     ),
-    slug_categoria CITEXT NOT NULL UNIQUE CHECK (
-        char_length(slug_categoria) BETWEEN 3 AND 35
-        AND slug_categoria ~ '^[a-zA-Z0-9-]+$' 
-    ),-- TODO: TRIGGER para asegurarse que no se cambia el slug_categoria
+    categoria CITEXT NOT NULL UNIQUE CHECK (
+        char_length(categoria) BETWEEN 3 AND 35
+        AND categoria ~ '^[a-zA-Z0-9-]+$' 
+    ),-- TODO: TRIGGER para asegurarse que no se cambia el categoria
     descripcion TEXT,
     icono VARCHAR(24), --FIXME: Cambiar a NOT NULL
     color VARCHAR(7) NOT NULL DEFAULT '#6366F1', -- Color hexadecimal
@@ -22,10 +22,10 @@ CREATE TABLE IF NOT EXISTS subcategorias (
     nombre CITEXT NOT NULL CHECK (  -- el nombre es único únicamente en la subcategoría.
         char_length(nombre) BETWEEN 3 AND 35
     ),
-    slug_subcategoria CITEXT NOT NULL UNIQUE CHECK (
-        char_length(slug_subcategoria) BETWEEN 3 AND 35
-        AND slug_subcategoria ~ '^[a-zA-Z0-9-]+$' 
-    ),-- TODO: TRIGGER para asegurarse que no se cambia el slug_subcategoria
+    subcategoria CITEXT NOT NULL UNIQUE CHECK (
+        char_length(subcategoria) BETWEEN 3 AND 35
+        AND subcategoria ~ '^[a-zA-Z0-9-]+$' 
+    ),-- TODO: TRIGGER para asegurarse que no se cambia el subcategoria
     -- en api hereda color y/o ícono para que no quede tan cargado
     fecha_creacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -43,10 +43,10 @@ CREATE TABLE IF NOT EXISTS etiquetas (
     nombre CITEXT NOT NULL UNIQUE CHECK (
         char_length(nombre) BETWEEN 3 AND 35
     ),
-    slug_etiqueta CITEXT NOT NULL UNIQUE CHECK (
-        char_length(slug_etiqueta) BETWEEN 3 AND 35
-        AND slug_etiqueta ~ '^[a-zA-Z0-9-]+$' 
-    ),-- TODO: TRIGGER para asegurarse que no se cambia el slug_etiqueta
+    etiqueta CITEXT NOT NULL UNIQUE CHECK (
+        char_length(etiqueta) BETWEEN 3 AND 35
+        AND etiqueta ~ '^[a-zA-Z0-9-]+$' 
+    ),-- TODO: TRIGGER para asegurarse que no se cambia el etiqueta
     imagen TEXT, --FIXME: Podría ser clase icono o url de imagen. --FIXME: Hacer not null  usar el id o slug para persistir la imagen?
     color VARCHAR(7) NOT NULL DEFAULT '#6366F1' -- Color hexadecimal FIME: Sacar el default. Creo que no va a ser necesario color, porque ya la imagen tiene todo lo necesario.
 );

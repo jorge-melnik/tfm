@@ -13,7 +13,7 @@ import { AdminBasePage } from '../admin-base.page';
   styleUrl: './etiquetas.page.css',
 })
 export class EtiquetasPage extends AdminBasePage<Etiqueta> {
-  protected override idKey: keyof Etiqueta = 'slug_etiqueta';
+  protected override idKey: keyof Etiqueta = 'etiqueta';
   public override entidadName: string = 'etiqueta';
 
   protected _dataService = inject(EtiquetasService);
@@ -30,7 +30,7 @@ export class EtiquetasPage extends AdminBasePage<Etiqueta> {
       type: 'text',
     },
     {
-      key: 'slug_etiqueta',
+      key: 'etiqueta',
       keyTitle: 'Slug',
       type: 'text',
     },

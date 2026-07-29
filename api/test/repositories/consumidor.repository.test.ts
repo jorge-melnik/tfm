@@ -77,13 +77,13 @@ const miConsumidor: Consumidor = await consumidorRepository.getOneBy({ username:
 const miProductor: Productor = await productorRepository.getOneBy({ username: username1 });
 const categoria: Categoria = await categoriasRepository.add({
   nombre: 'con1' + aleatorio,
-  slug_categoria: '',
+  categoria: '',
   descripcion: 'la descripcion',
 });
 const subcategoria: Subcategoria = await subcategoriasRepository.add({
   id_categoria: categoria.id_categoria,
   nombre: 'con1' + aleatorio,
-  slug_subcategoria: '',
+  subcategoria: '',
 });
 
 const productoA: Producto = await productoRepository.add({
@@ -91,14 +91,14 @@ const productoA: Producto = await productoRepository.add({
   id_productor: miProductor.id_productor,
   nombre: 'Mi Prod A ' + aleatorio,
   descripcion: 'La descripcion',
-  slug_producto: '',
+  producto: '',
   precio: 100,
   cantidad_disponible: 10,
   fotos: ['no-foto'],
 });
 
-const etiqueta1 = await etiquetasRepository.add({ nombre: `con-1${aleatorio}`, slug_etiqueta: '' });
-const etiqueta2 = await etiquetasRepository.add({ nombre: `con-2${aleatorio}`, slug_etiqueta: '' });
+const etiqueta1 = await etiquetasRepository.add({ nombre: `con-1${aleatorio}`, etiqueta: '' });
+const etiqueta2 = await etiquetasRepository.add({ nombre: `con-2${aleatorio}`, etiqueta: '' });
 await productoRepository.addEtiquetas(miProductor.id_productor, productoA.id_producto, [
   etiqueta1.id_etiqueta,
   etiqueta2.id_etiqueta,
