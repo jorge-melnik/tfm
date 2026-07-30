@@ -16,6 +16,10 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '@shared/services/auth.service';
 import { TipoLogin } from '@shared/types/user.types';
 import { DialogService } from '@shared/services/dialog.service';
+import { InputPasswordModule } from 'primeng/inputpassword';
+import { Key } from '@primeicons/angular/key';
+import { Envelope } from '@primeicons/angular/envelope';
+import { EyeIcon, EyeSlashIcon } from 'primeng/icons';
 
 @Component({
   selector: 'app-login',
@@ -30,8 +34,13 @@ import { DialogService } from '@shared/services/dialog.service';
     InputGroupAddonModule,
     SelectButtonModule,
     InputTextModule,
+    InputPasswordModule,
     FormsModule,
     RouterLink,
+    EyeIcon,
+    EyeSlashIcon,
+    Key,
+    Envelope,
   ],
   templateUrl: './login.page.html',
 
@@ -44,6 +53,8 @@ export class LoginPage {
   public username = signal<string>('');
   public email = signal<string>('');
   public password = signal<string>('');
+
+  public mask = signal<boolean>(true);
 
   loginOptions: any[] = [
     { label: 'Email', value: 'email', icon: 'pi pi-envelope' },

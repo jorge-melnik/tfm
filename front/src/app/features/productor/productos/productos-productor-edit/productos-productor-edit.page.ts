@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-productos-productor-edit',
@@ -6,4 +6,7 @@ import { Component } from '@angular/core';
   templateUrl: './productos-productor-edit.page.html',
   styleUrl: './productos-productor-edit.page.css',
 })
-export class ProductosProductorEditPage {}
+export class ProductosProductorEditPage {
+  public productor = input.required<string>();
+  public producto = input.required<string>();
+}

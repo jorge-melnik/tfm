@@ -79,23 +79,7 @@ export class ProductosTable implements OnInit {
 
   public productoSeleccionado = signal<Producto>({ ...this.productoVacio });
 
-  // productoForm = form(
-  //   this.productoSeleccionado,
-  //   (schemaPath) => {
-  //     required(schemaPath.nombre);
-  //     required(schemaPath.descripcion);
-  //     required(schemaPath.precio);
-  //     required(schemaPath.cantidad_disponible);
-  //     required(schemaPath.categoria);
-  //     required(schemaPath.subcategoria);
-  //     required(schemaPath.etiquetas);
-  //   },
-  //   {
-  //     submission: {
-  //       action: async () => this.submitForm(),
-  //     },
-  //   },
-  // );
+  public agregarProducto = output();
 
   public categoriasResource = resource({
     defaultValue: [] as Categoria[],
