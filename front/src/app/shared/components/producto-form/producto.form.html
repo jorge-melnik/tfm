@@ -26,7 +26,7 @@
           name="nombre"
           autocomplete="off"
           class="w-full"
-          [(ngModel)]="this.producto().nombre"
+          [ngModel]="this.producto().nombre"
           required
         />
         <label for="nombre">Nombre del Producto</label>
@@ -45,6 +45,7 @@
       class="w-full"
       [showClear]="true"
       placeholder="Categoría"
+      required
     >
       <ng-template let-categoria #item>
         <div class="flex items-center gap-2">
@@ -65,6 +66,7 @@
       class="w-full"
       [showClear]="true"
       placeholder="Subcategoría"
+      required
     />
 
     <p-select
@@ -80,6 +82,7 @@
       optionValue="etiqueta"
       appendTo="body"
       [showClear]="true"
+      required
     />
 
     <p-floatlabel variant="on">
@@ -88,7 +91,7 @@
         name="descripcion"
         rows="3"
         class="w-full resize-none"
-        [(ngModel)]="this.producto().descripcion"
+        [ngModel]="this.producto().descripcion"
       ></textarea>
       <label for="descripcion">Descripción</label>
     </p-floatlabel>
@@ -112,7 +115,7 @@
       <p-floatlabel variant="on">
         <p-inputnumber
           name="cantidadDisponible"
-          [(ngModel)]="this.producto().cantidad_disponible"
+          [ngModel]="this.producto().cantidad_disponible"
           [showButtons]="true"
           buttonLayout="horizontal"
           spinnerMode="horizontal"

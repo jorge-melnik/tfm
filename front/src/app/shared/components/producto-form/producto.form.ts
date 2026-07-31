@@ -5,7 +5,7 @@ import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { Select } from 'primeng/select';
 import { InputNumber } from 'primeng/inputnumber';
-import { Form, FormsModule } from '@angular/forms';
+import { Form, FormsModule, NgForm } from '@angular/forms';
 import { Producto } from '@shared/types/producto';
 import { ButtonModule } from 'primeng/button';
 import { EtiquetasStore } from '@shared/services/stores/etiquetas.store';
@@ -42,8 +42,24 @@ export class ProductoForm implements OnInit {
     this.etiquetasStore.setEtiquetasSeleccionadas(this.producto().etiquetas);
   }
 
-  public guardarProducto(productoForm: Form) {
-    console.log('guardarProducto');
-    // this.guardar.emit();
+  public guardarProducto(form: NgForm): void {
+    if (form.invalid) {
+      form.control.markAllAsTouched();
+      return;
+    }
+
+    const productoActualizado: Producto = {
+      ...this.producto(),
+      nombre: form.value.nombre,
+      descripcion: form.value.descripcion,
+      precio: form.value.precio,
+      cantidad_disponible: form.value.cantidadDisponible,
+
+      categoria: this.etiquetasStore.categoriaSeleccionada()!,
+      subcategoria: this.etiquetasStore.subcategoriaSeleccionada()!,
+      etiquetas: this.etiquetasStore.etiquetasSeleccionadas(),
+    };
+
+    this.guardar.emit(productoActualizado);
   }
 }
