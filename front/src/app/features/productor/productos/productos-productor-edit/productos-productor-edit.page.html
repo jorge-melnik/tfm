@@ -1,2 +1,5 @@
-<p>productos-productor-edit works!</p>
-Productor: {{ this.productor() }} Producto: {{ this.producto() }}
+<div class="flex flex-col grow justify-center items-center h-full p-4 my-8">
+  @if (this.productoResource.hasValue()) {
+    <app-producto-form [producto]="this.productoResource.value()"></app-producto-form>
+  }
+</div>
