@@ -18,7 +18,7 @@ import { DialogService } from '@shared/services/dialog.service';
 import { FormsModule } from '@angular/forms';
 import { ProductosProductorService } from '@shared/services/productos-productor.service';
 
-import { Plus } from '@primeicons/angular/plus';
+import { Plus, PowerOff } from '@primeicons/angular';
 import { EmptyStateComponent } from '@shared/components/empty-state/empty-state.component';
 
 @Component({
@@ -38,6 +38,7 @@ import { EmptyStateComponent } from '@shared/components/empty-state/empty-state.
     FotoCarrusel,
     FormsModule,
     Plus,
+    PowerOff,
     EmptyStateComponent,
   ],
   templateUrl: './productos.table.html',
@@ -79,7 +80,10 @@ export class ProductosTable implements OnInit {
 
   public productoSeleccionado = signal<Producto>({ ...this.productoVacio });
 
-  public agregarProducto = output();
+  public desactivar = output<Producto>();
+  public activar = output<Producto>();
+  public borrar = output<Producto>();
+  public crear = output();
 
   public categoriasResource = resource({
     defaultValue: [] as Categoria[],

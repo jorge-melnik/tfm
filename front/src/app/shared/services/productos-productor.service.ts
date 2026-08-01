@@ -14,4 +14,14 @@ export class ProductosProductorService extends BaseService<Producto> {
     const url = `${this.buildUrl({ productor })}/${producto}`;
     return firstValueFrom(this.http.get<Producto>(url));
   }
+
+  public async desactivar(productor: string, producto: string) {
+    const url = `${this.buildUrl({ productor })}/${producto}`;
+    await firstValueFrom(this.http.patch<Producto>(url, { activo: false }));
+  }
+
+  public async activar(productor: string, producto: string) {
+    const url = `${this.buildUrl({ productor })}/${producto}`;
+    await firstValueFrom(this.http.patch<Producto>(url, { activo: true }));
+  }
 }

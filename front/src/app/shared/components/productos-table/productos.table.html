@@ -14,7 +14,7 @@
   >
     <ng-template #caption>
       <div class="flex justify-between items-center">
-        <!-- <span class="text-xl font-bold">Mis productos</span> -->
+        <span class="text-xl font-bold">Mis productos</span>
         <button
           pButton
           type="button"
@@ -22,7 +22,7 @@
           label="Nuevo Producto"
           [iconOnly]="true"
           variant="text"
-          (click)="this.agregarProducto.emit()"
+          (click)="this.crear.emit()"
         >
           <svg data-p-icon="plus" />
         </button>
@@ -290,6 +290,7 @@
                 severity="danger"
                 title="Borrar"
                 size="small"
+                (click)="this.borrar.emit(producto)"
               >
                 <svg data-p-icon="trash" />
               </button>
@@ -303,8 +304,9 @@
                   severity="danger"
                   title="Desactivar"
                   size="small"
+                  (click)="this.desactivar.emit(producto)"
                 >
-                  <svg data-p-icon="ban" />
+                  <svg data-p-icon="power-off" />
                 </button>
               }
               @if (producto.activo === false) {
@@ -314,11 +316,12 @@
                   type="button"
                   text
                   rounded
-                  severity="danger"
+                  severity="success"
                   title="Activar"
                   size="small"
+                  (click)="this.activar.emit(producto)"
                 >
-                  <svg data-p-icon="times" />
+                  <svg data-p-icon="power-off" />
                 </button>
               }
             }

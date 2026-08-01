@@ -4,8 +4,6 @@
   "service": "api",
   "workspaceFolder": "/deaca/api",
   "remoteUser": "node",
-  "postCreateCommand": "npm install",
-  "shutdownAction": "stopCompose",
   "customizations": {
     "vscode": {
       "extensions": [

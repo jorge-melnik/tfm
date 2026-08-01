@@ -4,8 +4,6 @@
   "service": "front",
   "workspaceFolder": "/deaca/front",
   "remoteUser": "node",
-  "postCreateCommand": "npm install",
-  "shutdownAction": "stopCompose",
   "customizations": {
     "vscode": {
       "extensions": [

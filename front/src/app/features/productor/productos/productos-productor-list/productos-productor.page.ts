@@ -1,5 +1,5 @@
 import { Component, computed, inject, model, OnInit, resource, signal } from '@angular/core';
-import { ProductosTable } from '../components/productos-table/productos.table';
+import { ProductosTable } from '../../../../shared/components/productos-table/productos.table';
 import { ProductosFilter } from '@shared/components/productos-filter/productos.filter';
 import { ApiQueryParams } from '@shared/types/api.types';
 import { environment } from '@env/environment';
@@ -11,12 +11,19 @@ import { ProductosProductorService } from '@shared/services/productos-productor.
 import { DataViewModule } from 'primeng/dataview';
 import { ProductoCard } from '@shared/components/producto-card/producto.card';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ErrorStateComponent } from "@shared/components/error-state/error-state.component";
-import { EmptyStateComponent } from "@shared/components/empty-state/empty-state.component";
+import { ErrorStateComponent } from '@shared/components/error-state/error-state.component';
+import { EmptyStateComponent } from '@shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-productoos',
-  imports: [ProductosTable, ProductosFilter, DataViewModule, ProductoCard, ErrorStateComponent, EmptyStateComponent],
+  imports: [
+    ProductosTable,
+    ProductosFilter,
+    DataViewModule,
+    ProductoCard,
+    ErrorStateComponent,
+    EmptyStateComponent,
+  ],
   templateUrl: './productos-productor.page.html',
   styleUrl: './productos-productor.page.css',
 })
@@ -114,6 +121,7 @@ export class ProductosPage implements OnInit {
   }
 
   async gotToCrear() {
+    console.log('gotToCrear');
     this._router.navigate(['crear'], {
       relativeTo: this._route,
     });
@@ -134,11 +142,29 @@ export class ProductosPage implements OnInit {
   //fixme todos estos gotTo y cambiar activo se podrían simplificar en dos métodos.
   async desactivarProducto(p: Producto) {
     console.log('desactivar producto');
+    try {
+      await this._productoService.desactivar(p.productor, p.producto);
+      this.productosResource.reload();
+    } catch (error: any) {
+      this._dialogService.addError(error.message);
+    }
   }
   async activarProducto(p: Producto) {
     console.log('activar producto');
+    try {
+      await this._productoService.activar(p.productor, p.producto);
+      this.productosResource.reload();
+    } catch (error: any) {
+      this._dialogService.addError(error.message);
+    }
   }
   async borrarProducto(p: Producto) {
     console.log('activar producto');
+    try {
+      await this._productoService.remove(p.producto, { productor: p.productor });
+      this.productosResource.reload();
+    } catch (error: any) {
+      this._dialogService.addError(error.message);
+    }
   }
 }
