@@ -7,12 +7,11 @@ import { environment } from '@env/environment';
 import { Tag } from 'primeng/tag';
 import { ItemCarrito } from '@shared/types/item-carrito';
 import { DialogService } from '@shared/services/dialog.service';
-import { CurrencyPipe } from '@angular/common';
 import { ButtonDirective } from 'primeng/button';
 
 @Component({
   selector: 'app-carrito',
-  imports: [DataView, ItemCarritoComponent, Tag, CurrencyPipe, ButtonDirective],
+  imports: [DataView, ItemCarritoComponent, Tag, ButtonDirective],
   templateUrl: './carrito.page.html',
 
   styleUrl: './carrito.page.css',
@@ -33,7 +32,6 @@ export class CarritoPage {
     try {
       await this._carritoService.removeItem(item);
     } catch (error: any) {
-      console.error(error);
       this._dialogService.addError('No se pudo eliminar el item del carrito.');
     }
   }

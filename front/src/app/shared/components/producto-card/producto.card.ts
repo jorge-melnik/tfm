@@ -10,7 +10,7 @@ import { ItemCarrito } from '@shared/types/item-carrito';
 import { UserStore } from '@shared/services/stores/user.store';
 import { MenuItem } from 'primeng/api';
 import { Menu } from 'primeng/menu';
-import { PlusIcon } from 'primeng/icons';
+import { EllipsisV } from '@primeicons/angular';
 
 @Component({
   selector: 'app-producto-card',
@@ -22,7 +22,7 @@ import { PlusIcon } from 'primeng/icons';
     FotoCarrusel,
     TooltipModule,
     Menu,
-    PlusIcon,
+    EllipsisV,
   ],
   templateUrl: './producto.card.html',
 

@@ -11,10 +11,12 @@ import { ProductosProductorService } from '@shared/services/productos-productor.
 import { DataViewModule } from 'primeng/dataview';
 import { ProductoCard } from '@shared/components/producto-card/producto.card';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ErrorStateComponent } from "@shared/components/error-state/error-state.component";
+import { EmptyStateComponent } from "@shared/components/empty-state/empty-state.component";
 
 @Component({
   selector: 'app-productoos',
-  imports: [ProductosTable, ProductosFilter, DataViewModule, ProductoCard],
+  imports: [ProductosTable, ProductosFilter, DataViewModule, ProductoCard, ErrorStateComponent, EmptyStateComponent],
   templateUrl: './productos-productor.page.html',
   styleUrl: './productos-productor.page.css',
 })
@@ -86,13 +88,10 @@ export class ProductosPage implements OnInit {
 
       try {
         const response = await this._productoService.getBy({ queryParams, pagination, pathParams });
-
-        console.log({ response });
-
         return response;
       } catch (error: any) {
         this._dialogService.addError(error.message);
-        return { data: [], meta: { total: 0 } };
+        throw error;
       }
     },
   });

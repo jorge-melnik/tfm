@@ -18,7 +18,6 @@ import { TipoLogin } from '@shared/types/user.types';
 import { DialogService } from '@shared/services/dialog.service';
 import { InputPasswordModule } from 'primeng/inputpassword';
 import { Key } from '@primeicons/angular/key';
-import { Envelope } from '@primeicons/angular/envelope';
 import { EyeIcon, EyeSlashIcon } from 'primeng/icons';
 
 @Component({
@@ -40,7 +39,6 @@ import { EyeIcon, EyeSlashIcon } from 'primeng/icons';
     EyeIcon,
     EyeSlashIcon,
     Key,
-    Envelope,
   ],
   templateUrl: './login.page.html',
 
