@@ -1,7 +1,7 @@
 import { Component, inject, input, model, OnInit, output, resource, signal } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { TrashIcon, PencilIcon, CheckIcon, TimesIcon, BanIcon } from 'primeng/icons';
+import { TrashIcon, PencilIcon, CheckIcon, TimesIcon } from 'primeng/icons';
 import { SelectModule } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTagsModule } from 'primeng/inputtags';
@@ -34,7 +34,6 @@ import { EmptyStateComponent } from '@shared/components/empty-state/empty-state.
     PencilIcon,
     CheckIcon,
     TimesIcon,
-    BanIcon,
     FotoCarrusel,
     FormsModule,
     Plus,

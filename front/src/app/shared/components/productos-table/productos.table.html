@@ -56,19 +56,28 @@
           <p-cell-editor>
             <ng-template #input> inputfile? </ng-template>
             <ng-template #output>
-              <div class="flex items-center gap-3 w-15">
+              <div
+                class="relative flex items-center gap-3 w-15 rounded-md overflow-hidden transition-all duration-300"
+                [class.grayscale]="!producto.activo"
+                [class.opacity-60]="!producto.activo"
+              >
                 <app-foto-carrusel
                   [altText]="producto.producto"
-                  [cdnUrl]="this.cdnUrl"
+                  [cdnUrl]="cdnUrl"
                   [fotos]="producto.fotos"
-                ></app-foto-carrusel>
-                <!-- <img
-                  [src]="this.cdnUrl + producto.fotos[0]"
-                  [alt]="producto.nombre"
-                  width="40"
-                  height="40"
-                  class="rounded-md shadow"
-                /> -->
+                />
+
+                @if (!producto.activo) {
+                  <div
+                    class="absolute inset-0 bg-surface-900/30 backdrop-blur-[1px] flex items-center justify-center pointer-events-none z-10"
+                  >
+                    <span
+                      class="bg-surface-900/80 text-surface-0 text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-xs border border-surface-700 shadow-sm"
+                    >
+                      Inactivo
+                    </span>
+                  </div>
+                }
               </div>
             </ng-template>
           </p-cell-editor>
