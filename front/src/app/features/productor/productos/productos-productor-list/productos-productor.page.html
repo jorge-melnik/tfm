@@ -28,7 +28,10 @@
       [first]="this.first()"
       (cambioUnProducto)="this.cambioUnProducto($event)"
       [productor]="this.user()?.username || 'FIXME'"
-      (agregarProducto)="this.gotToCrear()"
+      (crear)="this.gotToCrear()"
+      (desactivar)="this.desactivarProducto($event)"
+      (activar)="this.activarProducto($event)"
+      (borrar)="this.borrarProducto($event)"
     ></app-productos-table>
   }
 
