@@ -67,17 +67,25 @@
 
       <p-floatlabel variant="on">
         <p-iconfield iconPosition="right">
-          <p-inputicon class="pi pi-key" />
-          <p-password
-            id="password"
+          <p-inputicon>
+            <svg data-p-icon="key"></svg>
+          </p-inputicon>
+          <input
+            pInputPassword
             name="password"
-            [(ngModel)]="this.password"
-            [feedback]="false"
-            [toggleMask]="true"
-            [fluid]="true"
             autocomplete="off"
-          />
-          <label for="password">Contraseña</label>
+            class="w-full"
+            [(ngModel)]="this.password"
+          /><label for="username">Contraseña</label>
+
+          @let mask = this.mask();
+          <p-inputicon (click)="this.mask.set(!mask)" style="cursor: pointer">
+            @if (mask) {
+              <svg data-p-icon="eye"></svg>
+            } @else {
+              <svg data-p-icon="eyeslash"></svg>
+            }
+          </p-inputicon>
         </p-iconfield>
       </p-floatlabel>
 

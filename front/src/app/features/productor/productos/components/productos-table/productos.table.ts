@@ -18,8 +18,8 @@ import { DialogService } from '@shared/services/dialog.service';
 import { FormsModule } from '@angular/forms';
 import { ProductosProductorService } from '@shared/services/productos-productor.service';
 
-import { Inbox } from '@primeicons/angular/inbox';
 import { Plus } from '@primeicons/angular/plus';
+import { EmptyStateComponent } from '@shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-productos-table',
@@ -37,8 +37,8 @@ import { Plus } from '@primeicons/angular/plus';
     BanIcon,
     FotoCarrusel,
     FormsModule,
-    Inbox,
     Plus,
+    EmptyStateComponent,
   ],
   templateUrl: './productos.table.html',
   styleUrl: './productos.table.css',
@@ -79,23 +79,7 @@ export class ProductosTable implements OnInit {
 
   public productoSeleccionado = signal<Producto>({ ...this.productoVacio });
 
-  // productoForm = form(
-  //   this.productoSeleccionado,
-  //   (schemaPath) => {
-  //     required(schemaPath.nombre);
-  //     required(schemaPath.descripcion);
-  //     required(schemaPath.precio);
-  //     required(schemaPath.cantidad_disponible);
-  //     required(schemaPath.categoria);
-  //     required(schemaPath.subcategoria);
-  //     required(schemaPath.etiquetas);
-  //   },
-  //   {
-  //     submission: {
-  //       action: async () => this.submitForm(),
-  //     },
-  //   },
-  // );
+  public agregarProducto = output();
 
   public categoriasResource = resource({
     defaultValue: [] as Categoria[],

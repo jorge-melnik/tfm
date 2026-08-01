@@ -10,10 +10,20 @@ import { ItemCarrito } from '@shared/types/item-carrito';
 import { UserStore } from '@shared/services/stores/user.store';
 import { MenuItem } from 'primeng/api';
 import { Menu } from 'primeng/menu';
+import { EllipsisV } from '@primeicons/angular';
 
 @Component({
   selector: 'app-producto-card',
-  imports: [CommonModule, CardModule, ButtonModule, TagModule, FotoCarrusel, TooltipModule, Menu],
+  imports: [
+    CommonModule,
+    CardModule,
+    ButtonModule,
+    TagModule,
+    FotoCarrusel,
+    TooltipModule,
+    Menu,
+    EllipsisV,
+  ],
   templateUrl: './producto.card.html',
 
   styleUrl: './producto.card.css',
@@ -27,11 +37,11 @@ export class ProductoCard {
   cdnUrl = input.required<string>();
 
   agregarAlCarrito = output<Pick<ItemCarrito, 'id_productor' | 'id_producto' | 'cantidad'>>();
-  verProducto = output<string>();
-  editarProducto = output<string>();
-  borrarProducto = output<string>();
-  desactivarProducto = output<string>();
-  activarProducto = output<string>();
+  verProducto = output<Producto>();
+  editarProducto = output<Producto>();
+  borrarProducto = output<Producto>();
+  desactivarProducto = output<Producto>();
+  activarProducto = output<Producto>();
 
   itemsProductor = computed<MenuItem[]>(() => {
     const prod = this.producto();
@@ -39,20 +49,18 @@ export class ProductoCard {
       {
         label: 'Ver detalle',
         icon: 'pi pi-eye',
-        command: () => this.verProducto.emit(prod.producto),
+        command: () => this.verProducto.emit(prod),
       },
       {
         label: 'Editar',
         icon: 'pi pi-pencil',
-        command: () => this.editarProducto.emit(prod.producto),
+        command: () => this.editarProducto.emit(prod),
       },
       {
         label: prod.activo ? 'Desactivar' : 'Activar',
         icon: prod.activo ? 'pi pi-ban' : 'pi pi-check-circle',
         command: () =>
-          prod.activo
-            ? this.desactivarProducto.emit(prod.producto)
-            : this.activarProducto.emit(prod.producto),
+          prod.activo ? this.desactivarProducto.emit(prod) : this.activarProducto.emit(prod),
       },
       {
         separator: true,
@@ -61,7 +69,7 @@ export class ProductoCard {
         label: 'Eliminar',
         icon: 'pi pi-trash',
         styleClass: 'text-red-500 dark:text-red-400 font-medium',
-        command: () => this.borrarProducto.emit(prod.producto),
+        command: () => this.borrarProducto.emit(prod),
       },
     ];
   });

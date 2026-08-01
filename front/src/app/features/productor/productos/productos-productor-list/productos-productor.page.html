@@ -1,5 +1,8 @@
 <div class="card">
   @let layout = this.layout();
+  @let productosCargados = this.productosResource.hasValue();
+
+  @let hayError = this.productosResource.error();
   <app-productos-filter
     [(categoriaSeleccionada)]="this.categoria"
     [(subcategoriaSeleccionada)]="this.subcategoria"
@@ -12,7 +15,11 @@
     [(filtroBusqueda)]="this.busqueda"
   ></app-productos-filter>
 
-  @if (layout === 'table') {
+  @if (hayError) {
+    <app-error-state [message]="this.productosResource.error()?.message"></app-error-state>
+  }
+
+  @if (layout === 'table' && productosCargados) {
     <app-productos-table
       [productos]="this.productosResource.value()?.data || []"
       [total]="this.totalProductos()"
@@ -21,10 +28,11 @@
       [first]="this.first()"
       (cambioUnProducto)="this.cambioUnProducto($event)"
       [productor]="this.user()?.username || 'FIXME'"
+      (agregarProducto)="this.gotToCrear()"
     ></app-productos-table>
   }
 
-  @if (layout !== 'table') {
+  @if (layout !== 'table' && productosCargados) {
     <p-dataview
       #dv
       [value]="this.productosResource.value()?.data || []"
@@ -41,6 +49,13 @@
     >
       <ng-template #header> </ng-template>
 
+      <ng-template #emptymessage>
+        <app-empty-state
+          [titulo]="'No hay productos disponibles'"
+          [subtitulo]="'Aún no has publicado ningún producto.'"
+        ></app-empty-state>
+      </ng-template>
+
       <ng-template #list let-productos>
         <div class="flex flex-col gap-4 mt-4">
           @for (producto of productos; track producto.id_producto) {
@@ -48,7 +63,11 @@
               [producto]="producto"
               [layout]="'list'"
               [cdnUrl]="this.cdnUrl"
-              /* (agregarAlCarrito)="this.agregarAlCarrito($event)" */
+              (editarProducto)="this.gotToEditar($event)"
+              (verProducto)="this.gotToVer($event)"
+              (desactivarProducto)="this.desactivarProducto($event)"
+              (activarProducto)="this.activarProducto($event)"
+              (borrarProducto)="this.borrarProducto($event)"
             />
           }
         </div>
@@ -63,7 +82,11 @@
               [producto]="producto"
               [layout]="'grid'"
               [cdnUrl]="this.cdnUrl"
-              /* (agregarAlCarrito)="this.agregarAlCarrito($event)" */
+              (editarProducto)="this.gotToEditar($event)"
+              (verProducto)="this.gotToVer($event)"
+              (desactivarProducto)="this.desactivarProducto($event)"
+              (activarProducto)="this.activarProducto($event)"
+              (borrarProducto)="this.borrarProducto($event)"
             />
           }
         </div>

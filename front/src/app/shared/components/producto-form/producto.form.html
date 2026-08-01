@@ -1,0 +1,155 @@
+<p-card class="shadow-lg rounded-xl w-full md:w-[36rem]">
+  <ng-template #header>
+    <div class="flex justify-center pt-8">
+      <i class="pi pi-box text-primary text-6xl"></i>
+    </div>
+  </ng-template>
+
+  <ng-template #title>
+    <div class="text-center text-surface-900 dark:text-surface-0 text-3xl font-medium mb-1">
+      Editar Producto
+    </div>
+  </ng-template>
+
+  <ng-template #subtitle>
+    <div class="text-center text-surface-600 dark:text-surface-200 mb-8">
+      Actualiza los detalles y catálogo multimedia
+    </div>
+  </ng-template>
+
+  <form #prodForm="ngForm" class="flex flex-col gap-8" (ngSubmit)="guardarProducto(prodForm)">
+    <p-floatlabel variant="on">
+      <p-iconfield iconPosition="right">
+        <p-inputicon class="pi pi-tag" />
+        <input
+          pInputText
+          name="nombre"
+          autocomplete="off"
+          class="w-full"
+          [ngModel]="this.producto().nombre"
+          required
+        />
+        <label for="nombre">Nombre del Producto</label>
+      </p-iconfield>
+    </p-floatlabel>
+
+    <p-select
+      name="categoria"
+      #slugCategoria
+      [options]="this.etiquetasStore.categorias()"
+      [ngModel]="this.etiquetasStore.categoriaSeleccionada()"
+      (ngModelChange)="this.etiquetasStore.setCategoriaSeleccionada($event)"
+      optionLabel="categoria"
+      optionValue="categoria"
+      appendTo="body"
+      class="w-full"
+      [showClear]="true"
+      placeholder="Categoría"
+      required
+    >
+      <ng-template let-categoria #item>
+        <div class="flex items-center gap-2">
+          <i [class]="categoria.icono" style="font-size: 1.2rem"></i>
+          <div>{{ categoria.categoria }}</div>
+        </div>
+      </ng-template>
+    </p-select>
+
+    <p-select
+      name="subcategoria"
+      [options]="this.etiquetasStore.subcategorias()"
+      [ngModel]="this.etiquetasStore.subcategoriaSeleccionada()"
+      (ngModelChange)="this.etiquetasStore.setSubcategoriaSeleccionada($event)"
+      optionLabel="subcategoria"
+      optionValue="subcategoria"
+      appendTo="body"
+      class="w-full"
+      [showClear]="true"
+      placeholder="Subcategoría"
+      required
+    />
+
+    <p-select
+      multiple="true"
+      name="etiquetas"
+      [options]="this.etiquetasStore.etiquetas()"
+      [ngModel]="this.etiquetasStore.etiquetasSeleccionadas()"
+      (ngModelChange)="this.etiquetasStore.setEtiquetasSeleccionadas($event)"
+      placeholder="Etiquetas"
+      class="w-full"
+      display="chip"
+      optionLabel="nombre"
+      optionValue="etiqueta"
+      appendTo="body"
+      [showClear]="true"
+      required
+    />
+
+    <p-floatlabel variant="on">
+      <textarea
+        pTextarea
+        name="descripcion"
+        rows="3"
+        class="w-full resize-none"
+        [ngModel]="this.producto().descripcion"
+      ></textarea>
+      <label for="descripcion">Descripción</label>
+    </p-floatlabel>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <!-- PRECIO -->
+      <p-floatlabel variant="on">
+        <p-inputnumber
+          name="precio"
+          [(ngModel)]="this.producto().precio"
+          mode="currency"
+          currency="UYU"
+          locale="es-UY"
+          class="w-full"
+          styleClass="w-full"
+          [min]="0"
+        />
+        <label for="precio">Precio</label>
+      </p-floatlabel>
+
+      <p-floatlabel variant="on">
+        <p-inputnumber
+          name="cantidadDisponible"
+          [ngModel]="this.producto().cantidad_disponible"
+          [showButtons]="true"
+          buttonLayout="horizontal"
+          spinnerMode="horizontal"
+          class="w-full"
+          styleClass="w-full"
+          [min]="0"
+          decrementButtonClass="p-button-secondary"
+          incrementButtonClass="p-button-secondary"
+          incrementButtonIcon="pi pi-plus"
+          decrementButtonIcon="pi pi-minus"
+        />
+        <label for="cantidadDisponible">Cantidad Disponible</label>
+      </p-floatlabel>
+    </div>
+    <div class="flex items-center gap-3 mt-2">
+      <button
+        pButton
+        type="button"
+        label="Cancelar"
+        severity="secondary"
+        [outlined]="true"
+        class="w-1/2"
+        (click)="this.cancelar.emit()"
+      >
+        CANCELAR
+      </button>
+
+      <button pButton type="submit" label="GUARDAR CAMBIOS" class="w-1/2">GUARDAR</button>
+    </div>
+  </form>
+
+  <ng-template #footer>
+    <p class="text-center text-xs text-surface-500 dark:text-surface-400 mt-2">
+      Los cambios aplicados se reflejarán inmediatamente en la tienda.
+    </p>
+  </ng-template>
+</p-card>

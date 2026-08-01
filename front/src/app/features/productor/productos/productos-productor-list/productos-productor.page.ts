@@ -10,10 +10,13 @@ import { Producto } from '@shared/types/producto';
 import { ProductosProductorService } from '@shared/services/productos-productor.service';
 import { DataViewModule } from 'primeng/dataview';
 import { ProductoCard } from '@shared/components/producto-card/producto.card';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ErrorStateComponent } from "@shared/components/error-state/error-state.component";
+import { EmptyStateComponent } from "@shared/components/empty-state/empty-state.component";
 
 @Component({
   selector: 'app-productoos',
-  imports: [ProductosTable, ProductosFilter, DataViewModule, ProductoCard],
+  imports: [ProductosTable, ProductosFilter, DataViewModule, ProductoCard, ErrorStateComponent, EmptyStateComponent],
   templateUrl: './productos-productor.page.html',
   styleUrl: './productos-productor.page.css',
 })
@@ -22,6 +25,9 @@ export class ProductosPage implements OnInit {
   private readonly _preferenciasStore = inject(PreferenciasStore);
   private readonly _userStore = inject(UserStore);
   private readonly _dialogService = inject(DialogService);
+  private readonly _router = inject(Router);
+
+  private readonly _route = inject(ActivatedRoute);
 
   public cdnUrl = environment.cdnUrl;
 
@@ -82,13 +88,10 @@ export class ProductosPage implements OnInit {
 
       try {
         const response = await this._productoService.getBy({ queryParams, pagination, pathParams });
-
-        console.log({ response });
-
         return response;
       } catch (error: any) {
         this._dialogService.addError(error.message);
-        return { data: [], meta: { total: 0 } };
+        throw error;
       }
     },
   });
@@ -108,5 +111,34 @@ export class ProductosPage implements OnInit {
     this._preferenciasStore.setLimit(event.rows);
     const nuevaPagina = event.first / event.rows + 1;
     this.page.set(nuevaPagina);
+  }
+
+  async gotToCrear() {
+    this._router.navigate(['crear'], {
+      relativeTo: this._route,
+    });
+  }
+
+  async gotToVer(p: Producto) {
+    this._router.navigate([p.producto], {
+      relativeTo: this._route,
+    });
+  }
+
+  async gotToEditar(p: Producto) {
+    this._router.navigate([p.producto, 'editar'], {
+      relativeTo: this._route,
+    });
+  }
+
+  //fixme todos estos gotTo y cambiar activo se podrían simplificar en dos métodos.
+  async desactivarProducto(p: Producto) {
+    console.log('desactivar producto');
+  }
+  async activarProducto(p: Producto) {
+    console.log('activar producto');
+  }
+  async borrarProducto(p: Producto) {
+    console.log('activar producto');
   }
 }
