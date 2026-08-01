@@ -1,7 +1,19 @@
 <div class="flex flex-col grow justify-center items-center h-full p-4 my-8">
-  <app-producto-form
-    [producto]="this.producto()"
-    (cancelar)="this.volver()"
-    (guardar)="this.guardar($event)"
-  ></app-producto-form>
+  <p-card class="shadow-lg rounded-xl w-full md:w-[36rem]">
+    <ng-template #header>
+      <app-producto-imagenes-selector></app-producto-imagenes-selector>
+    </ng-template>
+
+    <app-producto-form
+      [producto]="this.producto()"
+      (cancelar)="this.volver()"
+      (guardar)="this.guardar($event)"
+    ></app-producto-form>
+
+    <ng-template #footer>
+      <p class="text-center text-xs text-surface-500 dark:text-surface-400 mt-2">
+        Los cambios aplicados se reflejarán inmediatamente en la tienda.
+      </p>
+    </ng-template>
+  </p-card>
 </div>
