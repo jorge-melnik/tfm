@@ -59,25 +59,7 @@ export class ProductosTable implements OnInit {
 
   public productos = input.required<Producto[]>();
 
-  private productoVacio = {
-    id_productor: '',
-    id_subcategoria: 0,
-    id_producto: 0,
-    categoria: '',
-    subcategoria: '',
-    nombre: '',
-    productor: '',
-    producto: '',
-    descripcion: '',
-    precio: 0,
-    cantidad_disponible: 0,
-    etiquetas: [],
-    fotos: [],
-    id_etiquetas: [],
-    activo: true,
-  };
-
-  public productoSeleccionado = signal<Producto>({ ...this.productoVacio });
+  public productoSeleccionado = signal<Producto>(this._productoService.getProductoVacio());
 
   public desactivar = output<Producto>();
   public activar = output<Producto>();
@@ -153,7 +135,7 @@ export class ProductosTable implements OnInit {
         productoActualizado,
         pathParams,
       );
-      this.productoSeleccionado.set({ ...this.productoVacio });
+      this.productoSeleccionado.set({ ...this._productoService.getProductoVacio() });
       this.cambioUnProducto.emit(productoActualizado);
     } catch (error: any) {
       this._dialogService.addError(error.message);

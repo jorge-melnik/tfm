@@ -24,4 +24,24 @@ export class ProductosProductorService extends BaseService<Producto> {
     const url = `${this.buildUrl({ productor })}/${producto}`;
     await firstValueFrom(this.http.patch<Producto>(url, { activo: true }));
   }
+
+  public getProductoVacio(): Producto {
+    return {
+      id_productor: '',
+      id_subcategoria: 0,
+      id_producto: 0,
+      categoria: '',
+      subcategoria: '',
+      nombre: '',
+      productor: '',
+      producto: '',
+      descripcion: '',
+      precio: 0,
+      cantidad_disponible: 0,
+      etiquetas: [],
+      fotos: [],
+      id_etiquetas: [],
+      activo: true,
+    };
+  }
 }

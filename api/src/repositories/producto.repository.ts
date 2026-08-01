@@ -97,6 +97,71 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
     await this.executor.query(query, [id_producto, id_etiquetas]);
   }
 
+  override async add(data: POSTProducto): Promise<Producto> {
+    const { productor, subcategoria, etiquetas, nombre, descripcion, precio, cantidad_disponible } = data;
+    const producto = this.createSlug(nombre);
+    const query = `
+    WITH PRODUCTOR_VALIDADO AS (
+      SELECT PROD.id_productor
+      FROM public.productores PROD
+      JOIN public.datos_personales DP ON DP.id_usuario = PROD.id_productor
+      WHERE DP.username = $1
+    ),
+    SUBCATEGORIA_VALIDADA AS (
+      SELECT id_subcategoria 
+      FROM public.subcategorias 
+      WHERE subcategoria = $2
+    ),
+    PRODUCTO_INSERTADO AS (
+      INSERT INTO public.productos (
+        id_productor,
+        id_subcategoria,
+        nombre,
+        descripcion,
+        precio,
+        cantidad_disponible,
+        producto
+      )
+      SELECT 
+        PV.id_productor,
+        SV.id_subcategoria,
+        $4,$5,$6,$7,$8
+      FROM PRODUCTOR_VALIDADO PV
+      CROSS JOIN SUBCATEGORIA_VALIDADA SV
+      RETURNING id_producto
+    ),
+    ID_ETIQUETAS AS (
+      SELECT E.id_etiqueta, PI.id_producto --PI tiene una sola fila.
+      FROM public.etiquetas E
+      CROSS JOIN PRODUCTO_INSERTADO PI
+      WHERE E.etiqueta = ANY($3::TEXT[])
+    ),
+    ETIQUETAS_INSERTADAS AS (
+      INSERT INTO public.producto_etiquetas (id_producto, id_etiqueta)
+      SELECT ID_E.id_producto, ID_E.id_etiqueta
+      FROM ID_ETIQUETAS ID_E
+    )
+    SELECT id_producto FROM PRODUCTO_INSERTADO;
+  `;
+
+    const res = await this.executor.query(query, [
+      productor, // $1
+      subcategoria, // $2
+      etiquetas, // $3
+      nombre, // $4
+      descripcion, // $5
+      precio, // $6
+      cantidad_disponible, // $7
+      producto, //$8
+    ]);
+
+    if (res.rows.length === 0) {
+      throw new DeAcaNotFound(`No se pudo crear el producto.`);
+    }
+
+    return this.getOneBy({ id_producto: res.rows[0].id_producto });
+  }
+
   override async update(id_producto: number, data: POSTProducto): Promise<void> {
     const { productor, subcategoria, etiquetas, nombre, descripcion, precio, cantidad_disponible } = data;
 
