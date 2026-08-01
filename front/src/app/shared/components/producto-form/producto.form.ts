@@ -1,4 +1,4 @@
-import { Component, inject, input, OnInit, output } from '@angular/core';
+import { Component, computed, inject, input, OnInit, output } from '@angular/core';
 import { Card } from 'primeng/card';
 import { FloatLabel } from 'primeng/floatlabel';
 import { IconField } from 'primeng/iconfield';
@@ -36,6 +36,10 @@ export class ProductoForm implements OnInit {
   public guardar = output<Producto>();
   public cancelar = output();
 
+  public titulo = computed(() =>
+    this.producto().id_producto ? 'Editar producto' : 'Crear producto',
+  );
+
   ngOnInit(): void {
     this.etiquetasStore.setCategoriaSeleccionada(this.producto().categoria);
     this.etiquetasStore.setSubcategoriaSeleccionada(this.producto().subcategoria);
@@ -47,7 +51,7 @@ export class ProductoForm implements OnInit {
       form.control.markAllAsTouched();
       return;
     }
-
+    console.log('guardarProducto', form.value);
     const productoActualizado: Producto = {
       ...this.producto(),
       nombre: form.value.nombre,
