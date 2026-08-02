@@ -16,7 +16,7 @@
     [value]="this.productosResource.value()?.data || []"
     [layout]="this.layout()"
     [paginator]="true"
-    [rows]="this.limit()"
+    [rows]="this.preferenciasStore.limit()"
     [first]="this.first()"
     [totalRecords]="this.productosResource.value()?.meta?.total || 0"
     [lazy]="true"

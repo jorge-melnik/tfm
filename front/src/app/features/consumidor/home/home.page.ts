@@ -34,7 +34,7 @@ import { ProductosFilter } from '@shared/components/productos-filter/productos.f
 })
 export class HomePage implements OnInit {
   private readonly _productoService = inject(ProductosService);
-  private readonly _preferenciasStore = inject(PreferenciasStore);
+  public readonly preferenciasStore = inject(PreferenciasStore);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
   private readonly _carritoService = inject(CarritoService);
@@ -49,8 +49,8 @@ export class HomePage implements OnInit {
   public subcategoria = model<string | undefined>(undefined);
   public etiquetas = signal<string[]>([]);
   public page = model<number>(1);
-  public limit = this._preferenciasStore.limit;
-  public first = computed(() => ((this.page() || 1) - 1) * this.limit());
+
+  public first = computed(() => ((this.page() || 1) - 1) * this.preferenciasStore.limit());
   public sortKey = model<string>('');
   public sortOrder = model<number>(0);
   public sortField = model<string>('');
@@ -60,7 +60,7 @@ export class HomePage implements OnInit {
       categoria: this.categoria(),
       subcategoria: this.subcategoria(),
       etiquetas: this.etiquetas(),
-      limit: this.limit(),
+      limit: this.preferenciasStore.limit(),
       page: this.page(),
       sort: this.sortField(),
       sort_direction: this.sortOrder() === -1 ? 'DESC' : 'ASC',
@@ -131,7 +131,7 @@ export class HomePage implements OnInit {
 
   onPageChange(event: any) {
     console.log('onPageChange');
-    this._preferenciasStore.setLimit(event.rows);
+    this.preferenciasStore.setLimit(event.rows);
     const nuevaPagina = event.first / event.rows + 1;
     this.page.set(nuevaPagina);
   }

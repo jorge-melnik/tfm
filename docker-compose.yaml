@@ -48,6 +48,10 @@ services:
       API_COOKIE_SECRET: ${API_COOKIE_SECRET}
       API_JWT_SECRET: ${API_JWT_SECRET}
       FRONT_HOST: ${FRONT_HOST}
+      AWS_REGION: ${AWS_REGION}
+      AWS_S3_BUCKET_NAME: ${AWS_S3_BUCKET_NAME}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
     depends_on:
       db:
         condition: service_healthy

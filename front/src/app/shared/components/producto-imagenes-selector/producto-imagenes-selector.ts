@@ -1,38 +1,50 @@
-import { Component, signal } from '@angular/core';
+import { Component, input, OnInit, signal } from '@angular/core';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
-import { Plus, Upload, Trash, Times } from '@primeicons/angular';
-
-export interface ImagenSlot {
-  id: string;
-  file?: File;
-  url: string;
-  nombre: string;
-  esExistente: boolean;
-}
+import { Plus, Trash } from '@primeicons/angular';
+import { ImagenSlot, Producto } from '@shared/types/producto';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'app-producto-imagenes-selector',
-  imports: [FileUploadModule, ButtonModule, Plus, Upload, Times, Trash],
+  imports: [FileUploadModule, ButtonModule, Plus, Trash],
   templateUrl: './producto-imagenes-selector.html',
   styleUrl: './producto-imagenes-selector.css',
 })
-export class ProductoImagenesSelector {
-  slots = signal<(ImagenSlot | null)[]>([null, null, null, null, null]);
+export class ProductoImagenesSelector implements OnInit {
+  public producto = input.required<Producto>();
+  public slots = signal<ImagenSlot[]>([]);
+  public cdnUrl = environment.cdnUrl;
 
   dragOverIndex = signal<number | null>(null);
   public draggedSlotIndex = signal<number | null>(null);
 
-  // Carga desde explorador de archivos
+  ngOnInit(): void {
+    const slotsIniciales: ImagenSlot[] = this.producto().fotos.map((foto) => ({
+      posicion: foto.posicion,
+      path: foto.path,
+      existente: true,
+    }));
+    const cantidadImagenes = slotsIniciales.length;
+    for (let i = cantidadImagenes; i < 5; i++) {
+      console.log({ cantidadImagenes, i });
+      slotsIniciales.push({
+        posicion: i + 1,
+        existente: false,
+      });
+    }
+    this.slots.set(slotsIniciales);
+    // this.slots.set([...slotsIniciales, ...Array(5 - slotsIniciales.length).fill(null)]);
+  }
+
   onFilesSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
 
     this.procesarArchivos(Array.from(input.files));
-    input.value = ''; // Limpia para re-seleccionar el mismo archivo si es necesario
+    input.value = '';
   }
 
-  // Inicio de Drag interno
   onDragStart(event: DragEvent, index: number) {
     this.draggedSlotIndex.set(index);
     if (event.dataTransfer) {
@@ -54,63 +66,86 @@ export class ProductoImagenesSelector {
     event.preventDefault();
     this.dragOverIndex.set(null);
 
-    // Si vienen archivos del sistema de archivos local (PC)
     if (event.dataTransfer?.files?.length) {
+      // Si vienen archivos del sistema de archivos local (PC)
       this.procesarArchivos(Array.from(event.dataTransfer.files), targetIndex);
       return;
     }
     const draggedSlotIndex = this.draggedSlotIndex();
-    // Si se reordenan dentro de los 5 slots
-    if (draggedSlotIndex !== null && draggedSlotIndex !== targetIndex) {
-      const actual = [...this.slots()];
-      const temp = actual[targetIndex];
-      actual[targetIndex] = actual[draggedSlotIndex];
-      actual[draggedSlotIndex] = temp;
 
-      this.slots.set(actual);
-      this.draggedSlotIndex.set(null);
-    }
+    if (draggedSlotIndex === null) return;
+    if (draggedSlotIndex === targetIndex) return;
+
+    const actual = [...this.slots()];
+    const destino: ImagenSlot = actual[targetIndex];
+    const origen: ImagenSlot = actual[draggedSlotIndex];
+
+    destino.posicion = draggedSlotIndex + 1;
+    origen.posicion = targetIndex + 1;
+
+    actual[targetIndex] = origen;
+    actual[draggedSlotIndex] = destino;
+
+    this.slots.set(actual);
+    this.draggedSlotIndex.set(null);
+
+    const slots = this.slots();
+    console.log({ slots });
   }
 
   private procesarArchivos(archivos: File[], targetIndex?: number) {
-    const actual = [...this.slots()];
+    const actual: ImagenSlot[] = [...this.slots()];
 
-    // Si cayó sobre un slot libre específico
-    if (targetIndex !== undefined && !actual[targetIndex]) {
-      const file = archivos.shift();
-      if (file) actual[targetIndex] = this.crearSlot(file);
+    const asignarArchivoASlot = (slot: ImagenSlot, file: File) => {
+      if (slot.path && slot.path.startsWith('blob:')) {
+        // Si ya tenía una URL de blob anterior en este slot, liberamos la memoria
+        URL.revokeObjectURL(slot.path);
+      }
+      slot.file = file;
+      slot.path = URL.createObjectURL(file); // Url temporal para vista previa
+      slot.existente = false;
+    };
+
+    if (targetIndex !== undefined) {
+      // Si se soltó sobre un slot específico que NO tiene archivo cargado ni es existente
+      const destino = actual[targetIndex];
+      if (destino && !destino.file && !destino.existente) {
+        const file = archivos.shift(); //Tomamos y sacamos el primero del array.
+        if (file) {
+          asignarArchivoASlot(destino, file); //En este caso NO hay nada en el destino.
+        }
+      }
     }
 
-    // Colocar el resto en las primeras casillas vacías disponibles
+    //Colocar el resto de archivos en las primeras casillas vacías disponibles.
     archivos.forEach((file) => {
-      const vacio = actual.findIndex((s) => s === null);
-      if (vacio !== -1) {
-        actual[vacio] = this.crearSlot(file);
+      const destino = actual.find((slot) => !slot.file && !slot.existente);
+      if (destino) {
+        asignarArchivoASlot(destino, file);
       }
     });
 
     this.slots.set(actual);
   }
 
-  private crearSlot(file: File): ImagenSlot {
-    return {
-      id: crypto.randomUUID(),
-      file,
-      url: URL.createObjectURL(file),
-      nombre: file.name,
-      esExistente: false,
-    };
-  }
-
   eliminarSlot(index: number) {
-    const actual = [...this.slots()];
-    const item = actual[index];
+    const slots = [...this.slots()];
+    const item = slots[index];
+    if (!item) return;
 
-    if (item && !item.esExistente && item.url.startsWith('blob:')) {
-      URL.revokeObjectURL(item.url);
+    // Si es un Blob generado localmente, liberamos memoria
+    if (item.path && item.path.startsWith('blob:')) {
+      URL.revokeObjectURL(item.path);
     }
 
-    actual[index] = null;
-    this.slots.set(actual);
+    // Reseteamos el slot a su estado libre inicial
+    slots[index] = {
+      posicion: index + 1,
+      existente: false,
+      file: undefined,
+      path: undefined,
+    };
+
+    this.slots.set(slots);
   }
 }
