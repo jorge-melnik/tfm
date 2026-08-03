@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '@env/environment';
-import { Profile, Rol, TipoLogin } from '@shared/types/user.types';
+import { Profile, RegistroType, Rol, TipoLogin } from '@shared/types/user.types';
 import { firstValueFrom } from 'rxjs';
 import { UserStore } from './stores/user.store';
 import { Router } from '@angular/router';
@@ -33,6 +33,13 @@ export class AuthService {
     const resToken = await firstValueFrom(
       this._http.post<TokenResponse>(urlLogin, { username, password }),
     );
+    this._userStore.setToken(resToken.token);
+    await this.getProfile();
+  }
+
+  async register(datos: RegistroType) {
+    const url = `${this.serviceUrl}/register`;
+    const resToken = await firstValueFrom(this._http.post<TokenResponse>(url, datos));
     this._userStore.setToken(resToken.token);
     await this.getProfile();
   }
