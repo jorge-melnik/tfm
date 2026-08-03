@@ -18,7 +18,7 @@
       </div>
     </ng-template>
 
-    <form #loginForm class="flex flex-col gap-12" (ngSubmit)="this.doLogin()">
+    <form #loginForm (ngSubmit)="this.doLogin()" class="flex flex-col gap-12">
       <div class="flex justify-center mb-2">
         <p-select-button
           [options]="this.loginOptions"
@@ -75,6 +75,7 @@
             name="password"
             autocomplete="off"
             class="w-full"
+            [mask]="this.mask()"
             [(ngModel)]="this.password"
           /><label for="username">Contraseña</label>
 
@@ -83,7 +84,7 @@
             @if (mask) {
               <svg data-p-icon="eye"></svg>
             } @else {
-              <svg data-p-icon="eyeslash"></svg>
+              <svg data-p-icon="eye-slash"></svg>
             }
           </p-inputicon>
         </p-iconfield>

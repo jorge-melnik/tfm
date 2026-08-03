@@ -18,7 +18,7 @@ import { TipoLogin } from '@shared/types/user.types';
 import { DialogService } from '@shared/services/dialog.service';
 import { InputPasswordModule } from 'primeng/inputpassword';
 import { Key } from '@primeicons/angular/key';
-import { EyeIcon, EyeSlashIcon } from 'primeng/icons';
+import { Eye, EyeSlash } from '@primeicons/angular';
 
 @Component({
   selector: 'app-login',
@@ -36,9 +36,9 @@ import { EyeIcon, EyeSlashIcon } from 'primeng/icons';
     InputPasswordModule,
     FormsModule,
     RouterLink,
-    EyeIcon,
-    EyeSlashIcon,
     Key,
+    Eye,
+    EyeSlash,
   ],
   templateUrl: './login.page.html',
 
