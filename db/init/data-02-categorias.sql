@@ -63,25 +63,25 @@ INSERT INTO public.subcategorias(id_categoria, nombre, subcategoria) VALUES
 ;
 
 INSERT INTO public.etiquetas (nombre, etiqueta, imagen) VALUES 
-('Local', 'local', 'images/local.png'),
-('Producción familiar', 'produccion-familiar', 'images/produccion-familiar.png'),
-('Sin agroquímicos', 'sin-agroquimicos', 'images/sin-agroquimicos.png'),
-('Certificado orgánico', 'certificado-organico', 'images/certificado-organico.png'),
-('En transición orgánica', 'en-transicion-organica', 'images/en-transicion-organica.png'),
-('Agroecológico', 'agroecologico', 'images/agroecologico.png'),
-('En transición agroecologica', 'en-transicion-agroecologica', 'images/en-transicion-agroecologica.png'),
-('Cosecha silvestre', 'cosecha-silvestre', 'images/cosecha-silvestre.png'),
-('Artesanal', 'artesanal', 'images/artesanal.png'),
-('Sin conservantes', 'sin-conservantes', 'images/sin-conservantes.png'),
-('Sin aditivos artificiales', 'sin-aditivos-artificiales', 'images/sin-aditivos-artificiales.png'),
-('Materiales naturales', 'materiales-naturales', 'images/materiales-naturales.png'),
-('Biodegradable', 'biodegradable', 'images/biodegradable.png'),
-('Sin gluten', 'sin-gluten', 'images/sin-gluten.png'),
-('Sin azúcar', 'sin-azucar', 'images/sin-azucar.png'),
-('Sin lactosa', 'sin-lactosa', 'images/sin-lactosa.png'),
-('Vegano', 'vegano', 'images/vegano.png'),
-('Vegetariano', 'vegetariano', 'images/vegetariano.png'),
-('De estación', 'de-estacion', 'images/de-estacion.png')
+('Local', 'local', 'etiquetas/local.webp'),  
+('Producción familiar', 'produccion-familiar', 'etiquetas/produccion-familiar.webp'),
+('Sin agroquímicos', 'sin-agroquimicos', 'etiquetas/sin-agroquimicos.webp'),
+('Certificado orgánico', 'certificado-organico', 'etiquetas/certificado-organico.webp'),
+('En transición orgánica', 'en-transicion-organica', 'etiquetas/en-transicion-organica.webp'),
+('Agroecológico', 'agroecologico', 'etiquetas/agroecologico.webp'),
+('En transición agroecologica', 'en-transicion-agroecologica', 'etiquetas/en-transicion-agroecologica.webp'),
+('Cosecha silvestre', 'cosecha-silvestre', 'etiquetas/cosecha-silvestre.webp'),
+('Artesanal', 'artesanal', 'etiquetas/artesanal.webp'),
+('Sin conservantes', 'sin-conservantes', 'etiquetas/sin-conservantes.webp'),
+('Sin aditivos artificiales', 'sin-aditivos-artificiales', 'etiquetas/sin-aditivos-artificiales.webp'),
+('Materiales naturales', 'materiales-naturales', 'etiquetas/materiales-naturales.webp'),
+('Biodegradable', 'biodegradable', 'etiquetas/biodegradable.webp'),
+('Sin gluten', 'sin-gluten', 'etiquetas/sin-gluten.webp'),
+('Sin azúcar', 'sin-azucar', 'etiquetas/sin-azucar.webp'),
+('Sin lactosa', 'sin-lactosa', 'etiquetas/sin-lactosa.webp'),
+('Vegano', 'vegano', 'etiquetas/vegano.webp'),
+('Vegetariano', 'vegetariano', 'etiquetas/vegetariano.webp'),
+('De estación', 'de-estacion', 'etiquetas/de-estacion.webp')
 ;
 
 

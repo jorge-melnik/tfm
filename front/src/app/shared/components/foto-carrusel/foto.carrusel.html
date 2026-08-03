@@ -1,6 +1,6 @@
 <div class="relative w-full h-full group/carrusel">
   <img
-    [src]="cdnUrl() + fotos()[indiceActual()]"
+    [src]="cdnUrl() + fotos()[indiceActual()].path"
     [alt]="altText()"
     class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
   />

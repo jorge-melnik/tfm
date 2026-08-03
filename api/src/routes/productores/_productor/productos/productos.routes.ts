@@ -1,5 +1,3 @@
-import { myPool } from '@database/pool.js';
-import { DeAcaInternal } from '@errors/response.errors.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { productoRepository } from '@repositories/producto.repository.js';
 

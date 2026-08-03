@@ -16,7 +16,6 @@ import { Textarea } from 'primeng/textarea';
   selector: 'app-producto-form',
   imports: [
     ButtonModule,
-    Card,
     FloatLabel,
     IconField,
     InputIcon,
@@ -35,10 +34,6 @@ export class ProductoForm implements OnInit {
 
   public guardar = output<Producto>();
   public cancelar = output();
-
-  public titulo = computed(() =>
-    this.producto().id_producto ? 'Editar producto' : 'Crear producto',
-  );
 
   ngOnInit(): void {
     this.etiquetasStore.setCategoriaSeleccionada(this.producto().categoria);

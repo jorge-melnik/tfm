@@ -1,6 +1,6 @@
 import { DeAcaBadRequest, DeAcaNotFound } from '@errors/response.errors.js';
 import { BaseRepository } from './base.repository.js';
-import { POSTProducto, Producto } from '@schemas/producto.schema.js';
+import { ImagenProducto, POSTProducto, Producto } from '@schemas/producto.schema.js';
 
 export class ProductosRepositoryClass extends BaseRepository<Producto> {
   protected readonly tableName = 'productos';
@@ -27,7 +27,7 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
       SELECT 
         PI.id_producto,
         COALESCE(
-          json_agg(PI.path) FILTER (WHERE PI.path IS NOT NULL),
+          json_agg(PI) FILTER (WHERE PI.path IS NOT NULL),
           '[]'
         ) AS fotos
       FROM public.producto_imagenes PI
@@ -222,6 +222,32 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
     if (res.rows.length === 0) {
       throw new DeAcaNotFound(`productor ${productor} con id_producto:${id_producto}`);
     }
+  }
+
+  public async updateImagenes(id_producto: number, nuevasImagenes: ImagenProducto[]): Promise<void> {
+    if (nuevasImagenes.length === 0) {
+      return;
+    }
+
+    const posicionesBorrar = nuevasImagenes.filter((i) => i.path == '').map((img) => img.posicion);
+    const posicionesQuedan = nuevasImagenes.filter((i) => i.path != '').map((img) => img.posicion);
+    const pathsQuedan = nuevasImagenes.filter((i) => i.path != '').map((img) => img.path);
+
+    const query = `
+      WITH borrar AS (
+        DELETE FROM public.producto_imagenes 
+        WHERE id_producto = $1
+        AND posicion = ANY($2::SMALLINT[])  -- Solo borramos las posiciones que recibimos con path ''.
+      )
+      INSERT INTO public.producto_imagenes (id_producto, posicion, path)
+      SELECT $1, i.posicion, i.path
+      FROM UNNEST($3::smallint[], $4::text[]) AS i(posicion, path)
+      ON CONFLICT (id_producto, posicion) 
+      DO UPDATE SET path = EXCLUDED.path;
+      ;
+  `;
+
+    await this.executor.query(query, [id_producto, posicionesBorrar, posicionesQuedan, pathsQuedan]);
   }
 }
 

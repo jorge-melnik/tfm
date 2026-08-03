@@ -1,0 +1,80 @@
+<!-- 5 columnas fijas con tamaño máximo que se adapta -->
+<div class="grid grid-cols-5 gap-2 w-full justify-items-center p-4">
+  <input
+    #fileInput
+    type="file"
+    accept="image/*"
+    multiple
+    class="hidden"
+    (change)="onFilesSelected($event)"
+  />
+  @for (slot of slots(); track $index; let i = $index) {
+    <div
+      class="relative w-full max-w-[110px] aspect-square rounded-xl border-2 border-dashed transition-all overflow-hidden"
+      [class.border-primary]="dragOverIndex() === i && draggedSlotIndex() !== i"
+      [class.border-3]="dragOverIndex() === i && draggedSlotIndex() !== i"
+      [class.border-surface-300]="dragOverIndex() !== i"
+      [class.dark:border-surface-700]="dragOverIndex() !== i"
+      (dragover)="onDragOver($event, i)"
+      (dragleave)="onDragLeave()"
+      (drop)="onDrop($event, i)"
+    >
+      <!-- badge de posición -->
+      <span
+        class="absolute top-1 left-1 z-10 bg-surface-900/70 text-white text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-md"
+      >
+        {{ i + 1 }}
+      </span>
+
+      @if (slot.file || slot.existente) {
+        <!-- con vista previa -->
+        <div
+          draggable="true"
+          (dragstart)="onDragStart($event, i)"
+          class="w-full h-full relative group cursor-grab active:cursor-grabbing"
+        >
+          @if (slot.existente) {
+            <img
+              [src]="this.cdnUrl + slot.path"
+              [alt]="slot.posicion"
+              class="w-full h-full object-cover rounded-lg"
+            />
+          } @else {
+            <img
+              [src]="slot.path"
+              [alt]="slot.posicion"
+              class="w-full h-full object-cover rounded-lg"
+            />
+          }
+
+          <div
+            class="absolute flex items-center justify-center inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <button
+              type="button"
+              pButton
+              severity="danger"
+              class="flex flex-col items-center justify-center bg-transparent cursor-pointer hover:text-danger"
+              [rounded]="true"
+              [text]="true"
+              (click)="eliminarSlot(i); $event.stopPropagation()"
+            >
+              <svg data-p-icon="trash"></svg>
+              <!-- <span> Quitar </span> -->
+            </button>
+          </div>
+        </div>
+      } @else {
+        <!-- aún sin imágen -->
+        <button
+          type="button"
+          class="flex flex-col items-center justify-center w-full h-full bg-transparent cursor-pointer hover:text-primary"
+          (click)="fileInput.click()"
+        >
+          <svg data-p-icon="plus"></svg>
+          <span> Agregar </span>
+        </button>
+      }
+    </div>
+  }
+</div>

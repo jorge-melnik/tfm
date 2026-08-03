@@ -3,6 +3,7 @@ import { inject } from '@angular/core';
 import { catchError, firstValueFrom } from 'rxjs';
 import { UserStore } from '@shared/services/stores/user.store';
 import { AuthService } from '@shared/services/auth.service';
+import { environment } from '@env/environment';
 
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   const userStore = inject(UserStore);
@@ -10,6 +11,9 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   const token = userStore.token();
   if (!token) return next(req);
 
+  if (!req.url.startsWith(environment.apiUrl)) {
+    return next(req);
+  }
   const authReq = addToken(req, token);
 
   return next(authReq).pipe(

@@ -1,4 +1,5 @@
 import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
+import { ImagenProducto } from '@shared/types/producto';
 
 @Component({
   selector: 'app-foto-carrusel',
@@ -8,7 +9,7 @@ import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core
   styleUrl: './foto.carrusel.css',
 })
 export class FotoCarrusel {
-  fotos = input.required<string[]>();
+  fotos = input.required<ImagenProducto[]>();
   cdnUrl = input.required<string>();
   altText = input.required<string>();
 
