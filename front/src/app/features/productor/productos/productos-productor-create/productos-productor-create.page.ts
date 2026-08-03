@@ -41,7 +41,10 @@ export class ProductosProductorCreatePage {
       }
       producto.productor = productor;
       // producto.id_productor = usuario.id_usuario;
-      await this._productosService.create(producto, { productor });
+      const creado: Producto = await this._productosService.create(producto, { productor });
+      console.log({ creado });
+      const slots = this.slots();
+      await this._productosService.setImagenes(productor, creado.producto, slots);
       this.volver();
     } catch (error: any) {
       this._dialogService.addError(error.message);

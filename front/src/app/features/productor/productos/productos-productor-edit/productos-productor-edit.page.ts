@@ -66,7 +66,6 @@ export class ProductosProductorEditPage {
     try {
       await this._productosService.update(producto, productoModificado, { productor });
       const slots = this.slots();
-      console.log({ slots });
       await this._productosService.setImagenes(productor, producto, slots);
       this.volver();
     } catch (error: any) {
