@@ -4,7 +4,10 @@
 
     @if (producto) {
       <ng-template #header>
-        <app-producto-imagenes-selector [producto]="producto"></app-producto-imagenes-selector>
+        <app-producto-imagenes-selector
+          [(slots)]="this.slots"
+          [producto]="producto"
+        ></app-producto-imagenes-selector>
       </ng-template>
       <app-producto-form
         [producto]="producto"

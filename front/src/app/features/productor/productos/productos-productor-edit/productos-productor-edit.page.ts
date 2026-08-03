@@ -1,4 +1,4 @@
-import { Component, inject, input, resource } from '@angular/core';
+import { Component, inject, input, resource, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -16,7 +16,7 @@ import { SelectModule } from 'primeng/select';
 import { ProductoForm } from '@shared/components/producto-form/producto.form';
 import { EtiquetasStore } from '@shared/services/stores/etiquetas.store';
 import { ProductosProductorService } from '@shared/services/productos-productor.service';
-import { Producto } from '@shared/types/producto';
+import { ImagenSlot, Producto } from '@shared/types/producto';
 import { ProductoImagenesSelector } from '@shared/components/producto-imagenes-selector/producto-imagenes-selector';
 
 @Component({
@@ -57,13 +57,17 @@ export class ProductosProductorEditPage {
   public productor = input.required<string>();
   public producto = input.required<string>();
 
+  public slots = signal<ImagenSlot[]>([]);
+
   public async guardarProducto(productoModificado: Producto) {
     const productor = this.productor();
     const producto = this.producto();
     console.log({ productoModificado });
     try {
       await this._productosService.update(producto, productoModificado, { productor });
-
+      const slots = this.slots();
+      console.log({ slots });
+      await this._productosService.setImagenes(productor, producto, slots);
       this.volver();
     } catch (error: any) {
       this._dialogService.addError(error.message);

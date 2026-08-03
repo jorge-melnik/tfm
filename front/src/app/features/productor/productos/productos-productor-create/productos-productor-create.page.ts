@@ -6,7 +6,7 @@ import { DialogService } from '@shared/services/dialog.service';
 import { ProductosProductorService } from '@shared/services/productos-productor.service';
 import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
 import { UserStore } from '@shared/services/stores/user.store';
-import { Producto } from '@shared/types/producto';
+import { ImagenSlot, Producto } from '@shared/types/producto';
 import { Card } from 'primeng/card';
 
 @Component({
@@ -24,6 +24,8 @@ export class ProductosProductorCreatePage {
   public productor = input<string>();
   private readonly _route = inject(ActivatedRoute);
   public producto = signal(this._productosService.getProductoVacio());
+
+  public slots = signal<ImagenSlot[]>([]);
 
   public cancelar() {
     this.volver();

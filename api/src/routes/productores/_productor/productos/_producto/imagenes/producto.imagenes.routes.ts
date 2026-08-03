@@ -1,10 +1,16 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { productoRepository } from '@repositories/producto.repository.js';
 
-import { PresignedUrl, Producto, RequestPresignedUrlSchema } from '@schemas/producto.schema.js';
+import {
+  ImagenProducto,
+  PresignedUrl,
+  Producto,
+  RequestPresignedUrlSchema,
+} from '@schemas/producto.schema.js';
 
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
 
@@ -15,12 +21,19 @@ const productoImagenesRoutes: FastifyPluginAsyncTypebox = async (fastify, opts):
         productor: Producto.properties.productor,
         producto: Producto.properties.producto,
       }),
-      body: RequestPresignedUrlSchema,
+      body: Type.Array(ImagenProducto),
+      response: {
+        204: Type.Null(),
+        500: DeAcaErrorResponse,
+      },
     },
-    handler: async (request, reply) => {
-      productoRepository.update;
+    handler: async (req, reply) => {
+      reply.code(204);
+      const producto = await productoRepository.getOneBy({ producto: req.params.producto });
+      await productoRepository.updateImagenes(producto.id_producto, req.body);
     },
   });
+
   fastify.post('/presigned-urls', {
     schema: {
       params: Type.Object({
@@ -32,9 +45,10 @@ const productoImagenesRoutes: FastifyPluginAsyncTypebox = async (fastify, opts):
         200: Type.Array(PresignedUrl, { minItems: 1, maxItems: 5 }),
       },
     },
-    handler: async (request, reply) => {
-      const { productor, producto } = request.params;
-      const archivos = request.body;
+    onRequest: [fastify.authenticate], //FIXME: Solo para productor chequeando que es su producto?
+    handler: async (req, reply) => {
+      const { productor, producto } = req.params;
+      const archivos = req.body;
 
       // Generar todas las Presigned URLs en paralelo dentro del Backend
       const resultados = await Promise.all(

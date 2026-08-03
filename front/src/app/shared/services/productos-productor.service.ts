@@ -3,6 +3,7 @@ import { BaseService } from './base-service.service';
 import {
   ImagenProducto,
   ImagenProductoFile,
+  ImagenSlot,
   PresignedUrl,
   Producto,
   RequestPresignedUrl,
@@ -31,18 +32,29 @@ export class ProductosProductorService extends BaseService<Producto> {
     await firstValueFrom(this.http.patch<Producto>(url, { activo: true }));
   }
 
+  private getSlotsAws(slots: ImagenSlot[]): { posicion: number; file: File }[] {
+    return slots
+      .filter((slot): slot is ImagenSlot & { file: File } => !slot.existente && !!slot.file)
+      .map((slot) => ({
+        posicion: slot.posicion,
+        file: slot.file,
+      }));
+  }
+
   public async setImagenes(
     productor: string,
     producto: string,
-    archivosNuevos: ImagenProductoFile[],
+    slots: ImagenSlot[],
   ): Promise<void> {
-    let imagenesSubidas: ImagenProducto[] = [];
-
-    // 1. Si hay imágenes NUEVAS, pedimos URLs y las subimos a S3
+    const archivosNuevos = this.getSlotsAws(slots);
+    let imagenesProducto: ImagenProducto[] = slots.filter((s) => s.existente || s.path == '');
+    console.log({ archivosNuevos });
+    //Obtenemos las signed urls para subir a S3 solo si hay imágenes nuevas.
     if (archivosNuevos.length > 0) {
       const payload: RequestPresignedUrl[] = archivosNuevos.map((a) => ({
         posicion: a.posicion,
         contentType: a.file.type,
+        filename: a.file.name,
       }));
 
       const urls = await firstValueFrom(
@@ -64,14 +76,16 @@ export class ProductosProductorService extends BaseService<Producto> {
 
       await Promise.all(promesasSubirS3);
 
-      imagenesSubidas = urls.map((item) => ({
+      const imagenesSubidas = urls.map((item) => ({
         posicion: item.posicion,
         path: item.path,
       }));
+      console.log({ imagenesSubidas });
+      imagenesProducto = [...imagenesProducto, ...imagenesSubidas];
     }
 
-    const payloadFinalBD = imagenesSubidas.sort((a, b) => a.posicion - b.posicion);
-
+    const payloadFinalBD = imagenesProducto.sort((a, b) => a.posicion - b.posicion);
+    console.log({ payloadFinalBD });
     await firstValueFrom(
       this.http.put(
         `${environment.apiUrl}/productores/${productor}/productos/${producto}/imagenes`,

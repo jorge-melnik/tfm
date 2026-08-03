@@ -11,6 +11,7 @@ export interface ImagenProducto {
 export interface RequestPresignedUrl {
   posicion: number;
   contentType: string;
+  filename: string;
 }
 
 export interface PresignedUrl {
@@ -42,7 +43,7 @@ export interface Producto {
 
 export interface ImagenSlot {
   posicion: number;
-  path?: string;
+  path: string;
   existente: boolean;
   file?: File;
 }

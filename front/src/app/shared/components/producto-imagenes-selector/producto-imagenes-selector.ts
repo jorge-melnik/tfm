@@ -1,4 +1,4 @@
-import { Component, input, OnInit, signal } from '@angular/core';
+import { Component, input, model, OnInit, signal } from '@angular/core';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
 import { Plus, Trash } from '@primeicons/angular';
@@ -13,7 +13,7 @@ import { environment } from '@env/environment';
 })
 export class ProductoImagenesSelector implements OnInit {
   public producto = input.required<Producto>();
-  public slots = signal<ImagenSlot[]>([]);
+  public slots = model.required<ImagenSlot[]>();
   public cdnUrl = environment.cdnUrl;
 
   dragOverIndex = signal<number | null>(null);
@@ -30,6 +30,7 @@ export class ProductoImagenesSelector implements OnInit {
       console.log({ cantidadImagenes, i });
       slotsIniciales.push({
         posicion: i + 1,
+        path: '',
         existente: false,
       });
     }
@@ -141,9 +142,9 @@ export class ProductoImagenesSelector implements OnInit {
     // Reseteamos el slot a su estado libre inicial
     slots[index] = {
       posicion: index + 1,
-      existente: false,
+      existente: false, //Si se borró una existente no importa. va a ir vacía y eliminarse de la bd
       file: undefined,
-      path: undefined,
+      path: '',
     };
 
     this.slots.set(slots);

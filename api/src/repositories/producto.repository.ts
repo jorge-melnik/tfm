@@ -229,21 +229,25 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
       return;
     }
 
-    const posiciones = nuevasImagenes.map((img) => img.posicion);
-    const paths = nuevasImagenes.map((img) => img.path);
+    const posicionesBorrar = nuevasImagenes.filter((i) => i.path == '').map((img) => img.posicion);
+    const posicionesQuedan = nuevasImagenes.filter((i) => i.path != '').map((img) => img.posicion);
+    const pathsQuedan = nuevasImagenes.filter((i) => i.path != '').map((img) => img.path);
 
     const query = `
       WITH borrar AS (
         DELETE FROM public.producto_imagenes 
         WHERE id_producto = $1
-        AND posicion = ANY($2::SMALLINT[])  -- Solo borramos las posiciones que recibimos.
+        AND posicion = ANY($2::SMALLINT[])  -- Solo borramos las posiciones que recibimos con path ''.
       )
       INSERT INTO public.producto_imagenes (id_producto, posicion, path)
       SELECT $1, i.posicion, i.path
-      FROM UNNEST($2::smallint[], $3::text[]) AS i(posicion, path);
+      FROM UNNEST($3::smallint[], $4::text[]) AS i(posicion, path)
+      ON CONFLICT (id_producto, posicion) 
+      DO UPDATE SET path = EXCLUDED.path;
+      ;
   `;
 
-    await this.executor.query(query, [id_producto, posiciones, paths]);
+    await this.executor.query(query, [id_producto, posicionesBorrar, posicionesQuedan, pathsQuedan]);
   }
 }
 
