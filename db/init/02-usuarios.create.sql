@@ -68,3 +68,113 @@ CREATE TABLE IF NOT EXISTS consumidores (
     fecha_eliminacion TIMESTAMP WITH TIME ZONE,
     activo BOOLEAN GENERATED ALWAYS AS (fecha_eliminacion IS NULL) STORED
 );
+
+
+CREATE OR REPLACE FUNCTION fn_sincronizar_roles()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_rol ROL;
+    v_id UUID; -- O INTEGER, según sea tu tipo de ID
+BEGIN
+    -- Determinar qué rol e id estamos manejando según la tabla que disparó el trigger
+    IF TG_TABLE_NAME = 'productores' THEN
+        v_rol := 'PRODUCTOR';
+        v_id := CASE WHEN TG_OP = 'DELETE' THEN OLD.id_productor ELSE NEW.id_productor END;
+    ELSIF TG_TABLE_NAME = 'consumidores' THEN
+        v_rol := 'CONSUMIDOR';
+        v_id := CASE WHEN TG_OP = 'DELETE' THEN OLD.id_consumidor ELSE NEW.id_consumidor END;
+    END IF;
+
+    IF (TG_OP = 'DELETE' OR (TG_OP = 'UPDATE' AND NEW.activo = FALSE)) THEN
+        UPDATE usuarios 
+        SET roles = array_remove(roles, v_rol)
+        WHERE id_usuario = v_id;
+    ELSIF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NEW.activo = TRUE)) THEN
+        UPDATE usuarios 
+        SET roles = array_append(array_remove(roles, v_rol), v_rol)-- Hacemos un remove antes por si las moscas
+        WHERE id_usuario = v_id;
+    END IF;
+
+    RETURN NULL; 
+END;
+$$ LANGUAGE plpgsql;
+
+
+-------------------------------------------------------------------
+------------------ TRIGGERS PARA sincronizar roles ----------------
+-------------------------------------------------------------------
+CREATE OR REPLACE TRIGGER tr_sync_productores_lifecycle
+AFTER INSERT OR DELETE ON productores
+FOR EACH ROW 
+EXECUTE FUNCTION fn_sincronizar_roles();
+
+CREATE OR REPLACE TRIGGER tr_sync_productores_update
+AFTER UPDATE OF activo ON productores
+FOR EACH ROW 
+WHEN (OLD.activo IS DISTINCT FROM NEW.activo)
+EXECUTE FUNCTION fn_sincronizar_roles();
+
+CREATE OR REPLACE TRIGGER tr_sync_consumidores_lifecycle
+AFTER INSERT OR DELETE ON consumidores
+FOR EACH ROW 
+EXECUTE FUNCTION fn_sincronizar_roles();
+
+CREATE OR REPLACE TRIGGER tr_sync_consumidores_update
+AFTER UPDATE OF activo ON consumidores
+FOR EACH ROW 
+WHEN (OLD.activo IS DISTINCT FROM NEW.activo)
+EXECUTE FUNCTION fn_sincronizar_roles();
+
+
+-------------------------------------------------------------------
+----------- TRIGGER PARA ACTUALIZAR fecha actualizacion -----------
+-------------------------------------------------------------------
+DROP TRIGGER IF EXISTS tg_usuarios_actualizar_fecha ON usuarios;
+CREATE TRIGGER tg_usuarios_actualizar_fecha
+BEFORE UPDATE ON usuarios
+FOR EACH ROW
+EXECUTE FUNCTION fn_actualizar_fecha_actualizacion();
+
+DROP TRIGGER IF EXISTS tg_consumidores_actualizar_fecha ON consumidores;
+CREATE TRIGGER tg_consumidores_actualizar_fecha
+BEFORE UPDATE ON consumidores
+FOR EACH ROW
+EXECUTE FUNCTION fn_actualizar_fecha_actualizacion();
+
+DROP TRIGGER IF EXISTS tg_productores_actualizar_fecha ON productores;
+CREATE TRIGGER tg_productores_actualizar_fecha
+BEFORE UPDATE ON productores
+FOR EACH ROW
+EXECUTE FUNCTION fn_actualizar_fecha_actualizacion();
+
+DROP TRIGGER IF EXISTS tg_ubicaciones_actualizar_fecha ON ubicaciones;
+CREATE TRIGGER tg_ubicaciones_actualizar_fecha
+BEFORE UPDATE ON ubicaciones
+FOR EACH ROW
+EXECUTE FUNCTION fn_actualizar_fecha_actualizacion();
+
+
+-------------------------------------------------------------------
+----------- TRIGGER PARA ACTUALIZAR fecha eliminación   -----------
+-------------------------------------------------------------------
+DROP TRIGGER IF EXISTS tg_usuarios_soft_delete ON usuarios;
+CREATE TRIGGER tg_usuarios_soft_delete
+BEFORE DELETE ON usuarios
+FOR EACH ROW
+EXECUTE FUNCTION fn_actualizar_fecha_eliminacion();
+
+DROP TRIGGER IF EXISTS tg_consumidores_soft_delete ON consumidores;
+CREATE TRIGGER tg_consumidores_soft_delete
+BEFORE DELETE ON consumidores
+FOR EACH ROW
+EXECUTE FUNCTION fn_actualizar_fecha_eliminacion();
+
+DROP TRIGGER IF EXISTS tg_productores_soft_delete ON productores;
+CREATE TRIGGER tg_productores_soft_delete
+BEFORE DELETE ON productores
+FOR EACH ROW
+EXECUTE FUNCTION fn_actualizar_fecha_eliminacion();
+
+
+--TODO: Trigger para que si cambia email en datos_personales setear email_validado en false
+--TODO: Trigger para que si cambia celular en datos_personales setear celular_validado en false

@@ -16,43 +16,20 @@ CREATE TABLE IF NOT EXISTS categorias (
     activo BOOLEAN GENERATED ALWAYS AS (fecha_eliminacion IS NULL) STORED
 );
 
-CREATE TABLE IF NOT EXISTS subcategorias (
-    id_subcategoria INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    id_categoria SMALLINT NOT NULL REFERENCES categorias(id_categoria) ON DELETE CASCADE ON UPDATE CASCADE,
-    nombre CITEXT NOT NULL CHECK (  -- el nombre es único únicamente en la subcategoría.
-        char_length(nombre) BETWEEN 3 AND 35
-    ),
-    subcategoria CITEXT NOT NULL UNIQUE CHECK (
-        char_length(subcategoria) BETWEEN 3 AND 35
-        AND subcategoria ~ '^[a-zA-Z0-9-]+$' 
-    ),-- TODO: TRIGGER para asegurarse que no se cambia el subcategoria
-    -- en api hereda color y/o ícono para que no quede tan cargado
-    fecha_creacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    fecha_eliminacion TIMESTAMP WITH TIME ZONE,
-    activo BOOLEAN GENERATED ALWAYS AS (fecha_eliminacion IS NULL) STORED,
-    UNIQUE(id_categoria, nombre)
-);
--- Esté índice lo hacemos para buscar tranquilamente por id_categoría e id_subcategoría, para no tener que chequear coincidencia en la ruta.
-CREATE INDEX IF NOT EXISTS subcategorias_id_categoria_id_sub_idx 
-ON subcategorias (id_categoria, id_subcategoria) 
-WHERE fecha_eliminacion IS NULL;
+-------------------------------------------------------------------
+----------- TRIGGER PARA ACTUALIZAR fecha actualizacion -----------
+-------------------------------------------------------------------
+DROP TRIGGER IF EXISTS tg_categorias_actualizar_fecha ON categorias;
+CREATE TRIGGER tg_categorias_actualizar_fecha
+BEFORE UPDATE ON categorias
+FOR EACH ROW
+EXECUTE FUNCTION fn_actualizar_fecha_actualizacion();
 
-CREATE TABLE IF NOT EXISTS etiquetas (
-    id_etiqueta INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    nombre CITEXT NOT NULL UNIQUE CHECK (
-        char_length(nombre) BETWEEN 3 AND 35
-    ),
-    etiqueta CITEXT NOT NULL UNIQUE CHECK (
-        char_length(etiqueta) BETWEEN 3 AND 35
-        AND etiqueta ~ '^[a-zA-Z0-9-]+$' 
-    ),-- TODO: TRIGGER para asegurarse que no se cambia el etiqueta
-    imagen TEXT, --FIXME: Podría ser clase icono o url de imagen. --FIXME: Hacer not null  usar el id o slug para persistir la imagen?
-    color VARCHAR(7) NOT NULL DEFAULT '#6366F1' -- Color hexadecimal FIME: Sacar el default. Creo que no va a ser necesario color, porque ya la imagen tiene todo lo necesario.
-);
-
-CREATE TABLE IF NOT EXISTS subcategoria_etiquetas (
-    id_subcategoria INTEGER REFERENCES subcategorias(id_subcategoria) ON DELETE CASCADE ON UPDATE CASCADE,
-    id_etiqueta INTEGER REFERENCES etiquetas(id_etiqueta) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (id_subcategoria, id_etiqueta)
-);
+-------------------------------------------------------------------
+----------- TRIGGER PARA ACTUALIZAR fecha eliminación   -----------
+-------------------------------------------------------------------
+DROP TRIGGER IF EXISTS tg_categorias_soft_delete ON categorias;
+CREATE TRIGGER tg_categorias_soft_delete
+BEFORE DELETE ON categorias
+FOR EACH ROW
+EXECUTE FUNCTION fn_actualizar_fecha_eliminacion();

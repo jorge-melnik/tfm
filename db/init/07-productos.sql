@@ -47,3 +47,21 @@ CREATE TABLE producto_imagenes (
     PRIMARY KEY (id_producto,posicion),
     FOREIGN KEY (id_producto) REFERENCES productos(id_producto) ON DELETE CASCADE
 );
+
+-------------------------------------------------------------------
+----------- TRIGGER PARA ACTUALIZAR fecha actualizacion -----------
+-------------------------------------------------------------------
+DROP TRIGGER IF EXISTS tg_productos_actualizar_fecha ON productos;
+CREATE TRIGGER tg_productos_actualizar_fecha
+BEFORE UPDATE ON productos
+FOR EACH ROW
+EXECUTE FUNCTION fn_actualizar_fecha_actualizacion();
+
+-------------------------------------------------------------------
+----------- TRIGGER PARA ACTUALIZAR fecha eliminación   -----------
+-------------------------------------------------------------------
+DROP TRIGGER IF EXISTS tg_productos_soft_delete ON productos;
+CREATE TRIGGER tg_productos_soft_delete
+BEFORE DELETE ON productos
+FOR EACH ROW
+EXECUTE FUNCTION fn_actualizar_fecha_eliminacion();
