@@ -160,8 +160,8 @@ BEGIN
     ( currval('productos_id_producto_seq'), 1, '/productos/tierra_preparada.webp');
 
     INSERT INTO producto_etiquetas ( id_producto, id_etiqueta) VALUES 
-    ( currval('productos_id_producto_seq'), 1),   -- Local
-    ( currval('productos_id_producto_seq'), 12);  -- Materiales naturales
+    ( currval('productos_id_producto_seq'), 13), -- Biodegradable
+    ( currval('productos_id_producto_seq'), 6);  -- Agroecologico
 
     -- Producto 14: Cabezas de Ajo Morado (Subcategoría 1: Verduras)
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
@@ -261,9 +261,9 @@ BEGIN
     ( currval('productos_id_producto_seq'), 1, '/productos/mermelada_higo.webp');
 
     INSERT INTO producto_etiquetas ( id_producto, id_etiqueta) VALUES 
-    ( currval('productos_id_producto_seq'), 1),   -- Local
-    ( currval('productos_id_producto_seq'), 10),  -- Sin conservantes
-    ( currval('productos_id_producto_seq'), 17);  -- Vegano
+    ( currval('productos_id_producto_seq'), 10),   -- Sin conservantes (10), Sin aditivos artificiales (11), Vegano (17), Sin gluten (14)
+    ( currval('productos_id_producto_seq'), 17),  
+    ( currval('productos_id_producto_seq'), 14);  
 
     -- Producto 22: Bálsamo Labial de Coco (Subcategoría 11: Jabones y cosmética)
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
@@ -273,8 +273,8 @@ BEGIN
     ( currval('productos_id_producto_seq'), 1, '/productos/balsamo_labial.webp');
 
     INSERT INTO producto_etiquetas ( id_producto, id_etiqueta) VALUES 
-    ( currval('productos_id_producto_seq'), 9),   -- Artesanal
-    ( currval('productos_id_producto_seq'), 12);  -- Materiales naturales
+    ( currval('productos_id_producto_seq'), 12),   -- Materiales naturales (12), Biodegradable (13), Artesanal (9)
+    ( currval('productos_id_producto_seq'), 9);  
 
     -- Producto 23: Mate de Madera de Caldén (Subcategoría 16: Madera)
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
@@ -294,9 +294,9 @@ BEGIN
     INSERT INTO producto_imagenes ( id_producto, posicion, path) VALUES
     ( currval('productos_id_producto_seq'), 1, '/productos/pan_masamadre.webp');
 
-    INSERT INTO producto_etiquetas ( id_producto, id_etiqueta) VALUES 
-    ( currval('productos_id_producto_seq'), 9),   -- Artesanal
-    ( currval('productos_id_producto_seq'), 11);  -- Sin aditivos artificiales
+    INSERT INTO producto_etiquetas ( id_producto, id_etiqueta) VALUES  
+    ( currval('productos_id_producto_seq'), 17),-- 9. Conservas: Sin conservantes (10), Sin aditivos artificiales (11), Vegano (17), Sin gluten (14)
+    ( currval('productos_id_producto_seq'), 14);
 
     -- Producto 25: Champú Sólido Ortiga y Romero (Subcategoría 11: Jabones naturales)
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
@@ -350,8 +350,7 @@ BEGIN
     ( currval('productos_id_producto_seq'), 1, '/productos/galletas_avena.webp');
 
     INSERT INTO producto_etiquetas ( id_producto, id_etiqueta) VALUES 
-    ( currval('productos_id_producto_seq'), 9),   -- Artesanal
-    ( currval('productos_id_producto_seq'), 11);  -- Sin aditivos artificiales
+    ( currval('productos_id_producto_seq'), 10);  
 
     -- Producto 30: Desodorante Natural de Salvia (Subcategoría 11: Jabones y cosmética)
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
@@ -510,6 +509,6 @@ BEGIN
     INSERT INTO producto_etiquetas ( id_producto, id_etiqueta) VALUES 
     ( currval('productos_id_producto_seq'), 6), ( currval('productos_id_producto_seq'), 3), ( currval('productos_id_producto_seq'), 1);
 
-
+    RAISE NOTICE 'Se dieron de alta varios productos con etiquetas asociadas.';
 END $$;
 

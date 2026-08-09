@@ -44,3 +44,14 @@ BEGIN
     RETURN NULL; -- Devolver NULL cancela el DELETE físico
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION tr_fn_impedir_cambio_columna()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_columna TEXT := TG_ARGV[0];
+BEGIN
+    RAISE EXCEPTION 'No está permitido modificar el campo "%" de la tabla %.', 
+        v_columna, TG_TABLE_NAME
+        USING ERRCODE = 'check_violation';
+END;
+$$ LANGUAGE plpgsql;

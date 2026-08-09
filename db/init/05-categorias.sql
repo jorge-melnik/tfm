@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS categorias (
     categoria CITEXT NOT NULL UNIQUE CHECK (
         char_length(categoria) BETWEEN 3 AND 35
         AND categoria ~ '^[a-zA-Z0-9-]+$' 
-    ),-- TODO: TRIGGER para asegurarse que no se cambia el categoria
+    ),
     descripcion TEXT,
     icono VARCHAR(24), --FIXME: Cambiar a NOT NULL
     color VARCHAR(7) NOT NULL DEFAULT '#6366F1', -- Color hexadecimal
@@ -33,3 +33,13 @@ CREATE TRIGGER tg_categorias_soft_delete
 BEFORE DELETE ON categorias
 FOR EACH ROW
 EXECUTE FUNCTION fn_actualizar_fecha_eliminacion();
+
+
+-------------------------------------------------------------------
+------- TRIGGER PARA inmutabilidad de categorias.categoria --------
+-------------------------------------------------------------------
+DROP TRIGGER IF EXISTS tg_categorias_categoria_inmutable ON categorias;
+CREATE TRIGGER tg_categorias_categoria_inmutable
+BEFORE UPDATE OF categoria ON categorias
+FOR EACH ROW
+EXECUTE FUNCTION tr_fn_impedir_cambio_columna('categoria');

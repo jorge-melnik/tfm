@@ -20,8 +20,7 @@ CREATE TABLE IF NOT EXISTS datos_personales (
     username CITEXT UNIQUE CHECK (
         char_length(username) BETWEEN 5 AND 20
         AND username ~ '^[a-zA-Z0-9-]+$' 
-    ),  --TODO trigger para asegurarse que no se modifica el username una vez creado
-    -- aca username será el slug, por eso no hay campo aparte.
+    ),
     celular VARCHAR(20) UNIQUE CHECK (celular ~ '^\+[1-9]\d{6,14}$'),
     foto_url TEXT,
     email_validado BOOLEAN NOT NULL DEFAULT false,
@@ -52,9 +51,9 @@ CREATE INDEX IF NOT EXISTS idx_usuarios_roles ON usuarios USING GIN (roles);
 CREATE TABLE IF NOT EXISTS productores (
     id_productor UUID PRIMARY KEY REFERENCES usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE, -- Misma clave que usuarios
     presentacion TEXT NOT NULL,
-    -- TODO: Falta asignarle una ubicación al productor, de las existentes en el usuario.
+    -- //TODO: Falta asignarle una ubicación al productor, de las existentes en el usuario.
     -- id_ubicacion UUID REFERENCES ubicaciones(id_ubicacion) ON DELETE SET NULL ON UPDATE CASCADE
-    calificacion SMALLINT CHECK (calificacion BETWEEN 1 AND 5), -- TODO. Hacer trigger para cargar esto en base al promedio de calificaciónes de sus productos
+    calificacion SMALLINT CHECK (calificacion BETWEEN 1 AND 5), -- //TODO. Hacer trigger para cargar esto en base al promedio de calificaciónes de sus productos
     fecha_creacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_eliminacion TIMESTAMP WITH TIME ZONE,
@@ -175,6 +174,15 @@ BEFORE DELETE ON productores
 FOR EACH ROW
 EXECUTE FUNCTION fn_actualizar_fecha_eliminacion();
 
+-------------------------------------------------------------------
+------------- TRIGGER PARA inmutabilidad de username --------------
+-------------------------------------------------------------------
+DROP TRIGGER IF EXISTS tg_datos_personales_username_inmutable ON datos_personales;
+CREATE TRIGGER tg_datos_personales_username_inmutable
+BEFORE UPDATE OF username ON datos_personales
+FOR EACH ROW
+EXECUTE FUNCTION tr_fn_impedir_cambio_columna('username');
 
---TODO: Trigger para que si cambia email en datos_personales setear email_validado en false
---TODO: Trigger para que si cambia celular en datos_personales setear celular_validado en false
+
+-- //TODO: Trigger para que si cambia email en datos_personales setear email_validado en false
+-- //TODO: Trigger para que si cambia celular en datos_personales setear celular_validado en false

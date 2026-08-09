@@ -5,16 +5,17 @@ CREATE TABLE productos (
     id_subcategoria INTEGER NOT NULL REFERENCES subcategorias(id_subcategoria) ON DELETE RESTRICT,
     nombre CITEXT NOT NULL CHECK (
         char_length(nombre) BETWEEN 3 AND 35
-    ), -- TODO: Regex para permitir solo letras y números ? No olvidarse eñes y acentos.
+        AND nombre ~ '^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ ()]+$'
+    ), 
     producto CITEXT NOT NULL CHECK (
         char_length(producto) BETWEEN 3 AND 35
         AND producto ~ '^[a-zA-Z0-9-]+$' 
-    ),-- TODO: TRIGGER para asegurarse que no se cambia el producto
+    ),
     descripcion TEXT NOT NULL,
     precio DECIMAL(12, 2) NOT NULL,
     cantidad_disponible INTEGER NOT NULL DEFAULT 0,
     video_url TEXT,
-    calificacion SMALLINT CHECK (calificacion BETWEEN 1 AND 5), -- TODO. Hacer trigger para cargar esto en base al promedio de calificaciónes recibidas en pedido_productos
+    calificacion SMALLINT CHECK (calificacion BETWEEN 1 AND 5), -- //TODO. Hacer trigger para cargar esto en base al promedio de calificaciónes recibidas en pedido_productos
     fecha_creacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     fecha_eliminacion TIMESTAMP WITH TIME ZONE,
@@ -27,14 +28,13 @@ CREATE TABLE productos (
     UNIQUE (id_productor, nombre),      -- Para que un productor no pueda tener dos productos con el mismo nombre.
     UNIQUE (id_productor, producto)-- Para que un productor no pueda tener dos productos con el mismo slug.
 );
--- TODO: Trigger para actualizar la calificación el productor en base al promedio  de calificaciones del producto
+-- //TODO: Trigger para actualizar la calificación el productor en base al promedio  de calificaciones del producto
 -- Indice para búsquedas avanzadas con el campo busqueda
 CREATE INDEX productos_busqueda_idx ON productos USING GIN (busqueda);
 
 CREATE TABLE producto_etiquetas (
     id_producto INTEGER NOT NULL,
     id_etiqueta INTEGER NOT NULL REFERENCES etiquetas(id_etiqueta) ON DELETE CASCADE,
-    -- TODO: Trigger para asegurarse que la etiqueta está dentro de las permitidas.
     PRIMARY KEY (id_producto, id_etiqueta),
     CONSTRAINT producto_etiquetas_producto_fk FOREIGN KEY (id_producto) REFERENCES productos(id_producto) ON DELETE CASCADE
 );
@@ -65,3 +65,40 @@ CREATE TRIGGER tg_productos_soft_delete
 BEFORE DELETE ON productos
 FOR EACH ROW
 EXECUTE FUNCTION fn_actualizar_fecha_eliminacion();
+
+-------------------------------------------------------------------
+-------- TRIGGER PARA inmutabilidad de productos.producto ---------
+-------------------------------------------------------------------
+DROP TRIGGER IF EXISTS tg_productos_producto_inmutable ON productos;
+CREATE TRIGGER tg_productos_producto_inmutable
+BEFORE UPDATE OF producto ON productos
+FOR EACH ROW
+EXECUTE FUNCTION tr_fn_impedir_cambio_columna('producto');
+
+
+-------------------------------------------------------------------
+-- TRIGGER verificar etiqueta del producto pertenece a la subcategoria del producto
+-------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION tr_fn_validar_etiqueta_producto()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM productos p
+        JOIN subcategoria_etiquetas se ON se.id_subcategoria = p.id_subcategoria AND se.id_etiqueta = NEW.id_etiqueta
+        WHERE p.id_producto = NEW.id_producto
+    ) THEN
+        RAISE EXCEPTION 'La etiqueta % no está permitida para la subcategoría del producto %.', 
+            NEW.id_etiqueta, NEW.id_producto
+            USING ERRCODE = 'check_violation';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS tg_producto_etiquetas_validar ON producto_etiquetas;
+CREATE TRIGGER tg_producto_etiquetas_validar
+BEFORE INSERT OR UPDATE ON producto_etiquetas
+FOR EACH ROW
+EXECUTE FUNCTION tr_fn_validar_etiqueta_producto();

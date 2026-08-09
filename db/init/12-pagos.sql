@@ -10,7 +10,7 @@ CREATE TABLE pagos (
     respuesta_raw JSONB NULL,   -- Vale la pena por "respaldo" ? 
     
     fecha_creacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    fecha_actualizacion TIMESTAMP WITH TIME ZONE,   -- TODO: Cargada con trigger.
+    fecha_actualizacion TIMESTAMP WITH TIME ZONE,   -- la llena un trigger
     
     CONSTRAINT pagos_id_compra_id_externo_uk UNIQUE NULLS NOT DISTINCT (id_compra, id_externo) -- FIXME: Para que no haya problemas con los nULL ? Solo un null a la vez. id_externo podría ser NOT NULL
 
@@ -42,7 +42,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS tg_pago_aprobado ON pagos;
-CREATE TRIGGER IF NOT EXISTS tg_pago_aprobado
+CREATE TRIGGER tg_pago_aprobado
 AFTER UPDATE OF estado_pago ON pagos
 FOR EACH ROW
 EXECUTE FUNCTION fn_aprobar_pago_compra();

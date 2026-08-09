@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS subcategorias (
     subcategoria CITEXT NOT NULL UNIQUE CHECK (
         char_length(subcategoria) BETWEEN 3 AND 35
         AND subcategoria ~ '^[a-zA-Z0-9-]+$' 
-    ),-- TODO: TRIGGER para asegurarse que no se cambia el subcategoria
+    ),
     -- en api hereda color y/o ícono para que no quede tan cargado
     fecha_creacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -37,3 +37,13 @@ CREATE TRIGGER tg_subcategorias_soft_delete
 BEFORE DELETE ON subcategorias
 FOR EACH ROW
 EXECUTE FUNCTION fn_actualizar_fecha_eliminacion();
+
+
+-------------------------------------------------------------------
+---- TRIGGER PARA inmutabilidad de subcategorias.subcategoria -----
+-------------------------------------------------------------------
+DROP TRIGGER IF EXISTS tg_subcategorias_subcategoria_inmutable ON subcategorias;
+CREATE TRIGGER tg_categorias_categoria_inmutable
+BEFORE UPDATE OF subcategoria ON subcategorias
+FOR EACH ROW
+EXECUTE FUNCTION tr_fn_impedir_cambio_columna('subcategoria');

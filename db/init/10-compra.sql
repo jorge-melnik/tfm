@@ -2,7 +2,7 @@ CREATE TABLE compras (
     id_compra INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- Cada comprador solo ve sus compras. Productor no ve las compras.
     id_consumidor UUID NOT NULL REFERENCES consumidores(id_consumidor),
     
-    total DECIMAL(12, 2) NOT NULL CHECK (total >= 0) DEFAULT 0,     -- TODO: Arranca a mano pero un trigger actualiza?
+    total DECIMAL(12, 2) NOT NULL CHECK (total >= 0) DEFAULT 0, -- hay un trigger en 11-pedidos.sql para actualizar total
     estado_compra ESTADO_COMPRA NOT NULL DEFAULT 'PAGANDO',
     
     direccion_envio TEXT NOT NULL,  -- Lo repetimos por si el usuario justo cambia/elimina la ubicación.
