@@ -44,4 +44,9 @@ export class CarritoPage {
       this._dialogService.addError('No se pudo actualizar el item del carrito.');
     }
   }
+
+  public async confirmarCompra() {
+    //TODO: Dar de alta la compra
+    //TODO: Redirigir a :id_compra/pagar
+  }
 }

@@ -114,9 +114,8 @@ export class HomePage implements OnInit {
       id_consumidor: usuario.id_usuario,
       ...item,
     };
-    const existente = this._carritoService.productos
-      .value()
-      .find((i) => i.id_producto === item.id_producto);
+    const productos = this._carritoService.productos.value();
+    const existente = productos.find((i) => i.id_producto === item.id_producto);
     try {
       if (!existente) await this._carritoService.addItem(itemConConsumidor);
       if (existente) {

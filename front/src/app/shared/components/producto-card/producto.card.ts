@@ -1,4 +1,4 @@
-import { Component, input, output, ChangeDetectionStrategy, inject, computed } from '@angular/core';
+import { Component, input, output, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
@@ -25,12 +25,10 @@ import { EllipsisV } from '@primeicons/angular';
     EllipsisV,
   ],
   templateUrl: './producto.card.html',
-
   styleUrl: './producto.card.css',
 })
 export class ProductoCard {
-  private userStore = inject(UserStore);
-  public esProductor = this.userStore.esProductor;
+  public userStore = inject(UserStore);
 
   producto = input.required<Producto>();
   layout = input<'grid' | 'list'>('grid'); // <-- Recibe el modo del DataView
