@@ -1,6 +1,7 @@
-name: deaca
+name: ${PROJECT_NAME}
 services:
   proxy:
+    container_name: ${PROJECT_NAME}proxy
     image: nginx:alpine
     ports:
       - "80:80"
@@ -34,7 +35,7 @@ services:
     build:
       context: ./api
       target: development
-    container_name: deacaapi
+    container_name: ${PROJECT_NAME}api
     user: 1000:1000
     tty: true
     # command: sh -c "npm install  && npm run dev"
@@ -64,7 +65,7 @@ services:
       - 0.0.0.0:3000:3000
   db:
     image: postgis/postgis:18-3.6-alpine
-    container_name: deacadb
+    container_name: d${PROJECT_NAME}db
     restart: unless-stopped
     command: postgres -p ${PGPORT}
     environment:

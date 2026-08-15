@@ -1,4 +1,11 @@
-import { Component, ChangeDetectionStrategy, inject, resource, computed } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  inject,
+  resource,
+  computed,
+  signal,
+} from '@angular/core';
 import { CarritoService } from '@shared/services/carrito.service';
 import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
 import { DataView } from 'primeng/dataview';
@@ -8,6 +15,10 @@ import { Tag } from 'primeng/tag';
 import { ItemCarrito } from '@shared/types/item-carrito';
 import { DialogService } from '@shared/services/dialog.service';
 import { ButtonDirective } from 'primeng/button';
+import { ComprasService } from '@shared/services/compras.service';
+import { UserStore } from '@shared/services/stores/user.store';
+import { Compra, CompraPOST } from '@shared/types/compra';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-carrito',
@@ -17,9 +28,12 @@ import { ButtonDirective } from 'primeng/button';
   styleUrl: './carrito.page.css',
 })
 export class CarritoPage {
+  private readonly _router = inject(Router);
   private _carritoService = inject(CarritoService);
-  private readonly _preferenciasStore = inject(PreferenciasStore);
+  public readonly _preferenciasStore = inject(PreferenciasStore);
+  public readonly userStore = inject(UserStore);
   private readonly _dialogService = inject(DialogService);
+  private readonly _comprasService = inject(ComprasService);
   protected readonly cdnUrl = environment.cdnUrl;
 
   public limit = this._preferenciasStore.limit;
@@ -27,6 +41,9 @@ export class CarritoPage {
   protected items = this._carritoService.productos;
 
   protected totalCarrito = this._carritoService.totalCarrito;
+
+  public direccion_envio = signal<string>('');
+  public contacto_receptor = signal<string>('');
 
   public async onBorrar(item: ItemCarrito) {
     try {
@@ -46,7 +63,19 @@ export class CarritoPage {
   }
 
   public async confirmarCompra() {
-    //TODO: Dar de alta la compra
-    //TODO: Redirigir a :id_compra/pagar
+    try {
+      const username = this.userStore.user()?.username;
+      if (!username) return;
+      const datos: CompraPOST = {
+        direccion_envio: this.direccion_envio(),
+        contacto_receptor: this.contacto_receptor(),
+      };
+
+      //TODO: Falta agregar direccion envio y contacto en el formulario
+      const compra = await this._comprasService.create(datos, { username });
+      this._router.navigate(['consumidor', 'compras', compra.id_compra]);
+    } catch (error: any) {
+      this._dialogService.addError(error.message);
+    }
   }
 }

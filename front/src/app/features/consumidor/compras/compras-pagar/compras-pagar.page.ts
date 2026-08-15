@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-compras-pagar',
@@ -6,4 +6,6 @@ import { Component } from '@angular/core';
   templateUrl: './compras-pagar.page.html',
   styleUrl: './compras-pagar.page.css',
 })
-export class ComprasPagarPage {}
+export class ComprasPagarPage {
+  public id_compra = input.required();
+}

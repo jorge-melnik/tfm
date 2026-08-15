@@ -6,3 +6,7 @@ export type Compra = {
   direccion_envio: string;
   contacto_receptor: string;
 };
+export type CompraPOST = {
+  direccion_envio: string;
+  contacto_receptor: string;
+};

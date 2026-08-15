@@ -12,4 +12,8 @@ export class ComprasService extends BaseService<Compra> {
   // private readonly _usuarioStore = inject(UserStore);
   // private readonly _http = inject(HttpClient);
   // private readonly _dialog = inject(DialogService);
+
+  public getMetodosPagoHabilitados(username: string, id_compra: number) {
+    // const url = this.http.get();
+  }
 }

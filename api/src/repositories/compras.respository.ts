@@ -20,7 +20,7 @@ export class ComprasRepositoryClass extends BaseReadRepository<Compra> {
   }
 
   async createFromCarrito(id_usuario: string, compra: CompraPOST): Promise<Compra> {
-    const { direccion_envio, contacto_receptor } = CompraPOST;
+    const { direccion_envio, contacto_receptor } = compra;
 
     const consulta = `
       WITH PRODUCTOS_PRODUCTOR AS (
@@ -28,12 +28,12 @@ export class ComprasRepositoryClass extends BaseReadRepository<Compra> {
         FROM carrito_productos CP
         JOIN productos P ON CP.id_producto = P.id_producto
         WHERE CP.id_consumidor = $1
-        GROUP BY CP.id_consumidor, P.id_productor, CP.cantidad, P.precio
+        GROUP BY P.id_producto, CP.id_consumidor, CP.cantidad
       ),
       NUEVA_COMPRA AS (
         INSERT INTO compras (id_consumidor, direccion_envio, contacto_receptor)
         SELECT $1, $2, $3
-        WHERE EXISTS (SELECT 1 FROM items_agrupados) -- Para no crear compra si el carrito está vacío.
+        WHERE EXISTS (SELECT 1 FROM PRODUCTOS_PRODUCTOR) -- Para no crear compra si el carrito está vacío.
         RETURNING *
       ),
       NUEVOS_PEDIDOS AS (
