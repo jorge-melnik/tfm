@@ -11,3 +11,10 @@ export type CompraPOST = {
   direccion_envio: string;
   contacto_receptor: string;
 };
+
+export type DatosTarjeta = {
+  numero: string;
+  titular: string;
+  vencimiento: string;
+  cvv: string;
+};

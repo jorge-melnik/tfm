@@ -4,15 +4,12 @@ import { UserStore } from '@shared/services/stores/user.store';
 import { Tag } from 'primeng/tag';
 import { RadioButton } from 'primeng/radiobutton';
 import { ButtonModule } from 'primeng/button';
-import { Compra } from '@shared/types/compra';
+import { Compra, DatosTarjeta } from '@shared/types/compra';
 import { Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';
-import { FloatLabel } from 'primeng/floatlabel';
-import { IconField } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
-import { CreditCard, User, Calendar, Key, Verified } from '@primeicons/angular';
+import { DatosTarjetaForm } from '@shared/components/datos-tarjeta/datos-tarjeta.form';
 
 @Component({
   selector: 'app-compras-pagar',
@@ -22,14 +19,8 @@ import { CreditCard, User, Calendar, Key, Verified } from '@primeicons/angular';
     ButtonModule,
     FormsModule,
     InputTextModule,
-    FloatLabel,
-    IconField,
-    CreditCard,
-    User,
-    Calendar,
-    Verified,
-    InputIcon,
     InputMaskModule,
+    DatosTarjetaForm,
   ],
   templateUrl: './compras-pagar.page.html',
   styleUrl: './compras-pagar.page.css',
@@ -45,12 +36,12 @@ export class ComprasPagarPage {
   public metodoDePagoSeleccionado = signal<string>('TARJETA');
   public procesandoPago = signal<boolean>(false);
 
-  public datosTarjeta = {
+  public datosTarjeta = signal<DatosTarjeta>({
     numero: '',
     titular: '',
     vencimiento: '',
     cvv: '',
-  };
+  });
 
   public compraResource = resource({
     params: () => {
