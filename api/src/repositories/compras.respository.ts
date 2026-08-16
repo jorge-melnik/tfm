@@ -11,7 +11,13 @@ export class ComprasRepositoryClass extends BaseReadRepository<Compra> {
   protected readonly slugName?: keyof Compra;
 
   protected readonly baseQuery = `
-    SELECT * FROM compras C
+    WITH MIS_COMPRAS AS (
+      SELECT COMP.* , DP.username
+      FROM compras COMP
+      JOIN public.consumidores C ON C.id_consumidor = COMP.id_consumidor
+      JOIN public.datos_personales DP ON DP.id_usuario = C.id_consumidor
+    )
+    SELECT * FROM MIS_COMPRAS 
     WHERE 1=1
   `;
 

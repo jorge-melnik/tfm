@@ -1,1 +1,88 @@
-<p>compras works!</p>
+<div class="card gap-6">
+  <p-dataview
+    #dv
+    [value]="compras()"
+    layout="list"
+    [paginator]="true"
+    [rows]="preferenciasStore.limit()"
+    [first]="first()"
+    [totalRecords]="total()"
+    [lazy]="true"
+    [rowsPerPageOptions]="[6, 12, 24]"
+    (onPage)="onPageChange($event)"
+    [sortField]="sortField()"
+    [sortOrder]="sortOrder()"
+  >
+    <ng-template #header>
+      <div class="flex justify-between items-center">
+        <span class="font-bold text-xl">Mis Compras</span>
+      </div>
+    </ng-template>
+
+    <ng-template #list let-items>
+      <div class="flex flex-col">
+        @for (compra of items; track compra.id_compra; let last = $last) {
+          <div
+            class="flex flex-col md:flex-row md:items-center justify-between p-4 gap-4"
+            [class.border-b]="!last"
+            [class.border-surface-200]="!last"
+            [class.dark:border-surface-700]="!last"
+          >
+            <div class="flex flex-col gap-2 flex-1">
+              <div class="flex items-center gap-3">
+                <span class="font-bold text-lg text-surface-900 dark:text-surface-0">
+                  Compra #{{ compra.id_compra }}
+                </span>
+
+                <p-tag [value]="compra.estado_compra" [severity]="'info'" />
+              </div>
+
+              <div class="text-sm text-surface-600 dark:text-surface-400 flex flex-col gap-1">
+                <span>
+                  <i class="pi pi-map-marker mr-1"></i>
+                  <strong>Dirección:</strong> {{ compra.direccion_envio }}
+                </span>
+                <span>
+                  <i class="pi pi-phone mr-1"></i>
+                  <strong>Contacto:</strong> {{ compra.contacto_receptor }}
+                </span>
+              </div>
+            </div>
+
+            <div
+              class="flex flex-col sm:flex-row md:flex-col lg:flex-row items-start sm:items-center md:items-end lg:items-center gap-4"
+            >
+              <div class="text-right">
+                <span class="text-xs text-surface-500 block">Total</span>
+                <span class="text-2xl font-bold text-surface-900 dark:text-surface-0">
+                  ${{ compra.total }}
+                </span>
+              </div>
+
+              <div class="flex flex-col gap-1">
+                @if (compra.estado_compra === 'PAGANDO') {
+                  <button
+                    pButton
+                    severity="success"
+                    size="small"
+                    (click)="this.goToPagar(compra.id_compra)"
+                  >
+                    Pagar
+                    <svg data-p-icon="credit-card" />
+                  </button>
+                }
+
+                <button pButton severity="secondary" size="small">
+                  Detalles
+                  <svg data-p-icon="info-circle" />
+                </button>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <div class="p-8 text-center text-surface-500">No se encontraron compras registradas.</div>
+        }
+      </div>
+    </ng-template>
+  </p-dataview>
+</div>

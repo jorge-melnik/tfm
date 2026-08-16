@@ -1,8 +1,8 @@
 FROM node:24-alpine AS base
 # Creamos la carpeta y le damos permisos al usuario node
-RUN mkdir -p /deaca/api/node_modules /deaca/api/.angular && chown -R node:node /deaca/api
+RUN mkdir -p /app/api/node_modules /app/api/.angular && chown -R node:node /app/api
 # Obligamos a que inicie con usuario node
-WORKDIR /deaca/api
+WORKDIR /app/api
 
 FROM base AS development
 ENV NODE_ENV=development

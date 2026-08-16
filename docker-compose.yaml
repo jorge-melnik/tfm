@@ -16,7 +16,7 @@ services:
       - front
       - api
   front:
-    container_name: deacafront
+    container_name: ${PROJECT_NAME}front
     build:
       context: ./front
       target: development
@@ -28,9 +28,9 @@ services:
       - FRONT_PORT=${FRONT_PORT}
       - API_HOST=${API_HOST}
     volumes:
-      - ./:/deaca
-      - deaca_front_node_modules:/deaca/front/node_modules
-      - deaca_front_angular:/deaca/front/.angular
+      - ./:/app
+      - front_node_modules:/app/front/node_modules
+      - front_angular:/app/front/.angular
   api:
     build:
       context: ./api
@@ -58,14 +58,14 @@ services:
         condition: service_healthy
     volumes:
       # todo el proyecto al volumen para poder usar git dentro del contenedor.
-      - ./:/deaca
-      - deaca_api_node_modules:/deaca/api/node_modules
+      - ./:/app
+      - api_node_modules:/app/api/node_modules
     restart: unless-stopped
     ports:
       - 0.0.0.0:3000:3000
   db:
     image: postgis/postgis:18-3.6-alpine
-    container_name: d${PROJECT_NAME}db
+    container_name: ${PROJECT_NAME}db
     restart: unless-stopped
     command: postgres -p ${PGPORT}
     environment:
@@ -82,7 +82,7 @@ services:
       retries: 5
     volumes:
       - ./db/init:/docker-entrypoint-initdb.d
-      - deaca_db_data:/var/lib/postgresql
+      - db_data:/var/lib/postgresql
 
 # Hacemos volumenes nombrados para que las dependencias no se almacenen en local
 # No se creen nuevos volumenes cada vez que levantamos los contenedoresPero que los podemos
@@ -90,9 +90,16 @@ services:
 # Esta forma es más eficiente que tener node_modules en el host, sobre todo si es una carpeta
 # en el sistema de archivos de windows.
 volumes:
-  deaca_api_node_modules:
-  deaca_front_node_modules:
-  deaca_front_angular:
-  deaca_db_data:
+  api_node_modules:
+    name: ${PROJECT_NAME}_api_node_modules
+
+  front_node_modules:
+    name: ${PROJECT_NAME}_front_node_modules
+
+  front_angular:
+    name: ${PROJECT_NAME}_front_angular
+
+  db_data:
+    name: ${PROJECT_NAME}_db_data
 
 # TODO: Definir networks separadas?

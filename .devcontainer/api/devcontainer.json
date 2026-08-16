@@ -2,7 +2,7 @@
   "name": "De Aca! Api",
   "dockerComposeFile": ["../../docker-compose.yaml"],
   "service": "api",
-  "workspaceFolder": "/deaca/api",
+  "workspaceFolder": "/app/api",
   "remoteUser": "node",
   "customizations": {
     "vscode": {

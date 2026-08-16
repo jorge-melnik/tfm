@@ -19,6 +19,10 @@ const idCompraRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
     },
     onRequest: [fastify.authenticate],
     handler: async function (req, rep) {
+      console.log({
+        id_compra: req.params.id_compra,
+        id_consumidor: req.user.id_usuario, //Con este dato ya nos aseguramos que la compra sea del consumidor.
+      });
       return comprasRepository.getOneBy({
         id_compra: req.params.id_compra,
         id_consumidor: req.user.id_usuario, //Con este dato ya nos aseguramos que la compra sea del consumidor.
