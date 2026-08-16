@@ -1,14 +1,7 @@
 import { DeAcaForbidden } from '@errors/response.errors.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { comprasRepository } from '@repositories/compras.respository.js';
-import {
-  Compra,
-  CompraPOST,
-  MetodosPagoSchema,
-  Pago,
-  PagoPost,
-  PagoTransferencia,
-} from '@schemas/compras.schema.js';
+import { Compra, Pago, PagoTransferencia } from '@schemas/compras.schema.js';
 import { Consumidor } from '@schemas/consumidores.schema.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
 import { getProcesadorDePago } from '@services/pagos/factory.js';

@@ -26,20 +26,12 @@
           [mediosDePago]="this.mediosDePagoDisponibles()"
           [(medioDePagoSeleccionado)]="this.metodoDePagoSeleccionado"
         ></app-medios-pago-selector>
-        @if (metodoDePagoSeleccionado() === 'TARJETA') {
+        @if (metodoDePagoSeleccionado() === 'tarjeta-credito') {
           <app-datos-tarjeta-form [(datosTarjeta)]="this.datosTarjeta"></app-datos-tarjeta-form>
         } @else {
-          <div
-            class="p-5 border border-surface-200 dark:border-surface-700 rounded-xl bg-surface-0 dark:bg-surface-900 shadow-sm flex flex-col gap-2"
-          >
-            <h3 class="text-md font-semibold text-surface-900 dark:text-surface-0 m-0">
-              Instrucciones de Transferencia
-            </h3>
-            <p class="text-sm text-surface-600 dark:text-surface-400">
-              Al procesar la orden te enviaremos los datos bancarios y el número de referencia para
-              efectuar la transferencia.
-            </p>
-          </div>
+          <app-datos-transferencia-form
+            [(datosTransferencia)]="this.datosTransferencia"
+          ></app-datos-transferencia-form>
         }
       </div>
 

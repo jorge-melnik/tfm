@@ -1,16 +1,15 @@
 import { Component, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Calendar, CreditCard, User, Verified } from '@primeicons/angular';
+import { PagoTransferencia } from '@shared/types/pago';
+import { ButtonModule } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
-import { CreditCard, User, Calendar, Verified } from '@primeicons/angular';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputMaskModule } from 'primeng/inputmask';
-import { TarjetaSimulada } from '@shared/types/pago';
 
 @Component({
-  selector: 'app-datos-tarjeta-form',
+  selector: 'app-datos-transferencia-form',
   imports: [
     FloatLabel,
     IconField,
@@ -23,11 +22,10 @@ import { TarjetaSimulada } from '@shared/types/pago';
     FloatLabel,
     ButtonModule,
     InputTextModule,
-    InputMaskModule,
   ],
-  templateUrl: './datos-tarjeta.form.html',
-  styleUrl: './datos-tarjeta.form.css',
+  templateUrl: './datos-transferencia.form.html',
+  styleUrl: './datos-transferencia.form.css',
 })
-export class DatosTarjetaForm {
-  public datosTarjeta = model.required<TarjetaSimulada>();
+export class DatosTransferenciaForm {
+  public datosTransferencia = model.required<PagoTransferencia>();
 }

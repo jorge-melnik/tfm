@@ -16,7 +16,7 @@
             name="numeroTarjeta"
             pInputMask="9999 9999 9999 9999"
             placeholder="0000 0000 0000 0000"
-            [(ngModel)]="datosTarjeta().numero"
+            [(ngModel)]="datosTarjeta().numero_tarjeta"
             maxlength="19"
             class="w-full"
           />
@@ -35,7 +35,7 @@
             id="expiracion"
             name="expiracion"
             placeholder="MM/AAAA"
-            [(ngModel)]="datosTarjeta().vencimiento"
+            [(ngModel)]="datosTarjeta().expiracion"
             maxlength="7"
             minlength="7"
             class="w-full"

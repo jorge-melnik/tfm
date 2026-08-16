@@ -85,7 +85,7 @@ export const TarjetaSimulada = Type.Object({
   numero_tarjeta: Type.String(),
   titular: Type.String(),
   expiracion: Type.String(),
-  cvv: Type.Integer(),
+  cvv: Type.String(),
   ...PagoPost.properties,
 });
 

@@ -1,16 +1,22 @@
-import { Component, inject, input, resource, signal } from '@angular/core';
+import { Component, effect, inject, input, resource, signal } from '@angular/core';
 import { ComprasService } from '@shared/services/compras.service';
 import { UserStore } from '@shared/services/stores/user.store';
 import { Tag } from 'primeng/tag';
-import { RadioButton } from 'primeng/radiobutton';
 import { ButtonModule } from 'primeng/button';
-import { Compra, DatosTarjeta, MedioPago, MEDIOS_PAGO_DISPONIBLES } from '@shared/types/compra';
+import { Compra } from '@shared/types/compra';
 import { Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';
 import { DatosTarjetaForm } from '@shared/components/datos-tarjeta/datos-tarjeta.form';
 import { MediosPagoSelector } from '@shared/components/medios-pago/medios-pago.selector';
+import {
+  MedioPago,
+  MEDIOS_PAGO_DISPONIBLES,
+  PagoTransferencia,
+  TarjetaSimulada,
+} from '@shared/types/pago';
+import { DatosTransferenciaForm } from '@shared/components/datos-transferencia/datos-transferencia.form';
 
 @Component({
   selector: 'app-compras-pagar',
@@ -21,6 +27,7 @@ import { MediosPagoSelector } from '@shared/components/medios-pago/medios-pago.s
     InputTextModule,
     InputMaskModule,
     DatosTarjetaForm,
+    DatosTransferenciaForm,
     MediosPagoSelector,
   ],
   templateUrl: './compras-pagar.page.html',
@@ -37,11 +44,20 @@ export class ComprasPagarPage {
   public metodoDePagoSeleccionado = signal<string>(MEDIOS_PAGO_DISPONIBLES[0].codigo);
   public procesandoPago = signal<boolean>(false);
 
-  public datosTarjeta = signal<DatosTarjeta>({
-    numero: '',
+  public datosTarjeta = signal<TarjetaSimulada>({
+    id_compra: 0,
+    monto_pagado: '0',
+    numero_tarjeta: '',
     titular: '',
-    vencimiento: '',
+    expiracion: '',
     cvv: '',
+  });
+
+  public datosTransferencia = signal<PagoTransferencia>({
+    id_compra: 0,
+    monto_pagado: '0',
+    banco: '',
+    numero_transaccion: '',
   });
 
   public compraResource = resource({
@@ -58,23 +74,36 @@ export class ComprasPagarPage {
       return this._compraService.getById(username, id_compra);
     },
   });
+  constructor() {
+    effect(() => {
+      const compra = this.compraResource.value();
 
+      if (compra) {
+        this.datosTarjeta.update((actual) => ({
+          ...actual,
+          id_compra: compra.id_compra,
+          monto_pagado: compra.total,
+        }));
+
+        this.datosTransferencia.update((actual) => ({
+          ...actual,
+          id_compra: compra.id_compra,
+          monto_pagado: compra.total,
+        }));
+      }
+    });
+  }
   procesarPago(compra: Compra) {
     this.procesandoPago.set(true);
+    const metodo = this.metodoDePagoSeleccionado();
+    const username = this.userStore.user()?.username;
+    const id_compra = this.id_compra();
 
-    const payload = {
-      id_compra: compra.id_compra,
-      metodo: this.metodoDePagoSeleccionado(),
-      ...(this.metodoDePagoSeleccionado() === 'TARJETA' ? { tarjeta: this.datosTarjeta } : {}),
-    };
-
-    console.log('Procesando pago:', payload);
-
-    // Simulación de llamada al servicio de pago
-    setTimeout(() => {
-      this.procesandoPago.set(false);
-      // Lógica posterior: Redireccionar, Toast de éxito, etc.
-    }, 1500);
+    if (!username) return;
+    if (metodo === 'transferencia') {
+      const datos = this.datosTransferencia();
+      this._compraService.procesarTransferencia(username, id_compra, datos);
+    }
   }
 
   volver() {

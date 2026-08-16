@@ -1,6 +1,6 @@
 import { Component, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MedioPago } from '@shared/types/compra';
+import { MedioPago } from '@shared/types/pago';
 import { RadioButtonModule } from 'primeng/radiobutton';
 
 @Component({
