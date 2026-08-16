@@ -18,3 +18,22 @@ export type DatosTarjeta = {
   vencimiento: string;
   cvv: string;
 };
+
+export type MedioPago = {
+  codigo: string;
+  nombre: string;
+  descripcion: string;
+};
+
+export const MEDIOS_PAGO_DISPONIBLES: MedioPago[] = [
+  {
+    codigo: 'tarjeta-credito',
+    nombre: 'Tarjeta de Crédito / Débito (Simulado)',
+    descripcion: 'Aprobación instantánea en entorno local',
+  },
+  {
+    codigo: 'transferencia',
+    nombre: 'Transferencia Bancaria Directa',
+    descripcion: 'Pago directo por transferencia bancaria.',
+  },
+];

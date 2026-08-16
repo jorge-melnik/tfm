@@ -4,23 +4,24 @@ import { UserStore } from '@shared/services/stores/user.store';
 import { Tag } from 'primeng/tag';
 import { RadioButton } from 'primeng/radiobutton';
 import { ButtonModule } from 'primeng/button';
-import { Compra, DatosTarjeta } from '@shared/types/compra';
+import { Compra, DatosTarjeta, MedioPago, MEDIOS_PAGO_DISPONIBLES } from '@shared/types/compra';
 import { Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';
 import { DatosTarjetaForm } from '@shared/components/datos-tarjeta/datos-tarjeta.form';
+import { MediosPagoSelector } from '@shared/components/medios-pago/medios-pago.selector';
 
 @Component({
   selector: 'app-compras-pagar',
   imports: [
     Tag,
-    RadioButton,
     ButtonModule,
     FormsModule,
     InputTextModule,
     InputMaskModule,
     DatosTarjetaForm,
+    MediosPagoSelector,
   ],
   templateUrl: './compras-pagar.page.html',
   styleUrl: './compras-pagar.page.css',
@@ -32,8 +33,8 @@ export class ComprasPagarPage {
 
   private readonly _compraService = inject(ComprasService);
 
-  public metodosDePago = signal<string[]>(['TRANSFERENCIA', 'TARJETA']);
-  public metodoDePagoSeleccionado = signal<string>('TARJETA');
+  public mediosDePagoDisponibles = signal<MedioPago[]>(MEDIOS_PAGO_DISPONIBLES);
+  public metodoDePagoSeleccionado = signal<string>(MEDIOS_PAGO_DISPONIBLES[0].codigo);
   public procesandoPago = signal<boolean>(false);
 
   public datosTarjeta = signal<DatosTarjeta>({
