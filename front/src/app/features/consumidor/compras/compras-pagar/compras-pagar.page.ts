@@ -17,11 +17,16 @@ import {
   TarjetaSimulada,
 } from '@shared/types/pago';
 import { DatosTransferenciaForm } from '@shared/components/datos-transferencia/datos-transferencia.form';
+import { CreditCard, Spinner } from '@primeicons/angular';
+import { DialogService } from '@shared/services/dialog.service';
+import { ProgressSpinner } from 'primeng/progressspinner';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-compras-pagar',
   imports: [
     Tag,
+    CreditCard,
     ButtonModule,
     FormsModule,
     InputTextModule,
@@ -29,6 +34,7 @@ import { DatosTransferenciaForm } from '@shared/components/datos-transferencia/d
     DatosTarjetaForm,
     DatosTransferenciaForm,
     MediosPagoSelector,
+    ProgressSpinner,
   ],
   templateUrl: './compras-pagar.page.html',
   styleUrl: './compras-pagar.page.css',
@@ -37,6 +43,8 @@ export class ComprasPagarPage {
   public id_compra = input.required<number>();
   public readonly userStore = inject(UserStore);
   private _location = inject(Location);
+  private _dialogService = inject(DialogService);
+  private readonly _router = inject(Router);
 
   private readonly _compraService = inject(ComprasService);
 
@@ -79,6 +87,14 @@ export class ComprasPagarPage {
       const compra = this.compraResource.value();
 
       if (compra) {
+        if (compra.tiene_pago_pendiente) {
+          this._dialogService.addWarn('Esta compra ya tiene un pago pendiente aprobación.');
+          this._router.navigate(['consumidor', 'compras']);
+        }
+        if (compra.estado_compra === 'PAGADO') {
+          this._dialogService.addWarn('Esta compra ya tiene un pago confirmado.');
+          this._router.navigate(['consumidor', 'compras']);
+        }
         this.datosTarjeta.update((actual) => ({
           ...actual,
           id_compra: compra.id_compra,
@@ -93,17 +109,23 @@ export class ComprasPagarPage {
       }
     });
   }
-  procesarPago(compra: Compra) {
+  async procesarPago(compra: Compra) {
     this.procesandoPago.set(true);
     const metodo = this.metodoDePagoSeleccionado();
     const username = this.userStore.user()?.username;
     const id_compra = this.id_compra();
 
     if (!username) return;
-    if (metodo === 'transferencia') {
-      const datos = this.datosTransferencia();
-      this._compraService.procesarTransferencia(username, id_compra, datos);
+    try {
+      if (metodo === 'transferencia') {
+        const datos = this.datosTransferencia();
+        await this._compraService.procesarTransferencia(username, id_compra, datos);
+      }
+    } catch (error: any) {
+      const mensaje = error.error ? error.error.message : error.message;
+      this._dialogService.addError(mensaje);
     }
+    this.procesandoPago.set(false);
   }
 
   volver() {

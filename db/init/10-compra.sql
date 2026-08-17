@@ -27,8 +27,8 @@ EXECUTE FUNCTION fn_actualizar_fecha_actualizacion();
 CREATE OR REPLACE FUNCTION fn_sincronizar_pedidos_con_compra()
 RETURNS TRIGGER AS $$
 BEGIN
-    -- Cuando la compra pasa a 'PAGADA'
-    IF (NEW.estado_compra = 'PAGADA' AND (OLD.estado_compra IS DISTINCT FROM 'PAGADA')) THEN
+    -- Cuando la compra pasa a 'PAGADO'
+    IF (NEW.estado_compra = 'PAGADO' AND (OLD.estado_compra IS DISTINCT FROM 'PAGADO')) THEN
         UPDATE pedidos
         SET estado_pedido = 'PAGADO'
         WHERE id_compra = NEW.id_compra AND estado_pedido = 'PAGANDO';

@@ -30,7 +30,7 @@ export class ComprasService extends BaseService<Compra> {
   }
 
   public procesarTransferencia(username: string, id_compra: number, pago: PagoTransferencia) {
-    const url = `${this.buildUrl({ username })}/${id_compra}/pagos`;
+    const url = `${this.buildUrl({ username })}/${id_compra}/pagos/transferencia`;
     return firstValueFrom(this.http.post(url, pago));
   }
 }

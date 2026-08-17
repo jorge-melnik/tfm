@@ -13,6 +13,11 @@ export class ComprasRepositoryClass extends BaseReadRepository<Compra> {
   protected readonly baseQuery = `
     WITH MIS_COMPRAS AS (
       SELECT COMP.* , DP.username
+      , EXISTS (
+        SELECT 1 
+        FROM public.pagos P
+        WHERE P.id_compra = COMP.id_compra AND P.estado_pago = 'PENDIENTE'
+      ) AS tiene_pago_pendiente
       FROM compras COMP
       JOIN public.consumidores C ON C.id_consumidor = COMP.id_consumidor
       JOIN public.datos_personales DP ON DP.id_usuario = C.id_consumidor
@@ -90,8 +95,8 @@ export class ComprasRepositoryClass extends BaseReadRepository<Compra> {
   ): Promise<void> {
     if (id_compra !== pago.id_compra) throw new DeAcaForbidden('No coincide el id_compra.');
     const consulta = `
-      INSERT INTO public.pagos VALUES(id_compra,id_externo, metodo_pago,estado_pago,respuesta_raw)
-      VALUES($1,$2,$3,$4)
+      INSERT INTO public.pagos(id_compra,id_externo, metodo_pago,estado_pago,respuesta_raw)
+      VALUES($1,$2,$3,$4,$5)
       ;
     `;
     await this.executor.query(consulta, [

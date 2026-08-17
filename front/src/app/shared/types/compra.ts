@@ -6,6 +6,7 @@ export type Compra = {
   estado_compra: ESTADO_COMPRA;
   direccion_envio: string;
   contacto_receptor: string;
+  tiene_pago_pendiente: boolean;
 };
 export type CompraPOST = {
   direccion_envio: string;

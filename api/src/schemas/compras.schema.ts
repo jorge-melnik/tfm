@@ -67,6 +67,7 @@ export const Compra = Type.Object({
   id_consumidor: Consumidor.properties.id_consumidor,
   total: Type.Number(),
   estado_compra: EstadoCompra,
+  tiene_pago_pendiente: Type.Boolean(),
   ...CompraPOST.properties,
 });
 
@@ -76,8 +77,8 @@ export const PagoPost = Type.Object({
 });
 
 export const PagoTransferencia = Type.Object({
-  banco: Type.String(),
-  numero_transaccion: Type.String(),
+  banco: Type.String({ minLength: 2 }),
+  numero_transaccion: Type.String({ minLength: 4 }),
   ...PagoPost.properties,
 });
 

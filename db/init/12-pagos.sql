@@ -33,7 +33,7 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF (NEW.estado_pago = 'APROBADO' AND (OLD.estado_pago IS DISTINCT FROM 'APROBADO')) THEN   
         UPDATE compras
-        SET estado_compra = 'PAGADA'
+        SET estado_compra = 'PAGADO'
         WHERE id_compra = NEW.id_compra AND estado_compra = 'PAGANDO';
     END IF;
 

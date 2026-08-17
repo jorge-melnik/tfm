@@ -86,26 +86,25 @@
           </div>
 
           <div class="flex flex-col gap-2 pt-2">
-            <button
-              pButton
-              label="Confirmar y Pagar"
-              icon="pi pi-lock"
-              severity="success"
-              (click)="procesarPago(compra)"
-              class="w-full"
-            >
-              PAGAR
-            </button>
-
-            <button
-              pButton
-              severity="secondary"
-              [outlined]="true"
-              (click)="volver()"
-              class="w-full"
-            >
-              CANCELAR
-            </button>
+            @if (this.procesandoPago()) {
+              <div class="flex justify-center">
+                <p-progress-spinner ariaLabel="loading" />
+              </div>
+            } @else {
+              <button pButton severity="success" (click)="procesarPago(compra)">
+                <svg data-p-icon="credit-card" />
+                PAGAR
+              </button>
+              <button
+                pButton
+                severity="secondary"
+                [outlined]="true"
+                (click)="volver()"
+                class="w-full"
+              >
+                CANCELAR
+              </button>
+            }
           </div>
 
           <p

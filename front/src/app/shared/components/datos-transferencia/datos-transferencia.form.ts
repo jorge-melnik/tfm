@@ -1,6 +1,6 @@
 import { Component, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Calendar, CreditCard, User, Verified } from '@primeicons/angular';
+import { BuildingColumns, Hashtag } from '@primeicons/angular';
 import { PagoTransferencia } from '@shared/types/pago';
 import { ButtonModule } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
@@ -15,10 +15,8 @@ import { InputTextModule } from 'primeng/inputtext';
     IconField,
     InputIcon,
     FormsModule,
-    CreditCard,
-    User,
-    Calendar,
-    Verified,
+    Hashtag,
+    BuildingColumns,
     FloatLabel,
     ButtonModule,
     InputTextModule,
