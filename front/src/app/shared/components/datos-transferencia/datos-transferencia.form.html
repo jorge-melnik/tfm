@@ -1,0 +1,34 @@
+<div
+  class="p-5 border border-surface-200 dark:border-surface-700 rounded-xl bg-surface-0 dark:bg-surface-900 shadow-sm flex flex-col gap-4"
+>
+  <h3 class="text-md font-semibold text-surface-900 dark:text-surface-0 m-0">
+    Datos de la transferencia
+  </h3>
+
+  <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+    <div class="sm:col-span-6">
+      <p-floatlabel variant="on">
+        <p-iconfield iconPosition="left">
+          <p-inputicon><svg data-p-icon="building-columns"></svg></p-inputicon>
+          <input pInputText name="banco" [(ngModel)]="datosTransferencia().banco" class="w-full" />
+          <label for="numeroTarjeta">Banco</label>
+        </p-iconfield>
+      </p-floatlabel>
+    </div>
+
+    <div class="sm:col-span-6">
+      <p-floatlabel variant="on">
+        <p-iconfield iconPosition="left">
+          <p-inputicon><svg data-p-icon="hashtag"></svg></p-inputicon>
+          <input
+            pInputText
+            name="numero_transaccion"
+            [(ngModel)]="datosTransferencia().numero_transaccion"
+            class="w-full"
+          />
+          <label for="expiracion">Numero de transacción</label>
+        </p-iconfield>
+      </p-floatlabel>
+    </div>
+  </div>
+</div>

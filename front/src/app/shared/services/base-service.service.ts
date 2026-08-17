@@ -18,20 +18,29 @@ export abstract class BaseService<T> implements CrudServiceInterface<T> {
     return url;
   }
 
+  /**
+   * Permite obtener todos los elementos del recurso sin paginación.
+   * @param pathParams parms de la url
+   * @returns
+   */
   async getAll(pathParams?: PathParams): Promise<T[]> {
     console.log({ pathParams });
     return await firstValueFrom(this.http.get<T[]>(this.buildUrl(pathParams)));
   }
 
+  /**
+   * Permite obtener todos los elementos del recurso pero paginados, filatrados, etc.
+   * @param options
+   * @returns
+   */
   async getBy(options?: DeAcaRequestOptions): Promise<PaginatedResponse<T>> {
-    console.log({ options });
     let params = new HttpParams();
     if (options?.pagination) {
       if (!options?.pagination) throw new Error('Tienes que especificar la paginación.');
       if (!options?.pagination.page) throw new Error('Tienes que especificar page.');
       if (!options?.pagination.limit) throw new Error('Tienes que especificar limit.');
       const { page, limit, sort, sort_direction } = options?.pagination;
-      console.log('PAGINATION: ', options?.pagination);
+
       params = params.set('page', page);
       params = params.set('limit', limit);
       console.log({ params });

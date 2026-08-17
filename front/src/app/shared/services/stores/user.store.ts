@@ -15,11 +15,16 @@ export class UserStore {
   private _token = signal<string | null>(null);
   public token = this._token.asReadonly();
 
-  public esProductor = computed(() => this._user()?.rol_actual === 'PRODUCTOR');
-  public esConsumidor = computed(() => this._user()?.rol_actual === 'CONSUMIDOR');
-  public esAdministrador = computed(() => this._user()?.rol_actual === 'ADMIN');
+  public esProductor = computed(() => this._user()?.rol_actual == 'PRODUCTOR');
+  public esConsumidor = computed(() => {
+    const user = this._user();
+    if (!user) return false;
+    return user.rol_actual == 'CONSUMIDOR';
+  });
+  public esAdministrador = computed(() => this._user()?.rol_actual == 'ADMIN');
 
   public setUser(usuario: Profile | null) {
+    console.log({ usuario });
     this._user.set(usuario);
   }
   public setToken(token: string | null) {

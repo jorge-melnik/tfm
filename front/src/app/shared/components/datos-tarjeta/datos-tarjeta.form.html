@@ -1,0 +1,87 @@
+<div
+  class="p-5 border border-surface-200 dark:border-surface-700 rounded-xl bg-surface-0 dark:bg-surface-900 shadow-sm flex flex-col gap-4"
+>
+  <h3 class="text-md font-semibold text-surface-900 dark:text-surface-0 m-0">
+    Datos de la Tarjeta
+  </h3>
+
+  <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+    <div class="sm:col-span-8">
+      <p-floatlabel variant="on">
+        <p-iconfield iconPosition="left">
+          <p-inputicon><svg data-p-icon="credit-card"></svg></p-inputicon>
+          <input
+            pInputText
+            id="numeroTarjeta"
+            name="numeroTarjeta"
+            pInputMask="9999 9999 9999 9999"
+            placeholder="0000 0000 0000 0000"
+            [(ngModel)]="datosTarjeta().numero_tarjeta"
+            maxlength="19"
+            class="w-full"
+          />
+          <label for="numeroTarjeta">Número de Tarjeta</label>
+        </p-iconfield>
+      </p-floatlabel>
+    </div>
+
+    <div class="sm:col-span-4">
+      <p-floatlabel variant="on">
+        <p-iconfield iconPosition="left">
+          <p-inputicon><svg data-p-icon="calendar"></svg></p-inputicon>
+          <input
+            pInputText
+            pInputMask="99/9999"
+            id="expiracion"
+            name="expiracion"
+            placeholder="MM/AAAA"
+            [(ngModel)]="datosTarjeta().expiracion"
+            maxlength="7"
+            minlength="7"
+            class="w-full"
+          />
+          <label for="expiracion">Vencimiento (MM/AAAA)</label>
+        </p-iconfield>
+      </p-floatlabel>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+    <div class="sm:col-span-8">
+      <p-floatlabel variant="on">
+        <p-iconfield iconPosition="left">
+          <p-inputicon><svg data-p-icon="user"></svg></p-inputicon>
+          <input
+            pInputText
+            id="titular"
+            name="titular"
+            /* placeholder="NOMBRE APELLIDO" */
+            [(ngModel)]="datosTarjeta().titular"
+            class="w-full"
+          />
+          <label for="titular">Titular</label>
+        </p-iconfield>
+      </p-floatlabel>
+    </div>
+
+    <div class="sm:col-span-4">
+      <p-floatlabel variant="on">
+        <p-iconfield iconPosition="left">
+          <p-inputicon><svg data-p-icon="verified"></svg></p-inputicon>
+          <input
+            pInputText
+            id="cvv"
+            name="cvv"
+            placeholder="123"
+            [(ngModel)]="datosTarjeta().cvv"
+            type="password"
+            maxlength="4"
+            minLength="3"
+            class="w-full"
+          />
+          <label for="cvv">CVC / CVV</label>
+        </p-iconfield>
+      </p-floatlabel>
+    </div>
+  </div>
+</div>

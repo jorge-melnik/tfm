@@ -9,7 +9,7 @@
 
 --     PRIMARY KEY (id_consumidor, id_productor, id_producto),
 --     CONSTRAINT producto_calificaciones_producto_fk FOREIGN KEY (id_productor, id_producto) REFERENCES productos(id_productor, id_producto) ON DELETE CASCADE
---     -- TODO: Trigger para actualizar la calificación del producto en base al promedio de producto_calificaciones
+--     -- //TODO: Trigger para actualizar la calificación del producto en base al promedio de producto_calificaciones
 -- );
 
 -- -- Es un comentario de producto por pedido.
@@ -39,7 +39,7 @@
 
 --     PRIMARY KEY (id_productor, id_pedido), --misma PK que pedido
 --     CONSTRAINT pedido_calificaciones_producto_fk FOREIGN KEY (id_productor, id_pedido) REFERENCES pedidos(id_productor, id_pedido) ON DELETE CASCADE
---     -- TODO: Trigger para actualizar la calificación del productor en base al promedio de pedido_calificaciones
+--     -- //TODO: Trigger para actualizar la calificación del productor en base al promedio de pedido_calificaciones
 -- );
 
 CREATE TABLE calificaciones (
@@ -52,5 +52,5 @@ CREATE TABLE calificaciones (
 
     PRIMARY KEY (id_productor, id_pedido, id_producto),
     CONSTRAINT calificaciones_pedido_productos_fk FOREIGN KEY (id_productor, id_pedido,id_producto) REFERENCES pedido_productos(id_productor, id_pedido, id_producto) ON DELETE CASCADE ON UPDATE CASCADE
-    -- TODO: Trigger para actualizar la calificación del producto en base al promedio de calificaciones
+    -- //TODO: Trigger para actualizar la calificación del producto en base al promedio de calificaciones
 );

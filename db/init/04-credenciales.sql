@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS cuentas_externas (
 );
 
 CREATE TABLE public.refresh_tokens (
-    jti UUID PRIMARY KEY, -- Esto es el randomUUID() que generaste
+    jti UUID PRIMARY KEY, 
     id_usuario UUID NOT NULL REFERENCES public.usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE, -- Si no es UNIQUE es que pueden haber varios refresh token para cada usuario.
     token_hash TEXT NOT NULL,
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -25,4 +25,11 @@ CREATE TABLE public.refresh_tokens (
 );
 
 
--- //TODO: tabla para invalidar access_token ? No vale la pena, son muy cortos. Asegurarse que se borran del cliente.
+-------------------------------------------------------------------
+----------- TRIGGER PARA ACTUALIZAR fecha actualizacion -----------
+-------------------------------------------------------------------
+DROP TRIGGER IF EXISTS tg_credenciales_actualizar_fecha ON credenciales;
+CREATE TRIGGER tg_credenciales_actualizar_fecha
+BEFORE UPDATE ON credenciales
+FOR EACH ROW
+EXECUTE FUNCTION fn_actualizar_fecha_actualizacion();

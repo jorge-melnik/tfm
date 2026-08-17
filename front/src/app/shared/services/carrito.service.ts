@@ -48,6 +48,10 @@ export class CarritoService {
       return { url: this._baseUrl() };
     },
     loader: async ({ params }) => {
+      const productos = this.productos.value();
+      console.log({ productos });
+      const totalItems = productos.length;
+      console.log({ totalItems });
       const res = await firstValueFrom(this._http.get<Carrito>(params.url));
       return res;
     },
@@ -55,8 +59,9 @@ export class CarritoService {
 
   public readonly cantidadItems = computed(() => {
     const carrito = this.carrito.value();
+    console.log({ carrito });
     if (!carrito) return 0;
-    return carrito.cantidad_productos_distintos;
+    return carrito.cantidad_items;
   });
 
   public readonly totalCarrito = computed(() => {

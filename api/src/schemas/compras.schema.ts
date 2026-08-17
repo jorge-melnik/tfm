@@ -44,24 +44,60 @@ export const EstadoCompra = Type.Union(
   ],
   { description: 'Estados que puede tomar una compra. Siempre son automáticos y calculados en la BD' },
 );
+export const MetodosPagoSchema = Type.Union(
+  [Type.Literal('TARJETA_CREDITO'), Type.Literal('TRANSFERENCIA'), Type.Literal('EFECTIVO')],
+  {
+    description: 'Métodos de pago permitidos en el sistema',
+  },
+);
+
+export const MedioPago = Type.Object({
+  codigo: Type.String(),
+  nombre: Type.String(),
+  descripcion: Type.String(),
+});
+
+export const CompraPOST = Type.Object({
+  direccion_envio: Type.String(),
+  contacto_receptor: Type.String(),
+});
 
 export const Compra = Type.Object({
   id_compra: Type.Integer(),
   id_consumidor: Consumidor.properties.id_consumidor,
   total: Type.Number(),
   estado_compra: EstadoCompra,
-  direccion_envio: Type.String(),
-  contacto_receptor: Type.String(),
+  tiene_pago_pendiente: Type.Boolean(),
+  ...CompraPOST.properties,
+});
+
+export const PagoPost = Type.Object({
+  id_compra: Type.Integer(),
+  monto_pagado: Producto.properties.precio,
+});
+
+export const PagoTransferencia = Type.Object({
+  banco: Type.String({ minLength: 2 }),
+  numero_transaccion: Type.String({ minLength: 4 }),
+  ...PagoPost.properties,
+});
+
+export const TarjetaSimulada = Type.Object({
+  numero_tarjeta: Type.String(),
+  titular: Type.String(),
+  expiracion: Type.String(),
+  cvv: Type.String(),
+  ...PagoPost.properties,
 });
 
 export const Pago = Type.Object({
   id_pago: Type.String({ format: 'uuid' }),
   id_compra: Type.Integer(),
   id_externo: Type.String(),
-  metodo_pago: Type.String(),
+  metodo_pago: MedioPago.properties.codigo,
   estado_pago: EstadoPago,
   monto_pagado: Producto.properties.precio,
-  // respuesta_raw: //Aca ver si poner String o JSONB
+  respuesta_raw: Type.String(),
   fecha_creacion: Type.String({ format: 'date-time' }),
   fecha_modificacion: Type.String({ format: 'date-time' }),
 });
@@ -85,6 +121,13 @@ export const ProductoPedido = Type.Object({
 });
 
 export type Compra = Static<typeof Compra>;
+export type CompraPOST = Static<typeof CompraPOST>;
+
+export type MetodosPago = Static<typeof MetodosPagoSchema>;
 export type Pago = Static<typeof Pago>;
 export type Pedido = Static<typeof Pedido>;
 export type ProductoPedido = Static<typeof ProductoPedido>;
+export type MedioPago = Static<typeof MedioPago>;
+
+export type EstadoPago = Static<typeof EstadoPago>;
+export type PagoTransferencia = Static<typeof PagoTransferencia>;

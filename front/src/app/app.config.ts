@@ -1,7 +1,5 @@
 import {
-  APP_INITIALIZER,
   ApplicationConfig,
-  ENVIRONMENT_INITIALIZER,
   inject,
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,

@@ -2,10 +2,125 @@
   <div class="flex items-center gap-2 cursor-pointer" [routerLink]="['/']">
     <img src="/images/logo.webp" alt="Logo De Acá" class="h-10 w-auto object-contain" />
   </div>
+  <p-popover #menu>
+    <div class="flex flex-col min-w-48 gap-1 p-1">
+      @if (!userStore.user()) {
+        <!-- Sección No Autenticado -->
+        <div
+          class="px-3 py-1.5 text-xs font-bold text-surface-400 border-b border-surface-200 dark:border-surface-700"
+        >
+          No autenticado
+        </div>
 
-  <p-menu #menu [model]="items()" [popup]="true" />
+        <a
+          [routerLink]="['/auth/login']"
+          (click)="menu.hide()"
+          class="flex items-center gap-2 px-3 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-md transition-colors"
+        >
+          <svg data-p-icon="sign-in" class="w-4 h-4"></svg>
+          <span>Iniciar sesión</span>
+        </a>
+      } @else {
+        @let user = userStore.user()!;
 
-  <button pButton [rounded]="true" [text]="true" severity="secondary" (click)="menu.toggle($event)">
-    <i class="pi pi-user"></i>
+        <!-- Cabecera con Nombre de Usuario -->
+        <div
+          class="px-3 py-1.5 text-xs font-bold text-surface-400 border-b border-surface-200 dark:border-surface-700"
+        >
+          {{ user.username }}
+        </div>
+
+        <!-- Mis Datos -->
+        <a
+          [routerLink]="['/']"
+          (click)="menu.hide()"
+          class="flex items-center gap-2 px-3 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-md transition-colors"
+        >
+          <svg data-p-icon="user-edit" class="w-4 h-4"></svg>
+          <span>Mis datos</span>
+        </a>
+
+        <!-- Funciones con roles actuales -->
+        @if (userStore.userHasRole('CONSUMIDOR') && user.rol_actual !== 'CONSUMIDOR') {
+          <a
+            [routerLink]="['/consumidor']"
+            (click)="menu.hide()"
+            class="flex items-center gap-2 px-3 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-md transition-colors"
+          >
+            <svg data-p-icon="shopping-cart" class="w-4 h-4"></svg>
+            <span>Comprar</span>
+          </a>
+        }
+
+        @if (userStore.userHasRole('PRODUCTOR') && user.rol_actual !== 'PRODUCTOR') {
+          <a
+            [routerLink]="['/productor']"
+            (click)="menu.hide()"
+            class="flex items-center gap-2 px-3 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-md transition-colors"
+          >
+            <svg data-p-icon="shop" class="w-4 h-4"></svg>
+            <span>Vender</span>
+          </a>
+        }
+
+        @if (userStore.userHasRole('ADMIN') && user.rol_actual !== 'ADMIN') {
+          <a
+            [routerLink]="['/admin']"
+            (click)="menu.hide()"
+            class="flex items-center gap-2 px-3 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-md transition-colors"
+          >
+            <svg data-p-icon="cog" class="w-4 h-4"></svg>
+            <span>Administrar</span>
+          </a>
+        }
+
+        <!-- Activar otro rol (Quiero tal) -->
+        @if (!userStore.userHasRole('CONSUMIDOR')) {
+          <a
+            [routerLink]="['/quiero/comprar']"
+            (click)="menu.hide()"
+            class="flex items-center gap-2 px-3 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-md transition-colors"
+          >
+            <svg data-p-icon="shopping-cart" class="w-4 h-4"></svg>
+            <span>Quiero Comprar</span>
+          </a>
+        }
+
+        @if (!userStore.userHasRole('PRODUCTOR')) {
+          <a
+            [routerLink]="['/quiero/vender']"
+            (click)="menu.hide()"
+            class="flex items-center gap-2 px-3 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-md transition-colors"
+          >
+            <svg data-p-icon="shop" class="w-4 h-4"></svg>
+            <span>Quiero Vender</span>
+          </a>
+        }
+
+        <div class="border-t border-surface-200 dark:border-surface-700 my-1"></div>
+
+        <!-- Logout -->
+        <a
+          [routerLink]="['/auth/logout']"
+          (click)="menu.hide()"
+          class="flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-md transition-colors"
+        >
+          <svg data-p-icon="sign-out" class="w-4 h-4"></svg>
+          <span>Logout</span>
+        </a>
+      }
+    </div>
+  </p-popover>
+
+  <!-- Botón de Usuario -->
+  <button
+    pButton
+    [rounded]="true"
+    [text]="true"
+    severity="secondary"
+    (click)="menu.toggle($event)"
+    aria-label="Menú de usuario"
+  >
+    <svg data-p-icon="user" class="w-5 h-5"></svg>
   </button>
 </header>

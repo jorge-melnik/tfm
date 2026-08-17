@@ -72,7 +72,7 @@ export class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
       SELECT P.*, PC.id_consumidor ,PC.cantidad, P.precio*PC.cantidad as subtotal, DP.username as productor,
       (
         SELECT COALESCE(
-          json_agg(PI.path ORDER BY PI.posicion),
+          json_agg(PI ORDER BY PI.posicion),
           '[]'::json
         )
         FROM public.producto_imagenes PI

@@ -92,7 +92,7 @@ export abstract class BaseReadRepository<T extends DatosBase> {
     let query = `${this.baseQuery} ${condiciones}`;
     const countQuery = `SELECT COUNT(*)::INT as total FROM (${this.baseQuery} ${condiciones}) AS count_query`;
     const countValues = [...values];
-
+    console.log({ query });
     let pageParseado = 1;
     let limitParseado = 10;
     if (limit && page) {
@@ -126,6 +126,7 @@ export abstract class BaseReadRepository<T extends DatosBase> {
     const keys = Object.keys(filters);
 
     if (keys.length === 0) throw new DeAcaBadRequest('No especificaste el filtro');
+
     const { data } = (await this.getBy({ ...filters, limit: 2, page: 1 })) as { data: T[] };
     if (data.length > 1)
       throw new DeAcaInternal('Se obtuvo más de un valor con ese filtro. Se esperaba uno.');
