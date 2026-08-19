@@ -61,11 +61,7 @@
                 [class.grayscale]="!producto.activo"
                 [class.opacity-60]="!producto.activo"
               >
-                <app-foto-carrusel
-                  [altText]="producto.producto"
-                  [cdnUrl]="cdnUrl"
-                  [fotos]="producto.fotos"
-                />
+                <app-foto-carrusel [altText]="producto.producto" [fotos]="producto.fotos" />
 
                 @if (!producto.activo) {
                   <div

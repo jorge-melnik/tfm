@@ -72,7 +72,12 @@
                   </button>
                 }
 
-                <button pButton severity="secondary" size="small">
+                <button
+                  pButton
+                  severity="secondary"
+                  size="small"
+                  [routerLink]="`/consumidor/compras/${compra.id_compra}`"
+                >
                   Detalles
                   <svg data-p-icon="info-circle" />
                 </button>

@@ -1,13 +1,4 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  inject,
-  resource,
-  input,
-  model,
-  computed,
-  signal,
-} from '@angular/core';
+import { Component, inject, resource, computed, signal } from '@angular/core';
 import { ComprasService } from '@shared/services/compras.service';
 import { DialogService } from '@shared/services/dialog.service';
 import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
@@ -17,11 +8,11 @@ import { DataView } from 'primeng/dataview';
 import { ButtonModule } from 'primeng/button';
 import { Tag } from 'primeng/tag';
 import { CreditCard, InfoCircle } from '@primeicons/angular';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-compras',
-  imports: [DataView, ButtonModule, Tag, CreditCard, InfoCircle],
+  imports: [DataView, ButtonModule, Tag, CreditCard, InfoCircle, RouterLink],
   templateUrl: './compras.page.html',
 
   styleUrl: './compras.page.css',

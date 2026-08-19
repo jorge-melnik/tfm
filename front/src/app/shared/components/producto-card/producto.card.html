@@ -9,11 +9,7 @@
         class="relative w-full aspect-video bg-surface-50 dark:bg-surface-950 overflow-hidden transition-all duration-300"
         [class.grayscale]="!producto().activo"
       >
-        <app-foto-carrusel
-          [fotos]="producto().fotos"
-          [cdnUrl]="cdnUrl()"
-          [altText]="producto().nombre"
-        />
+        <app-foto-carrusel [fotos]="producto().fotos" [altText]="producto().nombre" />
 
         @if (!producto().activo) {
           <div
@@ -133,11 +129,7 @@
         class="w-full sm:w-40 aspect-video sm:aspect-square bg-surface-50 dark:bg-surface-950 rounded-xl overflow-hidden shrink-0 relative transition-all duration-300"
         [class.grayscale]="!producto().activo"
       >
-        <app-foto-carrusel
-          [fotos]="producto().fotos"
-          [cdnUrl]="cdnUrl()"
-          [altText]="producto().nombre"
-        />
+        <app-foto-carrusel [fotos]="producto().fotos" [altText]="producto().nombre" />
 
         @if (!producto().activo) {
           <div

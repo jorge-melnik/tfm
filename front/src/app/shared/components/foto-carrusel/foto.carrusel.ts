@@ -1,4 +1,5 @@
 import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
+import { environment } from '@env/environment';
 import { ImagenProducto } from '@shared/types/producto';
 
 @Component({
@@ -10,7 +11,7 @@ import { ImagenProducto } from '@shared/types/producto';
 })
 export class FotoCarrusel {
   fotos = input.required<ImagenProducto[]>();
-  cdnUrl = input.required<string>();
+  cdnUrl = environment.cdnUrl;
   altText = input.required<string>();
 
   indiceActual = signal<number>(0);

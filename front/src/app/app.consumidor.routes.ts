@@ -18,6 +18,14 @@ export const consumidorRoutes: Routes = [
           import('@features/consumidor/compras/compras.page').then((m) => m.ComprasPage),
       },
       {
+        path: ':id_compra',
+        title: 'Detalle compra',
+        loadComponent: () =>
+          import('@features/consumidor/compras/compra-detalle/compra-detalle.page').then(
+            (m) => m.CompraDetallePage,
+          ),
+      },
+      {
         path: ':id_compra/pagar',
         title: 'Finalizar compra',
         loadComponent: () =>
