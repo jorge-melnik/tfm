@@ -1,12 +1,12 @@
 import { Static, Type } from '@sinclair/typebox';
 import { Consumidor } from './consumidores.schema.js';
 import { Productor } from './productores.schema.js';
-import { Producto } from './producto.schema.js';
+import { ImagenProducto, Producto } from './producto.schema.js';
 
 export const EstadoPedido = Type.Union(
   [
     Type.Literal('PAGANDO', { description: 'Pedido con compra en proceso de pago.' }),
-    Type.Literal('PAGADA', { description: 'Pedido con compra ya finalizada y pagada.' }),
+    Type.Literal('PAGADO', { description: 'Pedido con compra ya finalizada y pagada.' }),
     Type.Literal('LISTO PARA ENTREGA', {
       description: 'Pedido que ya está con la compra pagada y listo para entrega.',
     }),
@@ -68,6 +68,7 @@ export const Compra = Type.Object({
   total: Type.Number(),
   estado_compra: EstadoCompra,
   tiene_pago_pendiente: Type.Boolean(),
+  fecha_creacion: Type.String(),
   ...CompraPOST.properties,
 });
 
@@ -102,12 +103,22 @@ export const Pago = Type.Object({
   fecha_modificacion: Type.String({ format: 'date-time' }),
 });
 
+export const PedidoProducto = Type.Object({
+  nombre: Producto.properties.nombre,
+  cantidad: Type.Number(),
+  precio: Type.String(),
+  subtotal: Type.String(),
+  imagenes: Type.Array(ImagenProducto),
+});
+
 export const Pedido = Type.Object({
   id_productor: Productor.properties.id_productor,
   id_pedido: Type.Integer(),
+  productor: Type.String(),
   id_compra: Compra.properties.id_compra,
   estado_pedido: EstadoPedido,
   subtotal_pedido: Type.Number(),
+  productos: Type.Array(PedidoProducto),
 });
 
 export const ProductoPedido = Type.Object({

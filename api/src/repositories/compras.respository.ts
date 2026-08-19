@@ -1,4 +1,4 @@
-import { Compra, CompraPOST, Pago } from '@schemas/compras.schema.js';
+import { Compra, CompraPOST, Pago, Pedido } from '@schemas/compras.schema.js';
 import { BaseReadRepository } from './base.read.repository.js';
 import { DeAcaForbidden } from '@errors/response.errors.js';
 
@@ -79,7 +79,7 @@ export class ComprasRepositoryClass extends BaseReadRepository<Compra> {
    * @returns
    */
   async getPagos(id_compra: number): Promise<Pago[]> {
-    const consulta = 'SELECT C.* FROM public.compras C';
+    const consulta = 'SELECT C.* FROM public.compras C WHERE id_compra=$1';
     const { rows } = await this.executor.query(consulta, [id_compra]);
     return rows;
   }

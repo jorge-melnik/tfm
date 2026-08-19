@@ -7,6 +7,8 @@ import { Compra } from '@shared/types/compra';
 import { environment } from '@env/environment';
 import { firstValueFrom } from 'rxjs';
 import { PagoTransferencia } from '@shared/types/pago';
+import { Pedido } from '@shared/types/pedido';
+import { PaginatedResponse } from '@shared/types/api.types';
 
 @Service()
 export class ComprasService extends BaseService<Compra> {
@@ -27,6 +29,11 @@ export class ComprasService extends BaseService<Compra> {
 
   public getPagos() {
     //TODO:
+  }
+
+  public getPedidos(username: string, id_compra: number): Promise<PaginatedResponse<Pedido>> {
+    const url = `${this.buildUrl({ username })}/${id_compra}/pedidos`;
+    return firstValueFrom(this.http.get<PaginatedResponse<Pedido>>(url));
   }
 
   public procesarTransferencia(username: string, id_compra: number, pago: PagoTransferencia) {
