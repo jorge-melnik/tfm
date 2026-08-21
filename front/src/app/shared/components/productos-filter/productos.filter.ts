@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CategoriasService } from '@shared/services/categorias.service';
 import { DialogService } from '@shared/services/dialog.service';
 import { EtiquetasService } from '@shared/services/etiquetas.service';
+import { PaginationStore } from '@shared/services/stores/pagination.store';
 import { UserStore } from '@shared/services/stores/user.store';
 import { SubcategoriasService } from '@shared/services/subcategorias.service';
 import { Categoria, Subcategoria } from '@shared/types/categoria';
@@ -24,6 +25,7 @@ export class ProductosFilter {
   private readonly _dialogService = inject(DialogService);
   private userStore = inject(UserStore);
   public esProductor = this.userStore.esProductor;
+  public readonly paginationStore = inject(PaginationStore);
 
   opcionesLayout = computed(() => {
     const base = ['grid', 'list'];
@@ -35,10 +37,6 @@ export class ProductosFilter {
   public subcategoriaSeleccionada = model<string | undefined>(undefined);
   public etiquetasSeleccionadas = model<string[]>([]);
 
-  public page = model.required();
-  public sortKey = model.required<string>();
-  public sortOrder = model.required<number>();
-  public sortField = model.required<string>();
   public layout = model.required<'grid' | 'list' | 'table'>(); // Estado del diseño (tarjeta o lista)
 
   public categoriasResource = resource({
@@ -112,29 +110,6 @@ export class ProductosFilter {
   }
 
   public onEtiquetasChange(etiquetas: string[]) {
-    console.log('onEtiquetasChange');
-
-    this.filtroCambiado.emit();
-  }
-
-  public onSortChange(event: any) {
-    const value = event.value; // ej: 'precio' o '!precio'
-    this.page.set(1);
-
-    if (!value) {
-      this.sortField.set('');
-      this.sortOrder.set(1);
-      return;
-    }
-
-    if (value.indexOf('!') === 0) {
-      this.sortOrder.set(-1); // DESC
-      this.sortField.set(value.substring(1));
-    } else {
-      this.sortOrder.set(1); // ASC
-      this.sortField.set(value);
-    }
-
     this.filtroCambiado.emit();
   }
 }

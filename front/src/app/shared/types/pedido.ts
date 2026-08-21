@@ -1,6 +1,16 @@
 import { ImagenProducto } from './producto';
 
-export type EstadoPedido = 'PAGANDO' | 'PAGADO' | 'LISTO PARA ENTREGA' | 'ENTREGADO' | 'CANCELADO';
+// export type EstadoPedido = 'PAGANDO' | 'PAGADO' | 'LISTO PARA ENTREGA' | 'ENTREGADO' | 'CANCELADO';
+
+export const EstadoPedido = {
+  PAGANDO: 'PAGANDO',
+  PAGADO: 'PAGADO',
+  LISTO: 'LISTO PARA ENTREGA',
+  ENTREGADO: 'ENTREGADO',
+  CANCELADO: 'CANCELADO',
+} as const;
+
+export type EstadoPedidoType = (typeof EstadoPedido)[keyof typeof EstadoPedido];
 
 export interface PedidoProducto {
   nombre: string;
@@ -15,7 +25,7 @@ export interface Pedido {
   id_pedido: number;
   id_compra: number;
   productor: string;
-  estado_pedido: EstadoPedido;
+  estado_pedido: EstadoPedidoType;
   subtotal_pedido: string;
   productos: PedidoProducto[];
 }

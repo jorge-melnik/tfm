@@ -65,9 +65,9 @@
 
     <p-select
       [options]="this.sortOptions"
-      [(ngModel)]="this.sortKey"
+      [ngModel]="this.paginationStore.sortKey()"
+      (ngModelChange)="this.paginationStore.onSortChange($event)"
       placeholder="Ordenar por..."
-      (onChange)="this.onSortChange($event)"
       class="mb-2 md:mb-0"
     />
 

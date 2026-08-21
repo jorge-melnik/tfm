@@ -4,11 +4,12 @@ import { DialogService } from '@shared/services/dialog.service';
 import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
 import { UserStore } from '@shared/services/stores/user.store';
 import { ApiQueryParams, PathParams } from '@shared/types/api.types';
-import { DataView } from 'primeng/dataview';
+import { DataView, DataViewPageEvent } from 'primeng/dataview';
 import { ButtonModule } from 'primeng/button';
 import { Tag } from 'primeng/tag';
 import { CreditCard, InfoCircle } from '@primeicons/angular';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { PaginationStore } from '@shared/services/stores/pagination.store';
 
 @Component({
   selector: 'app-compras',
@@ -19,7 +20,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 })
 export class ComprasPage {
   private readonly _comprasService = inject(ComprasService);
-  public readonly preferenciasStore = inject(PreferenciasStore);
+  public readonly paginationStore = inject(PaginationStore);
   public readonly userStore = inject(UserStore);
   private readonly _dialogService = inject(DialogService);
   private readonly _router = inject(Router);
@@ -27,7 +28,7 @@ export class ComprasPage {
 
   public page = signal<number>(1);
 
-  public first = computed(() => ((this.page() || 1) - 1) * this.preferenciasStore.limit());
+  public first = computed(() => ((this.page() || 1) - 1) * this.paginationStore.limit());
   public sortKey = signal<string>('');
   public sortOrder = signal<number>(0);
   public sortField = signal<string>('');
@@ -35,7 +36,7 @@ export class ComprasPage {
   private readonly _comprasResource = resource({
     params: () => ({
       username: this.userStore.user()?.username,
-      limit: this.preferenciasStore.limit(),
+      limit: this.paginationStore.limit(),
       page: this.page(),
       sort: this.sortField(),
       sort_direction: this.sortOrder() === -1 ? 'DESC' : 'ASC',
@@ -67,13 +68,6 @@ export class ComprasPage {
     if (!this._comprasResource.hasValue()) return 0;
     return this._comprasResource.value().meta.total;
   });
-
-  onPageChange(event: any) {
-    console.log('onPageChange');
-    this.preferenciasStore.setLimit(event.rows);
-    const nuevaPagina = event.first / event.rows + 1;
-    this.page.set(nuevaPagina);
-  }
 
   goToPagar(id_compra: number) {
     this._router.navigate([id_compra, 'pagar'], {

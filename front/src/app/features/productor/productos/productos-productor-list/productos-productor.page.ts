@@ -13,6 +13,7 @@ import { ProductoCard } from '@shared/components/producto-card/producto.card';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorStateComponent } from '@shared/components/error-state/error-state.component';
 import { EmptyStateComponent } from '@shared/components/empty-state/empty-state.component';
+import { PaginationStore } from '@shared/services/stores/pagination.store';
 
 @Component({
   selector: 'app-productoos',
@@ -29,7 +30,8 @@ import { EmptyStateComponent } from '@shared/components/empty-state/empty-state.
 })
 export class ProductosPage implements OnInit {
   private readonly _productoService = inject(ProductosProductorService);
-  private readonly _preferenciasStore = inject(PreferenciasStore);
+  // private readonly _preferenciasStore = inject(PreferenciasStore);
+  public readonly paginationStore = inject(PaginationStore);
   private readonly _userStore = inject(UserStore);
   private readonly _dialogService = inject(DialogService);
   private readonly _router = inject(Router);
@@ -43,28 +45,27 @@ export class ProductosPage implements OnInit {
   public categoria = model<string | undefined>(undefined);
   public subcategoria = model<string | undefined>(undefined);
   public etiquetas = signal<string[]>([]);
-  public page = signal<number>(1);
-  public limit = model<number>(this._preferenciasStore.limit());
-  public first = computed(() => ((this.page() || 1) - 1) * this.limit());
-  public sortKey = model<string>('');
-  public sortOrder = model<number>(0);
-  public sortField = model<string>('');
+  // public page = signal<number>(1);
+  // public limit = model<number>(this._preferenciasStore.limit());
+  // public first = computed(() => ((this.page() || 1) - 1) * this.limit());
+  // public sortKey = model<string>('');
+  // public sortOrder = model<number>(0);
+  // public sortField = model<string>('');
   public user = this._userStore.user;
   //Señales para el formulario de edición.
 
   public totalProductos = computed<number>(() => {
-    const productos = this.productosResource.value()?.data || [];
-    return productos.length;
+    return this.productosResource.value()?.meta.total || 0;
   });
   public productosResource = resource({
     params: () => ({
       categoria: this.categoria(),
       subcategoria: this.subcategoria(),
       etiquetas: this.etiquetas(),
-      limit: this.limit(),
-      page: this.page(),
-      sort: this.sortField(),
-      sort_direction: this.sortOrder() === -1 ? 'DESC' : 'ASC',
+      limit: this.paginationStore.limit(),
+      page: this.paginationStore.page(),
+      sort: this.paginationStore.sortField(),
+      sort_direction: this.paginationStore.sortOrder() === -1 ? 'DESC' : 'ASC',
       busqueda: this.busqueda(),
       user: this._userStore.user(),
     }),
@@ -85,7 +86,7 @@ export class ProductosPage implements OnInit {
 
       const queryParams: ApiQueryParams = { id_productor: user.id_usuario };
       const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
-
+      console.log({ pagination });
       if (categoria) queryParams['categoria'] = categoria;
       if (subcategoria) queryParams['subcategoria'] = subcategoria;
       if (etiquetas) queryParams['etiquetas'] = etiquetas;
@@ -106,18 +107,12 @@ export class ProductosPage implements OnInit {
   public layout = signal<'grid' | 'list' | 'table'>('table'); // Estado del diseño (tarjeta o lista)
 
   ngOnInit(): void {
-    if (!this.limit()) this.limit.set(this._preferenciasStore.limit());
+    this.paginationStore.setPage(1);
   }
 
   public cambioUnProducto(producto: Producto) {
     console.log('CambioUnProducto: ', { producto });
     this.productosResource.reload();
-  }
-
-  onPageChange(event: any) {
-    this._preferenciasStore.setLimit(event.rows);
-    const nuevaPagina = event.first / event.rows + 1;
-    this.page.set(nuevaPagina);
   }
 
   async gotToCrear() {
