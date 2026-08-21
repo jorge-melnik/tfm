@@ -4,7 +4,7 @@ import { DataViewPageEvent } from 'primeng/dataview';
 @Service()
 export class PaginationStore {
   private readonly _page = signal<number>(1);
-  private readonly _limit = signal<number>(12);
+  private readonly _limit = signal<number>(4);
   private readonly _sortOrder = signal<1 | -1 | 0>(0);
   private readonly _sortField = signal<string>('');
   private readonly _rowsPerPageOptions = signal<number[]>([2, 4, 8, 16]);

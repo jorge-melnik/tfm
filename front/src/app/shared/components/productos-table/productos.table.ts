@@ -9,7 +9,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Producto } from '@shared/types/producto';
 import { environment } from '@env/environment';
 import { FotoCarrusel } from '@shared/components/foto-carrusel/foto.carrusel';
-import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
 import { Categoria, Subcategoria } from '@shared/types/categoria';
 import { Etiqueta } from '@shared/types/etiqueta';
 import { SubcategoriasService } from '@shared/services/subcategorias.service';
@@ -54,9 +53,6 @@ export class ProductosTable implements OnInit {
   public cdnUrl = environment.cdnUrl;
 
   public total = input.required<number>();
-  // public page = model.required<number>();
-  // public limit = model.required<number>();
-  // public first = input.required<number>();
   public productor = input.required<string>();
 
   public productos = input.required<Producto[]>();
@@ -71,51 +67,37 @@ export class ProductosTable implements OnInit {
   public categoriasResource = resource({
     defaultValue: [] as Categoria[],
     loader: async () => {
-      try {
-        return this._categoriaService.getAll();
-      } catch (error: any) {
-        this._dialogService.addError(error.message);
-        return [] as Categoria[];
-      }
+      return this._categoriaService.getAll();
     },
   });
 
   public subcategoriasResource = resource({
     defaultValue: [] as Subcategoria[],
-    params: () => ({ producto: this.productoSeleccionado() }),
+    params: () => {
+      const categoria = this.productoSeleccionado()?.categoria;
+      return { categoria };
+    },
     loader: async ({ params }) => {
-      try {
-        const categoria = params.producto?.categoria;
-        if (!categoria) return this._subcategoriaService.getAll();
-        return this._categoriaService.getSubcategorias(categoria);
-      } catch (error: any) {
-        this._dialogService.addError(error.message);
-        return [] as Subcategoria[];
-      }
+      const { categoria } = params;
+      if (!categoria) return this._subcategoriaService.getAll();
+      return this._categoriaService.getSubcategorias(categoria);
     },
   });
 
   public etiquetasResource = resource({
     defaultValue: [] as Etiqueta[],
     params: () => ({
-      producto: this.productoSeleccionado(),
+      subcategoria: this.productoSeleccionado()?.subcategoria,
     }),
     loader: async ({ params }) => {
-      try {
-        const { producto } = params;
-        const subcategoria = producto?.subcategoria;
-
-        if (!subcategoria) return [];
-        return this._subcategoriaService.getEtiquetas(subcategoria);
-      } catch (error: any) {
-        this._dialogService.addError(error.message);
-        return [] as Etiqueta[];
-      }
+      const { subcategoria } = params;
+      if (!subcategoria) return [];
+      return this._subcategoriaService.getEtiquetas(subcategoria);
     },
   });
 
   ngOnInit(): void {
-    // this.productoSeleccionado.set(null);
+    this.productoSeleccionado.set(this._productoService.getProductoVacio());
   }
 
   onRowEditInit(producto: Producto) {

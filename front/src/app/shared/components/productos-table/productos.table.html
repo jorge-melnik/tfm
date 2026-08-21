@@ -5,11 +5,13 @@
     dataKey="id_producto"
     editMode="row"
     size="small"
-    [scrollable]="true"
     [rows]="this.paginationStore.limit()"
     [first]="this.paginationStore.first()"
     [totalRecords]="this.total()"
     [lazy]="true"
+    [paginator]="true"
+    [rowsPerPageOptions]="this.paginationStore.rowsPerPageOptions()"
+    (onPage)="this.paginationStore.onPageChange($event)"
     [rowHover]="true"
   >
     <ng-template #caption>

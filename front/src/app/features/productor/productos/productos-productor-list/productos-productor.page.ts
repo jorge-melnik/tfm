@@ -55,8 +55,7 @@ export class ProductosPage implements OnInit {
   //Señales para el formulario de edición.
 
   public totalProductos = computed<number>(() => {
-    const productos = this.productosResource.value()?.data || [];
-    return productos.length;
+    return this.productosResource.value()?.meta.total || 0;
   });
   public productosResource = resource({
     params: () => ({
