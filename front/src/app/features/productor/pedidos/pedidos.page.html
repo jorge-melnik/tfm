@@ -25,7 +25,6 @@
     [rows]="this.paginationStore.limit()"
     [first]="this.paginationStore.first()"
     [totalRecords]="this.total()"
-    [lazy]="true"
     [rowsPerPageOptions]="this.paginationStore.rowsPerPageOptions()"
     (onPage)="this.paginationStore.onPageChange($event)"
     layout="list"
