@@ -1,5 +1,4 @@
 <div class="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
-  <!-- Encabezado y Filtros -->
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
     <div>
       <h1 class="text-2xl font-bold text-surface-900 dark:text-surface-0 m-0">
@@ -19,18 +18,18 @@
     />
   </div>
 
-  <!-- DataView Exclusivamente para List -->
   <p-dataview
     [value]="this.pedidos()"
     [loading]="this.isLoading()"
     [paginator]="true"
-    [rows]="this.preferencias.limit()"
+    [rows]="this.paginationStore.limit()"
+    [first]="this.paginationStore.first()"
     [totalRecords]="this.total()"
     [lazy]="true"
-    (onPage)="onPageChange($event)"
+    [rowsPerPageOptions]="this.paginationStore.rowsPerPageOptions()"
+    (onPage)="this.paginationStore.onPageChange($event)"
     layout="list"
   >
-    <!-- Template para la lista usando el nuevo componente -->
     <ng-template #list let-items>
       <div class="space-y-4">
         @for (pedido of items; track pedido.id_pedido) {
@@ -39,7 +38,6 @@
       </div>
     </ng-template>
 
-    <!-- Estado de Carga -->
     <ng-template #loading>
       <div class="space-y-4">
         <div class="h-44 bg-surface-200 dark:bg-surface-800 animate-pulse rounded-xl"></div>
@@ -47,7 +45,6 @@
       </div>
     </ng-template>
 
-    <!-- Estado Vacío -->
     <ng-template #empty>
       <div
         class="p-8 text-center border border-surface-200 dark:border-surface-700 rounded-xl bg-surface-0 dark:bg-surface-900"

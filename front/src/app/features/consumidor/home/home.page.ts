@@ -8,15 +8,13 @@ import { environment } from '@env/environment';
 import { ProductoCard } from '@shared/components/producto-card/producto.card';
 import { SelectModule } from 'primeng/select';
 import { ApiQueryParams } from '@shared/types/api.types';
-import { Etiqueta } from '@shared/types/etiqueta';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
 import { CarritoService } from '@shared/services/carrito.service';
 import { ItemCarrito } from '@shared/types/item-carrito';
 import { UserStore } from '@shared/services/stores/user.store';
 import { DialogService } from '@shared/services/dialog.service';
-import { EtiquetasService } from '@shared/services/etiquetas.service';
 import { ProductosFilter } from '@shared/components/productos-filter/productos.filter';
+import { PaginationStore } from '@shared/services/stores/pagination.store';
 
 @Component({
   selector: 'app-home-consumidor',
@@ -34,7 +32,7 @@ import { ProductosFilter } from '@shared/components/productos-filter/productos.f
 })
 export class HomePage implements OnInit {
   private readonly _productoService = inject(ProductosService);
-  public readonly preferenciasStore = inject(PreferenciasStore);
+  public readonly paginationStore = inject(PaginationStore);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
   private readonly _carritoService = inject(CarritoService);
@@ -48,22 +46,16 @@ export class HomePage implements OnInit {
   public categoria = model<string | undefined>(undefined);
   public subcategoria = model<string | undefined>(undefined);
   public etiquetas = signal<string[]>([]);
-  public page = model<number>(1);
-
-  public first = computed(() => ((this.page() || 1) - 1) * this.preferenciasStore.limit());
-  public sortKey = model<string>('');
-  public sortOrder = model<number>(0);
-  public sortField = model<string>('');
 
   public productosResource = resource({
     params: () => ({
       categoria: this.categoria(),
       subcategoria: this.subcategoria(),
       etiquetas: this.etiquetas(),
-      limit: this.preferenciasStore.limit(),
-      page: this.page(),
-      sort: this.sortField(),
-      sort_direction: this.sortOrder() === -1 ? 'DESC' : 'ASC',
+      limit: this.paginationStore.limit(),
+      page: this.paginationStore.page(),
+      sort: this.paginationStore.sortField(),
+      sort_direction: this.paginationStore.sortOrder() === -1 ? 'DESC' : 'ASC',
       busqueda: this.busqueda(),
     }),
     loader: async ({ params }) => {
@@ -98,7 +90,7 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     const queryParams = this._route.snapshot.queryParamMap;
-    if (!this.page()) this.page.set(1);
+    if (!this.paginationStore.page()) this.paginationStore.setPage(1);
     const etiquetas = queryParams.getAll('etiquetas');
     console.log({ etiquetas });
     if (!etiquetas) this.etiquetas.set(etiquetas);
@@ -128,15 +120,8 @@ export class HomePage implements OnInit {
     }
   }
 
-  onPageChange(event: any) {
-    console.log('onPageChange');
-    this.preferenciasStore.setLimit(event.rows);
-    const nuevaPagina = event.first / event.rows + 1;
-    this.page.set(nuevaPagina);
-  }
-
   public queryParamsChange() {
-    this.page.set(1); // Siempre volvemos a la página 1 al filtrar
+    this.paginationStore.setPage(1); // Siempre volvemos a la página 1 al filtrar
     const categoria = this.categoria();
     const subcategoria = this.subcategoria();
     const etiquetas = this.etiquetas();

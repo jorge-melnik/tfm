@@ -20,6 +20,7 @@ import { ProductosProductorService } from '@shared/services/productos-productor.
 
 import { Plus, PowerOff } from '@primeicons/angular';
 import { EmptyStateComponent } from '@shared/components/empty-state/empty-state.component';
+import { PaginationStore } from '@shared/services/stores/pagination.store';
 
 @Component({
   selector: 'app-productos-table',
@@ -44,7 +45,8 @@ import { EmptyStateComponent } from '@shared/components/empty-state/empty-state.
   styleUrl: './productos.table.css',
 })
 export class ProductosTable implements OnInit {
-  private _preferenciasStore = inject(PreferenciasStore);
+  // private _preferenciasStore = inject(PreferenciasStore);
+  public readonly paginationStore = inject(PaginationStore);
   private readonly _productoService = inject(ProductosProductorService);
   private readonly _categoriaService = inject(CategoriasService);
   private readonly _subcategoriaService = inject(SubcategoriasService);
@@ -52,9 +54,9 @@ export class ProductosTable implements OnInit {
   public cdnUrl = environment.cdnUrl;
 
   public total = input.required<number>();
-  public page = model.required<number>();
-  public limit = model.required<number>();
-  public first = input.required<number>();
+  // public page = model.required<number>();
+  // public limit = model.required<number>();
+  // public first = input.required<number>();
   public productor = input.required<string>();
 
   public productos = input.required<Producto[]>();

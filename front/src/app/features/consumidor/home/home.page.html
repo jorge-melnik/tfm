@@ -3,10 +3,6 @@
     [(categoriaSeleccionada)]="this.categoria"
     [(subcategoriaSeleccionada)]="this.subcategoria"
     [(etiquetasSeleccionadas)]="this.etiquetas"
-    [(page)]="this.page"
-    [(sortField)]="this.sortField"
-    [(sortOrder)]="this.sortOrder"
-    [(sortKey)]="this.sortKey"
     [(layout)]="this.layout"
     [(filtroBusqueda)]="this.busqueda"
     (filtroCambiado)="this.queryParamsChange()"
@@ -16,14 +12,15 @@
     [value]="this.productosResource.value()?.data || []"
     [layout]="this.layout()"
     [paginator]="true"
-    [rows]="this.preferenciasStore.limit()"
-    [first]="this.first()"
+    [rows]="this.paginationStore.limit()"
+    [first]="this.paginationStore.first()"
+    /* //TODO: Está feo este totalRecords... hacer un total computed*/
     [totalRecords]="this.productosResource.value()?.meta?.total || 0"
     [lazy]="true"
-    [rowsPerPageOptions]="[6, 12, 24]"
-    (onPage)="this.onPageChange($event)"
-    [sortField]="this.sortField()"
-    [sortOrder]="this.sortOrder()"
+    [rowsPerPageOptions]="this.paginationStore.rowsPerPageOptions()"
+    (onPage)="this.paginationStore.onPageChange($event)"
+    [sortField]="this.paginationStore.sortField()"
+    [sortOrder]="this.paginationStore.sortOrder()"
   >
     <ng-template #header> </ng-template>
 

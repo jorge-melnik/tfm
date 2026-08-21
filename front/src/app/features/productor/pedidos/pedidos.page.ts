@@ -7,6 +7,7 @@ import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
 import { EstadoPedido, EstadoPedidoType, Pedido } from '@shared/types/pedido';
 import { SelectButton } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
+import { PaginationStore } from '@shared/services/stores/pagination.store';
 
 @Component({
   selector: 'app-pedidos',
@@ -16,15 +17,8 @@ import { FormsModule } from '@angular/forms';
 })
 export class PedidosPage {
   public readonly productor = input.required<string>();
-  public readonly preferencias = inject(PreferenciasStore);
+  public readonly paginationStore = inject(PaginationStore);
   private readonly _pedidosService = inject(PedidosService);
-
-  public page = signal<number>(1);
-  public limit = signal<number>(this.preferencias.limit());
-  public first = computed(() => ((this.page() || 1) - 1) * this.limit());
-  public sortKey = signal<string>('');
-  public sortOrder = signal<number>(0);
-  public sortField = signal<string>('');
 
   public estadoFiltro = signal<EstadoPedidoType | 'TODOS'>('TODOS');
 
@@ -63,14 +57,8 @@ export class PedidosPage {
 
   public isLoading = computed(() => this.pedidosResource.isLoading());
 
-  onPageChange(event: any) {
-    this.preferencias.setLimit(event.rows);
-    const nuevaPagina = event.first / event.rows + 1;
-    this.page.set(nuevaPagina);
-  }
-
   public onFiltroChange() {
-    this.page.set(0);
+    this.paginationStore.setPage(0);
   }
 
   public async onCambiarEstadoPedido(event: { pedido: Pedido; nuevoEstado: EstadoPedidoType }) {

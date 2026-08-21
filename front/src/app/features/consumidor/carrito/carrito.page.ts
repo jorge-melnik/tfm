@@ -1,11 +1,4 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  inject,
-  resource,
-  computed,
-  signal,
-} from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CarritoService } from '@shared/services/carrito.service';
 import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
 import { DataView } from 'primeng/dataview';
@@ -17,7 +10,7 @@ import { DialogService } from '@shared/services/dialog.service';
 import { ButtonDirective } from 'primeng/button';
 import { ComprasService } from '@shared/services/compras.service';
 import { UserStore } from '@shared/services/stores/user.store';
-import { Compra, CompraPOST } from '@shared/types/compra';
+import { CompraPOST } from '@shared/types/compra';
 import { Router } from '@angular/router';
 
 @Component({
@@ -35,8 +28,6 @@ export class CarritoPage {
   private readonly _dialogService = inject(DialogService);
   private readonly _comprasService = inject(ComprasService);
   protected readonly cdnUrl = environment.cdnUrl;
-
-  public limit = this._preferenciasStore.limit;
 
   protected items = this._carritoService.productos;
 
