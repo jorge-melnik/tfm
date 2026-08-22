@@ -126,6 +126,7 @@ export class ComprasPagarPage {
       this._dialogService.addError(mensaje);
     }
     this.procesandoPago.set(false);
+    this._location.back();
   }
 
   volver() {

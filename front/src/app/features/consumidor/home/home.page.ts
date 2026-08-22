@@ -106,7 +106,7 @@ export class HomePage implements OnInit {
       id_consumidor: usuario.id_usuario,
       ...item,
     };
-    const productos = this._carritoService.productos.value();
+    const productos = this._carritoService.productos();
     const existente = productos.find((i) => i.id_producto === item.id_producto);
     try {
       if (!existente) await this._carritoService.addItem(itemConConsumidor);

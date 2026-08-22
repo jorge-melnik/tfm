@@ -1,5 +1,6 @@
-import { Pedido, ProductoPedido } from '@schemas/compras.schema.js';
+import { EstadoPedido, Pedido, ProductoPedido } from '@schemas/compras.schema.js';
 import { BaseReadRepository } from './base.read.repository.js';
+import { DeAcaBadRequest } from '@errors/response.errors.js';
 
 /**
  * Repository para Pedidos. Extiende BaseReadRepository. Por lo que no cuenta con métodos, add, update, etc.
@@ -55,6 +56,44 @@ export class PedidosRepositoryClass extends BaseReadRepository<Pedido> {
     `;
     const { rows } = await this.executor.query(consulta, [id_productor, id_pedido]);
     return rows;
+  }
+
+  /**
+   * Función para cambiar de estado un Pedido. Se encarga de invocar los cambios según el estado_pedido actual.
+   * @param id_productor
+   * @param id_pedido
+   * @param estadoPedido
+   * @returns
+   */
+  public async cambiarEstado(id_productor: string, id_pedido: number, estadoPedido: EstadoPedido) {
+    if (estadoPedido === 'LISTO PARA ENTREGA') return this.marcarListoParaEntrega(id_productor, id_pedido);
+    //TODO: Considererar otros cambios de estado manual.
+    throw new DeAcaBadRequest(
+      'No se permite cambiar el pedido a estado ' + estadoPedido + ' en el estado actual.',
+    );
+  }
+
+  /**
+   * Pasa un pedido de estado PAGADO a estado LISTO PARA ENTREGA
+   * @param id_productor
+   * @param id_pedido
+   */
+  private async marcarListoParaEntrega(id_productor: string, id_pedido: number) {
+    const estadoActual: EstadoPedido = 'PAGADO';
+    const nuevoEstado: EstadoPedido = 'LISTO PARA ENTREGA';
+    const consulta = `
+      UPDATE public.pedidos
+      SET estado_pedido = $4
+      WHERE id_productor=$1 AND id_pedido=$2 AND estado_pedido=$3
+      RETURNING *
+    `;
+
+    const res = await this.executor.query(consulta, [id_productor, id_pedido, estadoActual, nuevoEstado]);
+
+    if (res.rowCount === 0)
+      throw new DeAcaBadRequest(
+        'No existe el pedido o no se encuentra en un estado válido para dicha acción.',
+      );
   }
 }
 

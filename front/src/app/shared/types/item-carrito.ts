@@ -1,3 +1,5 @@
+import { ImagenProducto } from './producto';
+
 export type ItemCarritoVerbose = {
   id_productor: string;
   id_producto: number;
@@ -9,7 +11,7 @@ export type ItemCarritoVerbose = {
   nombre: string;
   descripcion: string;
   producto: string;
-  fotos: string[];
+  fotos: ImagenProducto[];
   cantidad_disponible: number;
 };
 
