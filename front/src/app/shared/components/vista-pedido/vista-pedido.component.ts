@@ -14,10 +14,10 @@ import { Check, Send } from '@primeicons/angular';
 })
 export class VistaPedidoComponent {
   public pedido = input.required<Pedido>();
-  public cambiarEstado = output<{ pedido: Pedido; nuevoEstado: EstadoPedidoType }>();
+  public cambiarEstado = output<{ pedido: Pedido; estado_pedido: EstadoPedidoType }>();
 
-  public onCambiarEstado(nuevoEstado: EstadoPedidoType) {
-    this.cambiarEstado.emit({ pedido: this.pedido(), nuevoEstado });
+  public onCambiarEstado(estado_pedido: EstadoPedidoType) {
+    this.cambiarEstado.emit({ pedido: this.pedido(), estado_pedido });
   }
 
   public obtenerSeveridadEstado(

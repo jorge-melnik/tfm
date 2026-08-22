@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CarritoService } from '@shared/services/carrito.service';
 import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
 import { DataView } from 'primeng/dataview';
@@ -20,7 +20,10 @@ import { Router } from '@angular/router';
 
   styleUrl: './carrito.page.css',
 })
-export class CarritoPage {
+export class CarritoPage implements OnInit {
+  async ngOnInit(): Promise<void> {
+    this._carritoService.recargarCarrito();
+  }
   private readonly _router = inject(Router);
   private _carritoService = inject(CarritoService);
   public readonly _preferenciasStore = inject(PreferenciasStore);

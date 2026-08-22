@@ -1,6 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { ItemCarrito, ItemCarritoVerbose } from '@shared/types/item-carrito';
 import { CurrencyPipe } from '@angular/common';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'app-item-carrito',
@@ -10,7 +11,7 @@ import { CurrencyPipe } from '@angular/common';
 })
 export class ItemCarritoComponent {
   public item = input.required<ItemCarritoVerbose>();
-  public cdnUrl = input.required<string>();
+  public cdnUrl = environment.cdnUrl;
   public actualizar = output<ItemCarrito>();
   public borrar = output<ItemCarrito>();
 

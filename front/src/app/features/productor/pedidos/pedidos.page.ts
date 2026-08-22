@@ -61,8 +61,13 @@ export class PedidosPage {
     this.paginationStore.setPage(0);
   }
 
-  public async onCambiarEstadoPedido(event: { pedido: Pedido; nuevoEstado: EstadoPedidoType }) {
-    //TODO: Cambiar estado pedido
+  public async onCambiarEstadoPedido(event: { pedido: Pedido; estado_pedido: EstadoPedidoType }) {
+    const productor = this.productor();
+    if (!productor) return;
+
+    const { pedido, estado_pedido } = event;
+    if (productor !== pedido.productor) return;
+    await this._pedidosService.cambiarEstado(productor, pedido.id_pedido, estado_pedido);
     this.pedidosResource.reload();
   }
 }

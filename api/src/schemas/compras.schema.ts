@@ -136,6 +136,7 @@ export type CompraPOST = Static<typeof CompraPOST>;
 
 export type MetodosPago = Static<typeof MetodosPagoSchema>;
 export type Pago = Static<typeof Pago>;
+export type EstadoPedido = Static<typeof EstadoPedido>;
 export type Pedido = Static<typeof Pedido>;
 export type ProductoPedido = Static<typeof ProductoPedido>;
 export type MedioPago = Static<typeof MedioPago>;

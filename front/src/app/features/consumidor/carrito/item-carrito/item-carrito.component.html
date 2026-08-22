@@ -5,7 +5,7 @@
   <div class="w-20 h-20 bg-surface-100 dark:bg-surface-800 rounded-xl overflow-hidden shrink-0">
     @if (item.fotos && item.fotos.length > 0) {
       <img
-        [src]="cdnUrl() + '/' + item.fotos[0]"
+        [src]="cdnUrl + item.fotos[0].path"
         [alt]="item.nombre"
         class="w-full h-full object-cover"
       />

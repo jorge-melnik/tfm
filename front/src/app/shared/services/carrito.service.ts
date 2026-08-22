@@ -18,26 +18,24 @@ export class CarritoService {
     return `${environment.apiUrl}/consumidores/${usuario.username}/carrito`;
   });
 
-  public readonly productos = resource<ItemCarritoVerbose[], { url: string | undefined }>({
+  private readonly productosResource = resource({
     defaultValue: [] as ItemCarritoVerbose[],
     params: () => {
-      return { url: this._baseUrl() };
+      const url = this._baseUrl();
+      if (!url) return undefined;
+      return { url };
     },
     loader: async ({ params }) => {
-      if (!params.url) return [];
-      try {
-        const res = await firstValueFrom(
-          this._http.get<ItemCarritoVerbose[]>(params.url + '/productos'),
-        );
-        return res;
-      } catch (error: any) {
-        this._dialog.addError(error.error.message);
-        return [];
-      }
+      return firstValueFrom(this._http.get<ItemCarritoVerbose[]>(params.url + '/productos'));
     },
   });
 
-  public readonly carrito = resource<Carrito, { url: string }>({
+  public readonly productos = computed(() => {
+    if (!this.productosResource.hasValue()) return [];
+    return this.productosResource.value();
+  });
+
+  public readonly carritoResource = resource({
     defaultValue: {
       id_consumidor: 'string',
       cantidad_items: 0,
@@ -45,27 +43,30 @@ export class CarritoService {
       total: '0',
     },
     params: () => {
-      return { url: this._baseUrl() };
+      const url = this._baseUrl();
+      if (!url) return undefined;
+      return { url };
     },
     loader: async ({ params }) => {
-      const productos = this.productos.value();
-      console.log({ productos });
-      const totalItems = productos.length;
-      console.log({ totalItems });
-      const res = await firstValueFrom(this._http.get<Carrito>(params.url));
+      const { url } = params;
+      const res = await firstValueFrom(this._http.get<Carrito>(url));
       return res;
     },
   });
 
+  public readonly carrito = computed(() => {
+    if (!this.carritoResource.hasValue()) return undefined;
+    return this.carritoResource.value();
+  });
+
   public readonly cantidadItems = computed(() => {
-    const carrito = this.carrito.value();
-    console.log({ carrito });
+    const carrito = this.carrito();
     if (!carrito) return 0;
     return carrito.cantidad_items;
   });
 
   public readonly totalCarrito = computed(() => {
-    const carrito = this.carrito.value();
+    const carrito = this.carrito();
     if (!carrito) return 0;
     return carrito.total;
   });
@@ -94,8 +95,8 @@ export class CarritoService {
     this.recargarCarrito();
   }
 
-  private recargarCarrito() {
-    this.productos.reload();
-    this.carrito.reload();
+  public recargarCarrito() {
+    this.productosResource.reload();
+    this.carritoResource.reload();
   }
 }

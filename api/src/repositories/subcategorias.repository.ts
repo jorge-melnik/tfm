@@ -24,7 +24,6 @@ export class SubcategoriasRepositoryClass extends BaseRepository<Subcategoria> {
   }
 
   async getEtiquetas(subcategoria: number | string): Promise<Etiqueta[]> {
-    console.log('getEtiquetas');
     const claveSubcategoria = typeof subcategoria === 'number' ? 'id_subcategoria' : 'subcategoria';
     const query = `
       SELECT E.* , SC.subcategoria, C.categoria
