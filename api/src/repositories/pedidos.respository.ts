@@ -67,6 +67,8 @@ export class PedidosRepositoryClass extends BaseReadRepository<Pedido> {
    */
   public async cambiarEstado(id_productor: string, id_pedido: number, estadoPedido: EstadoPedido) {
     if (estadoPedido === 'LISTO PARA ENTREGA') return this.marcarListoParaEntrega(id_productor, id_pedido);
+
+    if (estadoPedido === 'ENTREGADO') return this.marcarEntregado(id_productor, id_pedido);
     //TODO: Considererar otros cambios de estado manual.
     throw new DeAcaBadRequest(
       'No se permite cambiar el pedido a estado ' + estadoPedido + ' en el estado actual.',
@@ -81,6 +83,29 @@ export class PedidosRepositoryClass extends BaseReadRepository<Pedido> {
   private async marcarListoParaEntrega(id_productor: string, id_pedido: number) {
     const estadoActual: EstadoPedido = 'PAGADO';
     const nuevoEstado: EstadoPedido = 'LISTO PARA ENTREGA';
+    const consulta = `
+      UPDATE public.pedidos
+      SET estado_pedido = $4
+      WHERE id_productor=$1 AND id_pedido=$2 AND estado_pedido=$3
+      RETURNING *
+    `;
+
+    const res = await this.executor.query(consulta, [id_productor, id_pedido, estadoActual, nuevoEstado]);
+
+    if (res.rowCount === 0)
+      throw new DeAcaBadRequest(
+        'No existe el pedido o no se encuentra en un estado válido para dicha acción.',
+      );
+  }
+
+  /**
+   * Pasa un pedido de estado LISTO PARA ENTREGA a estado ENTREGADO
+   * @param id_productor
+   * @param id_pedido
+   */
+  private async marcarEntregado(id_productor: string, id_pedido: number) {
+    const estadoActual: EstadoPedido = 'LISTO PARA ENTREGA';
+    const nuevoEstado: EstadoPedido = 'ENTREGADO';
     const consulta = `
       UPDATE public.pedidos
       SET estado_pedido = $4
