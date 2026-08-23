@@ -3,7 +3,7 @@ CREATE TABLE preguntas (
     id_producto INTEGER NOT NULL REFERENCES productos(id_producto) ON DELETE CASCADE,
     id_consumidor UUID NOT NULL REFERENCES consumidores(id_consumidor) ON DELETE CASCADE,
     contenido TEXT NOT NULL CHECK (char_length(trim(contenido)) >= 5 AND char_length(contenido) <= 500),
-    estado ESTADO_PREGUNTA NOT NULL DEFAULT 'PENDIENTE',
+    estado_pregunta ESTADO_PREGUNTA NOT NULL DEFAULT 'PENDIENTE',
     activo BOOLEAN GENERATED ALWAYS AS (fecha_eliminacion IS NULL) STORED,
     fecha_creacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,  --//TODO: Trigger

@@ -29,4 +29,9 @@ export class FotoCarrusel {
       this.indiceActual.update((i) => i + 1);
     }
   }
+
+  seleccionarFoto(event: Event, index: number): void {
+    event.stopPropagation();
+    this.indiceActual.set(index); // O asignación simple si no utilizas un signal ejecutable
+  }
 }

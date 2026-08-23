@@ -27,10 +27,10 @@ import { PaginationStore } from '@shared/services/stores/pagination.store';
     SelectModule,
     ProductosFilter,
   ],
-  templateUrl: './home.page.html',
-  styleUrl: './home.page.css',
+  templateUrl: './productos.page.html',
+  styleUrl: './productos.page.css',
 })
-export class HomePage implements OnInit {
+export class ProductosPage implements OnInit {
   private readonly _productoService = inject(ProductosService);
   public readonly paginationStore = inject(PaginationStore);
   private readonly _router = inject(Router);
