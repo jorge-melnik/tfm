@@ -20,7 +20,7 @@ export class PedidosPage {
   public readonly paginationStore = inject(PaginationStore);
   private readonly _pedidosService = inject(PedidosService);
 
-  public estadoFiltro = signal<EstadoPedidoType | 'TODOS'>('TODOS');
+  public estado_pedido = signal<EstadoPedidoType | 'TODOS'>('TODOS');
 
   public opcionesEstado = [
     { label: 'Todos', value: 'TODOS' },
@@ -33,12 +33,16 @@ export class PedidosPage {
   private readonly pedidosResource = resource({
     params: () => {
       const productor = this.productor();
+      const estado_pedido = this.estado_pedido();
       if (!productor) return undefined;
-      return { productor };
+      return { productor, estado_pedido };
     },
     loader: async ({ params }) => {
-      const { productor } = params;
+      const { productor, estado_pedido } = params;
+
       const queryParams: ApiQueryParams = { productor };
+      if (estado_pedido !== 'TODOS') queryParams['estado_pedido'] = estado_pedido;
+      console.log({ queryParams });
       return this._pedidosService.getBy({ queryParams, pathParams: { productor } });
     },
   });
