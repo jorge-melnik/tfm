@@ -8,31 +8,24 @@
 | **RF-GU-02** | El sistema debe permitir al usuario productor registrarse ingresando nombre de usuario, nombres, apellidos, contraseña, email, celular, si acepta envios y/o retiros, foto y presentacion. | **Must have** |
 | **RF-GU-03** | El sistema debe permitir al usuario el registro con Google. | **Could have** |
 | **RF-GU-04** | El sistema debe permitir al usuario el registro con Facebook. | **Won't have** |
-
 | **RF-GU-05** | El sistema debe permitir al usuario iniciar sesión con Google y el email previamente registrado. | **Could have** |
 | **RF-GU-06** | El sistema debe permitir al usuario iniciar sesión con Facebook y el email previamente registrado. | **Could have** |
 | **RF-GU-07** | El sistema debe permitir al usuario iniciar sesión con nombre de usuario y contraseña. | **Must have** |
 | **RF-GU-08** | El sistema debe permitir al usuario iniciar sesión con email y contraseña. | **Must have** |
-
 | **RF-GU-09** | El sistema debe permitir al usuario proveedor gestionar sus datos personales nombres, apellidos, email, celular, si acepta envios y/o retiros, foto, acepta envíos y/o retiros y presentacion. | **Must have** |
 | **RF-GU-10** | El sistema debe permitir al usuario consumidor gestionar su datos personales ingresando nombre de usuario, nombres, apellidos, contraseña, email, celular y foto. | **Must have** |
 | **RF-GU-11** | El sistema debe permitir al usuario consumidor activar las funcionalidades de productor ingresando si acepta envíos y/o retiros y presentación. | **Must have** |
 | **RF-GU-12** | El sistema debe permitir al usuario registrado activar las funcionalidades de consumidor. | **Must have** |
 | **RF-GU-13** | El sistema debe permitir al usuario gestionar sus ubicaciones ingresando nombre, departamento, localidad, dirección, comentarios y el punto en un mapa. | **Should have** |
-
 | **RF-GU-14** | El sistema debe permitir al usuario gestionar las notificaciones que desea recibir por email seleccionando entre "Me realizaron un pedido", "Me realizaron una pregunta", "Me contestaron una pregunta", "Mi pedido se ingresó correctamente", "Pedido listo para entrega", "Mi pedido está en camino", "Pedido ya retirado o recibido". | **Could have** |
 | **RF-GU-15** | El sistema debe permitir al usuario gestionar las notificaciones que desea en la propia app seleccionando entre "Me realizaron un pedido", "Me realizaron una pregunta", "Me contestaron una pregunta", "Mi pedido se ingresó correctamente", "Pedido listo para entrega", "Mi pedido está en camino", "Pedido ya retirado o recibido". | **Could have** |
-
 | **RF-GU-16** | El sistema debe permitir al usuario alternar su interfaz entre los modos disponibles (administrador, consumidor, productor). | **Must have** |
 | **RF-GU-17** | El sistema debe recordar el rol usado por el usuario en su última sesión (Productor, Consumidor, Admin). | **Must have** |
-
 | **RF-GU-18** | El sistema debe permitir al usuario verificar su email. | **Could have** |
 | **RF-GU-19** | El sistema debe permitir al usuario verificar su celular. | **Could have** |
-
 | **RF-GU-20** | El sistema debe permitir al usuario darse de baja del sistema borrando todos sus datos personales en cumplimiento de la ley 18331 de Uruguay. | **Should have** |
 | **RF-GU-21** | El sistema debe permitir al usuario descargarse toda la información relacionada a su usuario en formato xlsx y ods. | **Could have** |
 | **RF-GU-22** | El sistema debe permitir al usuario recuperar su contraseña. | **Must have** |
-
 | **RF-GU-23** | El sistema no debe permitir al usuario cambiar su nombre de usuario. | **Must have** |
 
 
@@ -93,7 +86,7 @@
 | Identificador | Enunciado | Prioridad |
 | :--- | :--- | :--- |
 | **RF-PA-01** | El sistema debe permitir al usuario administrador gestionar las etiquetas. | **Should have** |
-| **RF-PA-02** | El sistema debe permitir al usuario administrador gestionar las categorías ingresando nombre de la categoría y subcategorías asociadas. | **Should have** |
+| **RF-PA-02** | El sistema debe permitir al usuario administrador gestionar las categorías ingresando nombre de la categoría. | **Should have** |
 | **RF-PA-03** | El sistema debe permitir al usuario administrador gestionar las subcategorías, ingresando nombre de la subcategoría, categoría a la que pertenece y etiquetas válidas en dicha subcategoría. | Al**Should have**ta |
 | **RF-PA-04** | El sistema debe permitir al usuario administrador un mecanismo para ver los usuarios registrados mostrando usuario, rol, cantidad preguntas reportadas y confirmadas, etc. | **Could have** |
 | **RF-PA-05** | El sistema debe permitir al usuario administrador gestionar las preguntas reportadas como incumpliendo los terminos. | **Could have** |
