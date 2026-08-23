@@ -24,6 +24,11 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'estado_compra') THEN
         CREATE TYPE ESTADO_COMPRA AS ENUM ('PAGANDO', 'PAGADO','CANCELADO');
     END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'estado_pregunta') THEN
+        CREATE TYPE ESTADO_PREGUNTA AS ENUM ('PENDIENTE', 'CONTESTADA');
+    END IF;
+    
 END
 $$;
 
@@ -44,6 +49,16 @@ BEGIN
     RETURN NULL; -- Devolver NULL cancela el DELETE físico
 END;
 $$ LANGUAGE plpgsql;
+
+-- CREATE OR REPLACE FUNCTION fn_actualizar_fecha_eliminacion()
+-- RETURNS TRIGGER AS $$
+-- BEGIN
+--     -- Actualiza fecha_eliminacion usando la clave primaria de la tabla dinámicamente
+--     -- o simplemente usando la tabla directamente:
+--     EXECUTE format('UPDATE %s SET fecha_eliminacion = CURRENT_TIMESTAMP WHERE ctid = %L', TG_RELID, OLD.ctid);
+--     RETURN NULL; -- Cancela el DELETE físico
+-- END;
+-- $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION tr_fn_impedir_cambio_columna()
 RETURNS TRIGGER AS $$
