@@ -106,7 +106,7 @@ const categoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promi
 
   fastify.get('/subcategorias', {
     schema: {
-      tags: ['Subcategorias'],
+      tags: ['Categorias'],
       summary: 'READ subcategorias',
       description: `
         Devuelve el listado de subcategorias de la categoría con el categoria especificado. 

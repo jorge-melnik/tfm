@@ -17,6 +17,11 @@ const s3Client = new S3Client({ region: process.env.AWS_REGION });
 const productoImagenesRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.put('/', {
     schema: {
+      tags: ['Productores', 'Productos'],
+      summary: 'UPDATE imágenes producto',
+      description: `
+        Permite modificar de una única vez todas las imágenes, con su path y posición.
+      `,
       params: Type.Object({
         productor: Producto.properties.productor,
         producto: Producto.properties.producto,
@@ -36,6 +41,11 @@ const productoImagenesRoutes: FastifyPluginAsyncTypebox = async (fastify, opts):
 
   fastify.post('/presigned-urls', {
     schema: {
+      tags: ['Productores', 'Productos'],
+      summary: 'PRESIGNED URL',
+      description: `
+        Esté método se encarga de obtener una url prefirmada de un solo uso en el almacenamiento en la nube para que se suban las imágenes del producto directamente desde el frontend al almacenamiento.
+      `,
       params: Type.Object({
         productor: Producto.properties.productor,
         producto: Producto.properties.producto,

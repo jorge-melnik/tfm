@@ -5,7 +5,6 @@
     class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
   />
 
-  <!-- Indicadores/Puntos superiores interactivos -->
   @if (fotos().length > 1) {
     <div
       class="absolute top-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-20 bg-black/20 px-2 py-1 rounded-full backdrop-blur-xs"
@@ -24,7 +23,6 @@
     </div>
   }
 
-  <!-- Botón Anterior -->
   @if (fotos().length > 1 && indiceActual() > 0) {
     <button
       (click)="anterior($event)"
@@ -34,7 +32,6 @@
     </button>
   }
 
-  <!-- Botón Siguiente -->
   @if (fotos().length > 1 && indiceActual() < fotos().length - 1) {
     <button
       (click)="siguiente($event)"

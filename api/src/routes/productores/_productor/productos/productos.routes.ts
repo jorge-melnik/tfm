@@ -8,7 +8,7 @@ import { Productor } from '@schemas/productores.schema.js';
 const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
     schema: {
-      tags: ['Productos'],
+      tags: ['Productores', 'Productos'],
       summary: 'READ productos',
       description: `
         Devuelve el listado completo de productos registrados. 
@@ -38,7 +38,7 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
 
   fastify.post('/', {
     schema: {
-      tags: ['Productos'],
+      tags: ['Productores', 'Productos'],
       summary: 'ADD producto',
       description: `Permite al PRODUCTOR agregar un producto a su catálogo.`,
       params: Type.Object({ productor: Productor.properties.username }),

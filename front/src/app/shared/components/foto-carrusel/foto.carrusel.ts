@@ -1,4 +1,4 @@
-import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, signal, ChangeDetectionStrategy, model } from '@angular/core';
 import { environment } from '@env/environment';
 import { ImagenProducto } from '@shared/types/producto';
 
@@ -14,7 +14,7 @@ export class FotoCarrusel {
   cdnUrl = environment.cdnUrl;
   altText = input.required<string>();
 
-  indiceActual = signal<number>(0);
+  indiceActual = model<number>(0);
 
   anterior(event: Event) {
     event.stopPropagation();

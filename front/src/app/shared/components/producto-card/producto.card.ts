@@ -11,6 +11,7 @@ import { UserStore } from '@shared/services/stores/user.store';
 import { MenuItem } from 'primeng/api';
 import { Menu } from 'primeng/menu';
 import { EllipsisV } from '@primeicons/angular';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-producto-card',
@@ -23,6 +24,7 @@ import { EllipsisV } from '@primeicons/angular';
     TooltipModule,
     Menu,
     EllipsisV,
+    RouterLink,
   ],
   templateUrl: './producto.card.html',
   styleUrl: './producto.card.css',

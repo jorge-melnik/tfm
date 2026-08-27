@@ -101,6 +101,7 @@
 | **RNF-02** | **Optimización para Motores de Búsqueda (SEO):** El sistema debe estar optimizado para indexación en buscadores, implementando el uso de URLs amigables, etiquetas meta (title, description) dinámicas basadas en el catálogo de productos, carga eficiente de recursos (Web Vitals) y una estructura de encabezados lógica para mejorar el posicionamiento orgánico. | **Should have** |
 | **RNF-03** | **Seguridad de la Aplicación (OWASP ASVS):** El sistema debe debe garantizar el cumplimiento total de todos los controles del **Nivel 1 OWASP ASVS 5.0** (defensa básica contra vulnerabilidades comunes) que aplican. | **Must have** |
 | **RNF-04** | **Seguridad de la Aplicación (OWASP ASVS):** El sistema debe garantizar el cumplimiento total de todos los controles del **Nivel 2** (defensa contra amenazas avanzadas) para los módulos críticos de manejo de pagos y datos sensibles. | **Must have** |
+| **RNF-05** | **Plataforma web:** El sistema debe proporcionar una plataforma que funcione en cualquier navegador web. | **Must have** |
 
 
 

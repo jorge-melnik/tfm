@@ -9,7 +9,7 @@ import { Producto } from '@schemas/producto.schema.js';
 const preguntasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
     schema: {
-      tags: ['Productos'],
+      tags: ['Productores', 'Productos'],
       summary: 'READ preguntas producto',
       description: `
         Devuelve el listado completo de preguntas en el producto. 
@@ -43,7 +43,7 @@ const preguntasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
 
   fastify.post('/', {
     schema: {
-      tags: ['Productos'],
+      tags: ['Productores', 'Productos'],
       summary: 'ADD pregunta',
       description: `Permite al CONSUMIDOR realizar una pregunta en un producto del PRODUCTOR.`,
       params: Type.Object({

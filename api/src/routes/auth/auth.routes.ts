@@ -44,7 +44,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
     payload.jti = randomUUID(); //Generamos un nuevo id random
     const accessToken = fastify.jwt.sign(payload, accessTokenOptions);
     const refreshToken = fastify.jwt.sign(payload, refreshTokenOptions); //No importa que AT y RT tengan el mismo id, RT es de único uso.
-    const user: User = fastify.jwt.decode(refreshToken) as User; //No verifica, pero no importa.
+    const user: User = fastify.jwt.decode(refreshToken) as User; //No verifica que sea válido, pero no importa, recién lo generamos
     // if (!user) throw new DeAcaInternal('Error al generar refresh token.'); //Esto es inalcanzable.
 
     await authRepository.addRefreshToken(user, refreshToken);
