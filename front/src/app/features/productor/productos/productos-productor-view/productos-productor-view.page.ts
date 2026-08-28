@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, resource, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, resource, signal } from '@angular/core';
 import { CommonModule, CurrencyPipe, TitleCasePipe, Location } from '@angular/common';
 
 import { CardModule } from 'primeng/card';
@@ -11,17 +11,10 @@ import { TextareaModule } from 'primeng/textarea';
 import { ProductosProductorService } from '@shared/services/productos-productor.service';
 import { FotoCarrusel } from '@shared/components/foto-carrusel/foto.carrusel';
 import { environment } from '@env/environment';
-
-export interface Pregunta {
-  id: string;
-  usuario: string;
-  fecha: Date;
-  pregunta: string;
-  respuesta?: {
-    fecha: Date;
-    texto: string;
-  };
-}
+import { Pregunta } from '@shared/types/preguntas';
+import { PaginationStore } from '@shared/services/stores/pagination.store';
+import { PreguntasService } from '@shared/services/preguntas-service';
+import { ApiQueryParams } from '@shared/types/api.types';
 
 @Component({
   selector: 'app-productos-productor-view',
@@ -42,8 +35,10 @@ export interface Pregunta {
   templateUrl: './productos-productor-view.page.html',
   styleUrl: './productos-productor-view.page.css',
 })
-export class ProductosProductorViewPage {
+export class ProductosProductorViewPage implements OnInit {
   private _productosService = inject(ProductosProductorService);
+  private _preguntasService = inject(PreguntasService);
+  public paginationStore = inject(PaginationStore);
   public productor = input.required<string>();
   public producto = input.required<string>();
 
@@ -75,72 +70,40 @@ export class ProductosProductorViewPage {
 
   // Preguntas y Paginación
   public nuevaPregunta = signal<string>('');
-  public first = signal<number>(0);
-  public rows = signal<number>(3);
 
-  public preguntas = signal<Pregunta[]>([
-    {
-      id: '1',
-      usuario: 'Carlos M.',
-      fecha: new Date('2026-02-10'),
-      pregunta: '¿Tienen stock disponible para entrega inmediata?',
-      respuesta: {
-        fecha: new Date('2026-02-10'),
-        texto: '¡Hola Carlos! Sí, tenemos stock disponible y despachamos en 24hs.',
-      },
-    },
-    {
-      id: '2',
-      usuario: 'Lucía G.',
-      fecha: new Date('2026-02-05'),
-      pregunta: '¿Es libre de gluten / Sin TACC?',
-      respuesta: {
-        fecha: new Date('2026-02-06'),
-        texto: 'Hola Lucía, así es. Cuenta con certificación oficial Sin TACC.',
-      },
-    },
-    {
-      id: '3',
-      usuario: 'Martín R.',
-      fecha: new Date('2026-01-28'),
-      pregunta: '¿Hacen envíos al interior?',
-      respuesta: {
-        fecha: new Date('2026-01-28'),
-        texto: 'Hola Martín, hacemos envíos a todo el país por agencias de carga.',
-      },
-    },
-    {
-      id: '4',
-      usuario: 'Ana P.',
-      fecha: new Date('2026-01-15'),
-      pregunta: '¿Qué fecha de vencimiento tiene el lote actual?',
-    },
-  ]);
+  private preguntasResource = resource({
+    params: () => {
+      const productor = this.productor();
+      const producto = this.producto();
+      if (!producto || !productor) return undefined;
 
-  // Preguntas paginadas
-  public preguntasPaginadas = computed(() => {
-    const inicio = this.first();
-    const fin = inicio + this.rows();
-    return this.preguntas().slice(inicio, fin);
+      return {
+        productor,
+        producto,
+        limit: this.paginationStore.limit(),
+        page: this.paginationStore.page(),
+        sort: this.paginationStore.sortField(),
+        sort_direction: this.paginationStore.sortOrder() === -1 ? 'DESC' : 'ASC',
+      };
+    },
+    loader: async ({ params }) => {
+      const { producto, productor, limit, page, sort, sort_direction } = params;
+      const queryParams: ApiQueryParams = {};
+      const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
+
+      const pathParams = { productor, producto };
+      return this._preguntasService.getBy({ queryParams, pagination, pathParams });
+    },
   });
 
-  public onPageChange(event: PaginatorState): void {
-    this.first.set(event.first ?? 0);
-    this.rows.set(event.rows ?? 3);
-  }
+  public preguntas = computed(() => this.preguntasResource.value()?.data);
 
-  public enviarPregunta(): void {
-    if (!this.nuevaPregunta().trim()) return;
+  public totalPreguntas = computed<number>(() => {
+    return this.preguntasResource.value()?.meta.total || 0;
+  });
 
-    const nueva: Pregunta = {
-      id: Date.now().toString(),
-      usuario: 'Usuario Actual',
-      fecha: new Date(),
-      pregunta: this.nuevaPregunta().trim(),
-    };
-
-    this.preguntas.update((lista) => [nueva, ...lista]);
-    this.nuevaPregunta.set('');
+  async ngOnInit(): Promise<void> {
+    this.paginationStore.resetPagination();
   }
 
   public volver() {

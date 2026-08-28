@@ -30,9 +30,10 @@ const preguntasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
         500: DeAcaErrorResponse,
       },
     },
-    // onRequest: [fastify.authenticate], //FIXME descomentar.
+    onRequest: [fastify.authenticate], //FIXME descomentar.
     handler: async (req, reply) => {
       const { productor, producto } = req.params;
+      console.log(productor, producto);
       const elProducto = await productoRepository.getOneBy({ productor, producto });
       return PreguntasRepository.getBy({
         ...req.query,

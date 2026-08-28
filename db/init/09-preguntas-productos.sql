@@ -42,15 +42,15 @@ FOR EACH ROW
 EXECUTE FUNCTION fn_actualizar_fecha_eliminacion();
 
 -------------------------------------------------------------------
-------------- TRIGGER para cambiar el estado pregunta  ------------
+------------- TRIGGER para cambiar el estado_pregunta  ------------
 -------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION trg_fn_cambiar_estado_pregunta_respondida()
+CREATE OR REPLACE FUNCTION trg_fn_cambiar_estado_pregunta_contestada()
 RETURNS TRIGGER AS $$
 BEGIN
     UPDATE preguntas 
-    SET estado = 'RESPONDIDA' 
+    SET estado_pregunta = 'CONTESTADA' 
     WHERE id_pregunta = NEW.id_pregunta 
-      AND estado = 'PENDIENTE';
+      AND estado_pregunta = 'PENDIENTE';
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -58,4 +58,4 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER trg_auto_respuesta_pregunta
 AFTER INSERT ON respuestas
 FOR EACH ROW
-EXECUTE FUNCTION trg_fn_cambiar_estado_pregunta_respondida();
+EXECUTE FUNCTION trg_fn_cambiar_estado_pregunta_contestada();

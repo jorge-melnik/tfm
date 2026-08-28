@@ -10,7 +10,7 @@ export class PreguntasRepositoryClass extends BaseRepository<Pregunta> {
     WITH MIS_PREGUNTAS AS (
       SELECT P.*
       , DP.username as consumidor
-      , COALESCE(jsonb_agg(R) FILTER (WHERE r.id_respuesta IS NOT NULL),'[]'::json
+      , COALESCE(json_agg(R) FILTER (WHERE r.id_respuesta IS NOT NULL),'[]'::json
     ) AS respuestas
       FROM public.preguntas P
       JOIN public.usuarios U ON U.id_usuario = P.id_consumidor
