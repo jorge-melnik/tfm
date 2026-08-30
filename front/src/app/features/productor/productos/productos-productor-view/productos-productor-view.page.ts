@@ -14,7 +14,11 @@ import { environment } from '@env/environment';
 import { Pregunta } from '@shared/types/preguntas';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
 import { PreguntasService } from '@shared/services/preguntas-service';
-import { ApiQueryParams } from '@shared/types/api.types';
+import { ApiQueryParams, PathParams } from '@shared/types/api.types';
+import { Ban, CartPlus, Send } from '@primeicons/angular';
+import { CarritoService } from '@shared/services/carrito.service';
+import { UserStore } from '@shared/services/stores/user.store';
+import { DialogService } from '@shared/services/dialog.service';
 
 @Component({
   selector: 'app-productos-productor-view',
@@ -31,6 +35,9 @@ import { ApiQueryParams } from '@shared/types/api.types';
     TextareaModule,
     FormsModule,
     FotoCarrusel,
+    CartPlus,
+    Ban,
+    Send,
   ],
   templateUrl: './productos-productor-view.page.html',
   styleUrl: './productos-productor-view.page.css',
@@ -38,9 +45,12 @@ import { ApiQueryParams } from '@shared/types/api.types';
 export class ProductosProductorViewPage implements OnInit {
   private _productosService = inject(ProductosProductorService);
   private _preguntasService = inject(PreguntasService);
+  private _dialogService = inject(DialogService);
   public paginationStore = inject(PaginationStore);
   public productor = input.required<string>();
   public producto = input.required<string>();
+  public carritoService = inject(CarritoService);
+  public usuarioStore = inject(UserStore);
 
   private readonly _location = inject(Location);
 
@@ -104,6 +114,28 @@ export class ProductosProductorViewPage implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.paginationStore.resetPagination();
+  }
+
+  async agregarPregunta() {
+    const producto = this.producto();
+    const productor = this.productor();
+    const id_producto = this.productoData()?.id_producto;
+    const id_consumidor = this.usuarioStore.user()?.id_usuario;
+    const contenido: string = this.nuevaPregunta();
+    if (!productor || !producto || !contenido || !id_producto || !id_consumidor) return;
+    const pathParams: PathParams = {
+      productor,
+      producto,
+    };
+
+    try {
+      await this._preguntasService.create({ id_producto, id_consumidor, contenido }, pathParams);
+      this.preguntasResource.reload();
+      this.nuevaPregunta.set('');
+    } catch (error: any) {
+      const mensaje = error.error ? error.error.message : error.message;
+      this._dialogService.addError(mensaje);
+    }
   }
 
   public volver() {

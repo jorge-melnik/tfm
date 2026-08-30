@@ -112,20 +112,20 @@
         @if (producto().cantidad_disponible > 0) {
           <button
             pButton
-            icon="pi pi-shopping-cart"
             class="button pButton-rounded pButton-sm bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-3.5 py-2 border-none transition-colors text-xs whitespace-nowrap"
             (click)="enviarAlCarrito(producto())"
             [disabled]="!this.userStore.esConsumidor()"
           >
+            <svg data-p-icon="cart-plus" />
             Agregar
           </button>
         } @else {
           <button
             pButton
-            icon="pi pi-ban"
             [disabled]="true"
             class="button pButton-rounded pButton-sm text-xs px-3.5 py-2 whitespace-nowrap"
           >
+            <svg data-p-icon="ban" />
             Sin Stock
           </button>
         }

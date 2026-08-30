@@ -118,13 +118,32 @@
               </span>
             </div>
 
-            <button
-              pButton
-              icon="pi pi-shopping-cart"
-              label="Agregar al carrito"
-              class="button w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 border-none rounded-xl transition-colors"
-              [disabled]="!producto.activo || producto.cantidad_disponible <= 0"
-            ></button>
+            @if (producto.cantidad_disponible > 0) {
+              <button
+                pButton
+                class="button pButton-rounded pButton-sm bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-3.5 py-2 border-none transition-colors text-xs whitespace-nowrap"
+                (click)="
+                  this.carritoService.agregarAlCarrito({
+                    id_productor: producto.id_productor,
+                    id_producto: producto.id_producto,
+                    cantidad: 1,
+                  })
+                "
+                [disabled]="!this.usuarioStore.esConsumidor()"
+              >
+                <svg data-p-icon="cart-plus" />
+                Agregar
+              </button>
+            } @else {
+              <button
+                pButton
+                [disabled]="true"
+                class="button pButton-rounded pButton-sm text-xs px-3.5 py-2 whitespace-nowrap"
+              >
+                <svg data-p-icon="ban" />
+                Sin Stock
+              </button>
+            }
           </div>
         </div>
       </div>
@@ -159,10 +178,13 @@
         <div class="flex justify-end">
           <button
             pButton
-            icon="pi pi-send"
-            label="Preguntar"
             class="button pButton-sm bg-emerald-600 hover:bg-emerald-700 text-white border-none rounded-xl px-4 py-2 text-xs font-semibold"
-          ></button>
+            (click)="this.agregarPregunta()"
+            [disabled]="this.nuevaPregunta().length <= 2"
+          >
+            <svg data-p-icon="send"></svg>
+            Preguntar
+          </button>
         </div>
       </div>
 
@@ -232,7 +254,7 @@
           [first]="this.paginationStore.first()"
           [rows]="this.paginationStore.limit()"
           [totalRecords]="this.totalPreguntas()"
-          [rowsPerPageOptions]="[3, 5, 10]"
+          [rowsPerPageOptions]="this.paginationStore.rowsPerPageOptions()"
           (onPageChange)="this.paginationStore.onPageChange($event)"
           styleClass="bg-transparent text-xs"
         ></p-paginator>

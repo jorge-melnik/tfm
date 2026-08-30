@@ -11,7 +11,7 @@ export interface Respuesta {
 
 export interface PreguntaPost {
   id_producto: number;
-  id_consumidor: number;
+  id_consumidor: string;
   contenido: string;
 }
 
