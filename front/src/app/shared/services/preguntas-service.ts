@@ -12,4 +12,14 @@ export class PreguntasService extends BaseService<Pregunta> {
     const url = `${this.buildUrl({ productor, producto })}`;
     return firstValueFrom(this.http.get<Pregunta[]>(url));
   }
+
+  public async responderPregunta(
+    productor: string,
+    producto: string,
+    id_pregunta: number,
+    contenido: string,
+  ) {
+    const url = `${this.buildUrl({ productor, producto })}/${id_pregunta}/respuestas`;
+    return firstValueFrom(this.http.post<Pregunta[]>(url, { contenido }));
+  }
 }

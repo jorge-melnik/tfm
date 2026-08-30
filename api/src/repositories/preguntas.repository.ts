@@ -25,6 +25,13 @@ export class PreguntasRepositoryClass extends BaseRepository<Pregunta> {
   constructor() {
     super();
   }
+
+  async addRespuesta(id_pregunta: number, contenido: string) {
+    const consulta = `
+      INSERT INTO public.respuestas(id_pregunta,contenido) VALUES($1,$2)
+    `;
+    await this.executor.query(consulta, [id_pregunta, contenido]);
+  }
 }
 
 export const PreguntasRepository = new PreguntasRepositoryClass();

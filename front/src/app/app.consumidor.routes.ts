@@ -44,14 +44,6 @@ export const consumidorRoutes: Routes = [
         loadComponent: () =>
           import('@features/consumidor/productos/productos.page').then((m) => m.ProductosPage),
       },
-      {
-        path: 'productos/:productor/:producto',
-        title: 'productos',
-        loadComponent: () =>
-          import('@features/productor/productos/productos-productor-view/productos-productor-view.page').then(
-            (m) => m.ProductosProductorViewPage,
-          ),
-      },
     ],
   },
 ];

@@ -11,7 +11,6 @@ import { TextareaModule } from 'primeng/textarea';
 import { ProductosProductorService } from '@shared/services/productos-productor.service';
 import { FotoCarrusel } from '@shared/components/foto-carrusel/foto.carrusel';
 import { environment } from '@env/environment';
-import { Pregunta } from '@shared/types/preguntas';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
 import { PreguntasService } from '@shared/services/preguntas-service';
 import { ApiQueryParams, PathParams } from '@shared/types/api.types';
@@ -75,10 +74,8 @@ export class ProductosProductorViewPage implements OnInit {
 
   public productoData = computed(() => this.productoResource.value());
 
-  // Estado para la galería
   public indiceFotoSeleccionada = signal<number>(0);
 
-  // Preguntas y Paginación
   public nuevaPregunta = signal<string>('');
 
   private preguntasResource = resource({
@@ -111,6 +108,49 @@ export class ProductosProductorViewPage implements OnInit {
   public totalPreguntas = computed<number>(() => {
     return this.preguntasResource.value()?.meta.total || 0;
   });
+
+  public esDuenioDelProducto = computed(() => {
+    const productor = this.productor();
+    const username = this.usuarioStore.user()?.username;
+
+    if (!productor || !username) return false;
+    return productor === username;
+  });
+
+  public preguntaAResponderId = signal<number | null>(null);
+  public contenidoRespuesta = signal<string>('');
+
+  public activarFormularioRespuesta(idPregunta: number) {
+    if (this.preguntaAResponderId() === idPregunta) {
+      this.cancelarRespuesta();
+    } else {
+      this.preguntaAResponderId.set(idPregunta);
+      this.contenidoRespuesta.set('');
+    }
+  }
+
+  public cancelarRespuesta() {
+    this.preguntaAResponderId.set(null);
+    this.contenidoRespuesta.set('');
+  }
+
+  async responderPregunta(idPregunta: number) {
+    const contenido = this.contenidoRespuesta().trim();
+    const productor = this.productor();
+    const producto = this.producto();
+
+    if (!contenido || !idPregunta || !productor || !producto) return;
+
+    try {
+      await this._preguntasService.responderPregunta(productor, producto, idPregunta, contenido);
+
+      this.cancelarRespuesta();
+      this.preguntasResource.reload();
+    } catch (error: any) {
+      const mensaje = error.error ? error.error.message : error.message;
+      this._dialogService.addError(mensaje);
+    }
+  }
 
   async ngOnInit(): Promise<void> {
     this.paginationStore.resetPagination();

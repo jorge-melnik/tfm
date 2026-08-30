@@ -3,7 +3,7 @@ import { PreguntasRepository } from '@repositories/preguntas.repository.js';
 import { productoRepository } from '@repositories/producto.repository.js';
 
 import { DeAcaErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
-import { EstadoPregunta, Pregunta, PreguntaPost } from '@schemas/pregunta.schema.js';
+import { EstadoPregunta, Pregunta, PreguntaPost, Respuesta } from '@schemas/pregunta.schema.js';
 import { Producto } from '@schemas/producto.schema.js';
 
 const preguntasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -64,6 +64,37 @@ const preguntasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
     },
     handler: async function (req, reply) {
       await PreguntasRepository.add(req.body);
+      reply.code(204);
+    },
+  });
+
+  fastify.post('/:id_pregunta/respuestas', {
+    schema: {
+      tags: ['Productores', 'Productos'],
+      summary: 'ADD respuesta',
+      description: `Permite al PRODUCTOR contestar una pregunta en un producto.`,
+      params: Type.Object({
+        productor: Producto.properties.productor,
+        producto: Producto.properties.producto,
+        id_pregunta: Pregunta.properties.id_pregunta,
+      }),
+      body: Type.Pick(Respuesta, ['contenido']),
+      response: {
+        204: Type.Null(),
+        500: DeAcaErrorResponse,
+      },
+    },
+    onRequest: [fastify.authenticate],
+    preHandler: async function (req, reply) {
+      const { productor, producto } = req.params;
+      const elProducto = await productoRepository.getOneBy({ productor, producto }); //Nos asegura que existe el producto.
+      const laPregunta = await PreguntasRepository.getOneBy({
+        id_producto: elProducto.id_producto,
+        id_pregunta: req.params.id_pregunta,
+      }); //Nos aseguramos que existe la pregunta, y es del producto.
+    },
+    handler: async function (req, reply) {
+      await PreguntasRepository.addRespuesta(req.params.id_pregunta, req.body.contenido);
       reply.code(204);
     },
   });

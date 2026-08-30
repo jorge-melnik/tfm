@@ -26,7 +26,6 @@ import { RouterLink } from '@angular/router';
     EllipsisV,
     RouterLink,
     CartPlus,
-    ShoppingCart,
     Ban,
   ],
   templateUrl: './producto.card.html',

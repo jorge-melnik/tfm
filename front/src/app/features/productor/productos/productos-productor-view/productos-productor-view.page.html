@@ -158,36 +158,40 @@
         </h2>
       </div>
 
-      <div
-        class="bg-surface-0 dark:bg-surface-900 p-4 sm:p-5 rounded-2xl border border-surface-200 dark:border-surface-800 space-y-3 shadow-xs"
-      >
-        <label
-          for="preguntaInput"
-          class="block text-sm font-semibold text-surface-700 dark:text-surface-300"
+      <!-- Formulario de PREGUNTAR: Solo visible para Consumidores (y si NO es el dueño del producto) -->
+      @if (!this.esDuenioDelProducto()) {
+        <div
+          class="bg-surface-0 dark:bg-surface-900 p-4 sm:p-5 rounded-2xl border border-surface-200 dark:border-surface-800 space-y-3 shadow-xs"
         >
-          Haz una pregunta al productor
-        </label>
-        <textarea
-          id="preguntaInput"
-          rows="3"
-          pInputTextarea
-          [(ngModel)]="nuevaPregunta"
-          placeholder="Escribe tu consulta sobre el producto..."
-          class="w-full p-3 text-sm rounded-xl border border-surface-300 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 focus:outline-none focus:border-emerald-500"
-        ></textarea>
-        <div class="flex justify-end">
-          <button
-            pButton
-            class="button pButton-sm bg-emerald-600 hover:bg-emerald-700 text-white border-none rounded-xl px-4 py-2 text-xs font-semibold"
-            (click)="this.agregarPregunta()"
-            [disabled]="this.nuevaPregunta().length <= 2"
+          <label
+            for="preguntaInput"
+            class="block text-sm font-semibold text-surface-700 dark:text-surface-300"
           >
-            <svg data-p-icon="send"></svg>
-            Preguntar
-          </button>
+            Haz una pregunta al productor
+          </label>
+          <textarea
+            id="preguntaInput"
+            rows="3"
+            pInputTextarea
+            [(ngModel)]="nuevaPregunta"
+            placeholder="Escribe tu consulta sobre el producto..."
+            class="w-full p-3 text-sm rounded-xl border border-surface-300 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 focus:outline-none focus:border-emerald-500"
+          ></textarea>
+          <div class="flex justify-end">
+            <button
+              pButton
+              class="button pButton-sm bg-emerald-600 hover:bg-emerald-700 text-white border-none rounded-xl px-4 py-2 text-xs font-semibold"
+              (click)="this.agregarPregunta()"
+              [disabled]="!this.usuarioStore.esConsumidor() || this.nuevaPregunta().length <= 2"
+            >
+              <svg data-p-icon="send"></svg>
+              Preguntar
+            </button>
+          </div>
         </div>
-      </div>
+      }
 
+      <!-- Listado de preguntas -->
       <div class="space-y-4">
         @for (pregunta of this.preguntas(); track pregunta.id_pregunta) {
           <div
@@ -202,12 +206,12 @@
               </div>
               <div class="flex-1">
                 <div class="flex items-center justify-between gap-2">
-                  <span class="text-xs font-bold text-surface-900 dark:text-surface-0">{{
-                    pregunta.consumidor
-                  }}</span>
-                  <span class="text-[10px] text-surface-400">{{
-                    pregunta.fecha_actualizacion | date: 'dd/MM/yyyy'
-                  }}</span>
+                  <span class="text-xs font-bold text-surface-900 dark:text-surface-0">
+                    {{ pregunta.consumidor }}
+                  </span>
+                  <span class="text-[10px] text-surface-400">
+                    {{ pregunta.fecha_actualizacion | date: 'dd/MM/yyyy' }}
+                  </span>
                 </div>
                 <p class="text-sm text-surface-700 dark:text-surface-300 mt-1 m-0">
                   {{ pregunta.contenido }}
@@ -215,8 +219,8 @@
               </div>
             </div>
 
-            <!-- Respuesta del Productor -->
-            @if (pregunta.respuestas) {
+            <!-- Respuestas Existentes -->
+            @if (pregunta.respuestas && pregunta.respuestas.length > 0) {
               @for (respuesta of pregunta.respuestas; track respuesta.id_respuesta) {
                 <div
                   class="ml-11 p-3 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border-l-2 border-emerald-500 space-y-1"
@@ -227,9 +231,9 @@
                     >
                       Respuesta del productor
                     </span>
-                    <span class="text-[10px] text-surface-400">{{
-                      respuesta.fecha_actualizacion | date: 'dd/MM/yyyy'
-                    }}</span>
+                    <span class="text-[10px] text-surface-400">
+                      {{ respuesta.fecha_actualizacion | date: 'dd/MM/yyyy' }}
+                    </span>
                   </div>
                   <p class="text-xs text-surface-600 dark:text-surface-300 m-0">
                     {{ respuesta.contenido }}
@@ -237,8 +241,60 @@
                 </div>
               }
             } @else {
-              <div class="ml-11 text-xs text-surface-400 italic">
-                Aún sin respuesta del productor.
+              <!-- Acción o mensaje si no hay respuestas -->
+              <div class="ml-11 flex flex-col gap-2">
+                @if (this.esDuenioDelProducto()) {
+                  <!-- Botón para desplegar input de responder -->
+                  @if (this.preguntaAResponderId() !== pregunta.id_pregunta) {
+                    <div>
+                      <button
+                        pButton
+                        type="button"
+                        class="p-button-text p-button-sm text-emerald-600 dark:text-emerald-400 p-0 text-xs font-semibold hover:underline bg-transparent border-none cursor-pointer"
+                        (click)="activarFormularioRespuesta(pregunta.id_pregunta)"
+                      >
+                        <i class="pi pi-reply text-xs mr-1"></i> Responder
+                      </button>
+                    </div>
+                  }
+
+                  <!-- Caja de texto inline para responder -->
+                  @if (this.preguntaAResponderId() === pregunta.id_pregunta) {
+                    <div class="space-y-2 mt-2">
+                      <textarea
+                        rows="2"
+                        pInputTextarea
+                        [(ngModel)]="contenidoRespuesta"
+                        placeholder="Escribe tu respuesta..."
+                        class="w-full p-2.5 text-xs rounded-xl border border-emerald-300 dark:border-emerald-700 bg-emerald-50/30 dark:bg-emerald-950/10 focus:outline-none focus:border-emerald-500"
+                      ></textarea>
+                      <div class="flex justify-end gap-2">
+                        <button
+                          pButton
+                          type="button"
+                          class="p-button-secondary p-button-sm rounded-lg px-3 py-1 text-xs"
+                          (click)="cancelarRespuesta()"
+                        >
+                          Cancelar
+                        </button>
+                        <button
+                          pButton
+                          type="button"
+                          class="bg-emerald-600 hover:bg-emerald-700 text-white border-none rounded-lg px-3 py-1 text-xs font-semibold"
+                          (click)="responderPregunta(pregunta.id_pregunta)"
+                          [disabled]="contenidoRespuesta().length < 2"
+                        >
+                          Responder
+                        </button>
+                      </div>
+                    </div>
+                  }
+                } @else {
+                  <!-- Mensaje por defecto para consumidores cuando no hay respuesta -->
+                  <div class="text-xs text-surface-400 italic">
+                    Aún sin respuesta del productor.
+                  </div>
+                }
               </div>
             }
           </div>
