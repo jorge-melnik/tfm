@@ -6,23 +6,23 @@
   </main>
 
   <footer class="bg-white border-t border-surface-300 dark:border-surface-500 shadow-xl">
-    <p-tabs [value]="0">
+    <p-tabs [value]="tabActiva()">
       <p-tablist>
-        <p-tab [value]="0" class="grow" [routerLink]="['/', 'consumidor', 'productos']">
+        <p-tab value="productos" class="grow" [routerLink]="['/', 'consumidor', 'productos']">
           <div class="flex flex-col items-center gap-1">
             <i class="pi pi-home text-xl"></i>
             <span class="text-xs">Productos</span>
           </div>
         </p-tab>
 
-        <p-tab [value]="1" class="grow" [routerLink]="['/', 'consumidor', 'carrito']">
+        <p-tab value="carrito" class="grow" [routerLink]="['/', 'consumidor', 'carrito']">
           <div class="flex flex-col items-center gap-1">
             <div class="relative">
               <i class="pi pi-shopping-cart text-xl"></i>
 
-              @if (this._carritoService.cantidadItems() >= 0) {
+              @if (_carritoService.cantidadItems() > 0) {
                 <p-badge
-                  [value]="this._carritoService.cantidadItems()"
+                  [value]="_carritoService.cantidadItems()"
                   severity="danger"
                   class="absolute -top-2 -right-8"
                 />
@@ -33,10 +33,17 @@
           </div>
         </p-tab>
 
-        <p-tab [value]="2" class="grow" [routerLink]="['/', 'consumidor', 'compras']">
+        <p-tab value="compras" class="grow" [routerLink]="['/', 'consumidor', 'compras']">
           <div class="flex flex-col items-center gap-1">
             <i class="pi pi-box text-xl"></i>
             <span class="text-xs">Compras</span>
+          </div>
+        </p-tab>
+
+        <p-tab value="consultas" class="grow" [routerLink]="['/', 'consumidor', 'consultas']">
+          <div class="flex flex-col items-center gap-1">
+            <i class="pi pi-comments text-xl"></i>
+            <span class="text-xs">Consultas</span>
           </div>
         </p-tab>
       </p-tablist>

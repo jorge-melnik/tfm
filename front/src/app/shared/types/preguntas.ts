@@ -1,5 +1,12 @@
 export type EstadoPregunta = 'PENDIENTE' | 'CONTESTADA';
 
+export interface RespuestaPost {
+  id_producto: number;
+  producto: string;
+  id_pregunta: number;
+  contenido: string;
+}
+
 export interface Respuesta {
   id_respuesta: number;
   id_pregunta: number;
@@ -17,7 +24,10 @@ export interface PreguntaPost {
 
 export interface Pregunta extends PreguntaPost {
   id_pregunta: number;
+  id_productor: number;
+  id_producto: number;
   consumidor: string; // username
+  producto: string;
   estado_pregunta: EstadoPregunta;
   activo: boolean;
   fecha_creacion: string;

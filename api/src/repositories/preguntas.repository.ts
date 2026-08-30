@@ -9,14 +9,16 @@ export class PreguntasRepositoryClass extends BaseRepository<Pregunta> {
   protected readonly baseQuery = `
     WITH MIS_PREGUNTAS AS (
       SELECT P.*
-      , DP.username as consumidor
-      , COALESCE(json_agg(R) FILTER (WHERE r.id_respuesta IS NOT NULL),'[]'::json
-    ) AS respuestas
+        , PR.id_productor
+        , DP.username as consumidor
+        , PR.producto
+        , COALESCE(json_agg(R) FILTER (WHERE r.id_respuesta IS NOT NULL),'[]'::json) AS respuestas
       FROM public.preguntas P
       JOIN public.usuarios U ON U.id_usuario = P.id_consumidor
       JOIN public.datos_personales DP ON DP.id_usuario = U.id_usuario
+      JOIN public.productos PR ON PR.id_producto = P.id_producto
       LEFT JOIN public.respuestas R ON R.id_pregunta = P.id_pregunta
-      GROUP BY P.id_pregunta, DP.username
+      GROUP BY PR.id_productor,P.id_pregunta, DP.username, PR.producto
     )
     SELECT * FROM MIS_PREGUNTAS
     WHERE true

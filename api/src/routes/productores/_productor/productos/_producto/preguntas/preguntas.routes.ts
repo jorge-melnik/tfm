@@ -60,7 +60,7 @@ const preguntasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
     preHandler: async function (req, reply) {
       const { productor, producto } = req.params;
       const { id_producto } = req.body;
-      const elProducto = await productoRepository.getOneBy({ productor, producto, id_producto }); //Nos asegura que existe el producto.
+      await productoRepository.getOneBy({ productor, producto, id_producto }); //Nos asegura que existe el producto.
     },
     handler: async function (req, reply) {
       await PreguntasRepository.add(req.body);
@@ -87,6 +87,7 @@ const preguntasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
     onRequest: [fastify.authenticate],
     preHandler: async function (req, reply) {
       const { productor, producto } = req.params;
+      console.log({ productor, producto, id_pregunta: req.params.id_pregunta });
       const elProducto = await productoRepository.getOneBy({ productor, producto }); //Nos asegura que existe el producto.
       const laPregunta = await PreguntasRepository.getOneBy({
         id_producto: elProducto.id_producto,

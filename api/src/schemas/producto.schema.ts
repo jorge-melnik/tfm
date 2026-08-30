@@ -20,6 +20,7 @@ export const POSTProducto = Type.Object({
 export const Producto = Type.Object({
   ...POSTProducto.properties,
   id_producto: Type.Integer(),
+  id_productor: Productor.properties.id_productor,
   etiquetas: Type.Array(Type.String()),
   activo: Type.Optional(Type.Boolean()),
   categoria: Categoria.properties.categoria,
