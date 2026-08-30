@@ -9,6 +9,10 @@ const idCompraRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
   fastify.get('/', {
     schema: {
       tags: ['Consumidores'],
+      summary: 'READ compra',
+      description: `
+        Permite obtener una compra en específico a partir de su id.
+      `,
       params: Type.Object({
         username: Consumidor.properties.username,
         id_compra: Compra.properties.id_compra,
@@ -33,6 +37,10 @@ const idCompraRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
   fastify.get('/medios-de-pago', {
     schema: {
       tags: ['Consumidores'],
+      summary: 'READ medios-de-pago',
+      description: `
+        Permite obtener el listado de medios de pago disponibles para dicha compra.
+      `,
       params: Type.Object({
         username: Consumidor.properties.username,
         id_compra: Compra.properties.id_compra,

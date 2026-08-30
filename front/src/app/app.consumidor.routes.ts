@@ -39,20 +39,10 @@ export const consumidorRoutes: Routes = [
     path: '',
     children: [
       {
-        path: '',
-        title: 'Comprar',
-        loadComponent: () => import('@features/consumidor/home/home.page').then((m) => m.HomePage),
-      },
-
-      {
-        path: ':categoria/:subcategoria',
-        title: 'Comprar',
-        loadComponent: () => import('@features/consumidor/home/home.page').then((m) => m.HomePage),
-      },
-      {
-        path: ':categoria',
-        title: 'Comprar',
-        loadComponent: () => import('@features/consumidor/home/home.page').then((m) => m.HomePage),
+        path: 'productos',
+        title: 'productos',
+        loadComponent: () =>
+          import('@features/consumidor/productos/productos.page').then((m) => m.ProductosPage),
       },
     ],
   },

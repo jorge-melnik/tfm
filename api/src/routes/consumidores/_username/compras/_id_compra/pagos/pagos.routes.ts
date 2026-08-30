@@ -10,9 +10,9 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
   fastify.get('/', {
     schema: {
       tags: ['Consumidores'],
-      summary: 'READ compras consumidor',
+      summary: 'READ pagos compra',
       description: `
-        Devuelve el listado completo de compras de un consumidor.
+        Devuelve el listado completo de pagos asociados a una compra.
       `,
       params: Type.Object({
         username: Consumidor.properties.username,
@@ -39,6 +39,10 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
   fastify.post('/transferencia', {
     schema: {
       tags: ['Consumidores'],
+      summary: 'CREATE pago transferencia',
+      description: `
+        Permite registrar un pago con transferencia
+      `,
       params: Type.Object({
         username: Consumidor.properties.username,
         id_compra: Compra.properties.id_compra,

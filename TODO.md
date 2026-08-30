@@ -91,12 +91,6 @@ Historias:
 - [ ] El usuario puede acceder a un formulario que solicita los datos requeridos para el registro.
 - [ ] El sistema valida los datos ingresados.
 
-
-
-**Como** productor
-**quiero** registrarme en el sistema  
-**para** poder ofrecer y vender mis productos  
-
 ### ✅ Criterios de aceptación
 - [ ] El usuario puede acceder a un formulario que solicita los datos necesarios para el registro  
 - [ ] El sistema valida los datos ingresados  

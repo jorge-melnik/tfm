@@ -8,7 +8,7 @@ import { Producto } from '@schemas/producto.schema.js';
 const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.patch('/', {
     schema: {
-      tags: ['Productores'],
+      tags: ['Productores', 'Productos'],
       summary: 'ADD REMOVE etiquetas',
       description: `Permite al PRODUCTOR agregar o quitar etiquetas a un producto.`,
       params: Type.Object({

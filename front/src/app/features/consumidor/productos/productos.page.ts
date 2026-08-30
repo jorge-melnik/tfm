@@ -27,12 +27,13 @@ import { PaginationStore } from '@shared/services/stores/pagination.store';
     SelectModule,
     ProductosFilter,
   ],
-  templateUrl: './home.page.html',
-  styleUrl: './home.page.css',
+  templateUrl: './productos.page.html',
+  styleUrl: './productos.page.css',
 })
-export class HomePage implements OnInit {
+export class ProductosPage implements OnInit {
   private readonly _productoService = inject(ProductosService);
   public readonly paginationStore = inject(PaginationStore);
+  public readonly carritoService = inject(CarritoService);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
   private readonly _carritoService = inject(CarritoService);
@@ -95,29 +96,6 @@ export class HomePage implements OnInit {
     console.log({ etiquetas });
     if (!etiquetas) this.etiquetas.set(etiquetas);
     //TODO: faltan busqueda, limit, etc.
-  }
-
-  public async agregarAlCarrito(
-    item: Pick<ItemCarrito, 'id_productor' | 'id_producto' | 'cantidad'>,
-  ) {
-    const usuario = this._userStore.user();
-    if (!usuario) return;
-    const itemConConsumidor = {
-      id_consumidor: usuario.id_usuario,
-      ...item,
-    };
-    const productos = this._carritoService.productos();
-    const existente = productos.find((i) => i.id_producto === item.id_producto);
-    try {
-      if (!existente) await this._carritoService.addItem(itemConConsumidor);
-      if (existente) {
-        itemConConsumidor.cantidad = itemConConsumidor.cantidad + existente.cantidad;
-        await this._carritoService.updateItem(itemConConsumidor);
-      }
-    } catch (error: any) {
-      console.error(error);
-      this._dialogService.addError(error.message);
-    }
   }
 
   public queryParamsChange() {

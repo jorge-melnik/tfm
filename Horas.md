@@ -1,4 +1,0 @@
-- Primeros punteos sobre lo que se va a realizar y como para compartir en primer reunión. 2 horas.
-- Primer reunión con Cliente/Danilo. 2 horas.
-- 29/4: Escribir requerimientos
-- 30/4: Tablas relacionadas a usuarios o categorías.

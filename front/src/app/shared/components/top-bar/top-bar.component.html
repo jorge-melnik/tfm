@@ -43,7 +43,7 @@
         <!-- Funciones con roles actuales -->
         @if (userStore.userHasRole('CONSUMIDOR') && user.rol_actual !== 'CONSUMIDOR') {
           <a
-            [routerLink]="['/consumidor']"
+            [routerLink]="['consumidor', 'productos']"
             (click)="menu.hide()"
             class="flex items-center gap-2 px-3 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-md transition-colors"
           >

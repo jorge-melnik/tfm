@@ -1,4 +1,4 @@
-import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, signal, ChangeDetectionStrategy, model } from '@angular/core';
 import { environment } from '@env/environment';
 import { ImagenProducto } from '@shared/types/producto';
 
@@ -14,7 +14,7 @@ export class FotoCarrusel {
   cdnUrl = environment.cdnUrl;
   altText = input.required<string>();
 
-  indiceActual = signal<number>(0);
+  indiceActual = model<number>(0);
 
   anterior(event: Event) {
     event.stopPropagation();
@@ -28,5 +28,10 @@ export class FotoCarrusel {
     if (this.indiceActual() < this.fotos().length - 1) {
       this.indiceActual.update((i) => i + 1);
     }
+  }
+
+  seleccionarFoto(event: Event, index: number): void {
+    event.stopPropagation();
+    this.indiceActual.set(index); // O asignación simple si no utilizas un signal ejecutable
   }
 }

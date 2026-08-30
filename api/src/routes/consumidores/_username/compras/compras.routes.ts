@@ -33,6 +33,10 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
   fastify.post('/', {
     schema: {
       tags: ['Consumidores'],
+      summary: 'CREATE compra',
+      description: `
+        Permite crear una nueva compra asociada al consumidor con el username especificado en base a los productos que se encuentran actualmente en el carrito.
+      `,
       params: Type.Object({ username: Consumidor.properties.username }),
       body: CompraPOST,
       response: {

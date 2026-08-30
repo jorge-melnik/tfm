@@ -41,6 +41,7 @@ export const productorRoutes: Routes = [
             (m) => m.ProductosProductorEditPage,
           ),
       },
+
       {
         path: 'pedidos',
         title: 'pedidos',

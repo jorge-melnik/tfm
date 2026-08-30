@@ -9,8 +9,8 @@ import { DialogService } from './dialog.service';
 @Service()
 export class CarritoService {
   private readonly _usuarioStore = inject(UserStore);
+  private readonly _dialogService = inject(DialogService);
   private readonly _http = inject(HttpClient);
-  private readonly _dialog = inject(DialogService);
 
   private _baseUrl = computed<string>(() => {
     const usuario = this._usuarioStore.user();
@@ -98,5 +98,28 @@ export class CarritoService {
   public recargarCarrito() {
     this.productosResource.reload();
     this.carritoResource.reload();
+  }
+
+  public async agregarAlCarrito(
+    item: Pick<ItemCarrito, 'id_productor' | 'id_producto' | 'cantidad'>,
+  ) {
+    const usuario = this._usuarioStore.user();
+    if (!usuario) return;
+    const itemConConsumidor = {
+      id_consumidor: usuario.id_usuario,
+      ...item,
+    };
+    const productos = this.productos();
+    const existente = productos.find((i) => i.id_producto === item.id_producto);
+    try {
+      if (!existente) await this.addItem(itemConConsumidor);
+      if (existente) {
+        itemConConsumidor.cantidad = itemConConsumidor.cantidad + existente.cantidad;
+        await this.updateItem(itemConConsumidor);
+      }
+    } catch (error: any) {
+      console.error(error);
+      this._dialogService.addError(error.message);
+    }
   }
 }

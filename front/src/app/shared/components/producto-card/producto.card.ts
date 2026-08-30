@@ -10,7 +10,8 @@ import { ItemCarrito } from '@shared/types/item-carrito';
 import { UserStore } from '@shared/services/stores/user.store';
 import { MenuItem } from 'primeng/api';
 import { Menu } from 'primeng/menu';
-import { EllipsisV } from '@primeicons/angular';
+import { Ban, CartPlus, EllipsisV, ShoppingCart } from '@primeicons/angular';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-producto-card',
@@ -23,6 +24,9 @@ import { EllipsisV } from '@primeicons/angular';
     TooltipModule,
     Menu,
     EllipsisV,
+    RouterLink,
+    CartPlus,
+    Ban,
   ],
   templateUrl: './producto.card.html',
   styleUrl: './producto.card.css',

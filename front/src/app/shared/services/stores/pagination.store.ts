@@ -1,13 +1,14 @@
 import { computed, Service, signal } from '@angular/core';
 import { DataViewPageEvent } from 'primeng/dataview';
-
+import { PaginatorState } from 'primeng/paginator';
+const defaultItemsPorPagina = 4;
 @Service()
 export class PaginationStore {
   private readonly _page = signal<number>(1);
-  private readonly _limit = signal<number>(4);
+  private readonly _limit = signal<number>(defaultItemsPorPagina);
   private readonly _sortOrder = signal<1 | -1 | 0>(0);
   private readonly _sortField = signal<string>('');
-  private readonly _rowsPerPageOptions = signal<number[]>([2, 4, 8, 16]);
+  private readonly _rowsPerPageOptions = signal<number[]>([2, 4, 6, 8, 12]);
 
   /** Guardamos el orden seleccionado. Ejemplo precio mayor a menor */
   private readonly _sortKey = signal<string>('');
@@ -20,6 +21,12 @@ export class PaginationStore {
   public sortField = this._sortField.asReadonly();
   public rowsPerPageOptions = this._rowsPerPageOptions.asReadonly();
 
+  public resetPagination() {
+    this._limit.set(defaultItemsPorPagina);
+    this._sortField.set('');
+    this._sortOrder.set(0);
+    this._page.set(1);
+  }
   public setLimit(nuevoLimit: number) {
     this._limit.set(nuevoLimit);
   }
@@ -36,13 +43,15 @@ export class PaginationStore {
     this._sortField.set(field);
   }
 
-  onPageChange(event: DataViewPageEvent) {
-    // Propiedades disponibles en 'event':
-    // event.first -> Índice del primer elemento (ej: 0, 6, 12)
-    // event.rows  -> Cantidad de elementos por página (ej: 6, 12, 24)
+  onPageChange(event: PaginatorState | DataViewPageEvent) {
+    // Aseguramos valores por defecto en caso de que event.first o event.rows sean undefined (común en PaginatorState)
+    const rows = event.rows ?? defaultItemsPorPagina;
+    const first = event.first ?? 1;
+
     console.log('PAGE CHANGE');
-    this.setLimit(event.rows);
-    const nuevaPagina = event.first / event.rows + 1;
+    this.setLimit(rows);
+
+    const nuevaPagina = Math.floor(first / rows) + 1;
     this.setPage(nuevaPagina);
   }
 

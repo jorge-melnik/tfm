@@ -31,7 +31,7 @@
             [producto]="producto"
             [layout]="'list'"
             [cdnUrl]="this.cdnUrl"
-            (agregarAlCarrito)="this.agregarAlCarrito($event)"
+            (agregarAlCarrito)="this.carritoService.agregarAlCarrito(producto)"
           />
         }
       </div>
@@ -46,7 +46,7 @@
             [producto]="producto"
             [layout]="'grid'"
             [cdnUrl]="this.cdnUrl"
-            (agregarAlCarrito)="this.agregarAlCarrito($event)"
+            (agregarAlCarrito)="this.carritoService.agregarAlCarrito($event)"
           />
         }
       </div>
