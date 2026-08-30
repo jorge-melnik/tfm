@@ -1,34 +1,14 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ButtonDirective } from 'primeng/button';
-import { Card } from 'primeng/card';
+import { UserStore } from '@shared/services/stores/user.store';
 
 @Component({
   selector: 'app-home-main',
-  imports: [RouterLink, ButtonDirective, Card],
+  imports: [RouterLink],
   templateUrl: './home.page.html',
 
   styleUrl: './home.page.css',
 })
 export class HomePage {
-  public productos = [
-    {
-      id: 1,
-      productor: 'Prod 1',
-      nombre: 'Nombre 1',
-      precio: 100,
-    },
-    {
-      id: 2,
-      productor: 'Prod 2',
-      nombre: 'Nombre 2',
-      precio: 200,
-    },
-    {
-      id: 3,
-      productor: 'Prod 3',
-      nombre: 'Nombre 3',
-      precio: 300,
-    },
-  ];
+  public readonly userStore = inject(UserStore);
 }

@@ -39,6 +39,13 @@
             <span class="text-xs">Compras</span>
           </div>
         </p-tab>
+
+        <p-tab [value]="3" class="grow" [routerLink]="['/', 'consumidor', 'consultas']">
+          <div class="flex flex-col items-center gap-1">
+            <i class="pi pi-box text-xl"></i>
+            <span class="text-xs">Consultas</span>
+          </div>
+        </p-tab>
       </p-tablist>
     </p-tabs>
   </footer>

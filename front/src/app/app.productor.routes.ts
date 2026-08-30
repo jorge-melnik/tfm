@@ -48,6 +48,28 @@ export const productorRoutes: Routes = [
         loadComponent: () =>
           import('@features/productor/pedidos/pedidos.page').then((m) => m.PedidosPage),
       },
+
+      {
+        path: 'consultas',
+        title: 'Consultas',
+        loadComponent: () =>
+          import('@features/productor/consultas/consultas.page').then((m) => m.ConsultasPage),
+      },
+
+      {
+        path: 'consultas/preguntas',
+        title: 'Preguntas',
+        loadComponent: () =>
+          import('@features/productor/consultas/preguntas/preguntas.page').then(
+            (m) => m.PreguntasPage,
+          ),
+      },
+      {
+        path: 'consultas/chats',
+        title: 'Chats',
+        loadComponent: () =>
+          import('@features/productor/consultas/chats/chats.page').then((m) => m.ChatsPage),
+      },
     ],
   },
 ];
