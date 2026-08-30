@@ -32,7 +32,7 @@ class AuthRepositoryClass {
    */
   async usernameLogin(username: string, password: string): Promise<TokenPayload> {
     const query = `
-      SELECT U.id_usuario, to_jsonb(roles) as roles 
+      SELECT U.id_usuario, DP.username, to_jsonb(roles) as roles 
       FROM public.usuarios U
       JOIN public.credenciales C ON C.id_usuario = U.id_usuario
       JOIN public.datos_personales DP ON DP.id_usuario = U.id_usuario

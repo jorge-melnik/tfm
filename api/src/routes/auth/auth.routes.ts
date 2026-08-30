@@ -42,6 +42,7 @@ const cookieOptions: CookieSerializeOptions = {
 const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
   async function generarTokens(payload: TokenPayload, reply: FastifyReply) {
     payload.jti = randomUUID(); //Generamos un nuevo id random
+    console.log({ payload });
     const accessToken = fastify.jwt.sign(payload, accessTokenOptions);
     const refreshToken = fastify.jwt.sign(payload, refreshTokenOptions); //No importa que AT y RT tengan el mismo id, RT es de único uso.
     const user: User = fastify.jwt.decode(refreshToken) as User; //No verifica que sea válido, pero no importa, recién lo generamos

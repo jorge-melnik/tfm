@@ -1,1 +1,32 @@
-<p>preguntas works!</p>
+<p-toast></p-toast>
+
+<div class="p-4 max-w-4xl mx-auto space-y-4">
+  <div class="flex items-center justify-between mb-4">
+    <div>
+      <h1 class="text-2xl font-bold text-surface-900 dark:text-surface-0">Preguntas Pendientes</h1>
+      <p class="text-sm text-surface-500">Responde las dudas de tus compradores</p>
+    </div>
+    <p-tag severity="warn" [value]="this.totalPreguntas() + ' pendientes'"></p-tag>
+  </div>
+
+  @if (this.totalPreguntas() === 0) {
+    <div
+      class="flex flex-col items-center justify-center p-8 bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-700 text-center"
+    >
+      <i class="pi pi-check-circle text-5xl text-green-500 mb-3"></i>
+      <h3 class="text-lg font-semibold text-surface-800 dark:text-surface-100">¡Al día!</h3>
+      <p class="text-sm text-surface-500">No tienes preguntas pendientes por responder.</p>
+    </div>
+  } @else {
+    <div class="space-y-4">
+      @for (pregunta of preguntas(); track pregunta.id_pregunta) {
+        {{ pregunta.estado_pregunta }}
+        <app-pregunta-card
+          [pregunta]="pregunta"
+          [esPropietario]="true"
+          (responder)="this.responderPregunta($event)"
+        ></app-pregunta-card>
+      }
+    </div>
+  }
+</div>
