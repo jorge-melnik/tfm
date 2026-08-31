@@ -1,0 +1,130 @@
+<div class="p-4 max-w-4xl mx-auto space-y-6">
+  <!-- Botón de retorno -->
+  <div class="flex items-center gap-2">
+    <button
+      type="button"
+      routerLink="/pedidos"
+      class="flex items-center gap-2 text-sm text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-0 transition-colors"
+    >
+      <svg data-p-icon="arrow-left" class="w-4 h-4"></svg>
+      Volver
+    </button>
+  </div>
+
+  <!-- Tarjeta del Productor -->
+  <div
+    class="bg-white dark:bg-surface-900 rounded-xl p-6 border border-surface-200 dark:border-surface-700 shadow-sm space-y-4"
+  >
+    <div
+      class="flex flex-col sm:flex-row items-start sm:items-center gap-4 pb-4 border-b border-surface-100 dark:border-surface-800"
+    >
+      <p-avatar
+        label="H"
+        shape="circle"
+        size="large"
+        styleClass="bg-primary-100 text-primary-700 font-bold text-xl"
+      />
+      <div class="space-y-1">
+        <h1 class="text-2xl font-bold text-surface-900 dark:text-surface-0">
+          Huerta Orgánica del Sur
+        </h1>
+        <p class="text-sm text-surface-500 flex items-center gap-1">
+          <i class="pi pi-map-marker text-xs"></i>
+          Salto, Uruguay
+        </p>
+      </div>
+    </div>
+
+    <!-- Datos de contacto -->
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-sm text-surface-600 dark:text-surface-300"
+    >
+      <div class="flex items-center gap-2">
+        <i class="pi pi-envelope text-surface-400"></i>
+        <span>contacto@huertasur.com</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <i class="pi pi-phone text-surface-400"></i>
+        <span>+598 99 123 456</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección de Pedidos -->
+  <div class="space-y-4">
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-bold text-surface-900 dark:text-surface-0">Pedidos Realizados</h2>
+      <span class="text-xs text-surface-500"> 2 pedidos </span>
+    </div>
+
+    <div class="space-y-3">
+      <!-- Pedido 1 -->
+      <div
+        class="bg-white dark:bg-surface-900 rounded-xl p-4 border border-surface-200 dark:border-surface-700 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+      >
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="font-semibold text-surface-900 dark:text-surface-0 text-sm">
+              #PED-1024
+            </span>
+            <p-tag value="COMPLETADO" severity="success" />
+          </div>
+          <div class="text-xs text-surface-500 flex items-center gap-3">
+            <span>2026-08-28 14:30</span>
+            <span>•</span>
+            <span>4 ítems</span>
+          </div>
+        </div>
+
+        <div
+          class="flex items-center justify-between sm:justify-end gap-4 border-t sm:border-t-0 pt-2 sm:pt-0 border-surface-100 dark:border-surface-800"
+        >
+          <span class="font-bold text-surface-900 dark:text-surface-0 text-base"> $1.450 </span>
+
+          <button
+            type="button"
+            [routerLink]="['/pedidos', 'PED-1024']"
+            class="flex items-center gap-1 text-xs font-semibold text-primary-600 hover:text-primary-700 dark:text-primary-400"
+          >
+            Ver detalle
+            <svg data-p-icon="chevron-right" class="w-3 h-3"></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Pedido 2 -->
+      <div
+        class="bg-white dark:bg-surface-900 rounded-xl p-4 border border-surface-200 dark:border-surface-700 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+      >
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="font-semibold text-surface-900 dark:text-surface-0 text-sm">
+              #PED-1089
+            </span>
+            <p-tag value="PENDIENTE" severity="warn" />
+          </div>
+          <div class="text-xs text-surface-500 flex items-center gap-3">
+            <span>2026-08-30 09:15</span>
+            <span>•</span>
+            <span>2 ítems</span>
+          </div>
+        </div>
+
+        <div
+          class="flex items-center justify-between sm:justify-end gap-4 border-t sm:border-t-0 pt-2 sm:pt-0 border-surface-100 dark:border-surface-800"
+        >
+          <span class="font-bold text-surface-900 dark:text-surface-0 text-base"> $890 </span>
+
+          <button
+            type="button"
+            [routerLink]="['/pedidos', 'PED-1089']"
+            class="flex items-center gap-1 text-xs font-semibold text-primary-600 hover:text-primary-700 dark:text-primary-400"
+          >
+            Ver detalle
+            <svg data-p-icon="chevron-right" class="w-3 h-3"></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
