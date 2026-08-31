@@ -1,4 +1,6 @@
+import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
+import { UserStore } from '@shared/services/stores/user.store';
 
 export const productorRoutes: Routes = [
   {
@@ -71,5 +73,15 @@ export const productorRoutes: Routes = [
           import('@features/productor/consultas/chats/chats.page').then((m) => m.ChatsPage),
       },
     ],
+  },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: () => {
+      const userStore = inject(UserStore);
+      const user = userStore.user()?.username;
+      if (!user) return '/';
+      return '/productor/' + user;
+    },
   },
 ];

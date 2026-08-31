@@ -18,6 +18,8 @@ import { Ban, CartPlus, Send } from '@primeicons/angular';
 import { CarritoService } from '@shared/services/carrito.service';
 import { UserStore } from '@shared/services/stores/user.store';
 import { DialogService } from '@shared/services/dialog.service';
+import { PreguntaCard } from '@shared/components/pregunta-card/pregunta.card';
+import { RespuestaPost } from '@shared/types/preguntas';
 
 @Component({
   selector: 'app-productos-productor-view',
@@ -37,6 +39,7 @@ import { DialogService } from '@shared/services/dialog.service';
     CartPlus,
     Ban,
     Send,
+    PreguntaCard,
   ],
   templateUrl: './productos-productor-view.page.html',
   styleUrl: './productos-productor-view.page.css',
@@ -134,15 +137,20 @@ export class ProductosProductorViewPage implements OnInit {
     this.contenidoRespuesta.set('');
   }
 
-  async responderPregunta(idPregunta: number) {
-    const contenido = this.contenidoRespuesta().trim();
+  async responderPregunta(respuesta: RespuestaPost) {
+    const contenido = respuesta.contenido;
     const productor = this.productor();
     const producto = this.producto();
 
-    if (!contenido || !idPregunta || !productor || !producto) return;
+    if (!contenido || !productor || !producto) return;
 
     try {
-      await this._preguntasService.responderPregunta(productor, producto, idPregunta, contenido);
+      await this._preguntasService.responderPregunta(
+        productor,
+        producto,
+        respuesta.id_pregunta,
+        contenido,
+      );
 
       this.cancelarRespuesta();
       this.preguntasResource.reload();
