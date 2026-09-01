@@ -21,6 +21,7 @@ export interface PedidoProducto {
 }
 
 export interface Pedido {
+  consumidor: string;
   id_productor: string;
   id_pedido: number;
   id_compra: number;
