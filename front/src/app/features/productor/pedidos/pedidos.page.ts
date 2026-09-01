@@ -1,17 +1,14 @@
 import { Component, input, resource, inject, computed, signal } from '@angular/core';
 import { PedidosService } from '@shared/services/pedidos.service';
 import { ApiQueryParams } from '@shared/types/api.types';
-import { DataView } from 'primeng/dataview';
-import { VistaPedidoComponent } from '@shared/components/vista-pedido/vista-pedido.component';
-import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
 import { EstadoPedido, EstadoPedidoType, Pedido } from '@shared/types/pedido';
-import { SelectButton } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
+import { ListaPedidosComponent } from '@shared/components/lista-pedidos/lista-pedidos.component';
 
 @Component({
   selector: 'app-pedidos',
-  imports: [DataView, VistaPedidoComponent, SelectButton, FormsModule],
+  imports: [FormsModule, ListaPedidosComponent],
   templateUrl: './pedidos.page.html',
   styleUrl: './pedidos.page.css',
 })
@@ -22,13 +19,12 @@ export class PedidosPage {
 
   public estado_pedido = signal<EstadoPedidoType | 'TODOS'>('TODOS');
 
-  public opcionesEstado = [
-    { label: 'Todos', value: 'TODOS' },
-    { label: 'Pagados', value: 'PAGADO' },
-    { label: 'Listos', value: 'LISTO PARA ENTREGA' },
-    { label: 'Entregados', value: 'ENTREGADO' },
-    { label: 'Cancelados', value: 'CANCELADO' },
-  ];
+  public opcionesEstado = signal(
+    Object.entries(EstadoPedido).map(([label, value]) => ({
+      label,
+      value,
+    })),
+  );
 
   private readonly pedidosResource = resource({
     params: () => {
@@ -41,7 +37,8 @@ export class PedidosPage {
       const { productor, estado_pedido } = params;
 
       const queryParams: ApiQueryParams = { productor };
-      if (estado_pedido !== 'TODOS') queryParams['estado_pedido'] = estado_pedido;
+      console.log({ estado_pedido });
+      if (estado_pedido && estado_pedido !== 'TODOS') queryParams['estado_pedido'] = estado_pedido;
       console.log({ queryParams });
       return this._pedidosService.getBy({ queryParams, pathParams: { productor } });
     },

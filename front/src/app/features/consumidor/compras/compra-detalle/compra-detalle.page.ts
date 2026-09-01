@@ -17,7 +17,6 @@ import {
 
 import { UserStore } from '@shared/services/stores/user.store';
 import { ComprasService } from '@shared/services/compras.service';
-import { FotoCarrusel } from '@shared/components/foto-carrusel/foto.carrusel';
 import { environment } from '@env/environment';
 import { PedidoCard } from '@shared/components/pedido-card/pedido.card';
 @Component({

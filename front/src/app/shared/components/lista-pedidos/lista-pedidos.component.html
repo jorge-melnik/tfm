@@ -1,0 +1,71 @@
+<p-dataview
+  [value]="pedidos()"
+  [loading]="isLoading()"
+  [paginator]="true"
+  [rows]="this.paginationStore.limit()"
+  [first]="paginationStore.first()"
+  [totalRecords]="totalRecords()"
+  [rowsPerPageOptions]="this.paginationStore.rowsPerPageOptions()"
+  (onPage)="pageChange.emit($event)"
+  layout="list"
+>
+  <ng-template #header>
+    <div
+      class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 w-full grow p-2"
+    >
+      <div>
+        @if (titulo()) {
+          <h2 class="text-2xl font-bold text-surface-900 dark:text-surface-0 m-0 truncate">
+            {{ titulo() }}
+          </h2>
+        }
+        <ng-content select="[header-titulo]"></ng-content>
+      </div>
+
+      @if (mostrarFiltroEstados()) {
+        <div class="sm:w-64">
+          <p-select
+            [options]="opcionesEstado()"
+            [(ngModel)]="estadoSeleccionado"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Filtrar por estado"
+            styleClass="w-full"
+          />
+        </div>
+      }
+    </div>
+  </ng-template>
+
+  <!-- Lista de Elementos -->
+  <ng-template #list let-items>
+    <div class="space-y-4 pt-4">
+      @for (pedido of items; track pedido.id_pedido) {
+        <app-vista-pedido [pedido]="pedido" />
+      }
+    </div>
+  </ng-template>
+
+  <!-- Estado de Carga -->
+  <ng-template #loading>
+    <div class="space-y-4 pt-4">
+      <div class="h-44 bg-surface-200 dark:bg-surface-800 animate-pulse rounded-xl"></div>
+      <div class="h-44 bg-surface-200 dark:bg-surface-800 animate-pulse rounded-xl"></div>
+    </div>
+  </ng-template>
+
+  <!-- Estado Vacío -->
+  <ng-template #empty>
+    <div
+      class="p-8 my-4 text-center border border-surface-200 dark:border-surface-700 rounded-xl bg-surface-0 dark:bg-surface-900"
+    >
+      <svg data-p-icon="inbox" class="w-12 h-12 text-surface-400 mx-auto mb-3"></svg>
+      <h3 class="text-lg font-bold text-surface-900 dark:text-surface-0">
+        No hay pedidos disponibles
+      </h3>
+      <p class="text-sm text-surface-500">
+        No se encontraron pedidos con los criterios seleccionados.
+      </p>
+    </div>
+  </ng-template>
+</p-dataview>
