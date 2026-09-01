@@ -71,7 +71,7 @@ export class ProductosProductorViewPage implements OnInit {
     },
     loader: async ({ params }) => {
       const { producto, productor } = params;
-      return this._productosService.getById(productor, producto);
+      return this._productosService.getById(producto, { productor });
     },
   });
 

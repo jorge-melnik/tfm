@@ -54,7 +54,8 @@ export class CompraDetallePage {
       return { id_compra, username };
     },
     loader: async ({ params }) => {
-      return this._compraService.getById(params.username, params.id_compra);
+      const { id_compra, username } = params;
+      return this._compraService.getById(id_compra, { username });
     },
   });
 

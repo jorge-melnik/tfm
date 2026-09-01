@@ -2,6 +2,12 @@ import { Routes } from '@angular/router';
 
 export const consumidorRoutes: Routes = [
   {
+    path: 'mis-datos',
+    title: 'Mis Datos',
+    loadComponent: () =>
+      import('@features/consumidor/mis-datos/mis-datos.page').then((m) => m.MisDatosPage),
+  },
+  {
     path: 'carrito',
     title: 'Carrito',
     loadComponent: () =>

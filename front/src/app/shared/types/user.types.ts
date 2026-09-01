@@ -38,3 +38,12 @@ export interface Productor {
   foto_url?: string;
   presentacion: string;
 }
+export interface Consumidor {
+  id_consumidor: string;
+  nombres: string;
+  apellidos: string;
+  email: string;
+  username: string;
+  celular: string;
+  foto_url?: string;
+}

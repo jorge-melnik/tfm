@@ -78,8 +78,7 @@ export class ComprasPagarPage {
     },
     loader: async ({ params }) => {
       const { id_compra, username } = params;
-      console.log({ params });
-      return this._compraService.getById(username, id_compra);
+      return this._compraService.getById(id_compra, { username });
     },
   });
   constructor() {

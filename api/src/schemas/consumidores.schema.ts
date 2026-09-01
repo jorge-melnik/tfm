@@ -3,7 +3,7 @@ import { AdicionalesConsumidor, DatosPersonales } from './usuarios.schema.js';
 import { Producto } from './producto.schema.js';
 
 export const Consumidor = Type.Object({
-  ...DatosPersonales.properties,
+  ...Type.Omit(DatosPersonales, ['id_usuario']).properties,
   ...AdicionalesConsumidor.properties,
   id_consumidor: DatosPersonales.properties.id_usuario,
 });

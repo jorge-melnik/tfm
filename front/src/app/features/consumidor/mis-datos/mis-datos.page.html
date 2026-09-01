@@ -1,0 +1,183 @@
+<div id="main" class="flex flex-col grow justify-center items-center h-full p-1">
+  <p-card class="shadow-lg rounded-xl w-full md:w-120">
+    <ng-template #title>
+      <div class="text-center text-surface-900 dark:text-surface-0 text-3xl font-medium mb-1">
+        Mis Datos
+      </div>
+    </ng-template>
+
+    <form #registerForm (ngSubmit)="this.guardar()" class="flex flex-col gap-6">
+      <div class="flex flex-col items-center justify-center gap-2 mb-4">
+        <p-fileupload
+          #fu
+          mode="advanced"
+          accept="image/*"
+          [maxFileSize]="1000000"
+          [customUpload]="true"
+          (onSelect)="onFotoSeleccionada($event)"
+          [pt]="{
+            root: { class: 'border-0! bg-transparent! p-0!' },
+            header: { class: 'hidden!' },
+            content: { class: 'p-0!' },
+          }"
+        >
+          <ng-template #content let-files let-removeFileCallback="removeFileCallback">
+            @if (files?.length > 0) {
+              <div class="flex flex-col items-center justify-center gap-2">
+                <div
+                  class="relative group cursor-pointer w-28 h-28"
+                  (click)="eliminarFoto(removeFileCallback, $event)"
+                >
+                  <!-- Contenedor del Avatar cargado -->
+                  <div class="w-28 h-28 rounded-full p-1 ring-2 ring-primary">
+                    <div class="w-full h-full rounded-full overflow-hidden relative shadow-inner">
+                      <img
+                        [src]="files[0].objectURL"
+                        [alt]="files[0].name"
+                        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+
+                      <div
+                        class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white"
+                      >
+                        <svg data-p-icon="trash" class="w-7 h-7 mb-1 text-red-400"></svg>
+                        <span class="text-xs tracking-wide uppercase">Eliminar</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </ng-template>
+
+          <ng-template #empty>
+            <div class="relative group cursor-pointer w-28 h-28" (click)="fu.choose()">
+              <div
+                class="w-28 h-28 rounded-full p-1 ring-2 ring-primary/20 dark:ring-primary/40 group-hover:ring-primary transition-all duration-300"
+              >
+                <div
+                  class="w-full h-full rounded-full overflow-hidden relative shadow-inner bg-surface-100 dark:bg-surface-800"
+                >
+                  <img
+                    [src]="
+                      `${this.cdnUrl}${this.userStore.user()?.foto_url}` || '/images/no-image.svg'
+                    "
+                    alt="Sin foto"
+                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div
+                    class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
+                  >
+                    <svg data-p-icon="camera" class="w-6 h-6 text-white"></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-fileupload>
+
+        <span class="text-xs font-medium text-surface-500 dark:text-surface-400">
+          Foto de perfil
+        </span>
+      </div>
+
+      <div class="flex flex-col md:flex-row gap-4">
+        <p-floatlabel variant="on" class="w-full">
+          <p-iconfield iconPosition="right">
+            <p-inputicon>
+              <svg data-p-icon="id-card"></svg>
+            </p-inputicon>
+            <input
+              pInputText
+              name="nombres"
+              autocomplete="off"
+              class="w-full"
+              [(ngModel)]="this.nombres"
+            />
+            <label for="nombres">Nombres</label>
+          </p-iconfield>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on" class="w-full">
+          <p-iconfield iconPosition="right">
+            <p-inputicon>
+              <svg data-p-icon="id-card"></svg>
+            </p-inputicon>
+            <input
+              pInputText
+              name="apellidos"
+              autocomplete="off"
+              class="w-full"
+              [(ngModel)]="this.apellidos"
+            />
+            <label for="apellidos">Apellidos</label>
+          </p-iconfield>
+        </p-floatlabel>
+      </div>
+
+      <p-floatlabel variant="on">
+        <p-iconfield iconPosition="right">
+          <p-inputicon>
+            <svg data-p-icon="envelope"></svg>
+          </p-inputicon>
+          <input
+            pInputText
+            name="email"
+            type="email"
+            autocomplete="off"
+            class="w-full"
+            [(ngModel)]="this.email"
+          />
+          <label for="email">Email</label>
+        </p-iconfield>
+      </p-floatlabel>
+
+      <div class="flex flex-col md:flex-row gap-3">
+        <p-floatlabel variant="on" class="w-full">
+          <p-iconfield iconPosition="right">
+            <p-inputicon>
+              <svg data-p-icon="id-card"></svg>
+            </p-inputicon>
+            <input
+              pInputText
+              name="username"
+              autocomplete="off"
+              class="w-full"
+              placeholder="No se podrá cambiar"
+              [(ngModel)]="this.username"
+            />
+            <label for="username">Username</label>
+          </p-iconfield>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on" class="w-full">
+          <p-iconfield iconPosition="right">
+            <p-inputicon>
+              <svg data-p-icon="phone"></svg>
+            </p-inputicon>
+            <input
+              pInputText
+              name="celular"
+              type="tel"
+              autocomplete="off"
+              class="w-full"
+              [(ngModel)]="this.celular"
+            />
+            <label for="celular">Celular</label>
+          </p-iconfield>
+        </p-floatlabel>
+      </div>
+
+      <button pButton class="w-full" severity="primary">Guardar</button>
+    </form>
+
+    <ng-template #footer>
+      <p class="text-center text-surface-600 dark:text-surface-200 mt-2">
+        ¿Ya tienes una cuenta?
+        <a routerLink="/auth/login" class="text-primary font-bold cursor-pointer no-underline">
+          Inicia sesión
+        </a>
+      </p>
+    </ng-template>
+  </p-card>
+</div>
