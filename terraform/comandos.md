@@ -7,3 +7,6 @@ aws s3 sync etiquetas/ s3://deaca-storage-development/etiquetas/ --delete
 
 - Sincronizar imágenes de productos estando en carpeta anterior a productos local
 aws s3 sync productos/ s3://deaca-storage-development/productos/ --delete
+
+- Sincronizar imágenes de usuarios estando en carpeta anterior a usuarios local
+aws s3 sync usuarios/ s3://deaca-storage-development/usuarios/ --delete
