@@ -1,5 +1,4 @@
-import { Component, computed, inject, input, resource } from '@angular/core';
-import { Tag } from 'primeng/tag';
+import { Component, computed, inject, input, resource, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Avatar } from 'primeng/avatar';
 import { ApiQueryParams } from '@shared/types/api.types';
@@ -8,17 +7,22 @@ import { UserStore } from '@shared/services/stores/user.store';
 import { httpResource } from '@angular/common/http';
 import { Productor } from '@shared/types/user.types';
 import { environment } from '@env/environment';
-import { PedidoCard } from '@shared/components/pedido-card/pedido.card';
+import { ListaPedidosComponent } from '@shared/components/lista-pedidos/lista-pedidos.component';
+import { EstadoPedidoType } from '@shared/types/pedido';
+import { PaginationStore } from '@shared/services/stores/pagination.store';
 
 @Component({
   selector: 'app-productor',
-  imports: [RouterLink, Avatar, PedidoCard],
+  imports: [RouterLink, Avatar, ListaPedidosComponent],
   templateUrl: './productor.page.html',
   styleUrl: './productor.page.css',
 })
 export class ProductorPage {
   private _pedidosService = inject(PedidosService);
+  public readonly paginationStore = inject(PaginationStore);
   private _userStore = inject(UserStore);
+
+  public estado_pedido = signal<EstadoPedidoType | 'TODOS'>('TODOS');
 
   public productor = input.required<string>();
 
@@ -31,16 +35,26 @@ export class ProductorPage {
   private readonly pedidosResource = resource({
     params: () => {
       const productor = this.productor();
+      const estado_pedido = this.estado_pedido();
       if (!productor) return undefined;
-      return { productor };
+      return {
+        productor,
+        estado_pedido,
+        limit: this.paginationStore.limit(),
+        page: this.paginationStore.page(),
+        sort: this.paginationStore.sortField(),
+        sort_direction: this.paginationStore.sortOrder() === -1 ? 'DESC' : 'ASC',
+      };
     },
     loader: async ({ params }) => {
-      const { productor } = params;
+      const { productor, estado_pedido, limit, page, sort, sort_direction } = params;
 
+      const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
       const queryParams: ApiQueryParams = { productor };
-
+      console.log({ estado_pedido });
+      if (estado_pedido && estado_pedido !== 'TODOS') queryParams['estado_pedido'] = estado_pedido;
       console.log({ queryParams });
-      return this._pedidosService.getBy({ queryParams, pathParams: { productor } });
+      return this._pedidosService.getBy({ queryParams, pathParams: { productor }, pagination });
     },
   });
 
@@ -50,7 +64,7 @@ export class ProductorPage {
     return res.data;
   });
 
-  public totalPedidos = computed(() => {
+  public total = computed(() => {
     const res = this.pedidosResource.value();
     if (!res) return 0;
     return res.meta.total;

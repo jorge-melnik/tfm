@@ -31,16 +31,24 @@ export class PedidosPage {
       const productor = this.productor();
       const estado_pedido = this.estado_pedido();
       if (!productor) return undefined;
-      return { productor, estado_pedido };
+      return {
+        productor,
+        estado_pedido,
+        limit: this.paginationStore.limit(),
+        page: this.paginationStore.page(),
+        sort: this.paginationStore.sortField(),
+        sort_direction: this.paginationStore.sortOrder() === -1 ? 'DESC' : 'ASC',
+      };
     },
     loader: async ({ params }) => {
-      const { productor, estado_pedido } = params;
+      const { productor, estado_pedido, limit, page, sort, sort_direction } = params;
 
+      const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
       const queryParams: ApiQueryParams = { productor };
       console.log({ estado_pedido });
       if (estado_pedido && estado_pedido !== 'TODOS') queryParams['estado_pedido'] = estado_pedido;
       console.log({ queryParams });
-      return this._pedidosService.getBy({ queryParams, pathParams: { productor } });
+      return this._pedidosService.getBy({ queryParams, pathParams: { productor }, pagination });
     },
   });
 

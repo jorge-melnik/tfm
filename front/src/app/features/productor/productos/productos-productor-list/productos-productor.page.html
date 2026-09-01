@@ -36,12 +36,12 @@
       [paginator]="true"
       [rows]="this.paginationStore.limit()"
       [first]="this.paginationStore.first()"
-      [totalRecords]="this.productosResource.value()?.meta?.total || 0"
-      [lazy]="true"
-      [rowsPerPageOptions]="this.paginationStore.rowsPerPageOptions()"
-      (onPage)="this.paginationStore.onPageChange($event)"
       [sortField]="this.paginationStore.sortField()"
       [sortOrder]="this.paginationStore.sortOrder()"
+      [lazy]="true"
+      [rowsPerPageOptions]="this.paginationStore.rowsPerPageOptions()"
+      [totalRecords]="this.productosResource.value()?.meta?.total || 0"
+      (onPage)="this.paginationStore.onPageChange($event)"
     >
       <ng-template #header> </ng-template>
 

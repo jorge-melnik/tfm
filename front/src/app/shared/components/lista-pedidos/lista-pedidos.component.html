@@ -1,12 +1,16 @@
 <p-dataview
   [value]="pedidos()"
   [loading]="isLoading()"
+  layout="list"
   [paginator]="true"
   [rows]="this.paginationStore.limit()"
-  [first]="paginationStore.first()"
-  [totalRecords]="totalRecords()"
+  [first]="this.paginationStore.first()"
+  [sortField]="this.paginationStore.sortField()"
+  [sortOrder]="this.paginationStore.sortOrder()"
   [rowsPerPageOptions]="this.paginationStore.rowsPerPageOptions()"
-  (onPage)="pageChange.emit($event)"
+  [lazy]="true"
+  [totalRecords]="totalRecords()"
+  (onPage)="this.paginationStore.onPageChange($event)"
   layout="list"
 >
   <ng-template #header>
@@ -30,7 +34,7 @@
             optionLabel="label"
             optionValue="value"
             placeholder="Filtrar por estado"
-            styleClass="w-full"
+            [showClear]="false"
           />
         </div>
       }

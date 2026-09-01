@@ -43,9 +43,6 @@ export class ListaPedidosComponent implements OnInit {
   );
   public estadoSeleccionado = model.required<EstadoPedidoType | 'TODOS'>();
 
-  // Salidas
-  pageChange = output<DataViewPageEvent>();
-
   async ngOnInit() {
     this.paginationStore.resetPagination();
     this.opcionesEstado.set([{ label: 'TODOS', value: null }, ...this.opcionesEstado()]);
