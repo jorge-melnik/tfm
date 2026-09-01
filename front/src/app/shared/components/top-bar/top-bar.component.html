@@ -1,9 +1,10 @@
+@let user = this.userStore.user();
 <header class="flex items-center justify-between px-2 py-3 text-white shadow-md sticky top-0 z-50">
   <div class="flex items-center gap-2 cursor-pointer" [routerLink]="['/']">
     <img src="/images/logo.webp" alt="Logo De Acá" class="h-10 w-auto object-contain" />
   </div>
   <p-popover #menu>
-    <div class="flex flex-col min-w-48 gap-1 p-1">
+    <div class="flex flex-col min-w-52 gap-1 p-1">
       @if (!userStore.user()) {
         <!-- Sección No Autenticado -->
         <div
@@ -23,11 +24,32 @@
       } @else {
         @let user = userStore.user()!;
 
-        <!-- Cabecera con Nombre de Usuario -->
+        <!-- Cabecera con Foto y Nombre de Usuario -->
         <div
-          class="px-3 py-1.5 text-xs font-bold text-surface-400 border-b border-surface-200 dark:border-surface-700"
+          class="flex items-center gap-2.5 px-3 py-2 border-b border-surface-200 dark:border-surface-700 mb-1"
         >
-          {{ user.username }}
+          @if (user.foto_url) {
+            <img
+              [src]="`${this.cdnUrl}${user.foto_url}`"
+              [alt]="user.username"
+              class="w-9 h-9 rounded-full object-cover ring-1 ring-surface-300 dark:ring-surface-600"
+            />
+          } @else {
+            <p-avatar
+              icon="pi pi-user"
+              shape="circle"
+              styleClass="w-9 h-9 text-sm bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300"
+            />
+          }
+
+          <div class="flex flex-col min-w-0">
+            <span class="text-sm font-semibold text-surface-900 dark:text-surface-0 truncate">
+              {{ user.username }}
+            </span>
+            <span class="text-xs text-surface-400 font-medium capitalize">
+              {{ user.rol_actual?.toLowerCase() }}
+            </span>
+          </div>
         </div>
 
         <!-- Mis Datos -->

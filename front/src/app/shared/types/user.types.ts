@@ -12,6 +12,7 @@ export type Profile = {
 export type AdicionalesProductor = {
   presentacion: string;
 };
+export type AdicionalesConsumidor = {};
 
 export type RegistroType = {
   nombres: string;
@@ -24,6 +25,7 @@ export type RegistroType = {
   password2: string;
   roles: Rol[];
   productor?: AdicionalesProductor;
+  consumidor?: AdicionalesConsumidor;
 };
 
 export interface Productor {

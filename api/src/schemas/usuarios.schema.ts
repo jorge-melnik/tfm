@@ -19,7 +19,7 @@ export const DatosPersonales = Type.Object(
       pattern: '^\\+[1-9]\\d{6,14}$',
       description: 'Formato internacional E.164, ej: +59899123456',
     }),
-    foto_url: Type.Optional(Type.String({ format: 'uri' })),
+    foto_url: Type.Optional(Type.String()),
   },
   { $id: 'datosPersonales' },
 );

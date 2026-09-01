@@ -5,6 +5,8 @@ import { ButtonDirective } from 'primeng/button';
 import { UserStore } from '@shared/services/stores/user.store';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { Cog, Shop, ShoppingCart, SignIn, SignOut, User, UserEdit } from '@primeicons/angular';
+import { Avatar } from 'primeng/avatar';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'app-top-bar',
@@ -22,10 +24,13 @@ import { Cog, Shop, ShoppingCart, SignIn, SignOut, User, UserEdit } from '@prime
     ShoppingCart,
     SignOut,
     SignIn,
+    Avatar,
   ],
   templateUrl: './top-bar.component.html',
   styleUrl: './top-bar.component.css',
 })
 export class TopBarComponent {
   public readonly userStore = inject(UserStore);
+
+  public cdnUrl = environment.cdnUrl;
 }

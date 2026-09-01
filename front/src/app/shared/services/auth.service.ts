@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, Service, signal } from '@angular/core';
 import { environment } from '@env/environment';
 import { Profile, RegistroType, Rol, TipoLogin } from '@shared/types/user.types';
 import { firstValueFrom } from 'rxjs';
@@ -10,9 +10,7 @@ type TokenResponse = {
   token: string;
 };
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class AuthService {
   private serviceUrl: string = `${environment.apiUrl}/auth`;
   private readonly _http = inject(HttpClient);
@@ -37,11 +35,14 @@ export class AuthService {
     await this.getProfile();
   }
 
-  async register(datos: RegistroType) {
+  async register(datos: RegistroType): Promise<Profile> {
     const url = `${this.serviceUrl}/register`;
     const resToken = await firstValueFrom(this._http.post<TokenResponse>(url, datos));
     this._userStore.setToken(resToken.token);
     await this.getProfile();
+    const user = this._userStore.user();
+    if (!user) throw new Error('No se pudo obtener el perfil del usuario después del registro.');
+    return user;
   }
 
   private async getProfile() {
