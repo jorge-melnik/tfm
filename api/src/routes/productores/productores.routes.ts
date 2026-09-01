@@ -19,7 +19,7 @@ const productoresRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Prom
     },
     // onRequest : //FIXME: Solo para admin.
     handler: async function (req, reply) {
-      //FIXME: Eventualmente esto no conviene que devuelva TODO. paginar.
+      //FIXME: Eventualmente esto no conviene que devuelva //TODO: paginar.
       return productorRepository.getAll();
     },
   });

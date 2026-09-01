@@ -31,10 +31,12 @@ EXECUTE FUNCTION fn_actualizar_fecha_actualizacion();
 CREATE OR REPLACE FUNCTION fn_aprobar_pago_compra()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF (NEW.estado_pago = 'APROBADO' AND (OLD.estado_pago IS DISTINCT FROM 'APROBADO')) THEN   
+    IF (NEW.estado_pago = 'APROBADO' AND (TG_OP = 'INSERT' OR OLD.estado_pago IS DISTINCT FROM 'APROBADO')) THEN   
         UPDATE compras
         SET estado_compra = 'PAGADO'
-        WHERE id_compra = NEW.id_compra AND estado_compra = 'PAGANDO';
+        WHERE id_compra = NEW.id_compra 
+        AND estado_compra = 'PAGANDO'
+        ;
     END IF;
 
     RETURN NEW;
@@ -43,6 +45,6 @@ $$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS tg_pago_aprobado ON pagos;
 CREATE TRIGGER tg_pago_aprobado
-AFTER UPDATE OF estado_pago ON pagos
+AFTER INSERT OR UPDATE OF estado_pago ON pagos
 FOR EACH ROW
 EXECUTE FUNCTION fn_aprobar_pago_compra();

@@ -3,11 +3,13 @@ DECLARE
     v_id_productor UUID;
     v_id_ambos UUID;
     v_id_consumidor UUID;
+    v_id_superadmin UUID;
 BEGIN
     -- 1. Recuperamos los UUIDs dinámicos usando el username de los datos personales
     SELECT id_usuario INTO v_id_productor FROM datos_personales WHERE username = 'productor';
     SELECT id_usuario INTO v_id_ambos FROM datos_personales WHERE username = 'ambos';
     SELECT id_usuario INTO v_id_consumidor FROM datos_personales WHERE username = 'consumidor';
+    SELECT id_usuario INTO v_id_superadmin FROM datos_personales WHERE username = 'superadmin';
 
     -----------------------------------------------------------------------------------------
     -- PRODUCTOS DE JUAN HUERTA (id_productor: v_id_productor)
@@ -34,14 +36,14 @@ BEGIN
         v_id_consumidor, 
         '¡Hola! ¿Realizan envíos a domicilio o solo se retira por el local?', 
         'CONTESTADA',
-        CURRENT_TIMESTAMP - INTERVAL '5 days'
+        CURRENT_TIMESTAMP - INTERVAL '5 days' + (random() * INTERVAL '180 minutes')
     );
 
     INSERT INTO respuestas (id_pregunta, contenido, fecha_creacion)
     VALUES (
         currval('preguntas_id_pregunta_seq'), 
         '¡Hola! Hacemos envíos sin cargo dentro de la zona los días martes y viernes.',
-        CURRENT_TIMESTAMP - INTERVAL '5 day'
+        CURRENT_TIMESTAMP - INTERVAL '5 day' + (random() * INTERVAL '180 minutes')
     );
 
     INSERT INTO preguntas (id_producto, id_consumidor, contenido, estado_pregunta, fecha_creacion)
@@ -50,14 +52,14 @@ BEGIN
         v_id_ambos, 
         '¿Cuál es la fecha de vencimiento o elaboración del lote actual?', 
         'CONTESTADA',
-        CURRENT_TIMESTAMP - INTERVAL '3 days'
+        CURRENT_TIMESTAMP - INTERVAL '3 days' + (random() * INTERVAL '180 minutes')
     );
 
     INSERT INTO respuestas (id_pregunta, contenido, fecha_creacion)
     VALUES (
         currval('preguntas_id_pregunta_seq'),
         'Hola, el lote actual fue envasado esta misma semana y tiene un vencimiento sugerido de 12 meses.',
-        CURRENT_TIMESTAMP - INTERVAL '2 days'
+        CURRENT_TIMESTAMP - INTERVAL '2 days' + (random() * INTERVAL '180 minutes')
     );
 
     INSERT INTO preguntas (id_producto, id_consumidor, contenido, estado_pregunta, fecha_creacion)
@@ -66,7 +68,7 @@ BEGIN
         v_id_consumidor, 
         '¿Tienen descuento si compro más de 10 unidades?', 
         'PENDIENTE',
-        CURRENT_TIMESTAMP - INTERVAL '3 hours'
+        CURRENT_TIMESTAMP - INTERVAL '3 hours' + (random() * INTERVAL '180 minutes')
     );
 
     -- Producto 2: Tomate Perita Agroecológico (Subcategoría 1: Verduras)
@@ -594,6 +596,113 @@ BEGIN
     INSERT INTO producto_imagenes ( id_producto, posicion, path) VALUES ( currval('productos_id_producto_seq'), 1, '/productos/purin_ortiga.webp');
     INSERT INTO producto_etiquetas ( id_producto, id_etiqueta) VALUES 
     ( currval('productos_id_producto_seq'), 6), ( currval('productos_id_producto_seq'), 3), ( currval('productos_id_producto_seq'), 1);
+
+    -----------------------------------------------------------------------------------------
+    -- PRODUCTOS DE SUPERADMIN (id_productor: v_id_superadmin)
+    -- Reutilizan imágenes existentes con nombres ligeramente modificados.
+    -----------------------------------------------------------------------------------------
+
+    -- Producto Superadmin 1: Miel Multifloral de Monte
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_superadmin, 4, 'Miel Multifloral de Monte 500g', 'miel-multifloral-monte-500g', 'Miel pura y líquida de flores silvestres, producción artesanal de reserva especial.', 390.00, 15);
+    
+    INSERT INTO producto_imagenes (id_producto, posicion, path) VALUES
+    (currval('productos_id_producto_seq'), 1, '/productos/miel_1.webp'),
+    (currval('productos_id_producto_seq'), 2, '/productos/miel_2.webp');
+
+    INSERT INTO producto_etiquetas (id_producto, id_etiqueta) VALUES 
+    (currval('productos_id_producto_seq'), 8),   -- Cosecha silvestre
+    (currval('productos_id_producto_seq'), 9);   -- Artesanal
+
+    -- Preguntas y Respuestas para Miel Multifloral
+    INSERT INTO preguntas (id_producto, id_consumidor, contenido, estado_pregunta, fecha_creacion)
+    VALUES (
+        currval('productos_id_producto_seq'), 
+        v_id_consumidor, 
+        '¡Hola! ¿Es miel 100% pura sin azúcar agregada?', 
+        'CONTESTADA',
+        CURRENT_TIMESTAMP - INTERVAL '4 days' + (random() * INTERVAL '180 minutes')
+    );
+
+    INSERT INTO respuestas (id_pregunta, contenido, fecha_creacion)
+    VALUES (
+        currval('preguntas_id_pregunta_seq'), 
+        '¡Hola! Sí, es miel totalmente pura cosechada directamente de las colmenas.',
+        CURRENT_TIMESTAMP - INTERVAL '3 days' + (random() * INTERVAL '180 minutes')
+    );
+
+    INSERT INTO preguntas (id_producto, id_consumidor, contenido, estado_pregunta, fecha_creacion)
+    VALUES (
+        currval('productos_id_producto_seq'), 
+        v_id_ambos, 
+        '¿Vienen cerrados al vacío?', 
+        'PENDIENTE',
+        CURRENT_TIMESTAMP - INTERVAL '5 hours' + (random() * INTERVAL '180 minutes')
+    );
+
+
+    -- Producto Superadmin 2: Tomate Redondo Orgánico
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_superadmin, 1, 'Tomate Redondo Orgánico kg', 'tomate-redondo-organico-kg', 'Tomates de huerta seleccionados a mano, jugosos y con sabor tradicional.', 135.00, 30);
+    
+    INSERT INTO producto_imagenes (id_producto, posicion, path) VALUES
+    (currval('productos_id_producto_seq'), 1, '/productos/tomates.webp');
+
+    INSERT INTO producto_etiquetas (id_producto, id_etiqueta) VALUES 
+    (currval('productos_id_producto_seq'), 1),   -- Local
+    (currval('productos_id_producto_seq'), 6);   -- Agroecológico
+
+    -- Preguntas y Respuestas para Tomate Redondo
+    INSERT INTO preguntas (id_producto, id_consumidor, contenido, estado_pregunta, fecha_creacion)
+    VALUES (
+        currval('productos_id_producto_seq'), 
+        v_id_consumidor, 
+        '¿Vienen muy maduros o aguantan un par de días?', 
+        'CONTESTADA',
+        CURRENT_TIMESTAMP - INTERVAL '2 days' + (random() * INTERVAL '180 minutes')
+    );
+
+    INSERT INTO respuestas (id_pregunta, contenido, fecha_creacion)
+    VALUES (
+        currval('preguntas_id_pregunta_seq'), 
+        'Hola, enviamos un punto medio perfecto para que te duren toda la semana.',
+        CURRENT_TIMESTAMP - INTERVAL '1 day'
+    );
+
+    -- Producto Superadmin 3: Jabón de Manzanilla y Avena
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_superadmin, 11, 'Jabón de Manzanilla y Avena', 'jabon-manzanilla-avena', 'Pastilla de jabón artesanal exfoliante suave, ideal para la limpieza facial diaria.', 210.00, 18);
+    
+    INSERT INTO producto_imagenes (id_producto, posicion, path) VALUES
+    (currval('productos_id_producto_seq'), 1, '/productos/jabon.webp');
+
+    INSERT INTO producto_etiquetas (id_producto, id_etiqueta) VALUES 
+    (currval('productos_id_producto_seq'), 9),   -- Artesanal
+    (currval('productos_id_producto_seq'), 12),  -- Materiales naturales
+    (currval('productos_id_producto_seq'), 13);  -- Biodegradable
+
+    -- Pregunta PENDIENTE para el Jabón
+    INSERT INTO preguntas (id_producto, id_consumidor, contenido, estado_pregunta, fecha_creacion)
+    VALUES (
+        currval('productos_id_producto_seq'), 
+        v_id_consumidor, 
+        '¿Tienen opción sin aroma?', 
+        'PENDIENTE',
+        CURRENT_TIMESTAMP - INTERVAL '1 day' + (random() * INTERVAL '180 minutes')
+    ); 
+
+
+    -- Producto Superadmin 4: Tabla de Cortar para Asado
+    INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
+    VALUES (v_id_superadmin, 16, 'Tabla para Asado en Madera Dura', 'tabla-asado-madera-dura', 'Tabla rústica de madera maciza trabajada a mano con agarre de cuero.', 920.00, 6);
+    
+    INSERT INTO producto_imagenes (id_producto, posicion, path) VALUES
+    (currval('productos_id_producto_seq'), 1, '/productos/tabla.webp');
+
+    INSERT INTO producto_etiquetas (id_producto, id_etiqueta) VALUES 
+    (currval('productos_id_producto_seq'), 9),   -- Artesanal
+    (currval('productos_id_producto_seq'), 12);  -- Materiales naturales
+
 
     RAISE NOTICE 'Se dieron de alta varios productos con etiquetas asociadas.';
 END $$;

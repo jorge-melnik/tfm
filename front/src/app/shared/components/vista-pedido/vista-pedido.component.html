@@ -1,8 +1,8 @@
 <div
-  class="mb-3 p-5 border border-surface-200 dark:border-surface-700 rounded-xl bg-surface-0 dark:bg-surface-900 shadow-sm"
+  class="mb-3 p-5 border border-surface-200 dark:border-surface-700 rounded-xl bg-surface-0 dark:bg-surface-900 shadow-sm space-y-4"
 >
   <div
-    class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-surface-200 dark:border-surface-800 pb-1"
+    class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-surface-200 dark:border-surface-800 pb-3"
   >
     <div class="flex items-center gap-3">
       <span class="font-bold text-lg text-surface-900 dark:text-surface-0">
@@ -28,7 +28,7 @@
           size="small"
           (click)="onCambiarEstado('LISTO PARA ENTREGA')"
         >
-          <svg data-p-icon="check" />
+          <svg data-p-icon="check" class="w-4 h-4 mr-1"></svg>
           Marcar para Entrega
         </button>
       } @else if (pedido().estado_pedido === 'LISTO PARA ENTREGA') {
@@ -39,14 +39,31 @@
           size="small"
           (click)="onCambiarEstado('ENTREGADO')"
         >
-          <svg data-p-icon="send" />
+          <svg data-p-icon="send" class="w-4 h-4 mr-1"></svg>
           Marcar Entregado
         </button>
       }
     </div>
   </div>
 
-  <!-- Listado de Productos -->
+  <div
+    class="flex flex-wrap items-center justify-between gap-3 text-xs text-surface-600 dark:text-surface-300 bg-surface-50 dark:bg-surface-800/50 p-2.5 rounded-lg border border-surface-100 dark:border-surface-800"
+  >
+    <div class="flex items-center gap-1.5">
+      <i class="pi pi-user text-primary text-xs shrink-0"></i>
+      <span class="text-surface-500 dark:text-surface-400">Consumidor:</span>
+      <span class="font-semibold text-surface-900 dark:text-surface-0">
+        {{ pedido().consumidor }}
+      </span>
+    </div>
+
+    <div class="flex items-center gap-1.5">
+      <svg data-p-icon="shop" class="w-4 h-4 text-primary shrink-0"></svg>
+      <span class="text-surface-500 dark:text-surface-400">Productor:</span>
+      {{ pedido().productor }}
+    </div>
+  </div>
+
   <div class="divide-y divide-surface-200 dark:divide-surface-800">
     @for (prod of pedido().productos; track prod.nombre) {
       <div class="py-3 flex items-center justify-between gap-4 first:pt-0 last:pb-0">
@@ -74,7 +91,6 @@
     }
   </div>
 
-  <!-- Pie con Total del Pedido -->
   <div
     class="pt-3 border-t border-surface-200 dark:border-surface-800 flex justify-end items-center gap-2"
   >

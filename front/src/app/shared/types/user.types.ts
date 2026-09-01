@@ -1,5 +1,3 @@
-import { Type } from '@angular/core';
-
 export type Rol = 'PRODUCTOR' | 'CONSUMIDOR' | 'ADMIN';
 export type TipoLogin = 'email' | 'username';
 
@@ -28,8 +26,13 @@ export type RegistroType = {
   productor?: AdicionalesProductor;
 };
 
-// password2: Type.String(),
-//       roles: UserSchema.properties.roles,
-//       //Consumidor y productor debe coincidir con lo especificado en el rol
-//       consumidor: Type.Optional(Type.Omit(AdicionalesConsumidor, ['id_consumidor'])),
-//       productor: Type.Optional(Type.Omit(AdicionalesProductor, ['id_productor'])),
+export interface Productor {
+  id_productor: string;
+  nombres: string;
+  apellidos: string;
+  email: string;
+  username: string;
+  celular: string;
+  foto_url?: string;
+  presentacion: string;
+}

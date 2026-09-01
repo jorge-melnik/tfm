@@ -12,7 +12,7 @@ export class PedidosRepositoryClass extends BaseReadRepository<Pedido> {
 
   protected readonly baseQuery = `
     WITH MIS_PEDIDOS AS (
-      SELECT P.*, DP.username as productor 
+      SELECT P.*, DPP.username as productor, DPC.username as consumidor, C.id_consumidor
       ,json_agg(
         json_build_object(
           'nombre', PRO.nombre,
@@ -23,7 +23,9 @@ export class PedidosRepositoryClass extends BaseReadRepository<Pedido> {
         )
       ) AS productos 
       FROM pedidos P
-      JOIN public.datos_personales DP ON DP.id_usuario = P.id_productor
+      JOIN public.compras C ON C.id_compra = P.id_compra
+      JOIN public.datos_personales DPP ON DPP.id_usuario = P.id_productor
+      JOIN public.datos_personales DPC ON DPC.id_usuario = C.id_consumidor
       JOIN public.pedido_productos PP ON PP.id_pedido = P.id_pedido
       JOIN public.productos PRO ON PRO.id_producto = PP.id_producto
       LEFT JOIN LATERAL (
@@ -31,7 +33,7 @@ export class PedidosRepositoryClass extends BaseReadRepository<Pedido> {
         FROM public.producto_imagenes PI
         GROUP BY id_producto
       ) IMG ON IMG.id_producto = PRO.id_producto
-      GROUP BY P.id_pedido, DP.username
+      GROUP BY P.id_pedido, DPP.username, DPC.username, C.id_consumidor
     )
     SELECT * FROM MIS_PEDIDOS
     WHERE 1=1

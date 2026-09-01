@@ -17,8 +17,8 @@ import {
 
 import { UserStore } from '@shared/services/stores/user.store';
 import { ComprasService } from '@shared/services/compras.service';
-import { FotoCarrusel } from '@shared/components/foto-carrusel/foto.carrusel';
 import { environment } from '@env/environment';
+import { PedidoCard } from '@shared/components/pedido-card/pedido.card';
 @Component({
   selector: 'app-compra-detalle',
   imports: [
@@ -32,7 +32,7 @@ import { environment } from '@env/environment';
     MapMarker,
     InfoCircle,
     ExclamationCircle,
-    FotoCarrusel,
+    PedidoCard,
   ],
   templateUrl: './compra-detalle.page.html',
   styleUrl: './compra-detalle.page.css',
@@ -74,6 +74,7 @@ export class CompraDetallePage {
     this._router.navigate(['/pagar', compra.id_compra]);
   }
 
+  //TODO: Mover este método a algún servicio o función global o environment
   public obtenerSeveridadEstado(
     estado: string,
   ): 'success' | 'warn' | 'danger' | 'info' | 'secondary' {

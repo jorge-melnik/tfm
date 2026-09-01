@@ -113,8 +113,10 @@ export const PedidoProducto = Type.Object({
 
 export const Pedido = Type.Object({
   id_productor: Productor.properties.id_productor,
+  id_consumidor: Productor.properties.id_productor,
   id_pedido: Type.Integer(),
   productor: Type.String(),
+  consumidor: Type.String(),
   id_compra: Compra.properties.id_compra,
   estado_pedido: EstadoPedido,
   subtotal_pedido: Type.Number(),

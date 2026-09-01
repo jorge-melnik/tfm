@@ -1,30 +1,36 @@
-import { Component, input, resource, inject, computed, signal } from '@angular/core';
-import { PedidosService } from '@shared/services/pedidos.service';
+import { Component, computed, inject, input, resource, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { Avatar } from 'primeng/avatar';
 import { ApiQueryParams } from '@shared/types/api.types';
-import { EstadoPedido, EstadoPedidoType, Pedido } from '@shared/types/pedido';
-import { FormsModule } from '@angular/forms';
-import { PaginationStore } from '@shared/services/stores/pagination.store';
+import { PedidosService } from '@shared/services/pedidos.service';
+import { UserStore } from '@shared/services/stores/user.store';
+import { httpResource } from '@angular/common/http';
+import { Productor } from '@shared/types/user.types';
+import { environment } from '@env/environment';
 import { ListaPedidosComponent } from '@shared/components/lista-pedidos/lista-pedidos.component';
+import { EstadoPedidoType } from '@shared/types/pedido';
+import { PaginationStore } from '@shared/services/stores/pagination.store';
 
 @Component({
-  selector: 'app-pedidos',
-  imports: [FormsModule, ListaPedidosComponent],
-  templateUrl: './pedidos.page.html',
-  styleUrl: './pedidos.page.css',
+  selector: 'app-productor',
+  imports: [RouterLink, Avatar, ListaPedidosComponent],
+  templateUrl: './productor.page.html',
+  styleUrl: './productor.page.css',
 })
-export class PedidosPage {
-  public readonly productor = input.required<string>();
+export class ProductorPage {
+  private _pedidosService = inject(PedidosService);
   public readonly paginationStore = inject(PaginationStore);
-  private readonly _pedidosService = inject(PedidosService);
+  private _userStore = inject(UserStore);
 
   public estado_pedido = signal<EstadoPedidoType | 'TODOS'>('TODOS');
 
-  public opcionesEstado = signal(
-    Object.entries(EstadoPedido).map(([label, value]) => ({
-      label,
-      value,
-    })),
+  public productor = input.required<string>();
+
+  private readonly productorResource = httpResource<Productor>(
+    () => `${environment.apiUrl}/productores/${this._userStore.user()?.username}`,
   );
+
+  public productorData = computed(() => this.productorResource.value());
 
   private readonly pedidosResource = resource({
     params: () => {
@@ -65,18 +71,4 @@ export class PedidosPage {
   });
 
   public isLoading = computed(() => this.pedidosResource.isLoading());
-
-  public onFiltroChange() {
-    this.paginationStore.setPage(0);
-  }
-
-  public async onCambiarEstadoPedido(event: { pedido: Pedido; estado_pedido: EstadoPedidoType }) {
-    const productor = this.productor();
-    if (!productor) return;
-
-    const { pedido, estado_pedido } = event;
-    if (productor !== pedido.productor) return;
-    await this._pedidosService.cambiarEstado(productor, pedido.id_pedido, estado_pedido);
-    this.pedidosResource.reload();
-  }
 }
