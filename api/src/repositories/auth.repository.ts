@@ -21,7 +21,8 @@ class AuthRepositoryClass {
     `;
 
     const { rows }: QueryResult<TokenPayload> = await myPool.query(query, [email, password]);
-    if (!rows[0] || rows.length > 1) {
+
+    if (rows.length !== 1) {
       throw new DeAcaUnAuthenticated();
     }
     return rows[0];
@@ -41,7 +42,7 @@ class AuthRepositoryClass {
 
     const { rows }: QueryResult<TokenPayload> = await myPool.query(query, [username, password]);
 
-    if (!rows[0] || rows.length > 1) {
+    if (rows.length !== 1) {
       throw new DeAcaUnAuthenticated();
     }
     return rows[0];

@@ -249,9 +249,21 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       },
     },
     // preHandler : TODO: verificar que roles coincida con consumidor y productor
+    preHandler: async function (req, rep) {
+      if (!req.body.roles || req.body.roles.length === 0) {
+        throw new DeAcaBadRequest('Debe seleccionar al menos un rol.');
+      }
+      if (!req.body.consumidor && !req.body.productor) {
+        throw new DeAcaBadRequest(
+          'Debes especificar los adicionales del productor y/o consumidor según corresponda.',
+        );
+      }
+    },
     handler: async function (req, rep) {
       await authRepository.register(req.body); //Doy de alta el usuario.
-      const payload = await authRepository.emailLogin(req.body.email, req.body.password); //Lo autentico.
+      const payload = await authRepository.usernameLogin(req.body.username, req.body.password); //Lo autentico.
+      const payload2 = await authRepository.emailLogin(req.body.email, req.body.password); //Lo autentico.
+
       return generarTokens(payload, rep);
     },
   });
