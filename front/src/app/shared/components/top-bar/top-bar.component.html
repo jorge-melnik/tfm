@@ -1,4 +1,4 @@
-@let user = this.userStore.user();
+@let user = this.userStore.user()!;
 <header class="flex items-center justify-between px-2 py-3 text-white shadow-md sticky top-0 z-50">
   <div class="flex items-center gap-2 cursor-pointer" [routerLink]="['/']">
     <img src="/images/logo.webp" alt="Logo De Acá" class="h-10 w-auto object-contain" />
@@ -22,8 +22,6 @@
           <span>Iniciar sesión</span>
         </a>
       } @else {
-        @let user = userStore.user()!;
-
         <!-- Cabecera con Foto y Nombre de Usuario -->
         <div
           class="flex items-center gap-2.5 px-3 py-2 border-b border-surface-200 dark:border-surface-700 mb-1"
@@ -52,9 +50,8 @@
           </div>
         </div>
 
-        <!-- Mis Datos -->
         <a
-          [routerLink]="['/']"
+          [routerLink]="['/', user.rol_actual.toLowerCase(), 'mis-datos']"
           (click)="menu.hide()"
           class="flex items-center gap-2 px-3 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-md transition-colors"
         >
@@ -62,7 +59,6 @@
           <span>Mis datos</span>
         </a>
 
-        <!-- Funciones con roles actuales -->
         @if (userStore.userHasRole('CONSUMIDOR') && user.rol_actual !== 'CONSUMIDOR') {
           <a
             [routerLink]="['/', 'consumidor']"
@@ -121,7 +117,6 @@
 
         <div class="border-t border-surface-200 dark:border-surface-700 my-1"></div>
 
-        <!-- Logout -->
         <a
           [routerLink]="['/auth/logout']"
           (click)="menu.hide()"
@@ -134,7 +129,6 @@
     </div>
   </p-popover>
 
-  <!-- Botón de Usuario -->
   <button
     pButton
     [rounded]="true"

@@ -17,10 +17,10 @@ import { firstValueFrom } from 'rxjs';
 export class ProductosProductorService extends BaseService<Producto> {
   protected override serviceUrl: string = `${environment.apiUrl}/productores/:productor/productos`;
 
-  public getById(productor: string, producto: string): Promise<Producto> {
-    const url = `${this.buildUrl({ productor })}/${producto}`;
-    return firstValueFrom(this.http.get<Producto>(url));
-  }
+  // public getById(productor: string, producto: string): Promise<Producto> {
+  //   const url = `${this.buildUrl({ productor })}/${producto}`;
+  //   return firstValueFrom(this.http.get<Producto>(url));
+  // }
 
   public async desactivar(productor: string, producto: string) {
     const url = `${this.buildUrl({ productor })}/${producto}`;

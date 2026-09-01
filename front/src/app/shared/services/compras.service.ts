@@ -1,7 +1,4 @@
-import { inject, Service } from '@angular/core';
-import { UserStore } from './stores/user.store';
-import { HttpClient } from '@angular/common/http';
-import { DialogService } from './dialog.service';
+import { Service } from '@angular/core';
 import { BaseService } from './base-service.service';
 import { Compra } from '@shared/types/compra';
 import { environment } from '@env/environment';
@@ -22,10 +19,10 @@ export class ComprasService extends BaseService<Compra> {
     // const url = this.http.get();
   }
 
-  public getById(username: string, id_compra: number): Promise<Compra> {
-    const url = `${this.buildUrl({ username })}/${id_compra}`;
-    return firstValueFrom(this.http.get<Compra>(url));
-  }
+  // public getById(username: string, id_compra: number): Promise<Compra> {
+  //   const url = `${this.buildUrl({ username })}/${id_compra}`;
+  //   return firstValueFrom(this.http.get<Compra>(url));
+  // }
 
   public getPagos() {
     //TODO:

@@ -14,7 +14,6 @@ import { TooltipModule } from 'primeng/tooltip';
 import { DialogService } from '@shared/services/dialog.service';
 import { SelectModule } from 'primeng/select';
 import { ProductoForm } from '@shared/components/producto-form/producto.form';
-import { EtiquetasStore } from '@shared/services/stores/etiquetas.store';
 import { ProductosProductorService } from '@shared/services/productos-productor.service';
 import { ImagenSlot, Producto } from '@shared/types/producto';
 import { ProductoImagenesSelector } from '@shared/components/producto-imagenes-selector/producto-imagenes-selector';
@@ -49,7 +48,8 @@ export class ProductosProductorEditPage {
   public readonly productoResource = resource({
     params: () => ({ productor: this.productor(), producto: this.producto() }),
     loader: async ({ params }) => {
-      return this._productosService.getById(params.productor, params.producto);
+      const { productor, producto } = params;
+      return this._productosService.getById(producto, { productor });
     },
   });
   // public readonly etiquetasStore = inject(EtiquetasStore);

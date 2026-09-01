@@ -63,6 +63,7 @@ export abstract class BaseRepository<T extends DatosBase> extends BaseReadReposi
 
   async update(id: string | number, data: Partial<T>): Promise<void> {
     //No se hace update de los idName, ni de activo, ni de slugs
+    console.log({ data });
     const keys = Object.keys(data).filter(
       (key) => key != this.idName && key != 'activo' && !key.startsWith('slug_'),
     ); //Los idName no se actualizan. //FIXME: Esto puede traer problemas

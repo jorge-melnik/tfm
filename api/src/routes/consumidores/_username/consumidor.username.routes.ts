@@ -55,11 +55,11 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
       const { nombres, apellidos, email, celular } = req.body;
       const client = await myPool.connect();
       try {
-        const prodRepoWT: ConsumidorRepositoryClass = consumidorRepository.withTransaction(client);
+        // const prodRepoWT: ConsumidorRepositoryClass = consumidorRepository.withTransaction(client);
         const dpRepoWT: DatosPersonalessRepositoryClass = datosPersonalesRepository.withTransaction(client);
         // TODO: Está feo ese datosPersonalesRepository, lo que sea que haga se podría repetir en el consumidor y productor repository?
         await client.query('BEGIN;');
-        await prodRepoWT.update(id_consumidor, {}); //Actualizo datos específicos del consumidor
+        // await prodRepoWT.update(id_consumidor, {}); //Actualizo datos específicos del consumidor
         await dpRepoWT.update(id_consumidor, {
           nombres,
           apellidos,

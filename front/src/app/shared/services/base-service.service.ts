@@ -29,6 +29,15 @@ export abstract class BaseService<T> implements CrudServiceInterface<T> {
   }
 
   /**
+   * Permite obtener un elemento específico agregando el id al final de baseUrl.
+   * @param pathParams parms de la url
+   * @returns
+   */
+  async getById(id: string | number, pathParams?: PathParams): Promise<T> {
+    return await firstValueFrom(this.http.get<T>(`${this.buildUrl(pathParams)}/${id}`));
+  }
+
+  /**
    * Permite obtener todos los elementos del recurso pero paginados, filatrados, etc.
    * @param options
    * @returns
