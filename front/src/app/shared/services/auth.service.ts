@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, Service, signal } from '@angular/core';
 import { environment } from '@env/environment';
 import {
+  AdicionalesConsumidor,
   AdicionalesProductor,
   Profile,
   RegistroType,
@@ -87,8 +88,12 @@ export class AuthService {
     this._userStore.setUser(profile);
     await this.refreshToken();
   }
-  async activarConsumidor() {
-    //  /user/consumidor
+  async activarConsumidor(datos: AdicionalesConsumidor) {
+    const url = `${this.serviceUrl}/user/consumidor`;
+    const profile = await firstValueFrom(this._http.post<Profile>(url, datos));
+    this._userStore.setUser(profile);
+    await this.refreshToken();
+    await this.cambiarRolActualA('CONSUMIDOR'); //FIXME: Mejor hacerlo en la propia ruta antes de cargar el componente como el redirect con productor?
   }
 
   async cambiarRolActualA(rol: Rol) {

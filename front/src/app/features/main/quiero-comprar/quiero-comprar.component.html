@@ -1,1 +1,29 @@
-<p>quiero-comprar works!</p>
+<div class="flex flex-col grow justify-center items-center h-full p-1">
+  <p-card class="shadow-lg rounded-xl w-full md:w-[30rem]">
+    <ng-template #header>
+      <div class="flex justify-center pt-12">
+        <i class="pi pi-shopping-bag text-primary text-6xl"></i>
+      </div>
+    </ng-template>
+
+    <ng-template #title>
+      <div class="text-center text-surface-900 dark:text-surface-0 text-3xl font-medium mb-1">
+        Quiero Comprar
+      </div>
+    </ng-template>
+
+    <ng-template #subtitle>
+      <div class="text-center text-surface-600 dark:text-surface-200 mb-20">
+        <p>No hay datos adicionales necesarios para comprar productos.</p>
+      </div>
+    </ng-template>
+
+    <form novalidate class="flex flex-col gap-12" (submit)="this.guardar($event)">
+      <div class="flex flex-col gap-1"></div>
+
+      <button pButton type="submit" class="w-full" [disabled]="!this.loginForm().valid()">
+        Quiero ser consumidor
+      </button>
+    </form>
+  </p-card>
+</div>
