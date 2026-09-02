@@ -49,8 +49,8 @@ const consumidorFotoRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): P
     handler: async (req, reply) => {
       const { username } = req.params;
       const item = req.body;
-      const extension = item.contentType.split('/')[1] || 'webp';
-      const s3Key = `usuarios/${username}/${username}.${extension}`; //Al usar username en el nombre del archivo, siempre se reemplaza
+      // const extension = item.contentType.split('/')[1] || 'webp';
+      const s3Key = `usuarios/${username}/${item.filename}`; //Al usar username en el nombre del archivo, siempre se reemplaza
       const relativePath = `/${s3Key}`;
       const AWS_S3_BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
       if (!AWS_S3_BUCKET_NAME) {

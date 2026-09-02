@@ -4,6 +4,12 @@ import { UserStore } from '@shared/services/stores/user.store';
 
 export const productorRoutes: Routes = [
   {
+    path: 'mis-datos',
+    title: 'Mis Datos',
+    loadComponent: () =>
+      import('@features/productor/mis-datos/mis-datos.page').then((m) => m.MisDatosPage),
+  },
+  {
     path: ':productor',
     children: [
       {
@@ -11,6 +17,7 @@ export const productorRoutes: Routes = [
         title: 'Dashboard Productor',
         loadComponent: () => import('@features/productor/home/home.page').then((m) => m.HomePage),
       },
+
       {
         path: 'productos',
         title: 'Listar Productos',
