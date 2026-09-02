@@ -45,7 +45,7 @@ export class AuthService {
     return user;
   }
 
-  private async getProfile() {
+  public async getProfile() {
     const urlProfile = `${this.serviceUrl}/user`;
     const profile = await firstValueFrom(this._http.get<Profile>(urlProfile));
     this._userStore.setUser(profile);
