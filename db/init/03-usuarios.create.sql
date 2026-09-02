@@ -154,25 +154,28 @@ EXECUTE FUNCTION fn_actualizar_fecha_actualizacion();
 
 
 -------------------------------------------------------------------
------------ TRIGGER PARA ACTUALIZAR fecha eliminación   -----------
+------------------- RULES PARA hacer softdelete   -----------------
 -------------------------------------------------------------------
-DROP TRIGGER IF EXISTS tg_usuarios_soft_delete ON usuarios;
-CREATE TRIGGER tg_usuarios_soft_delete
-BEFORE DELETE ON usuarios
-FOR EACH ROW
-EXECUTE FUNCTION fn_actualizar_fecha_eliminacion();
+CREATE OR REPLACE RULE r_usuarios_soft_delete AS
+ON DELETE TO usuarios
+DO INSTEAD
+    UPDATE usuarios
+    SET fecha_eliminacion = CURRENT_TIMESTAMP
+    WHERE id_usuario = OLD.id_usuario AND fecha_eliminacion IS NULL;
 
-DROP TRIGGER IF EXISTS tg_consumidores_soft_delete ON consumidores;
-CREATE TRIGGER tg_consumidores_soft_delete
-BEFORE DELETE ON consumidores
-FOR EACH ROW
-EXECUTE FUNCTION fn_actualizar_fecha_eliminacion();
+CREATE OR REPLACE RULE r_consumidores_soft_delete AS
+ON DELETE TO consumidores
+DO INSTEAD
+    UPDATE consumidores
+    SET fecha_eliminacion = CURRENT_TIMESTAMP
+    WHERE id_consumidor = OLD.id_consumidor AND fecha_eliminacion IS NULL;
 
-DROP TRIGGER IF EXISTS tg_productores_soft_delete ON productores;
-CREATE TRIGGER tg_productores_soft_delete
-BEFORE DELETE ON productores
-FOR EACH ROW
-EXECUTE FUNCTION fn_actualizar_fecha_eliminacion();
+CREATE OR REPLACE RULE r_productores_soft_delete AS
+ON DELETE TO productores
+DO INSTEAD
+    UPDATE productores
+    SET fecha_eliminacion = CURRENT_TIMESTAMP
+    WHERE id_productor = OLD.id_productor AND fecha_eliminacion IS NULL;
 
 -------------------------------------------------------------------
 ------------- TRIGGER PARA inmutabilidad de username --------------

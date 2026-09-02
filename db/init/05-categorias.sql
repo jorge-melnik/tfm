@@ -28,11 +28,12 @@ EXECUTE FUNCTION fn_actualizar_fecha_actualizacion();
 -------------------------------------------------------------------
 ----------- TRIGGER PARA ACTUALIZAR fecha eliminación   -----------
 -------------------------------------------------------------------
-DROP TRIGGER IF EXISTS tg_categorias_soft_delete ON categorias;
-CREATE TRIGGER tg_categorias_soft_delete
-BEFORE DELETE ON categorias
-FOR EACH ROW
-EXECUTE FUNCTION fn_actualizar_fecha_eliminacion();
+CREATE OR REPLACE RULE r_categorias_soft_delete AS
+ON DELETE TO categorias
+DO INSTEAD
+    UPDATE categorias
+    SET fecha_eliminacion = CURRENT_TIMESTAMP
+    WHERE id_categoria = OLD.id_categoria AND fecha_eliminacion IS NULL;
 
 
 -------------------------------------------------------------------

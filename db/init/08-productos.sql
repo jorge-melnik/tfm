@@ -58,13 +58,14 @@ FOR EACH ROW
 EXECUTE FUNCTION fn_actualizar_fecha_actualizacion();
 
 -------------------------------------------------------------------
------------ TRIGGER PARA ACTUALIZAR fecha eliminación   -----------
+------------- RULE para softdelete de productos -------------------
 -------------------------------------------------------------------
-DROP TRIGGER IF EXISTS tg_productos_soft_delete ON productos;
-CREATE TRIGGER tg_productos_soft_delete
-BEFORE DELETE ON productos
-FOR EACH ROW
-EXECUTE FUNCTION fn_actualizar_fecha_eliminacion();
+CREATE OR REPLACE RULE r_productos_soft_delete AS
+ON DELETE TO productos
+DO INSTEAD
+    UPDATE productos
+    SET fecha_eliminacion = CURRENT_TIMESTAMP
+    WHERE id_producto = OLD.id_producto AND fecha_eliminacion IS NULL;
 
 -------------------------------------------------------------------
 -------- TRIGGER PARA inmutabilidad de productos.producto ---------

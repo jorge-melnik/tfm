@@ -110,4 +110,12 @@ export class AuthService {
       return Promise.resolve();
     }
   }
+
+  async borrarCuenta() {
+    const logoutUrl = `${this.serviceUrl}/`;
+    await firstValueFrom(this._http.delete(logoutUrl));
+    this._userStore.setToken(null);
+    this._userStore.setUser(null);
+    this._router.navigate(['/']);
+  }
 }
