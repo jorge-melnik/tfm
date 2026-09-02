@@ -30,14 +30,14 @@ FOR EACH ROW
 EXECUTE FUNCTION fn_actualizar_fecha_actualizacion();
 
 -------------------------------------------------------------------
------------ TRIGGER PARA ACTUALIZAR fecha eliminación   -----------
+------------ RULE para softdelete de subcategorías ----------------
 -------------------------------------------------------------------
-DROP TRIGGER IF EXISTS tg_subcategorias_soft_delete ON subcategorias;
-CREATE TRIGGER tg_subcategorias_soft_delete
-BEFORE DELETE ON subcategorias
-FOR EACH ROW
-EXECUTE FUNCTION fn_actualizar_fecha_eliminacion();
-
+CREATE OR REPLACE RULE r_subcategorias_soft_delete AS
+ON DELETE TO subcategorias
+DO INSTEAD
+    UPDATE subcategorias
+    SET fecha_eliminacion = CURRENT_TIMESTAMP
+    WHERE id_subcategoria = OLD.id_subcategoria AND fecha_eliminacion IS NULL;
 
 -------------------------------------------------------------------
 ---- TRIGGER PARA inmutabilidad de subcategorias.subcategoria -----

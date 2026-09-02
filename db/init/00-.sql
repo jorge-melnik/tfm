@@ -40,26 +40,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION fn_actualizar_fecha_eliminacion()
-RETURNS TRIGGER AS $$
-BEGIN
-    -- Gracias gemini. TODO: verificar que esto funciona.
-    EXECUTE format('UPDATE %s SET fecha_eliminacion = CURRENT_TIMESTAMP WHERE ctid = $1', TG_RELID::regclass)
-    USING OLD.ctid;
-    RETURN NULL; -- Devolver NULL cancela el DELETE físico
-END;
-$$ LANGUAGE plpgsql;
-
--- CREATE OR REPLACE FUNCTION fn_actualizar_fecha_eliminacion()
--- RETURNS TRIGGER AS $$
--- BEGIN
---     -- Actualiza fecha_eliminacion usando la clave primaria de la tabla dinámicamente
---     -- o simplemente usando la tabla directamente:
---     EXECUTE format('UPDATE %s SET fecha_eliminacion = CURRENT_TIMESTAMP WHERE ctid = %L', TG_RELID, OLD.ctid);
---     RETURN NULL; -- Cancela el DELETE físico
--- END;
--- $$ LANGUAGE plpgsql;
-
 CREATE OR REPLACE FUNCTION tr_fn_impedir_cambio_columna()
 RETURNS TRIGGER AS $$
 DECLARE

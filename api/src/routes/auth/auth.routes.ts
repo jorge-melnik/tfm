@@ -263,10 +263,25 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
     },
     handler: async function (req, rep) {
       await authRepository.register(req.body); //Doy de alta el usuario.
-      const payload = await authRepository.usernameLogin(req.body.username, req.body.password); //Lo autentico.
-      const payload2 = await authRepository.emailLogin(req.body.email, req.body.password); //Lo autentico.
+      const payload = await authRepository.usernameLogin(req.body.username, req.body.password); //Lo autentico con usuario.
+      const payload2 = await authRepository.emailLogin(req.body.email, req.body.password); //Lo autentico con email.
 
       return generarTokens(payload, rep);
+    },
+  });
+
+  fastify.delete('/', {
+    schema: {
+      summary: 'Borrar cuenta',
+      description: 'Eliminar la cuenta del usuario.',
+      tags: ['Auth'],
+      security: [{ bearerAuth: [] }],
+    },
+    onRequest: [fastify.authenticate],
+    handler: async (req, rep) => {
+      await authRepository.borrarCuenta(req.user.id_usuario);
+      rep.clearCookie('refreshToken', cookieOptions);
+      rep.code(204);
     },
   });
 };

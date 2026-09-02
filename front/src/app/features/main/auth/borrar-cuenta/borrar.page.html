@@ -1,0 +1,91 @@
+<div id="main" class="flex flex-col grow justify-center items-center h-full p-4">
+  <p-card class="shadow-lg rounded-xl w-full md:w-140 border-t-4 border-red-500">
+    <ng-template #title>
+      <div class="flex flex-col items-center text-center gap-3 mb-2">
+        <div class="w-full max-w-20 h-full rounded-full overflow-hidden relative shadow-inner">
+          <img
+            [src]="this.cdnUrl + userStore.user()?.foto_url"
+            [alt]="this.userStore.user()?.username || ''"
+            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+
+          <div
+            class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white"
+          >
+            <svg data-p-icon="trash" class="w-7 h-7 mb-1 text-red-400"></svg>
+            <span class="text-xs tracking-wide uppercase">Eliminar</span>
+          </div>
+        </div>
+        <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium">Eliminar Cuenta</div>
+      </div>
+    </ng-template>
+
+    <div class="flex flex-col gap-5 text-surface-700 dark:text-surface-200">
+      <p class="text-center text-lg">
+        Estás a punto de eliminar tu cuenta de forma <strong>permanente</strong>. Esta acción no se
+        puede deshacer.
+      </p>
+
+      <div
+        class="bg-surface-50 dark:bg-surface-800/50 p-5 rounded-lg border border-surface-200 dark:border-surface-700 text-sm flex flex-col gap-3"
+      >
+        <p class="font-bold text-surface-900 dark:text-surface-0">
+          ¿Qué sucede al eliminar tu cuenta?
+        </p>
+        <ul class="list-disc pl-5 flex flex-col gap-2">
+          <li>Perderás el acceso inmediato y definitivo a la plataforma.</li>
+          <li>
+            Se eliminará todo tu historial, configuraciones y preferencias asociadas a tu perfil.
+          </li>
+          <li>
+            Tus datos personales serán eliminados de nuestras bases de datos en estricto
+            cumplimiento con la <strong>Ley N° 18.331</strong> de Protección de Datos Personales y
+            Acción de Habeas Data de la República Oriental del Uruguay.
+          </li>
+        </ul>
+      </div>
+
+      <!-- Checkbox de confirmación -->
+      <div
+        class="flex items-center gap-3 mt-2 bg-red-50 dark:bg-red-950/20 p-4 rounded-lg border border-red-200 dark:border-red-900/50"
+      >
+        <p-checkbox inputId="confirmacion" [binary]="true" [(ngModel)]="confirmado"></p-checkbox>
+        <label
+          for="confirmacion"
+          class="text-sm font-medium cursor-pointer text-red-800 dark:text-red-200 select-none"
+        >
+          Entiendo que esta acción es irreversible y solicito la eliminación de mis datos.
+        </label>
+      </div>
+    </div>
+
+    <ng-template #footer>
+      <div class="flex flex-col sm:flex-row gap-3 mt-4">
+        <!-- Botón Cancelar (Secundario) -->
+        <button
+          pButton
+          type="button"
+          severity="secondary"
+          [outlined]="true"
+          class="w-full flex justify-center"
+          routerLink="/"
+        >
+          Cancelar
+        </button>
+
+        <!-- Botón Eliminar (Peligro) - Deshabilitado hasta hacer check -->
+        <button
+          pButton
+          type="button"
+          severity="danger"
+          class="w-full flex justify-center"
+          [disabled]="!confirmado()"
+          (click)="eliminarCuenta()"
+        >
+          <svg data-p-icon="trash" class="w-4 h-4 mr-2"></svg>
+          Eliminar mi cuenta
+        </button>
+      </div>
+    </ng-template>
+  </p-card>
+</div>

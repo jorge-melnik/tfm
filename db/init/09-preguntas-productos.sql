@@ -33,15 +33,6 @@ FOR EACH ROW
 EXECUTE FUNCTION fn_actualizar_fecha_actualizacion();
 
 -------------------------------------------------------------------
------------ TRIGGER PARA ACTUALIZAR fecha eliminación   -----------
--------------------------------------------------------------------
-DROP TRIGGER IF EXISTS trg_pregunta_soft_delete ON productos;
-CREATE TRIGGER trg_pregunta_soft_delete
-BEFORE DELETE ON preguntas
-FOR EACH ROW
-EXECUTE FUNCTION fn_actualizar_fecha_eliminacion();
-
--------------------------------------------------------------------
 ------------- TRIGGER para cambiar el estado_pregunta  ------------
 -------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION trg_fn_cambiar_estado_pregunta_contestada()

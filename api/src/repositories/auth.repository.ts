@@ -165,6 +165,38 @@ class AuthRepositoryClass {
     `;
     await myPool.query(query, [id_usuario, rol_actual]);
   }
+
+  async borrarCuenta(id_usuario: string) {
+    //Desactivar Usuario, Consumidor, y Productor.
+    //Borrar datos personales.
+    //Borrar en  credenciales, cuenta_externa y refresh_tokens.
+    //NO se borran rol_actual ni roles de la tabla usuarios.
+    const consulta = `
+      WITH DP AS (
+        DELETE FROM public.datos_personales WHERE id_usuario=$1 
+      ),
+      U AS (
+        DELETE FROM public.usuarios WHERE id_usuario=$1
+      ),
+      CON AS (
+        DELETE FROM public.consumidores WHERE id_consumidor=$1
+      ),
+      PROD AS (
+        DELETE FROM public.productores WHERE id_productor=$1
+      ),
+      CRED AS (
+        DELETE FROM public.credenciales WHERE id_usuario=$1
+      ),
+      CE AS (
+        DELETE FROM public.cuentas_externas WHERE id_usuario=$1
+      ),
+      RT AS (
+        DELETE FROM public.refresh_tokens WHERE id_usuario=$1
+      )
+      SELECT 1;
+    `;
+    await myPool.query(consulta, [id_usuario]);
+  }
 }
 
 export default new AuthRepositoryClass();

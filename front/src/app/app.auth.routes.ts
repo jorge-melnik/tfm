@@ -32,4 +32,11 @@ export const authRoutes: Routes = [
     loadComponent: () =>
       import('@features/main/auth/logout/logout.component').then((m) => m.LogoutComponent),
   },
+  {
+    path: 'borrar',
+    title: 'Borrar cuenta',
+    canActivate: [loggedGuard],
+    loadComponent: () =>
+      import('@features/main/auth/borrar-cuenta/borrar.page').then((m) => m.BorrarPage),
+  },
 ];
