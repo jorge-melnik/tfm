@@ -16,7 +16,7 @@ export default fp(async (fastify: FastifyInstance) => {
 
       for (const rol of rolesArray) {
         if (!user.roles.includes(rol)) {
-          fastify.log.warn('El usuario no tiene alguno de los roles necesarios');
+          fastify.log.warn('El usuario no tiene alguno de los roles necesarios: ' + rol);
           throw new DeAcaForbidden('No tenés permisos para acceder a este recurso');
         }
       }
