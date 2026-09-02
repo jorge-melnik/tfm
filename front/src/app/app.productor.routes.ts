@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
+import { AuthService } from '@shared/services/auth.service';
 import { UserStore } from '@shared/services/stores/user.store';
 
 export const productorRoutes: Routes = [
@@ -84,11 +85,18 @@ export const productorRoutes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: () => {
+    redirectTo: async () => {
       const userStore = inject(UserStore);
-      const user = userStore.user()?.username;
-      if (!user) return '/';
-      return '/productor/' + user;
+      const authService = inject(AuthService);
+      const user = userStore.user();
+      if (!user) {
+        return '/'; //Si no hay usuario logueado, redirigimos al home
+      }
+      const { username, rol_actual } = user;
+      if (rol_actual !== 'PRODUCTOR') {
+        await authService.cambiarRolActualA('PRODUCTOR'); //Si el rol actual no es PRODUCTOR, lo cambiamos a PRODUCTOR
+      }
+      return '/productor/' + username;
     },
   },
 ];

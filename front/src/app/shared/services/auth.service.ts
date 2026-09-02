@@ -1,7 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, Service, signal } from '@angular/core';
 import { environment } from '@env/environment';
-import { Profile, RegistroType, Rol, TipoLogin } from '@shared/types/user.types';
+import {
+  AdicionalesProductor,
+  Profile,
+  RegistroType,
+  Rol,
+  TipoLogin,
+} from '@shared/types/user.types';
 import { firstValueFrom } from 'rxjs';
 import { UserStore } from './stores/user.store';
 import { Router } from '@angular/router';
@@ -52,6 +58,7 @@ export class AuthService {
   }
 
   public async refreshToken() {
+    console.log('Refreshing token...');
     const refreshUrl = `${this.serviceUrl}/refresh`;
     const resToken = await firstValueFrom(
       this._http.get<TokenResponse>(refreshUrl, { withCredentials: true }), //Se envía la cookie refreshToken
@@ -74,8 +81,11 @@ export class AuthService {
     this._router.navigate(['/']);
   }
 
-  async activarProductor() {
-    //  /user/productor
+  async activarProductor(datos: AdicionalesProductor) {
+    const url = `${this.serviceUrl}/user/productor`;
+    const profile = await firstValueFrom(this._http.post<Profile>(url, datos));
+    this._userStore.setUser(profile);
+    await this.refreshToken();
   }
   async activarConsumidor() {
     //  /user/consumidor

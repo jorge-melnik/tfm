@@ -18,19 +18,30 @@
       </div>
     </ng-template>
 
-    <form #loginForm class="flex flex-col gap-12">
-      <p-iftalabel class="w-full">
-        <textarea
-          pTextarea
-          id="presentacion"
-          rows="5"
-          [autoResize]="true"
-          class="w-full"
-        ></textarea>
-        <label for="presentacion">Presentacion</label>
-      </p-iftalabel>
+    <form novalidate class="flex flex-col gap-12" (submit)="this.guardar($event)">
+      <div class="flex flex-col gap-1">
+        <p-iftalabel class="w-full">
+          <textarea
+            pTextarea
+            rows="5"
+            [autoResize]="true"
+            class="w-full"
+            [formField]="this.loginForm.presentacion"
+          ></textarea>
+          <label for="presentacion">Presentacion</label>
+        </p-iftalabel>
+        @if (this.loginForm.presentacion().touched() && this.loginForm.presentacion().invalid()) {
+          @for (error of this.loginForm.presentacion().errors(); track error.kind) {
+            <p-message severity="error" size="small" variant="simple">{{
+              error.message
+            }}</p-message>
+          }
+        }
+      </div>
 
-      <button pButton type="submit" class="w-full">Ingresar</button>
+      <button pButton type="submit" class="w-full" [disabled]="!this.loginForm().valid()">
+        Ingresar
+      </button>
     </form>
 
     <ng-template #footer>

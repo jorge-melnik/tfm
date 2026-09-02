@@ -211,7 +211,9 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       }
     }, //Acá debería verificar la cookie y no el header authorization.
     handler: async function (req, rep) {
-      return generarTokens(req.user, rep);
+      const usuarioActualizado = await authRepository.getUserById(req.user.id_usuario); //Por si cambio de roles... o algo
+
+      return generarTokens({ ...usuarioActualizado, jti: '' }, rep);
     },
   });
 
