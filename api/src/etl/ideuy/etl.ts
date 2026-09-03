@@ -58,7 +58,7 @@ async function syncLocalidades() {
   const slugLocalidades = localidades.map((l) => l.localidad);
 
   const query = `
-    WITH lote_nuevas AS (
+    WITH MIS_LOCALIDADES AS (
       SELECT 
         u.id_dept, 
         u.nom, 
@@ -73,14 +73,12 @@ async function syncLocalidades() {
     )
     INSERT INTO localidades (id_departamento, nombre, codigo_postal, localidad)
     SELECT 
-      n.id_dept,
-      n.nom,
-      n.cp,
-      n.slug
-    FROM lote_nuevas n
-    LEFT JOIN localidades l 
-      ON l.id_departamento = n.id_dept 
-     AND l.localidad = n.slug
+      ML.id_dept,
+      ML.nom,
+      ML.cp,
+      ML.slug
+    FROM MIS_LOCALIDADES ML
+    LEFT JOIN localidades l ON l.id_departamento = ML.id_dept AND l.localidad = ML.slug
     WHERE l.id_localidad IS NULL; -- Solo los que no existen
   `;
 

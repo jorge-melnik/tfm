@@ -37,7 +37,19 @@ CREATE TABLE IF NOT EXISTS ubicaciones (
     ),
     direccion TEXT NOT NULL,    -- Calle, número, entre calles, lo que quieran
     comentarios TEXT,
-    punto GEOMETRY(Point, 4326),
+    -- 6 decimales es suficiente precisión.
+    latitud NUMERIC(9, 6) CHECK (latitud BETWEEN -90 AND 90),
+    longitud NUMERIC(9, 6) CHECK (longitud BETWEEN -180 AND 180),
+
+    -- Columna PostGIS calculada de forma transparente
+    -- OJO: ST_MakePoint recibe primero LONGITUD (X) y luego LATITUD (Y)
+    punto GEOMETRY(Point, 4326) GENERATED ALWAYS AS (
+        CASE 
+            WHEN latitud IS NOT NULL AND longitud IS NOT NULL 
+            THEN ST_SetSRID(ST_MakePoint(longitud, latitud), 4326)
+            ELSE NULL 
+        END
+    ) STORED,
     
     fecha_creacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
