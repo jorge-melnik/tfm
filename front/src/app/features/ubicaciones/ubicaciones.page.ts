@@ -9,7 +9,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { form, required } from '@angular/forms/signals';
+import { form, FormField, required } from '@angular/forms/signals';
 import { DepartamentosService } from '@shared/services/departamentos.service';
 import { UserStore } from '@shared/services/stores/user.store';
 import { UsuariosService } from '@shared/services/usuarios.service.ts';
@@ -30,13 +30,31 @@ import { boundingExtent } from 'ol/extent';
 
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { MapMarker, Plus, Trash, Pencil, RectangleXmark, Times } from '@primeicons/angular';
+import { DialogModule, Dialog } from 'primeng/dialog';
+import { MapMarker, Plus, Trash, Pencil, RectangleXmark, Times, Save } from '@primeicons/angular';
 import Overlay from 'ol/Overlay';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { TextareaModule } from 'primeng/textarea';
+import { InputTextModule } from 'primeng/inputtext';
+import { Select, SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'app-ubicaciones',
-  imports: [CardModule, ButtonModule, MapMarker, Plus, Trash, Pencil, RectangleXmark, Times],
+  imports: [
+    CardModule,
+    ButtonModule,
+    MapMarker,
+    Trash,
+    Pencil,
+    Save,
+    Times,
+    Dialog,
+    TextareaModule,
+    InputTextModule,
+    FloatLabelModule,
+    SelectModule,
+    FormField,
+  ],
   templateUrl: './ubicaciones.page.html',
   styleUrl: './ubicaciones.page.css',
 })
@@ -46,6 +64,8 @@ export class UbicacionesPage {
   public userStore = inject(UserStore);
 
   public ubicacionSeleccionada = signal<Ubicacion>(ubicacionVacia);
+  public modalEdicionAbierto = signal<boolean>(false);
+  public guardandoEdicion = signal<boolean>(false);
 
   public ubicacionForm = form(this.ubicacionSeleccionada, (schemaPath) => {
     required(schemaPath.id_usuario);
@@ -238,7 +258,39 @@ export class UbicacionesPage {
   }
 
   public editarUbicacion(ubicacion: Ubicacion): void {
-    console.log('Editar ubicación:', ubicacion);
-    // Lógica para abrir modal o editar
+    this.ubicacionSeleccionada.set({ ...ubicacion });
+    this.modalEdicionAbierto.set(true);
+  }
+
+  public cerrarModalEdicion() {
+    this.modalEdicionAbierto.set(false);
+  }
+
+  public async guardarEdicion(): Promise<void> {
+    if (!this.ubicacionSeleccionada().id_ubicacion) return;
+
+    this.guardandoEdicion.set(true);
+
+    try {
+      const datosActualizados = this.ubicacionSeleccionada();
+
+      // Llamada a tu servicio backend para actualizar la ubicación
+      // await this._usuariosService.updateUbicacion(datosActualizados);
+
+      console.log('Ubicación actualizada:', datosActualizados);
+
+      // Recargar la lista o actualizar manualmente
+      this.ubicacionesResource.reload();
+      this.cerrarModalEdicion();
+      this.cerrarPopup();
+    } catch (error) {
+      console.error('Error al guardar edición:', error);
+    } finally {
+      this.guardandoEdicion.set(false);
+    }
+  }
+
+  public eliminarUbicacion(ubicacion: Ubicacion): void {
+    console.log('Eliminar ubicación:', ubicacion);
   }
 }

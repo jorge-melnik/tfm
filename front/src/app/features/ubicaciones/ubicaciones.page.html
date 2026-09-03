@@ -44,7 +44,12 @@
 
         <ng-template #footer>
           <div class="flex w-full gap-2 pt-1.5 border-t border-slate-100">
-            <button type="button" pButton class="flex-1 p-button-sm p-button-outlined">
+            <button
+              type="button"
+              pButton
+              class="flex-1 p-button-sm p-button-outlined"
+              (click)="editarUbicacion(ubicacionSeleccionada())"
+            >
               <svg data-p-icon="pencil"></svg> Editar
             </button>
 
@@ -52,6 +57,7 @@
               type="button"
               pButton
               class="flex-1 p-button-sm p-button-outlined p-button-danger"
+              (click)="eliminarUbicacion(ubicacionSeleccionada())"
             >
               <svg data-p-icon="trash"></svg> Borrar
             </button>
@@ -61,3 +67,90 @@
     }
   </div>
 </div>
+
+<!-- Diálogo de Edición -->
+<p-dialog
+  header="Editar Ubicación"
+  [visible]="modalEdicionAbierto()"
+  (visibleChange)="modalEdicionAbierto.set($event)"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="w-full max-w-md"
+>
+  <form (submit)="$event.preventDefault(); guardarEdicion()" class="space-y-5 pt-3">
+    <!-- Campo Nombre -->
+    <p-floatlabel variant="on" class="w-full">
+      <input type="text" pInputText class="w-full" [formField]="this.ubicacionForm.nombre" />
+      <label for="nombre">Nombre</label>
+    </p-floatlabel>
+
+    <!-- Campo Dirección -->
+    <p-floatlabel variant="on" class="w-full">
+      <input
+        id="direccion"
+        type="text"
+        pInputText
+        autocomplete="off"
+        class="w-full"
+        [formField]="this.ubicacionForm.direccion"
+      />
+      <label for="direccion">Dirección</label>
+    </p-floatlabel>
+
+    <div class="grid grid-cols-2 gap-3">
+      <p-floatlabel variant="on" class="w-full">
+        <input
+          id="departamento"
+          type="text"
+          pInputText
+          [disabled]="true"
+          [value]="ubicacionSeleccionada().departamento"
+          class="w-full bg-slate-100 text-slate-500 cursor-not-allowed"
+        />
+        <label for="departamento">Departamento</label>
+      </p-floatlabel>
+      <p-floatlabel variant="on" class="w-full">
+        <p-select
+          [options]="localidades()"
+          optionLabel="nombre"
+          optionValue="id_localidad"
+          class="w-full"
+          appendTo="body"
+          [filter]="true"
+          [formField]="ubicacionForm.id_localidad"
+        ></p-select>
+        <label for="localidad">Localidad</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Campo Comentarios -->
+    <p-floatlabel variant="on" class="w-full">
+      <textarea
+        id="comentarios"
+        rows="3"
+        pTextarea
+        autocomplete="off"
+        class="w-full resize-none"
+        [formField]="ubicacionForm.comentarios"
+      ></textarea>
+      <label for="comentarios">Comentarios</label>
+    </p-floatlabel>
+
+    <!-- Botones de Acción -->
+    <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+      <button
+        type="button"
+        pButton
+        class="p-button-text p-button-secondary p-button-sm"
+        (click)="cerrarModalEdicion()"
+      >
+        <svg data-p-icon="times"></svg> Cancelar
+      </button>
+
+      <button type="submit" pButton class="p-button-sm">
+        <svg data-p-icon="save"></svg> Guardar
+      </button>
+    </div>
+  </form>
+</p-dialog>
