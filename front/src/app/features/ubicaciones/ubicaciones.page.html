@@ -1,0 +1,67 @@
+<div class="map-wrapper relative w-full h-full">
+  <!-- Contenedor del Mapa -->
+  <div
+    #mapContainer
+    class="w-full h-[500px] rounded-xl overflow-hidden border border-slate-200"
+  ></div>
+
+  <!-- Contenedor del Overlay: w-fit para ajustar al contenido -->
+  <div #popupContainer class="ol-popup w-fit max-w-xs">
+    @if (ubicacionSeleccionada().nombre) {
+      <p-card class="shadow-xl">
+        <ng-template #title>
+          <!-- whitespace-nowrap evita saltos innecesarios en el título -->
+          <div class="flex items-center justify-between gap-3 text-base whitespace-nowrap">
+            <span class="font-bold text-slate-800">{{ ubicacionSeleccionada().nombre }}</span>
+            <button
+              type="button"
+              pButton
+              icon="pi pi-times"
+              class="p-button-rounded p-button-text p-button-plain p-button-sm !p-1 !w-6 !h-6"
+              (click)="cerrarPopup()"
+            ></button>
+          </div>
+        </ng-template>
+
+        <ng-template #subtitle>
+          <div
+            class="flex items-center gap-1 text-xs text-emerald-700 font-medium whitespace-nowrap"
+          >
+            <svg data-p-icon="map-marker"></svg>
+            <span>{{ ubicacionSeleccionada().direccion }}</span>
+          </div>
+        </ng-template>
+
+        <div class="text-xs">
+          <p class="m-0 whitespace-nowrap font-medium">
+            {{ ubicacionSeleccionada().localidad }}, {{ ubicacionSeleccionada().departamento }}
+          </p>
+
+          <p class="text-xs">
+            {{ ubicacionSeleccionada().comentarios }}
+          </p>
+
+          <p class="text-xs">
+            {{ ubicacionSeleccionada().latitud }}, {{ ubicacionSeleccionada().longitud }}
+          </p>
+        </div>
+
+        <ng-template #footer>
+          <div class="flex w-full gap-2 pt-1.5 border-t border-slate-100">
+            <button type="button" pButton class="flex-1 p-button-sm p-button-outlined">
+              <svg data-p-icon="pencil"></svg> Editar
+            </button>
+
+            <button
+              type="button"
+              pButton
+              class="flex-1 p-button-sm p-button-outlined p-button-danger"
+            >
+              <svg data-p-icon="trash"></svg> Borrar
+            </button>
+          </div>
+        </ng-template>
+      </p-card>
+    }
+  </div>
+</div>

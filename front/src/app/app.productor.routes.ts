@@ -11,7 +11,13 @@ export const productorRoutes: Routes = [
       import('@features/productor/mis-datos/mis-datos.page').then((m) => m.MisDatosPage),
   },
   {
-    path: ':productor',
+    path: 'mis-datos/ubicaciones',
+    title: 'Mis Datos',
+    loadComponent: () =>
+      import('@features/ubicaciones/ubicaciones.page').then((m) => m.UbicacionesPage),
+  },
+  {
+    path: ':username',
     children: [
       {
         path: '',

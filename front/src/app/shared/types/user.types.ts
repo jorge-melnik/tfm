@@ -47,3 +47,15 @@ export interface Consumidor {
   celular: string;
   foto_url?: string;
 }
+
+export interface Usuario {
+  id_usuario: string;
+  nombres: string;
+  apellidos: string;
+  email: string;
+  username: string;
+  celular: string;
+  foto_url: string;
+  roles: Rol[];
+  rol_actual: Rol;
+}

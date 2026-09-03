@@ -1,4 +1,50 @@
 import { Type, Static } from '@sinclair/typebox';
+import { Localidad } from './departamento.schema.js';
+import { ProfileSchema } from './auth.schema.js';
+import { RolLiteral } from './core.schemas.js';
+
+const LIMITES_URUGUAY = {
+  LAT_MIN: -35,
+  LAT_MAX: -30.0,
+  LON_MIN: -58,
+  LON_MAX: -53.0,
+};
+
+export const UbicacionPost = Type.Object({
+  id_localidad: Type.Integer({
+    minimum: 1,
+  }),
+  nombre: Type.String({
+    minLength: 2,
+    maxLength: 32,
+  }),
+
+  direccion: Type.String({
+    minLength: 3,
+    maxLength: 500,
+  }),
+
+  comentarios: Type.Optional(Type.Union([Type.String({ maxLength: 500 }), Type.Null()])),
+
+  latitud: Type.Number({
+    minimum: LIMITES_URUGUAY.LAT_MIN,
+    maximum: LIMITES_URUGUAY.LAT_MAX,
+  }),
+
+  longitud: Type.Number({
+    minimum: LIMITES_URUGUAY.LON_MIN,
+    maximum: LIMITES_URUGUAY.LON_MAX,
+  }),
+});
+export const Ubicacion = Type.Object({
+  ...UbicacionPost.properties,
+  localidad: Localidad.properties.localidad,
+  departamento: Type.String(),
+  ubicacion: Type.String(),
+});
+
+export type UbicacionPost = Static<typeof UbicacionPost>;
+export type Ubicacion = Static<typeof Ubicacion>;
 
 export const DatosPersonales = Type.Object(
   {
@@ -34,10 +80,18 @@ export const AdicionalesProductor = Type.Object(
   {
     // id_productor: Type.String({ format: 'uuid' }),
     presentacion: Type.String(),
+    ubicacion: UbicacionPost,
   },
   { additionalProperties: false },
 );
 
+export const Usuario = Type.Object({
+  ...DatosPersonales.properties,
+  rol_actual: RolLiteral,
+  roles: Type.Array(RolLiteral, { minItems: 1 }),
+});
+
 export type DatosPersonales = Static<typeof DatosPersonales>;
 export type AdicionalesConsumidor = Static<typeof AdicionalesConsumidor>;
 export type AdicionalesProductor = Static<typeof AdicionalesProductor>;
+export type Usuario = Static<typeof DatosPersonales>;

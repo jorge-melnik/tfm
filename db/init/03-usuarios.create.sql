@@ -35,6 +35,10 @@ CREATE TABLE IF NOT EXISTS ubicaciones (
     nombre CITEXT NOT NULL CHECK (
         char_length(nombre) BETWEEN 2 AND 32
     ),
+    ubicacion CITEXT UNIQUE CHECK (
+        char_length(ubicacion) BETWEEN 2 AND 32
+        AND ubicacion ~ '^[a-zA-Z0-9-]+$' 
+    ),
     direccion TEXT NOT NULL,    -- Calle, número, entre calles, lo que quieran
     comentarios TEXT,
     -- 6 decimales es suficiente precisión.
@@ -63,8 +67,7 @@ CREATE INDEX IF NOT EXISTS idx_usuarios_roles ON usuarios USING GIN (roles);
 CREATE TABLE IF NOT EXISTS productores (
     id_productor UUID PRIMARY KEY REFERENCES usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE, -- Misma clave que usuarios
     presentacion TEXT NOT NULL,
-    -- //TODO: Falta asignarle una ubicación al productor, de las existentes en el usuario.
-    -- id_ubicacion UUID REFERENCES ubicaciones(id_ubicacion) ON DELETE SET NULL ON UPDATE CASCADE
+    id_ubicacion UUID REFERENCES ubicaciones(id_ubicacion) ON DELETE CASCADE,
     calificacion SMALLINT CHECK (calificacion BETWEEN 1 AND 5), -- //TODO. Hacer trigger para cargar esto en base al promedio de calificaciónes de sus productos
     fecha_creacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,

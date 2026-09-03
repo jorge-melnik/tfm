@@ -34,7 +34,7 @@ export const consumidorRoutes: Routes = [
           ),
       },
       {
-        path: 'productor/:productor',
+        path: 'productor/:username',
         pathMatch: 'full',
         title: 'Ver productor',
         loadComponent: () =>

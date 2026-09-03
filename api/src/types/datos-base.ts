@@ -3,6 +3,8 @@ import { MedioPago } from '@schemas/compras.schema.js';
 export interface DatosBase {
   nombre?: string;
   username?: string;
+
+  ubicacion?: string;
   consumidor?: string;
   id_compra?: number; //Solo para que no me patee typescript
 }

@@ -24,7 +24,7 @@ export class ProductorPage {
 
   public estado_pedido = signal<EstadoPedidoType | 'TODOS'>('TODOS');
 
-  public productor = input.required<string>();
+  public username = input.required<string>();
 
   private readonly productorResource = httpResource<Productor>(
     () => `${environment.apiUrl}/productores/${this._userStore.user()?.username}`,
@@ -34,7 +34,7 @@ export class ProductorPage {
 
   private readonly pedidosResource = resource({
     params: () => {
-      const productor = this.productor();
+      const productor = this.username();
       const estado_pedido = this.estado_pedido();
       if (!productor) return undefined;
       return {
