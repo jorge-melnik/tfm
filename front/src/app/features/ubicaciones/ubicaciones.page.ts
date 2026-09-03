@@ -31,12 +31,12 @@ import { boundingExtent } from 'ol/extent';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { MapMarker, Plus, Trash, Pencil, RectangleXmark } from '@primeicons/angular';
+import { MapMarker, Plus, Trash, Pencil, RectangleXmark, Times } from '@primeicons/angular';
 import Overlay from 'ol/Overlay';
 
 @Component({
   selector: 'app-ubicaciones',
-  imports: [CardModule, ButtonModule, MapMarker, Plus, Trash, Pencil, RectangleXmark],
+  imports: [CardModule, ButtonModule, MapMarker, Plus, Trash, Pencil, RectangleXmark, Times],
   templateUrl: './ubicaciones.page.html',
   styleUrl: './ubicaciones.page.css',
 })

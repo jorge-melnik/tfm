@@ -1,25 +1,21 @@
 <div class="map-wrapper relative w-full h-full">
   <!-- Contenedor del Mapa -->
-  <div
-    #mapContainer
-    class="w-full h-[500px] rounded-xl overflow-hidden border border-slate-200"
-  ></div>
+  <div #mapContainer class="w-full h-125 rounded-xl overflow-hidden border border-slate-200"></div>
 
-  <!-- Contenedor del Overlay: w-fit para ajustar al contenido -->
   <div #popupContainer class="ol-popup w-fit max-w-xs">
     @if (ubicacionSeleccionada().nombre) {
       <p-card class="shadow-xl">
         <ng-template #title>
-          <!-- whitespace-nowrap evita saltos innecesarios en el título -->
-          <div class="flex items-center justify-between gap-3 text-base whitespace-nowrap">
-            <span class="font-bold text-slate-800">{{ ubicacionSeleccionada().nombre }}</span>
+          <div class="flex items-center justify-between gap-3 text-sm">
+            <span class="font-bold">{{ ubicacionSeleccionada().nombre }}</span>
             <button
               type="button"
               pButton
-              icon="pi pi-times"
-              class="p-button-rounded p-button-text p-button-plain p-button-sm !p-1 !w-6 !h-6"
+              class="p-button-rounded p-button-text p-button-plain p-button-sm"
               (click)="cerrarPopup()"
-            ></button>
+            >
+              <svg data-p-icon="times"></svg>
+            </button>
           </div>
         </ng-template>
 
