@@ -1,0 +1,21 @@
+INSERT INTO departamentos (nombre, departamento) VALUES
+    ('Artigas', 'artigas'),
+    ('Canelones', 'canelones'),
+    ('Cerro Largo', 'cerro-largo'),
+    ('Colonia', 'colonia'),
+    ('Durazno', 'durazno'),
+    ('Flores', 'flores'),
+    ('Florida', 'florida'),
+    ('Lavalleja', 'lavalleja'),
+    ('Maldonado', 'maldonado'),
+    ('Montevideo', 'montevideo'),
+    ('Paysandú', 'paysandu'),
+    ('Río Negro', 'rio-negro'),
+    ('Rivera', 'rivera'),
+    ('Rocha', 'rocha'),
+    ('Salto', 'salto'),
+    ('San José', 'san-jose'),
+    ('Soriano', 'soriano'),
+    ('Tacuarembó', 'tacuarembo'),
+    ('Treinta y Tres', 'treinta-y-tres')
+ON CONFLICT (nombre) DO NOTHING;
