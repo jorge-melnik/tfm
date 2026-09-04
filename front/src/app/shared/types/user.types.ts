@@ -30,6 +30,7 @@ export type RegistroType = {
 
 export interface Productor {
   id_productor: string;
+  id_ubicacion: number;
   nombres: string;
   apellidos: string;
   email: string;

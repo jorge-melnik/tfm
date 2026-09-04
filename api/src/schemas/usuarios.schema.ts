@@ -38,6 +38,7 @@ export const UbicacionPost = Type.Object({
 });
 export const Ubicacion = Type.Object({
   ...UbicacionPost.properties,
+  id_ubicacion: Type.Number(),
   localidad: Localidad.properties.localidad,
   departamento: Type.String(),
   ubicacion: Type.String(),
@@ -80,7 +81,8 @@ export const AdicionalesProductor = Type.Object(
   {
     // id_productor: Type.String({ format: 'uuid' }),
     presentacion: Type.String(),
-    ubicacion: UbicacionPost,
+    id_ubicacion: Ubicacion.properties.id_ubicacion,
+    // ubicacion: UbicacionPost,
   },
   { additionalProperties: false },
 );

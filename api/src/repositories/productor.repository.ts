@@ -12,6 +12,7 @@ export class ProductorRepositoryClass extends BaseRepository<Productor> {
     SELECT P.*, DP.*
     FROM public.productores P
     JOIN public.usuarios U ON U.id_usuario = P.id_productor
+    LEFT JOIN public.ubicaciones UB ON UB.id_ubicacion = P.id_ubicacion
     LEFT JOIN public.datos_personales DP ON DP.id_usuario = U.id_usuario
     WHERE 1=1
   `;

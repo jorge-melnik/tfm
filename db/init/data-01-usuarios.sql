@@ -9,9 +9,9 @@ DECLARE
     v_id_localidad_salto INTEGER;
     v_id_localidad_artigas INTEGER;
 
-    v_id_ubicacion_superadmin UUID;
-    v_id_ubicacion_productor UUID;
-    v_id_ubicacion_ambos UUID;
+    v_id_ubicacion_superadmin INTEGER;
+    v_id_ubicacion_productor INTEGER;
+    v_id_ubicacion_ambos INTEGER;
 BEGIN
     SELECT l.id_localidad INTO v_id_localidad_salto
     FROM localidades l
@@ -46,8 +46,6 @@ BEGIN
     
     INSERT INTO ubicaciones (id_usuario, id_localidad, nombre, ubicacion, direccion, comentarios, latitud, longitud)
     VALUES (id_superadministrador, v_id_localidad_artigas, 'Local Paysandú', 'superadmin-loc-2', 'Av. España 430', 'Punto de entrega comercial', -32.315000, -58.080000);
-
-
 
     -- productor: Solo productor
     INSERT INTO usuarios (rol_actual, roles) VALUES ('PRODUCTOR', ARRAY['PRODUCTOR']::ROL[]) RETURNING id_usuario INTO id_productor;

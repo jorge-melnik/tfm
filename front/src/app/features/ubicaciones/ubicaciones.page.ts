@@ -31,7 +31,16 @@ import { defaults as defaultControls } from 'ol/control/defaults';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule, Dialog } from 'primeng/dialog';
-import { MapMarker, Plus, Trash, Pencil, RectangleXmark, Times, Save } from '@primeicons/angular';
+import {
+  MapMarker,
+  Plus,
+  Trash,
+  Pencil,
+  RectangleXmark,
+  Times,
+  Save,
+  ArrowLeft,
+} from '@primeicons/angular';
 import Overlay from 'ol/Overlay';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { TextareaModule } from 'primeng/textarea';
@@ -40,6 +49,7 @@ import { SelectModule } from 'primeng/select';
 import MapBrowserEvent from 'ol/MapBrowserEvent';
 import { LocalidadsService } from '@shared/services/localidades.service';
 import { FormsModule } from '@angular/forms';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-ubicaciones',
@@ -50,6 +60,7 @@ import { FormsModule } from '@angular/forms';
     MapMarker,
     Trash,
     Pencil,
+    ArrowLeft,
     Save,
     Times,
     Dialog,
@@ -68,13 +79,14 @@ export class UbicacionesPage {
   private _departamentosService = inject(DepartamentosService);
   private _localidadesService = inject(LocalidadsService);
   private _usuariosService = inject(UsuariosService);
+  public readonly location = inject(Location);
   public userStore = inject(UserStore);
 
   public ubicacionSeleccionada = signal<Ubicacion>(ubicacionVacia);
   public modalEdicionAbierto = signal<boolean>(false);
   public guardandoEdicion = signal<boolean>(false);
   public modoSeleccionActivo = signal<boolean>(false);
-  public esNuevaUbicacion = signal<boolean>(false);
+  public esNuevaUbicacion = computed<boolean>(() => !this.ubicacionSeleccionada()?.id_ubicacion);
 
   public ubicacionForm = form(this.ubicacionSeleccionada, (schemaPath) => {
     required(schemaPath.id_usuario);
@@ -155,7 +167,6 @@ export class UbicacionesPage {
     this.modoSeleccionActivo.set(false);
     this.map.getTargetElement().style.cursor = '';
 
-    this.esNuevaUbicacion.set(true);
     let nuevaUbicacion: Ubicacion = await this._localidadesService.getNuevaUbicacionFromCoordenada(
       latitud,
       longitud,

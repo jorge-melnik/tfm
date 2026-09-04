@@ -6,6 +6,13 @@
     >
       <svg data-p-icon="map-marker" class="w-5 h-5 text-emerald-600"></svg>
       <h2 class="text-base font-bold text-slate-800 m-0">Mis ubicaciones</h2>
+      <button
+        (click)="location.back()"
+        class="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white transition-colors cursor-pointer bg-transparent border-none p-0"
+      >
+        <svg data-p-icon="arrow-left" class="w-4 h-4"></svg>
+        Volver
+      </button>
     </div>
 
     @if (!modoSeleccionActivo()) {
@@ -16,7 +23,6 @@
         (click)="activarModoNuevaUbicacion()"
       >
         <svg data-p-icon="plus"></svg>
-        <span>Nueva Ubicación</span>
       </button>
     } @else {
       <div
