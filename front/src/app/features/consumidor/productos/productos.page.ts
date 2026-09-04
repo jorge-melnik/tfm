@@ -10,11 +10,11 @@ import { SelectModule } from 'primeng/select';
 import { ApiQueryParams } from '@shared/types/api.types';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CarritoService } from '@shared/services/carrito.service';
-import { ItemCarrito } from '@shared/types/item-carrito';
 import { UserStore } from '@shared/services/stores/user.store';
 import { DialogService } from '@shared/services/dialog.service';
 import { ProductosFilter } from '@shared/components/productos-filter/productos.filter';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
+import { Filter } from '@primeicons/angular';
 
 @Component({
   selector: 'app-home-consumidor',
@@ -26,6 +26,7 @@ import { PaginationStore } from '@shared/services/stores/pagination.store';
     ProductoCard,
     SelectModule,
     ProductosFilter,
+    Filter,
   ],
   templateUrl: './productos.page.html',
   styleUrl: './productos.page.css',
@@ -41,6 +42,8 @@ export class ProductosPage implements OnInit {
   private readonly _dialogService = inject(DialogService);
 
   public cdnUrl = environment.cdnUrl;
+
+  mostrarFiltro = signal<boolean>(false);
 
   //Signals para filtros.
   public busqueda = model<string>('');
@@ -116,5 +119,9 @@ export class ProductosPage implements OnInit {
       queryParams,
       // queryParamsHandling: 'merge',
     });
+  }
+
+  toggleFiltro(): void {
+    this.mostrarFiltro.update((v) => !v);
   }
 }
