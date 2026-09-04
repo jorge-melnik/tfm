@@ -1,6 +1,7 @@
 import { Type, Static } from '@sinclair/typebox';
 import { Productor } from './productores.schema.js';
 import { Categoria, Subcategoria } from './categoria.schema.js';
+import { Departamento, Localidad } from './departamento.schema.js';
 
 export const ImagenProducto = Type.Object({
   posicion: Type.Number({ minimum: 1, maximum: 5 }),
@@ -27,6 +28,8 @@ export const Producto = Type.Object({
   producto: Type.String(),
   fotos: Type.Array(ImagenProducto, { description: 'las de urls de fotos.', minItems: 1, maxItems: 5 }),
   video: Type.Optional(Type.String()),
+  departamento: Departamento.properties.departamento,
+  localidad: Localidad.properties.departamento,
 });
 
 export const RequestPresignedUrlSchema = Type.Object({
