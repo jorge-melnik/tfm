@@ -15,6 +15,7 @@ export const Localidad = Type.Object(
     id_departamento: Type.Integer(),
     nombre: Type.String(),
     localidad: Type.String(),
+    departamento: Type.String(),
   },
   { additionalProperties: false },
 );

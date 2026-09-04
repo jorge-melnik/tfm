@@ -1,76 +1,55 @@
 <div class="map-wrapper relative w-full h-full">
+  <!-- Cabecera sobre el mapa -->
+  <div class="absolute top-3 inset-x-3 z-10 flex items-center justify-between pointer-events-none">
+    <!-- Título de la sección -->
+    <div
+      class="flex items-center gap-2 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-200/80 shadow-sm pointer-events-auto"
+    >
+      <svg data-p-icon="map-marker" class="w-5 h-5 text-emerald-600"></svg>
+      <h2 class="text-base font-bold text-slate-800 m-0">Mis ubicaciones</h2>
+    </div>
+
+    <!-- Botón / Banner dinámico según el modo -->
+    @if (!modoSeleccionActivo()) {
+      <button
+        type="button"
+        pButton
+        class="p-button-sm p-button-emerald shadow-md pointer-events-auto"
+        (click)="activarModoNuevaUbicacion()"
+      >
+        <svg data-p-icon="plus"></svg>
+        <span>Nueva Ubicación</span>
+      </button>
+    } @else {
+      <div
+        class="flex items-center gap-2 bg-emerald-600 text-white px-3 py-1.5 rounded-lg shadow-md pointer-events-auto animate-pulse"
+      >
+        <svg data-p-icon="map-marker" class="w-4 h-4"></svg>
+        <span class="text-xs font-semibold">Haz clic en el mapa para ubicar</span>
+        <button
+          type="button"
+          pButton
+          class="p-button-rounded p-button-text p-button-sm text-white hover:bg-emerald-700 ml-1 !p-1"
+          (click)="cancelarSeleccion()"
+        >
+          <svg data-p-icon="times"></svg>
+        </button>
+      </div>
+    }
+  </div>
+
   <!-- Contenedor del Mapa -->
   <div #mapContainer class="w-full h-125 rounded-xl overflow-hidden border border-slate-200"></div>
 
+  <!-- Popup existente... -->
   <div #popupContainer class="ol-popup w-fit max-w-xs">
-    @if (ubicacionSeleccionada().nombre) {
-      <p-card class="shadow-xl">
-        <ng-template #title>
-          <div class="flex items-center justify-between gap-3 text-sm">
-            <span class="font-bold">{{ ubicacionSeleccionada().nombre }}</span>
-            <button
-              type="button"
-              pButton
-              class="p-button-rounded p-button-text p-button-plain p-button-sm"
-              (click)="cerrarPopup()"
-            >
-              <svg data-p-icon="times"></svg>
-            </button>
-          </div>
-        </ng-template>
-
-        <ng-template #subtitle>
-          <div
-            class="flex items-center gap-1 text-xs text-emerald-700 font-medium whitespace-nowrap"
-          >
-            <svg data-p-icon="map-marker"></svg>
-            <span>{{ ubicacionSeleccionada().direccion }}</span>
-          </div>
-        </ng-template>
-
-        <div class="text-xs">
-          <p class="m-0 whitespace-nowrap font-medium">
-            {{ ubicacionSeleccionada().localidad }}, {{ ubicacionSeleccionada().departamento }}
-          </p>
-
-          <p class="text-xs">
-            {{ ubicacionSeleccionada().comentarios }}
-          </p>
-
-          <p class="text-xs">
-            {{ ubicacionSeleccionada().latitud }}, {{ ubicacionSeleccionada().longitud }}
-          </p>
-        </div>
-
-        <ng-template #footer>
-          <div class="flex w-full gap-2 pt-1.5 border-t border-slate-100">
-            <button
-              type="button"
-              pButton
-              class="flex-1 p-button-sm p-button-outlined"
-              (click)="editarUbicacion(ubicacionSeleccionada())"
-            >
-              <svg data-p-icon="pencil"></svg> Editar
-            </button>
-
-            <button
-              type="button"
-              pButton
-              class="flex-1 p-button-sm p-button-outlined p-button-danger"
-              (click)="eliminarUbicacion(ubicacionSeleccionada())"
-            >
-              <svg data-p-icon="trash"></svg> Borrar
-            </button>
-          </div>
-        </ng-template>
-      </p-card>
-    }
+    <!-- ... -->
   </div>
 </div>
 
-<!-- Diálogo de Edición -->
+<!-- Diálogo de Edición / Creación -->
 <p-dialog
-  header="Editar Ubicación"
+  [header]="esNuevaUbicacion() ? 'Nueva Ubicación' : 'Editar Ubicación'"
   [visible]="modalEdicionAbierto()"
   (visibleChange)="modalEdicionAbierto.set($event)"
   [modal]="true"
@@ -100,16 +79,20 @@
 
     <div class="grid grid-cols-2 gap-3">
       <p-floatlabel variant="on" class="w-full">
-        <input
-          id="departamento"
-          type="text"
-          pInputText
-          [disabled]="true"
-          [value]="ubicacionSeleccionada().departamento"
-          class="w-full bg-slate-100 text-slate-500 cursor-not-allowed"
-        />
+        <p-select
+          name="departamento"
+          [options]="departamentos()"
+          optionLabel="nombre"
+          optionValue="id_departamento"
+          class="w-full"
+          appendTo="body"
+          [filter]="true"
+          [formField]="this.ubicacionForm.id_departamento"
+          /* [(ngModel)]="this.departamentoSeleccionado" */
+        ></p-select>
         <label for="departamento">Departamento</label>
       </p-floatlabel>
+
       <p-floatlabel variant="on" class="w-full">
         <p-select
           [options]="localidades()"
@@ -136,7 +119,7 @@
       ></textarea>
       <label for="comentarios">Comentarios</label>
     </p-floatlabel>
-
+    <p>{{ ubicacionSeleccionada().latitud }} {{ ubicacionSeleccionada().longitud }}</p>
     <!-- Botones de Acción -->
     <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
       <button
@@ -149,7 +132,7 @@
       </button>
 
       <button type="submit" pButton class="p-button-sm">
-        <svg data-p-icon="save"></svg> Guardar
+        <svg data-p-icon="save"></svg> {{ esNuevaUbicacion() ? 'Crear' : 'Guardar' }}
       </button>
     </div>
   </form>

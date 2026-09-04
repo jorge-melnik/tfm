@@ -13,7 +13,7 @@ import { form, FormField, required } from '@angular/forms/signals';
 import { DepartamentosService } from '@shared/services/departamentos.service';
 import { UserStore } from '@shared/services/stores/user.store';
 import { UsuariosService } from '@shared/services/usuarios.service.ts';
-import { Ubicacion, ubicacionVacia } from '@shared/types/ubicacion';
+import { Departamento, Localidad, Ubicacion, ubicacionVacia } from '@shared/types/ubicacion';
 
 // OpenLayers Imports
 import Map from 'ol/Map';
@@ -24,9 +24,10 @@ import OSM from 'ol/source/OSM';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
-import { fromLonLat } from 'ol/proj';
+import { fromLonLat, transform } from 'ol/proj';
 import { Style, Icon, Text, Fill, Stroke } from 'ol/style';
 import { boundingExtent } from 'ol/extent';
+import { defaults as defaultControls } from 'ol/control/defaults';
 
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
@@ -36,13 +37,17 @@ import Overlay from 'ol/Overlay';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { TextareaModule } from 'primeng/textarea';
 import { InputTextModule } from 'primeng/inputtext';
-import { Select, SelectModule } from 'primeng/select';
+import { SelectModule } from 'primeng/select';
+import MapBrowserEvent from 'ol/MapBrowserEvent';
+import { LocalidadsService } from '@shared/services/localidades.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-ubicaciones',
   imports: [
     CardModule,
     ButtonModule,
+    SelectModule,
     MapMarker,
     Trash,
     Pencil,
@@ -54,23 +59,28 @@ import { Select, SelectModule } from 'primeng/select';
     FloatLabelModule,
     SelectModule,
     FormField,
+    Plus,
+    FormsModule,
   ],
   templateUrl: './ubicaciones.page.html',
   styleUrl: './ubicaciones.page.css',
 })
 export class UbicacionesPage {
   private _departamentosService = inject(DepartamentosService);
+  private _localidadesService = inject(LocalidadsService);
   private _usuariosService = inject(UsuariosService);
   public userStore = inject(UserStore);
 
   public ubicacionSeleccionada = signal<Ubicacion>(ubicacionVacia);
   public modalEdicionAbierto = signal<boolean>(false);
   public guardandoEdicion = signal<boolean>(false);
+  public modoSeleccionActivo = signal<boolean>(false);
+  public esNuevaUbicacion = signal<boolean>(false);
 
   public ubicacionForm = form(this.ubicacionSeleccionada, (schemaPath) => {
     required(schemaPath.id_usuario);
     required(schemaPath.id_localidad);
-    required(schemaPath.departamento);
+    required(schemaPath.id_departamento);
     required(schemaPath.nombre);
     required(schemaPath.direccion);
     required(schemaPath.latitud);
@@ -95,23 +105,24 @@ export class UbicacionesPage {
 
   private localidadesResource = resource({
     params: () => {
-      const departamento = this.ubicacionSeleccionada().departamento;
+      const id_departamento = this.ubicacionSeleccionada().id_departamento;
+      const departamento = this.departamentos().find((d) => d.id_departamento === id_departamento); //FIXME: Esto porque en el template no me deja departamento
       if (!departamento) return undefined;
       return { departamento };
     },
     loader: async ({ params }) => {
       const { departamento } = params;
-      return this._departamentosService.getLocalidades(departamento);
+      return this._localidadesService.getAll({ departamento: departamento.departamento });
     },
   });
 
   public ubicaciones = computed(() => this.ubicacionesResource.value() ?? []);
-  public departamentos = computed(() => this.departamentosResource.value() ?? []);
-  public localidades = computed(() => this.localidadesResource.value() ?? []);
+  public departamentos = computed<Departamento[]>(() => this.departamentosResource.value() ?? []);
+  public localidades = computed<Localidad[] | undefined>(() => this.localidadesResource.value());
   public cargando = computed(() => this.ubicacionesResource.isLoading());
 
   // Instancias de OpenLayers
-  private map?: Map;
+  private map!: Map;
   private vectorSource = new VectorSource();
   private vectorLayer = new VectorLayer({ source: this.vectorSource });
   private popupOverlay?: Overlay; // <--- Instancia de Overlay
@@ -130,6 +141,41 @@ export class UbicacionesPage {
 
   ngAfterViewInit(): void {
     this.inicializarMapa();
+  }
+
+  public activarModoNuevaUbicacion() {
+    this.modoSeleccionActivo.set(true);
+    // Cambiamos el cursor del mapa para indicar interacción
+    if (this.map) {
+      this.map.getTargetElement().style.cursor = 'crosshair';
+    }
+  }
+
+  async alSeleccionarPuntoEnMapa(coordinate: number[]) {
+    // Convertir de EPSG:3857 (OpenLayers) a EPSG:4326 (Lat/Lon estándar)
+    const [longitud, latitud] = transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+
+    // Desactivar el modo selección y restaurar cursor
+    this.modoSeleccionActivo.set(false);
+    this.map.getTargetElement().style.cursor = '';
+
+    // Marcar que es creación y resetear/cargar el formulario con la nueva coordenada
+    this.esNuevaUbicacion.set(true);
+    let nuevaUbicacion: Ubicacion = await this._localidadesService.getNuevaUbicacionFromCoordenada(
+      latitud,
+      longitud,
+    );
+    nuevaUbicacion = {
+      ...nuevaUbicacion,
+      latitud: latitud.toFixed(6),
+      longitud: longitud.toFixed(6),
+    };
+    console.log({ nuevaUbicacion });
+    // Asignar los valores a tu form o estado
+    this.ubicacionSeleccionada.set(nuevaUbicacion);
+
+    // Abrir el modal de creación
+    this.modalEdicionAbierto.set(true);
   }
 
   private inicializarMapa(): void {
@@ -154,6 +200,11 @@ export class UbicacionesPage {
     this.map = new Map({
       target: mapContainer.nativeElement,
       overlays: [this.popupOverlay],
+      controls: defaultControls({
+        zoom: false,
+        rotate: false, // Opcional: si también querés quitar la rotación
+        attribution: true, // Podés mantener la atribución de copyright de OpenStreetMap
+      }),
       layers: [
         new TileLayer({
           source: new OSM(),
@@ -191,6 +242,12 @@ export class UbicacionesPage {
       if (!this.map) return;
       const hit = this.map.hasFeatureAtPixel(e.pixel);
       this.map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+    });
+
+    this.map.on('singleclick', (evt: MapBrowserEvent<any>) => {
+      if (this.modoSeleccionActivo()) {
+        this.alSeleccionarPuntoEnMapa(evt.coordinate);
+      }
     });
 
     if (this.ubicaciones().length > 0) {
@@ -267,7 +324,10 @@ export class UbicacionesPage {
   }
 
   public async guardarEdicion(): Promise<void> {
+    console.log('guardar edicion');
     if (!this.ubicacionSeleccionada().id_ubicacion) return;
+    const user = this.userStore.user();
+    if (!user) return;
 
     this.guardandoEdicion.set(true);
 
@@ -275,7 +335,11 @@ export class UbicacionesPage {
       const datosActualizados = this.ubicacionSeleccionada();
 
       // Llamada a tu servicio backend para actualizar la ubicación
-      // await this._usuariosService.updateUbicacion(datosActualizados);
+      await this._usuariosService.updateUbicacion(
+        user.username,
+        datosActualizados.ubicacion,
+        datosActualizados,
+      );
 
       console.log('Ubicación actualizada:', datosActualizados);
 
@@ -287,6 +351,13 @@ export class UbicacionesPage {
       console.error('Error al guardar edición:', error);
     } finally {
       this.guardandoEdicion.set(false);
+    }
+  }
+
+  cancelarSeleccion() {
+    this.modoSeleccionActivo.set(false);
+    if (this.map) {
+      this.map.getTargetElement().style.cursor = '';
     }
   }
 
