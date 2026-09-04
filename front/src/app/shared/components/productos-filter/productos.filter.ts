@@ -1,13 +1,16 @@
 import { Component, computed, inject, input, model, output, resource } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CategoriasService } from '@shared/services/categorias.service';
+import { DepartamentosService } from '@shared/services/departamentos.service';
 import { DialogService } from '@shared/services/dialog.service';
 import { EtiquetasService } from '@shared/services/etiquetas.service';
+import { LocalidadsService } from '@shared/services/localidades.service';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
 import { UserStore } from '@shared/services/stores/user.store';
 import { SubcategoriasService } from '@shared/services/subcategorias.service';
 import { Categoria, Subcategoria } from '@shared/types/categoria';
 import { Etiqueta } from '@shared/types/etiqueta';
+import { Departamento, Localidad } from '@shared/types/ubicacion';
 import { SortOption } from '@shared/types/util';
 import { Select } from 'primeng/select';
 import { SelectButton } from 'primeng/selectbutton';
@@ -23,9 +26,11 @@ export class ProductosFilter {
   private readonly _subcategoriaService = inject(SubcategoriasService);
   private readonly _etiquetasService = inject(EtiquetasService);
   private readonly _dialogService = inject(DialogService);
-  private userStore = inject(UserStore);
+  private readonly userStore = inject(UserStore);
   public esProductor = this.userStore.esProductor;
   public readonly paginationStore = inject(PaginationStore);
+  public readonly departamentosService = inject(DepartamentosService);
+  public readonly localidadesService = inject(LocalidadsService);
 
   opcionesLayout = computed(() => {
     const base = ['grid', 'list'];
@@ -36,6 +41,9 @@ export class ProductosFilter {
   public categoriaSeleccionada = model<string | undefined>(undefined);
   public subcategoriaSeleccionada = model<string | undefined>(undefined);
   public etiquetasSeleccionadas = model<string[]>([]);
+
+  public departamentoSeleccionado = model<string | undefined>(undefined);
+  public localidadSeleccionada = model<string | undefined>(undefined);
 
   public layout = model.required<'grid' | 'list' | 'table'>(); // Estado del diseño (tarjeta o lista)
 
@@ -68,23 +76,44 @@ export class ProductosFilter {
 
   public etiquetasResource = resource({
     defaultValue: [] as Etiqueta[],
-    params: () => ({
-      categoria: this.categoriaSeleccionada(),
-      subcategoria: this.subcategoriaSeleccionada(),
-    }),
+    params: () => {
+      const categoria = this.categoriaSeleccionada();
+      const subcategoria = this.subcategoriaSeleccionada();
+      // if (!categoria && !subcategoria) return undefined;
+      return {
+        categoria,
+        subcategoria,
+      };
+    },
     loader: async ({ params }) => {
-      try {
-        const { categoria, subcategoria } = params;
+      const { categoria, subcategoria } = params;
 
-        if (subcategoria) return this._subcategoriaService.getEtiquetas(subcategoria);
-        if (categoria) return this._categoriaService.getEtiquetas(categoria);
+      if (subcategoria) return this._subcategoriaService.getEtiquetas(subcategoria);
+      if (categoria) return this._categoriaService.getEtiquetas(categoria);
 
-        //No hay ninguno de los slug
-        return this._etiquetasService.getAll();
-      } catch (error: any) {
-        this._dialogService.addError(error.message);
-        return [] as Etiqueta[];
-      }
+      //No hay ninguno de los slug.
+      return this._etiquetasService.getAll();
+    },
+  });
+
+  public departamentosResource = resource({
+    defaultValue: [] as Departamento[],
+    loader: async () => {
+      return this.departamentosService.getAll();
+    },
+  });
+
+  public localidadesResource = resource({
+    defaultValue: [] as Localidad[],
+    params: () => {
+      const departamento = this.departamentoSeleccionado();
+      if (!departamento) return undefined;
+      return { departamento };
+    },
+    loader: async ({ params }) => {
+      const { departamento } = params;
+      if (!departamento) return [];
+      return this.localidadesService.getAll({ departamento });
     },
   });
 
@@ -111,5 +140,9 @@ export class ProductosFilter {
 
   public onEtiquetasChange(etiquetas: string[]) {
     this.filtroCambiado.emit();
+  }
+
+  public onDepartamentoChange(departamento: string) {
+    this.localidadSeleccionada.set(undefined);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, resource, signal } from '@angular/core';
 import { DialogService } from '@shared/services/dialog.service';
 import { UserStore } from '@shared/services/stores/user.store';
 import { Productor } from '@shared/types/user.types';
@@ -19,6 +19,8 @@ import { Camera, Envelope, Eye, EyeSlash, IdCard, Key, Phone, Trash } from '@pri
 import { environment } from '@env/environment';
 import { ProductoresService } from '@shared/services/productores.service';
 import { AuthService } from '@shared/services/auth.service';
+import { UsuariosService } from '@shared/services/usuarios.service.ts';
+import { Select, SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'app-mis-datos',
@@ -41,6 +43,7 @@ import { AuthService } from '@shared/services/auth.service';
     IdCard,
     Trash,
     Camera,
+    SelectModule,
   ],
   templateUrl: './mis-datos.page.html',
   styleUrl: './mis-datos.page.css',
@@ -48,6 +51,7 @@ import { AuthService } from '@shared/services/auth.service';
 export class MisDatosPage implements OnInit {
   public userStore = inject(UserStore);
   public productoresService = inject(ProductoresService);
+  private readonly _usuariosService = inject(UsuariosService);
   private _authService = inject(AuthService);
   public cdnUrl = environment.cdnUrl;
   private _dialogService = inject(DialogService);
@@ -59,13 +63,29 @@ export class MisDatosPage implements OnInit {
   public username = signal<string>('');
   public email = signal<string>('');
   public presentacion = signal<string>('');
+  public id_ubicacion = signal<number>(0);
 
   fotoArchivo = signal<File | null>(null);
   fotoPreviewUrl = signal<string | null>(null);
 
+  private ubicacionesResource = resource({
+    params: () => {
+      const username = this.userStore.user()?.username;
+      if (!username) return undefined;
+      return { username };
+    },
+    loader: async ({ params }) => {
+      const { username } = params;
+      return this._usuariosService.getUbicaciones(username);
+    },
+  });
+
+  public ubicaciones = computed(() => this.ubicacionesResource.value() ?? []);
+
   public async guardar() {
     const usuario = this.userStore.user();
     if (!usuario) return;
+    const id_ubicacion = this.id_ubicacion();
     console.log('usuario', usuario);
     if (
       !this.nombres() ||
@@ -73,9 +93,12 @@ export class MisDatosPage implements OnInit {
       !this.celular() ||
       !this.username() ||
       !this.email() ||
-      !this.presentacion()
+      !this.presentacion() ||
+      !this.id_ubicacion()
     ) {
+      console.log({ id_ubicacion });
       this._dialogService.addError('Todos los campos son obligatorios.');
+
       return;
     }
 
@@ -87,14 +110,19 @@ export class MisDatosPage implements OnInit {
       username: this.username(),
       email: this.email(),
       presentacion: this.presentacion(),
+      id_ubicacion: this.id_ubicacion(),
     };
+
     if (!productor) return;
     const { username } = productor;
     try {
       await this.productoresService.update(username, productor, { username: productor.username });
       //TODO.Aca dar de alta la foto. Llamar a presinged y luego actualizar
       const foto = this.fotoArchivo();
-      await this.productoresService.setFotoPerfil(username, foto);
+      if (foto) {
+        //FIXME: Por ahora no se puede simplemente borrar la foto de perfil.
+        await this.productoresService.setFotoPerfil(username, foto);
+      }
       await this._authService.getProfile();
       this._dialogService.addSuccess('Datos actualizados correctamente.');
       this._router.navigate(['/', 'productor', productor.username]);
@@ -126,5 +154,6 @@ export class MisDatosPage implements OnInit {
     this.username.set(productor.username);
     this.email.set(productor.email);
     this.presentacion.set(productor.presentacion);
+    this.id_ubicacion.set(productor.id_ubicacion);
   }
 }

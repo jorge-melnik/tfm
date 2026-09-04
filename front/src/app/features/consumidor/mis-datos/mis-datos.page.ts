@@ -91,7 +91,7 @@ export class MisDatosPage implements OnInit {
       await this.consumidoresService.update(username, consumidor);
       //TODO.Aca dar de alta la foto. Llamar a presinged y luego actualizar
       const foto = this.fotoArchivo();
-      await this.consumidoresService.setFotoPerfil(username, foto);
+      if (foto) await this.consumidoresService.setFotoPerfil(username, foto);
 
       await this._authService.getProfile();
       this._dialogService.addSuccess('Datos actualizados correctamente.');

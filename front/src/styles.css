@@ -2,6 +2,8 @@
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
 
+@import 'ol/ol.css';
+
 @source "src/**/*.html";
 @source "src/**/*.ts";
 

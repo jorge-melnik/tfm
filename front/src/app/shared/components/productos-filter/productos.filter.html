@@ -48,6 +48,29 @@
       [showClear]="true"
     />
 
+    <p-select
+      [options]="this.departamentosResource.value()"
+      [(ngModel)]="this.departamentoSeleccionado"
+      (onChange)="this.onDepartamentoChange($event.value)"
+      optionLabel="nombre"
+      optionValue="departamento"
+      appendTo="body"
+      class="w-full"
+      [showClear]="true"
+      placeholder="Departamento"
+    />
+
+    <p-select
+      [options]="this.localidadesResource.value()"
+      [(ngModel)]="this.localidadSeleccionada"
+      optionLabel="nombre"
+      optionValue="localidad"
+      appendTo="body"
+      class="w-full"
+      [showClear]="true"
+      placeholder="Localidad"
+    />
+
     <!-- <button
             pButton
             icon="pi pi-filter-slash"

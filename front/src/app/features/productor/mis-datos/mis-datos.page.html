@@ -166,7 +166,25 @@
             <label for="celular">Celular</label>
           </p-iconfield>
         </p-floatlabel>
-
+      </div>
+      <div class="flex flex-col md:flex-row gap-4">
+        <p-floatlabel variant="on" class="w-full">
+          <p-select
+            class="w-full"
+            name="id_ubicacion"
+            [options]="this.ubicaciones()"
+            optionValue="id_ubicacion"
+            optionLabel="nombre"
+            [(ngModel)]="this.id_ubicacion"
+          >
+          </p-select>
+          <label for="id_ubicacion">Ubicacion producción</label>
+        </p-floatlabel>
+        <button type="button" class="w-full" pButton routerLink="ubicaciones">
+          Editar Ubicaciones
+        </button>
+      </div>
+      <div class="flex flex-col md:flex-row gap-4">
         <p-floatlabel variant="on" class="w-full">
           <textarea
             rows="5"

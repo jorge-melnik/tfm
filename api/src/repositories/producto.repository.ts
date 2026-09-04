@@ -43,6 +43,8 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
         COALESCE(ME.id_etiquetas, ARRAY[]::INT[] ) AS id_etiquetas,
         COALESCE(ME.etiquetas, ARRAY[]::TEXT[] ) AS etiquetas,
         COALESCE(MF.fotos, '[]') AS fotos
+        , L.localidad
+        , D.departamento
       FROM productos P 
       JOIN productores PP ON PP.id_productor = P.id_productor
       JOIN public.usuarios U ON U.id_usuario = PP.id_productor
@@ -51,6 +53,9 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
       JOIN public.categorias C ON C.id_categoria=SC.id_categoria
       LEFT JOIN MIS_ETIQUETAS ME ON ME.id_producto = P.id_producto
       LEFT JOIN MIS_FOTOS MF ON MF.id_producto = P.id_producto
+      LEFT JOIN public.ubicaciones UB ON UB.id_ubicacion = PP.id_ubicacion
+      LEFT JOIN public.localidades L ON L.id_localidad=UB.id_localidad
+      LEFT JOIN public.departamentos D ON D.id_departamento = L.id_departamento
     )
     SELECT * FROM MIS_PRODUCTOS P
     WHERE 1=1

@@ -49,7 +49,7 @@ export class ProductosProductorViewPage implements OnInit {
   private _preguntasService = inject(PreguntasService);
   private _dialogService = inject(DialogService);
   public paginationStore = inject(PaginationStore);
-  public productor = input.required<string>();
+  public username = input.required<string>();
   public producto = input.required<string>();
   public carritoService = inject(CarritoService);
   public usuarioStore = inject(UserStore);
@@ -60,7 +60,7 @@ export class ProductosProductorViewPage implements OnInit {
 
   public productoResource = resource({
     params: () => {
-      const productor = this.productor();
+      const productor = this.username();
       const producto = this.producto();
       if (!producto || !productor) return undefined;
 
@@ -83,7 +83,7 @@ export class ProductosProductorViewPage implements OnInit {
 
   private preguntasResource = resource({
     params: () => {
-      const productor = this.productor();
+      const productor = this.username();
       const producto = this.producto();
       if (!producto || !productor) return undefined;
 
@@ -113,7 +113,7 @@ export class ProductosProductorViewPage implements OnInit {
   });
 
   public esDuenioDelProducto = computed(() => {
-    const productor = this.productor();
+    const productor = this.username();
     const username = this.usuarioStore.user()?.username;
 
     if (!productor || !username) return false;
@@ -139,7 +139,7 @@ export class ProductosProductorViewPage implements OnInit {
 
   async responderPregunta(respuesta: RespuestaPost) {
     const contenido = respuesta.contenido;
-    const productor = this.productor();
+    const productor = this.username();
     const producto = this.producto();
 
     if (!contenido || !productor || !producto) return;
@@ -166,7 +166,7 @@ export class ProductosProductorViewPage implements OnInit {
 
   async agregarPregunta() {
     const producto = this.producto();
-    const productor = this.productor();
+    const productor = this.username();
     const id_producto = this.productoData()?.id_producto;
     const id_consumidor = this.usuarioStore.user()?.id_usuario;
     const contenido: string = this.nuevaPregunta();

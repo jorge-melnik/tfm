@@ -1,12 +1,29 @@
 <div class="card">
-  <app-productos-filter
-    [(categoriaSeleccionada)]="this.categoria"
-    [(subcategoriaSeleccionada)]="this.subcategoria"
-    [(etiquetasSeleccionadas)]="this.etiquetas"
-    [(layout)]="this.layout"
-    [(filtroBusqueda)]="this.busqueda"
-    (filtroCambiado)="this.queryParamsChange()"
-  ></app-productos-filter>
+  <div class="mb-3 flex justify-start">
+    <button pButton [text]="true" (click)="toggleFiltro()">
+      <svg data-p-icon="filter"></svg>
+      @if (this.mostrarFiltro()) {
+        Ocultar filtros
+      } @else {
+        Mostrar filtros
+      }
+    </button>
+  </div>
+
+  @if (mostrarFiltro()) {
+    <div class="mb-4">
+      <app-productos-filter
+        [(categoriaSeleccionada)]="this.categoria"
+        [(subcategoriaSeleccionada)]="this.subcategoria"
+        [(etiquetasSeleccionadas)]="this.etiquetas"
+        [(departamentoSeleccionado)]="this.departamento"
+        [(localidadSeleccionada)]="this.localidad"
+        [(layout)]="this.layout"
+        [(filtroBusqueda)]="this.busqueda"
+        (filtroCambiado)="this.queryParamsChange()"
+      ></app-productos-filter>
+    </div>
+  }
   <p-dataview
     #dv
     [value]="this.productosResource.value()?.data || []"

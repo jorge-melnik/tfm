@@ -10,11 +10,11 @@ import { SelectModule } from 'primeng/select';
 import { ApiQueryParams } from '@shared/types/api.types';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CarritoService } from '@shared/services/carrito.service';
-import { ItemCarrito } from '@shared/types/item-carrito';
 import { UserStore } from '@shared/services/stores/user.store';
 import { DialogService } from '@shared/services/dialog.service';
 import { ProductosFilter } from '@shared/components/productos-filter/productos.filter';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
+import { Filter } from '@primeicons/angular';
 
 @Component({
   selector: 'app-home-consumidor',
@@ -26,6 +26,7 @@ import { PaginationStore } from '@shared/services/stores/pagination.store';
     ProductoCard,
     SelectModule,
     ProductosFilter,
+    Filter,
   ],
   templateUrl: './productos.page.html',
   styleUrl: './productos.page.css',
@@ -42,17 +43,24 @@ export class ProductosPage implements OnInit {
 
   public cdnUrl = environment.cdnUrl;
 
+  mostrarFiltro = signal<boolean>(false);
+
   //Signals para filtros.
-  public busqueda = model<string>('');
-  public categoria = model<string | undefined>(undefined);
-  public subcategoria = model<string | undefined>(undefined);
+  public busqueda = signal<string>('');
+  public categoria = signal<string | undefined>(undefined);
+  public subcategoria = signal<string | undefined>(undefined);
   public etiquetas = signal<string[]>([]);
+
+  public departamento = signal<string | undefined>(undefined);
+  public localidad = signal<string | undefined>(undefined);
 
   public productosResource = resource({
     params: () => ({
       categoria: this.categoria(),
       subcategoria: this.subcategoria(),
       etiquetas: this.etiquetas(),
+      departamento: this.departamento(),
+      localidad: this.localidad(),
       limit: this.paginationStore.limit(),
       page: this.paginationStore.page(),
       sort: this.paginationStore.sortField(),
@@ -60,8 +68,18 @@ export class ProductosPage implements OnInit {
       busqueda: this.busqueda(),
     }),
     loader: async ({ params }) => {
-      const { categoria, subcategoria, etiquetas, limit, page, sort, sort_direction, busqueda } =
-        params;
+      const {
+        categoria,
+        subcategoria,
+        etiquetas,
+        departamento,
+        localidad,
+        limit,
+        page,
+        sort,
+        sort_direction,
+        busqueda,
+      } = params;
       const queryParams: ApiQueryParams = {};
       const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
       // if (limit) pagination['limit'] = limit;
@@ -72,6 +90,8 @@ export class ProductosPage implements OnInit {
       if (categoria) queryParams['categoria'] = categoria;
       if (subcategoria) queryParams['subcategoria'] = subcategoria;
       if (etiquetas) queryParams['etiquetas'] = etiquetas;
+      if (departamento) queryParams['departamento'] = departamento;
+      if (localidad) queryParams['localidad'] = localidad;
       if (busqueda) queryParams['busqueda'] = busqueda;
 
       try {
@@ -116,5 +136,9 @@ export class ProductosPage implements OnInit {
       queryParams,
       // queryParamsHandling: 'merge',
     });
+  }
+
+  toggleFiltro(): void {
+    this.mostrarFiltro.update((v) => !v);
   }
 }

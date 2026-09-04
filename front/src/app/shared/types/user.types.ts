@@ -30,6 +30,7 @@ export type RegistroType = {
 
 export interface Productor {
   id_productor: string;
+  id_ubicacion: number;
   nombres: string;
   apellidos: string;
   email: string;
@@ -46,4 +47,16 @@ export interface Consumidor {
   username: string;
   celular: string;
   foto_url?: string;
+}
+
+export interface Usuario {
+  id_usuario: string;
+  nombres: string;
+  apellidos: string;
+  email: string;
+  username: string;
+  celular: string;
+  foto_url: string;
+  roles: Rol[];
+  rol_actual: Rol;
 }

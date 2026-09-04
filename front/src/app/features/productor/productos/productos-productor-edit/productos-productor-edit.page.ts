@@ -46,7 +46,7 @@ export class ProductosProductorEditPage {
   private readonly _route = inject(ActivatedRoute);
 
   public readonly productoResource = resource({
-    params: () => ({ productor: this.productor(), producto: this.producto() }),
+    params: () => ({ productor: this.username(), producto: this.producto() }),
     loader: async ({ params }) => {
       const { productor, producto } = params;
       return this._productosService.getById(producto, { productor });
@@ -54,13 +54,13 @@ export class ProductosProductorEditPage {
   });
   // public readonly etiquetasStore = inject(EtiquetasStore);
 
-  public productor = input.required<string>();
+  public username = input.required<string>();
   public producto = input.required<string>();
 
   public slots = signal<ImagenSlot[]>([]);
 
   public async guardarProducto(productoModificado: Producto) {
-    const productor = this.productor();
+    const productor = this.username();
     const producto = this.producto();
     console.log({ productoModificado });
     try {

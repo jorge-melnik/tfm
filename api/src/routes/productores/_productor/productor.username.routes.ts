@@ -47,7 +47,7 @@ const productorUsernameRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
     // preHandler : //FIXME: fastify.seModificaASiMismo
     handler: async function (req, reply) {
       reply.code(204);
-      const { presentacion, nombres, apellidos, email, celular } = req.body;
+      const { presentacion, nombres, apellidos, email, celular, id_ubicacion } = req.body;
       const client = await myPool.connect();
       try {
         const prodRepoWT: ProductorRepositoryClass = productorRepository.withTransaction(client);
@@ -55,7 +55,7 @@ const productorUsernameRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
         const productor = await prodRepoWT.getOneBy({ username: req.params.productor });
         const id_productor = productor.id_productor;
         await client.query('BEGIN;');
-        await prodRepoWT.update(id_productor, { presentacion }); //Actualizo datos específicos del productor
+        await prodRepoWT.update(id_productor, { presentacion, id_ubicacion }); //Actualizo datos específicos del productor
         await dpRepoWT.update(id_productor, {
           nombres,
           apellidos,

@@ -8,6 +8,12 @@ export const consumidorRoutes: Routes = [
       import('@features/consumidor/mis-datos/mis-datos.page').then((m) => m.MisDatosPage),
   },
   {
+    path: 'mis-datos/ubicaciones',
+    title: 'Mis Datos',
+    loadComponent: () =>
+      import('@features/ubicaciones/ubicaciones.page').then((m) => m.UbicacionesPage),
+  },
+  {
     path: 'carrito',
     title: 'Carrito',
     loadComponent: () =>
@@ -34,7 +40,7 @@ export const consumidorRoutes: Routes = [
           ),
       },
       {
-        path: 'productor/:productor',
+        path: 'productor/:username',
         pathMatch: 'full',
         title: 'Ver productor',
         loadComponent: () =>
