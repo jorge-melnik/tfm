@@ -1,8 +1,9 @@
-import { Service } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { environment } from '@env/environment';
 import { BaseService } from './base-service.service';
 import { Localidad, Ubicacion, UbicacionIdeUy, ubicacionVacia } from '@shared/types/ubicacion';
 import { firstValueFrom } from 'rxjs';
+import { UserStore } from './stores/user.store';
 
 @Service()
 export class LocalidadsService extends BaseService<Localidad> {
@@ -21,7 +22,6 @@ export class LocalidadsService extends BaseService<Localidad> {
       departamento: direccion.departamento,
       localidad: direccion.localidad,
     });
-
     console.log({ localidad });
     const ubicacion = {
       ...ubicacionVacia,

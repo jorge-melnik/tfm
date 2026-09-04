@@ -15,7 +15,6 @@ import { UserStore } from '@shared/services/stores/user.store';
 import { UsuariosService } from '@shared/services/usuarios.service.ts';
 import { Departamento, Localidad, Ubicacion, ubicacionVacia } from '@shared/types/ubicacion';
 
-// OpenLayers Imports
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -121,7 +120,6 @@ export class UbicacionesPage {
   public localidades = computed<Localidad[] | undefined>(() => this.localidadesResource.value());
   public cargando = computed(() => this.ubicacionesResource.isLoading());
 
-  // Instancias de OpenLayers
   private map!: Map;
   private vectorSource = new VectorSource();
   private vectorLayer = new VectorLayer({ source: this.vectorSource });
@@ -152,14 +150,11 @@ export class UbicacionesPage {
   }
 
   async alSeleccionarPuntoEnMapa(coordinate: number[]) {
-    // Convertir de EPSG:3857 (OpenLayers) a EPSG:4326 (Lat/Lon estándar)
     const [longitud, latitud] = transform(coordinate, 'EPSG:3857', 'EPSG:4326');
 
-    // Desactivar el modo selección y restaurar cursor
     this.modoSeleccionActivo.set(false);
     this.map.getTargetElement().style.cursor = '';
 
-    // Marcar que es creación y resetear/cargar el formulario con la nueva coordenada
     this.esNuevaUbicacion.set(true);
     let nuevaUbicacion: Ubicacion = await this._localidadesService.getNuevaUbicacionFromCoordenada(
       latitud,
@@ -170,11 +165,9 @@ export class UbicacionesPage {
       latitud: latitud.toFixed(6),
       longitud: longitud.toFixed(6),
     };
-    console.log({ nuevaUbicacion });
-    // Asignar los valores a tu form o estado
+
     this.ubicacionSeleccionada.set(nuevaUbicacion);
 
-    // Abrir el modal de creación
     this.modalEdicionAbierto.set(true);
   }
 
@@ -183,7 +176,6 @@ export class UbicacionesPage {
     const popupContainer = this.popupContainer();
     if (!mapContainer || !popupContainer) return;
 
-    // 1. Configurar el Overlay para la burbuja
     this.popupOverlay = new Overlay({
       element: popupContainer.nativeElement,
       autoPan: {
@@ -193,17 +185,16 @@ export class UbicacionesPage {
       },
       positioning: 'bottom-center',
       stopEvent: true,
-      offset: [0, -45], // Eleva la burbuja para que quede justo sobre el pincho
+      offset: [0, -45],
     });
 
-    // 2. Crear el Mapa e incluir el Overlay
     this.map = new Map({
       target: mapContainer.nativeElement,
       overlays: [this.popupOverlay],
       controls: defaultControls({
         zoom: false,
-        rotate: false, // Opcional: si también querés quitar la rotación
-        attribution: true, // Podés mantener la atribución de copyright de OpenStreetMap
+        rotate: false,
+        attribution: true,
       }),
       layers: [
         new TileLayer({
@@ -217,19 +208,18 @@ export class UbicacionesPage {
       }),
     });
 
-    // 3. Evento Click sobre los pines del mapa
-    this.map.on('click', (event) => {
+    this.map.on('click', async (event) => {
       const feature = this.map?.forEachFeatureAtPixel(event.pixel, (feat) => feat);
 
       if (feature) {
         const ubicacionData = feature.get('ubicacionData') as Ubicacion;
         const geometry = feature.getGeometry() as Point;
         const coordinate = geometry.getCoordinates();
-        console.log({ ubicacionData });
-        // Actualizar datos del signal
-        this.ubicacionSeleccionada.set(ubicacionData);
+        const [longitud, latitud] = transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+        // let nuevaUbicacion: Ubicacion =
+        //   await this._localidadesService.getNuevaUbicacionFromCoordenada(latitud, longitud);
 
-        // Posicionar el popup sobre las coordenadas del pincho
+        this.ubicacionSeleccionada.set({ ...ubicacionData });
         this.popupOverlay?.setPosition(coordinate);
       } else {
         // Si hace clic fuera de un pincho, oculta el popup
@@ -322,33 +312,43 @@ export class UbicacionesPage {
   public cerrarModalEdicion() {
     this.modalEdicionAbierto.set(false);
   }
-
   public async guardarEdicion(): Promise<void> {
-    console.log('guardar edicion');
-    if (!this.ubicacionSeleccionada().id_ubicacion) return;
     const user = this.userStore.user();
     if (!user) return;
+    this.ubicacionSeleccionada.set({
+      ...this.ubicacionSeleccionada(),
+      id_usuario: this.userStore.user()?.id_usuario || '',
+    });
+    const datosFormulario = this.ubicacionSeleccionada();
+    console.log({ datosFormulario });
+    if (this.ubicacionForm().invalid()) {
+      console.warn('El formulario contiene campos requeridos vacíos');
+      return;
+    }
 
     this.guardandoEdicion.set(true);
 
     try {
-      const datosActualizados = this.ubicacionSeleccionada();
+      if (this.esNuevaUbicacion()) {
+        console.log('Creando nueva ubicación:', datosFormulario);
+        await this._usuariosService.addUbicacion(user.username, datosFormulario);
+      } else {
+        if (!datosFormulario.id_ubicacion) return;
 
-      // Llamada a tu servicio backend para actualizar la ubicación
-      await this._usuariosService.updateUbicacion(
-        user.username,
-        datosActualizados.ubicacion,
-        datosActualizados,
-      );
+        console.log('Actualizando ubicación existente:', datosFormulario);
 
-      console.log('Ubicación actualizada:', datosActualizados);
+        await this._usuariosService.updateUbicacion(
+          user.username,
+          datosFormulario.ubicacion,
+          datosFormulario,
+        );
+      }
 
-      // Recargar la lista o actualizar manualmente
       this.ubicacionesResource.reload();
       this.cerrarModalEdicion();
       this.cerrarPopup();
     } catch (error) {
-      console.error('Error al guardar edición:', error);
+      console.error('Error al procesar la ubicación:', error);
     } finally {
       this.guardandoEdicion.set(false);
     }

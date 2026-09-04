@@ -21,7 +21,7 @@ export class UsuariosRepositoryClass extends BaseRepository<Profile> {
 
   public async getUbicaciones(id_usuario: string) {
     const consulta = `
-      SELECT U.*, D.nombre as departamento, L.nombre as localidad
+      SELECT U.*,D.id_departamento, D.nombre as departamento, L.nombre as localidad
       FROM public.ubicaciones U
       JOIN public.localidades L ON L.id_localidad = U.id_localidad
       JOIN public.departamentos D ON D.id_departamento = L.id_departamento
