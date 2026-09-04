@@ -46,16 +46,21 @@ export class ProductosPage implements OnInit {
   mostrarFiltro = signal<boolean>(false);
 
   //Signals para filtros.
-  public busqueda = model<string>('');
-  public categoria = model<string | undefined>(undefined);
-  public subcategoria = model<string | undefined>(undefined);
+  public busqueda = signal<string>('');
+  public categoria = signal<string | undefined>(undefined);
+  public subcategoria = signal<string | undefined>(undefined);
   public etiquetas = signal<string[]>([]);
+
+  public departamento = signal<string | undefined>(undefined);
+  public localidad = signal<string | undefined>(undefined);
 
   public productosResource = resource({
     params: () => ({
       categoria: this.categoria(),
       subcategoria: this.subcategoria(),
       etiquetas: this.etiquetas(),
+      departamento: this.departamento(),
+      localidad: this.localidad(),
       limit: this.paginationStore.limit(),
       page: this.paginationStore.page(),
       sort: this.paginationStore.sortField(),
@@ -63,8 +68,18 @@ export class ProductosPage implements OnInit {
       busqueda: this.busqueda(),
     }),
     loader: async ({ params }) => {
-      const { categoria, subcategoria, etiquetas, limit, page, sort, sort_direction, busqueda } =
-        params;
+      const {
+        categoria,
+        subcategoria,
+        etiquetas,
+        departamento,
+        localidad,
+        limit,
+        page,
+        sort,
+        sort_direction,
+        busqueda,
+      } = params;
       const queryParams: ApiQueryParams = {};
       const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
       // if (limit) pagination['limit'] = limit;
@@ -75,6 +90,8 @@ export class ProductosPage implements OnInit {
       if (categoria) queryParams['categoria'] = categoria;
       if (subcategoria) queryParams['subcategoria'] = subcategoria;
       if (etiquetas) queryParams['etiquetas'] = etiquetas;
+      if (departamento) queryParams['departamento'] = departamento;
+      if (localidad) queryParams['localidad'] = localidad;
       if (busqueda) queryParams['busqueda'] = busqueda;
 
       try {
