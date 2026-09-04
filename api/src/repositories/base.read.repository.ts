@@ -1,6 +1,6 @@
 import { myPool } from '@database/pool.js';
 import { DeAcaBadRequest, DeAcaInternal, DeAcaNotFound } from '@errors/response.errors.js';
-import { DeAcaListResponseType, keysPaginacion } from '@schemas/core.schemas.js';
+import { DeAcaListResponseType, keysCercania, keysPaginacion } from '@schemas/core.schemas.js';
 import { Pool, PoolClient } from 'pg';
 import { DatosBase } from '../types/datos-base.js';
 
@@ -55,10 +55,10 @@ export abstract class BaseReadRepository<T extends DatosBase> {
   }
 
   async getBy(routeQuery: any = {}): Promise<DeAcaListResponseType<T>> {
-    const { limit, page, sort, sort_direction } = routeQuery;
+    const { limit, page, sort, sort_direction, latitud, longitud, distancia } = routeQuery;
     const filters: Partial<T> = {};
     for (const [key, value] of Object.entries(routeQuery)) {
-      if (!keysPaginacion.includes(key)) {
+      if (!keysPaginacion.includes(key) && !keysCercania.includes(key)) {
         filters[key as keyof T] = value as any;
       }
     }
@@ -89,11 +89,28 @@ export abstract class BaseReadRepository<T extends DatosBase> {
           .join(' AND ');
     }
 
-    let query = `${this.baseQuery} ${condiciones}`;
     const countQuery = `SELECT COUNT(*)::INT as total FROM (${this.baseQuery} ${condiciones}) AS count_query`;
     const countValues = [...values];
     let pageParseado = 1;
     let limitParseado = 10;
+
+    let query = `${this.baseQuery} ${condiciones}`;
+
+    if (latitud && longitud && distancia) {
+      values.push(parseFloat(latitud), parseFloat(longitud), parseFloat(distancia));
+      const idxLat = values.length - 2;
+      const idxLng = values.length - 1;
+      const idxRadio = values.length;
+      const parteDistancia = `
+          ,ST_Distance(
+            UB.point::geography,
+            ST_SetSRID(ST_MakePoint($${idxLng}, $${idxLat}), 4326)::geography
+          ) AS distancia
+        `;
+      query = query.replace('--CALCULO_DISTANCIA_AQUI', parteDistancia);
+      query += ' AND distancia <= $' + idxRadio;
+    }
+
     if (limit && page) {
       const direction = sort_direction?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'; //Así safamos de codigo no deseado en order direction
       const sortField = sort || this.idName;
@@ -153,6 +170,6 @@ export abstract class BaseReadRepository<T extends DatosBase> {
       .split(/\s+/) // Separa por cualquier cantidad de espacios
       .map((palabra) => `${palabra.replace(/[^a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ]/g, '')}:*`) // Limpia caracteres raros y agrega el prefijo :*
       .filter((p) => p !== ':*') // Evita que queden elementos vacíos si metieron símbolos
-      .join(' & '); // Une con el operador AND
+      .join(' & '); // Une cada parte con el operador AND
   }
 }

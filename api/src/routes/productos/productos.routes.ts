@@ -2,6 +2,7 @@ import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { productoRepository } from '@repositories/producto.repository.js';
 
 import { DeAcaQueryString } from '@schemas/core.schemas.js';
+import { Ubicacion } from '@schemas/usuarios.schema.js';
 
 const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
@@ -20,6 +21,9 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
           categoria: Type.Optional(Type.String()),
           subcategoria: Type.Optional(Type.String()),
           busqueda: Type.Optional(Type.String()),
+          latitud: Ubicacion.properties.latitud,
+          longitud: Ubicacion.properties.longitud,
+          distancia: Type.Number(),
         }),
       ]),
     },
