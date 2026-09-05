@@ -45,6 +45,7 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
         COALESCE(MF.fotos, '[]') AS fotos
         , L.localidad
         , D.departamento
+        , (F.id_producto IS NOT NULL) AS favorito
         --CALCULO_DISTANCIA_AQUI
       FROM productos P 
       JOIN productores PP ON PP.id_productor = P.id_productor
@@ -57,6 +58,7 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
       LEFT JOIN public.ubicaciones UB ON UB.id_ubicacion = PP.id_ubicacion
       LEFT JOIN public.localidades L ON L.id_localidad=UB.id_localidad
       LEFT JOIN public.departamentos D ON D.id_departamento = L.id_departamento
+      LEFT JOIN public.favoritos F ON F.id_producto = P.id_producto AND F.id_consumidor=--ID_CONSUMIDOR_AQUI
     )
     SELECT * FROM MIS_PRODUCTOS P
     WHERE 1=1

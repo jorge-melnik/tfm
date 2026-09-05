@@ -54,6 +54,8 @@ export class ProductosPage implements OnInit {
   public ubicacion = signal<Ubicacion | null>(null);
   public distancia = signal<number | null>(50);
 
+  public favorito = signal<boolean | null>(null);
+
   public departamento = signal<string | undefined>(undefined);
   public localidad = signal<string | undefined>(undefined);
 
@@ -71,6 +73,7 @@ export class ProductosPage implements OnInit {
       busqueda: this.busqueda(),
       ubicacion: this.ubicacion(),
       distancia: this.distancia(),
+      favorito: this.favorito(),
     }),
     loader: async ({ params }) => {
       const {
@@ -86,6 +89,7 @@ export class ProductosPage implements OnInit {
         busqueda,
         ubicacion,
         distancia,
+        favorito,
       } = params;
       const queryParams: ApiQueryParams = {};
       const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
@@ -105,6 +109,8 @@ export class ProductosPage implements OnInit {
         queryParams['longitud'] = ubicacion.longitud;
         queryParams['distancia'] = distancia * 1000;
       }
+      console.log({ favorito });
+      if (favorito !== undefined && favorito !== null) queryParams['favorito'] = favorito!;
 
       try {
         const response = await this._productoService.getBy({ queryParams, pagination });

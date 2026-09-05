@@ -1,6 +1,6 @@
 import { myPool } from '@database/pool.js';
 import { DeAcaBadRequest, DeAcaInternal, DeAcaNotFound } from '@errors/response.errors.js';
-import { DeAcaListResponseType, keysCercania, keysPaginacion } from '@schemas/core.schemas.js';
+import { DeAcaListResponseType, keysCercania, keysFavoritos, keysPaginacion } from '@schemas/core.schemas.js';
 import { Pool, PoolClient } from 'pg';
 import { DatosBase } from '../types/datos-base.js';
 
@@ -55,10 +55,11 @@ export abstract class BaseReadRepository<T extends DatosBase> {
   }
 
   async getBy(routeQuery: any = {}): Promise<DeAcaListResponseType<T>> {
-    const { limit, page, sort, sort_direction, latitud, longitud, distancia } = routeQuery;
+    const { limit, page, sort, sort_direction, latitud, longitud, distancia, id_consumidor_autenticado } =
+      routeQuery;
     const filters: Partial<T> = {};
     for (const [key, value] of Object.entries(routeQuery)) {
-      if (!keysPaginacion.includes(key) && !keysCercania.includes(key)) {
+      if (!keysPaginacion.includes(key) && !keysCercania.includes(key) && !keysFavoritos.includes(key)) {
         filters[key as keyof T] = value as any;
       }
     }
@@ -105,6 +106,15 @@ export abstract class BaseReadRepository<T extends DatosBase> {
       query = query.replace('--CALCULO_DISTANCIA_AQUI', parteDistancia);
       condiciones += ' AND distancia <= $' + idxRadio;
     }
+
+    if (id_consumidor_autenticado) {
+      values.push(id_consumidor_autenticado);
+      query = query.replace('--ID_CONSUMIDOR_AQUI', `$${values.length}`);
+    } else {
+      // Si no hay usuario (ej: endpoint público), dejamos NULL
+      query = query.replace('--ID_CONSUMIDOR_AQUI', 'NULL');
+    }
+
     query += condiciones;
     const countQuery = `SELECT COUNT(*)::INT as total FROM (${query}) AS count_query`;
     const countValues = [...values];

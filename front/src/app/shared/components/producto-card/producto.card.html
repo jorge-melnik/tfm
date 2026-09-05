@@ -11,7 +11,26 @@
         [class.grayscale]="!producto.activo"
       >
         <app-foto-carrusel [fotos]="producto.fotos" [altText]="producto.nombre" />
-
+        @if (this.userStore.esConsumidor()) {
+          <button
+            type="button"
+            pButton
+            severity="secondary"
+            class="absolute! top-2.5 right-2.5 z-30 w-9! h-9! rounded-full! p-0! flex items-center justify-center bg-surface-0/80 dark:bg-surface-900/80 backdrop-blur-sm border-none shadow-xs transition-all duration-200 active:scale-95 cursor-pointer"
+            [class.text-surface-400]="!producto.favorito"
+            [class.hover:text-rose-500]="!producto.favorito"
+            [class.text-rose-500]="producto.favorito"
+            (click)="cambiaFavorito.emit(producto)"
+            pTooltip="Favorito"
+            tooltipPosition="left"
+          >
+            @if (producto.favorito) {
+              <svg data-p-icon="heart-fill" class="w-4 h-4" />
+            } @else {
+              <svg data-p-icon="heart" class="w-4 h-4" />
+            }
+          </button>
+        }
         @if (!producto.activo) {
           <div
             class="absolute inset-0 bg-surface-900/20 backdrop-blur-[1px] flex items-center justify-center pointer-events-none z-10"

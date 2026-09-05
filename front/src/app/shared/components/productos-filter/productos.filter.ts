@@ -43,6 +43,12 @@ export class ProductosFilter {
     return this.esProductor() ? [...base, 'table'] : base;
   });
 
+  readonly opcionesFavoritos = [
+    // { label: 'Todos', value: null, },
+    { label: 'Favoritos', value: true },
+    { label: 'No favoritos', value: false },
+  ];
+
   public filtroBusqueda = model<string>('');
   public categoriaSeleccionada = model<string | undefined>(undefined);
   public subcategoriaSeleccionada = model<string | undefined>(undefined);
@@ -53,6 +59,8 @@ export class ProductosFilter {
 
   public ubicacionSeleccionada = model<Ubicacion | null>();
   public distanciaSeleccionada = model<number | null>();
+
+  public favoritoSeleccionado = model<boolean | null>();
 
   public layout = model.required<'grid' | 'list' | 'table'>(); // Estado del diseño (tarjeta o lista)
 
