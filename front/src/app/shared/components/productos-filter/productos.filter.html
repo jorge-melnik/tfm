@@ -71,11 +71,33 @@
       placeholder="Localidad"
     />
 
-    <!-- <button
-            pButton
-            icon="pi pi-filter-slash"
-            class="button pButton-outlined w-full"
-          >Limpiar Filtros</button> -->
+    <p-select
+      name="ubicacion"
+      [options]="this.ubicaciones()"
+      [(ngModel)]="this.ubicacionSeleccionada"
+      optionLabel="nombre"
+      appendTo="body"
+      class="w-full"
+      [showClear]="true"
+      placeholder="Cercano a"
+    />
+
+    <div
+      class="flex flex-col justify-center px-3 py-1.5 border rounded-md bg-surface-0 dark:bg-surface-900 border-surface-300 dark:border-surface-700 h-[42px] w-full gap-1"
+    >
+      <div class="flex justify-between items-center text-xs text-surface-600 dark:text-surface-400">
+        <span>Distancia:</span>
+        <span class="font-bold text-primary">{{ this.distanciaSeleccionada() }} km</span>
+      </div>
+      <p-slider
+        [(ngModel)]="this.distanciaSeleccionada"
+        [min]="10"
+        [max]="1000"
+        [step]="50"
+        class="w-full"
+      />
+    </div>
+
     <div class="relative w-full">
       <input
         type="text"

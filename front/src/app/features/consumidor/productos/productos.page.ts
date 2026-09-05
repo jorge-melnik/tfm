@@ -15,6 +15,7 @@ import { DialogService } from '@shared/services/dialog.service';
 import { ProductosFilter } from '@shared/components/productos-filter/productos.filter';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
 import { Filter } from '@primeicons/angular';
+import { Ubicacion } from '@shared/types/ubicacion';
 
 @Component({
   selector: 'app-home-consumidor',
@@ -50,6 +51,8 @@ export class ProductosPage implements OnInit {
   public categoria = signal<string | undefined>(undefined);
   public subcategoria = signal<string | undefined>(undefined);
   public etiquetas = signal<string[]>([]);
+  public ubicacion = signal<Ubicacion | null>(null);
+  public distancia = signal<number | null>(50);
 
   public departamento = signal<string | undefined>(undefined);
   public localidad = signal<string | undefined>(undefined);
@@ -66,6 +69,8 @@ export class ProductosPage implements OnInit {
       sort: this.paginationStore.sortField(),
       sort_direction: this.paginationStore.sortOrder() === -1 ? 'DESC' : 'ASC',
       busqueda: this.busqueda(),
+      ubicacion: this.ubicacion(),
+      distancia: this.distancia(),
     }),
     loader: async ({ params }) => {
       const {
@@ -79,6 +84,8 @@ export class ProductosPage implements OnInit {
         sort,
         sort_direction,
         busqueda,
+        ubicacion,
+        distancia,
       } = params;
       const queryParams: ApiQueryParams = {};
       const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
@@ -93,6 +100,11 @@ export class ProductosPage implements OnInit {
       if (departamento) queryParams['departamento'] = departamento;
       if (localidad) queryParams['localidad'] = localidad;
       if (busqueda) queryParams['busqueda'] = busqueda;
+      if (ubicacion && distancia) {
+        queryParams['latitud'] = ubicacion.latitud;
+        queryParams['longitud'] = ubicacion.longitud;
+        queryParams['distancia'] = distancia * 1000;
+      }
 
       try {
         const response = await this._productoService.getBy({ queryParams, pagination });
@@ -105,6 +117,23 @@ export class ProductosPage implements OnInit {
         return { data: [], meta: { total: 0 } };
       }
     },
+  });
+
+  public readonly totalRecords = computed(() => {
+    return this.productosResource.value()?.meta?.total ?? 0;
+  });
+
+  readonly textoPaginacion = computed(() => {
+    const total = this.totalRecords();
+    if (total === 0) return 'No se encontraron productos';
+
+    const first = this.paginationStore.first();
+    const limit = this.paginationStore.limit();
+
+    const desde = first + 1;
+    const hasta = Math.min(first + limit, total);
+
+    return `Mostrando ${desde} a ${hasta} de ${total} productos`;
   });
 
   public layout = signal<'grid' | 'list'>('grid'); // Estado del diseño (tarjeta o lista)

@@ -30,6 +30,7 @@ export const Producto = Type.Object({
   video: Type.Optional(Type.String()),
   departamento: Departamento.properties.departamento,
   localidad: Localidad.properties.departamento,
+  distancia: Type.Optional(Type.Number()),
 });
 
 export const RequestPresignedUrlSchema = Type.Object({

@@ -20,11 +20,15 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
           categoria: Type.Optional(Type.String()),
           subcategoria: Type.Optional(Type.String()),
           busqueda: Type.Optional(Type.String()),
+          latitud: Type.Optional(Type.Number()),
+          longitud: Type.Optional(Type.Number()),
+          distancia: Type.Optional(Type.Number()),
         }),
       ]),
     },
     // onRequest: [fastify.authenticate], //FIXME descomentar.
     handler: async (req, reply) => {
+      fastify.log.info({ query: req.query });
       return productoRepository.getBy(req.query); //Paginado
     },
   });

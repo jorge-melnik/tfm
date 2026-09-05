@@ -14,7 +14,7 @@ type LocalidadIdeuy = {
 };
 
 async function getLocalidadesDepto(departamento: Departamento): Promise<LocalidadIdeuy[]> {
-  const url = baseUrl + departamento.nombre;
+  const url = baseUrl + departamento.nombre.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   console.log(url);
   const res = await fetch(url);
   const localidades: LocalidadIdeuy[] = (await res.json()) as LocalidadIdeuy[];

@@ -1,13 +1,18 @@
 <div class="card">
-  <div class="mb-3 flex justify-start">
+  <div class="mb-3 flex justify-between items-center">
     <button pButton [text]="true" (click)="toggleFiltro()">
       <svg data-p-icon="filter"></svg>
-      @if (this.mostrarFiltro()) {
+      @if (mostrarFiltro()) {
         Ocultar filtros
       } @else {
         Mostrar filtros
       }
     </button>
+
+    <!-- Visualización del total aquí -->
+    <span class="text-sm font-medium text-surface-600 dark:text-surface-400">
+      {{ textoPaginacion() }}
+    </span>
   </div>
 
   @if (mostrarFiltro()) {
@@ -18,6 +23,8 @@
         [(etiquetasSeleccionadas)]="this.etiquetas"
         [(departamentoSeleccionado)]="this.departamento"
         [(localidadSeleccionada)]="this.localidad"
+        [(ubicacionSeleccionada)]="this.ubicacion"
+        [(distanciaSeleccionada)]="this.distancia"
         [(layout)]="this.layout"
         [(filtroBusqueda)]="this.busqueda"
         (filtroCambiado)="this.queryParamsChange()"

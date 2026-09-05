@@ -1,12 +1,11 @@
 import { Type, Static } from '@sinclair/typebox';
 import { Localidad } from './departamento.schema.js';
-import { ProfileSchema } from './auth.schema.js';
 import { RolLiteral } from './core.schemas.js';
 
 const LIMITES_URUGUAY = {
   LAT_MIN: -35,
   LAT_MAX: -30.0,
-  LON_MIN: -58,
+  LON_MIN: -58.5,
   LON_MAX: -53.0,
 };
 

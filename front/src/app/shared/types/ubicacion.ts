@@ -21,8 +21,8 @@ export type Ubicacion = {
   departamento: string;
   nombre: string;
   direccion: string;
-  latitud: string;
-  longitud: string;
+  latitud: number;
+  longitud: number;
   ubicacion: string;
   comentarios: string;
 };
@@ -30,7 +30,7 @@ export type Ubicacion = {
 // Payload para crear una nueva ubicación (sin campos generados por la BD)
 export type UbicacionPost = Omit<Ubicacion, 'id_ubicacion' | 'localidad' | 'id_usuario'>;
 
-export const ubicacionVacia = {
+export const ubicacionVacia: Ubicacion = {
   id_usuario: '',
   id_ubicacion: undefined,
   id_localidad: 0,
@@ -38,9 +38,9 @@ export const ubicacionVacia = {
   localidad: '',
   departamento: '',
   nombre: '',
+  latitud: 0,
+  longitud: 0,
   direccion: '',
-  latitud: '',
-  longitud: '',
   comentarios: '',
   ubicacion: '',
 };
@@ -74,4 +74,9 @@ export interface UbicacionIdeUy {
   source: string;
   ranking: number;
   state: number;
+}
+
+export interface Coordenadas {
+  latitud: number;
+  longitud: number;
 }
