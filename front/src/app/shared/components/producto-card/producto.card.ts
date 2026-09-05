@@ -56,6 +56,7 @@ export class ProductoCard {
   borrarProducto = output<Producto>();
   desactivarProducto = output<Producto>();
   activarProducto = output<Producto>();
+  favoritoProducto = output<Producto>();
 
   itemsProductor = computed<MenuItem[]>(() => {
     const prod = this.producto();
@@ -88,8 +89,11 @@ export class ProductoCard {
     ];
   });
 
-  cambiaFavorito = output<Producto>();
+  public enviarCambioFavorito(producto: Producto) {
+    this.favoritoProducto.emit(producto);
 
+    console.log('enviado enviarCambioFavorito');
+  }
   enviarAlCarrito(producto: Producto) {
     this.agregarAlCarrito.emit({
       id_productor: producto.id_productor,

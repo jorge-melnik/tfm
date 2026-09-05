@@ -16,6 +16,8 @@ import { ProductosFilter } from '@shared/components/productos-filter/productos.f
 import { PaginationStore } from '@shared/services/stores/pagination.store';
 import { Filter } from '@primeicons/angular';
 import { Ubicacion } from '@shared/types/ubicacion';
+import { Producto } from '@shared/types/producto';
+import { ConsumidoresService } from '@shared/services/consumidores.service';
 
 @Component({
   selector: 'app-home-consumidor',
@@ -41,6 +43,7 @@ export class ProductosPage implements OnInit {
   private readonly _carritoService = inject(CarritoService);
   private readonly _userStore = inject(UserStore);
   private readonly _dialogService = inject(DialogService);
+  private readonly _consumidoresService = inject(ConsumidoresService);
 
   public cdnUrl = environment.cdnUrl;
 
@@ -175,5 +178,21 @@ export class ProductosPage implements OnInit {
 
   toggleFiltro(): void {
     this.mostrarFiltro.update((v) => !v);
+  }
+
+  public async onCambiaFavorito(producto: Producto) {
+    console.log('CAMBIA FAVORITO ' + producto.nombre);
+    const user = this._userStore.user();
+    if (producto.favorito === false && user) {
+      await this._consumidoresService.addFavorito(
+        user.id_usuario,
+        user.username,
+        producto.id_producto,
+      );
+    }
+    if (producto.favorito === true && user) {
+      await this._consumidoresService.removeFavorito(user.username, producto.id_producto);
+    }
+    this.productosResource.reload();
   }
 }

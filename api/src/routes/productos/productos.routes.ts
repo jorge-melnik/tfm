@@ -30,11 +30,7 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
     onRequest: [fastify.authenticate],
     handler: async (req, reply) => {
       const filtro: any = req.query;
-      if (filtro.favorito !== undefined) {
-        //Si se indica favorito true o false agrego de que usuario. el autenticado
-        filtro.id_consumidor_autenticado = req.user.id_usuario;
-      }
-
+      filtro.id_consumidor_autenticado = req.user.id_usuario;
       return productoRepository.getBy(req.query); //Paginado
     },
   });

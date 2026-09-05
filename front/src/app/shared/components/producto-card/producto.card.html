@@ -20,7 +20,7 @@
             [class.text-surface-400]="!producto.favorito"
             [class.hover:text-rose-500]="!producto.favorito"
             [class.text-rose-500]="producto.favorito"
-            (click)="cambiaFavorito.emit(producto)"
+            (click)="enviarCambioFavorito(producto)"
             pTooltip="Favorito"
             tooltipPosition="left"
           >

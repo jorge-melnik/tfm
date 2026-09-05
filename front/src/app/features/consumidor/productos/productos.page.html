@@ -57,6 +57,7 @@
             [layout]="'list'"
             [cdnUrl]="this.cdnUrl"
             (agregarAlCarrito)="this.carritoService.agregarAlCarrito(producto)"
+            (favoritoProducto)="onCambiaFavorito($event)"
           />
         }
       </div>
@@ -72,6 +73,7 @@
             [layout]="'grid'"
             [cdnUrl]="this.cdnUrl"
             (agregarAlCarrito)="this.carritoService.agregarAlCarrito($event)"
+            (favoritoProducto)="onCambiaFavorito($event)"
           />
         }
       </div>
