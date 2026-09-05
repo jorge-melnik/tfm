@@ -39,6 +39,9 @@ export interface Producto {
   subcategoria: string;
   etiquetas: string[];
   activo: boolean;
+  departamento?: string;
+  localidad?: string;
+  distancia?: number;
 }
 
 export interface ImagenSlot {

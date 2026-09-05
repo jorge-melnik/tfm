@@ -1,5 +1,5 @@
 import { Component, input, output, inject, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
@@ -10,7 +10,7 @@ import { ItemCarrito } from '@shared/types/item-carrito';
 import { UserStore } from '@shared/services/stores/user.store';
 import { MenuItem } from 'primeng/api';
 import { Menu } from 'primeng/menu';
-import { Ban, CartPlus, EllipsisV, ShoppingCart } from '@primeicons/angular';
+import { Ban, CartPlus, EllipsisV, MapMarker, ShoppingCart } from '@primeicons/angular';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -27,6 +27,8 @@ import { RouterLink } from '@angular/router';
     RouterLink,
     CartPlus,
     Ban,
+    DecimalPipe,
+    MapMarker,
   ],
   templateUrl: './producto.card.html',
   styleUrl: './producto.card.css',

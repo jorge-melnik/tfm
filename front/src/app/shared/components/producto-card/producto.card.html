@@ -1,17 +1,18 @@
+@let producto = this.producto();
 @if (layout() === 'grid') {
   <p-card
     class="h-full flex flex-col border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 shadow-xs transition-all duration-200 rounded-2xl overflow-hidden group [&>.p-card]:h-full [&>.p-card]:flex [&>.p-card]:flex-col [&>.p-card-body]:flex-1 [&>.p-card-body]:flex [&>.p-card-body]:flex-col [&>.p-card-body]:justify-between"
-    [class.opacity-60]="!producto().activo"
-    [class.hover:shadow-md]="producto().activo"
+    [class.opacity-60]="!producto.activo"
+    [class.hover:shadow-md]="producto.activo"
   >
     <ng-template #header>
       <div
         class="relative w-full aspect-video bg-surface-50 dark:bg-surface-950 transition-all duration-300"
-        [class.grayscale]="!producto().activo"
+        [class.grayscale]="!producto.activo"
       >
-        <app-foto-carrusel [fotos]="producto().fotos" [altText]="producto().nombre" />
+        <app-foto-carrusel [fotos]="producto.fotos" [altText]="producto.nombre" />
 
-        @if (!producto().activo) {
+        @if (!producto.activo) {
           <div
             class="absolute inset-0 bg-surface-900/20 backdrop-blur-[1px] flex items-center justify-center pointer-events-none z-10"
           >
@@ -32,15 +33,15 @@
           </div>
         }
 
-        @if (producto().etiquetas && producto().etiquetas.length > 0) {
+        @if (producto.etiquetas && producto.etiquetas.length > 0) {
           <div
             class="absolute bottom-0 left-3 right-3 translate-y-[40%] flex items-center justify-end gap-2 z-20 overflow-visible"
           >
-            @for (id_etiqueta of producto().etiquetas.slice(0, 6); track id_etiqueta) {
+            @for (id_etiqueta of producto.etiquetas.slice(0, 6); track id_etiqueta) {
               <img
                 [src]="cdnUrl() + '/etiquetas/' + id_etiqueta + '.webp'"
-                [alt]="producto().etiquetas?.[$index] || id_etiqueta"
-                [pTooltip]="(producto().etiquetas?.[$index] || '').replace('-', ' ') | titlecase"
+                [alt]="producto.etiquetas?.[$index] || id_etiqueta"
+                [pTooltip]="(producto.etiquetas?.[$index] || '').replace('-', ' ') | titlecase"
                 tooltipPosition="bottom"
                 class="w-10 h-10 sm:w-11 sm:h-11 rounded-full shadow-lg border-2 border-surface-0 dark:border-surface-900 bg-surface-0 dark:bg-surface-900 object-cover shrink-0"
               />
@@ -53,40 +54,60 @@
     <ng-template #title>
       <h3
         class="text-lg font-bold text-surface-900 dark:text-surface-0 pt-2 mb-1 capitalize m-0 leading-tight"
-        [class.text-surface-400]="!producto().activo"
+        [class.text-surface-400]="!producto.activo"
       >
         <a
-          [routerLink]="['/productor', producto().productor, 'productos', producto().producto]"
+          [routerLink]="['/productor', producto.productor, 'productos', producto.producto]"
           class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors no-underline text-inherit cursor-pointer"
         >
-          {{ producto().nombre }}
+          {{ producto.nombre }}
         </a>
       </h3>
     </ng-template>
 
     <ng-template #subtitle>
-      <div class="flex items-center justify-between w-full gap-2">
-        <span
-          class="text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400 uppercase"
-        >
-          Productor: {{ producto().productor }}
-        </span>
-        <p-tag
-          [value]="
-            !producto().activo
-              ? 'Desactivado'
-              : producto().cantidad_disponible > 0
-                ? 'Stock: ' + producto().cantidad_disponible
-                : 'Agotado'
-          "
-          [severity]="
-            !producto().activo
-              ? 'secondary'
-              : producto().cantidad_disponible > 0
-                ? 'success'
-                : 'danger'
-          "
-        />
+      <div class="flex flex-col gap-1.5 w-full">
+        <div class="flex items-center justify-between w-full gap-2">
+          <span
+            class="text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400 uppercase"
+          >
+            Productor: {{ producto.productor }}
+          </span>
+          <p-tag
+            [value]="
+              !producto.activo
+                ? 'Desactivado'
+                : producto.cantidad_disponible > 0
+                  ? 'Stock: ' + producto.cantidad_disponible
+                  : 'Agotado'
+            "
+            [severity]="
+              !producto.activo
+                ? 'secondary'
+                : producto.cantidad_disponible > 0
+                  ? 'success'
+                  : 'danger'
+            "
+          />
+        </div>
+
+        <!-- Ubicación / Distancia -->
+        @if (producto.localidad || producto.departamento || producto.distancia) {
+          <div class="flex items-center justify-between w-full gap-2">
+            <span
+              class="inline-flex items-center gap-1 text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400 uppercase"
+            >
+              <svg data-p-icon="map-marker" class="w-3.5 h-3.5 shrink-0"></svg>
+              {{ producto.localidad || producto.departamento }}
+            </span>
+            @if (producto.distancia) {
+              <p-tag
+                [value]="(producto.distancia / 1000 | number: '1.1-1') + ' km'"
+                [severity]="'secondary'"
+              />
+            }
+          </div>
+        }
       </div>
     </ng-template>
 
@@ -94,7 +115,7 @@
       <p
         class="text-sm text-surface-500 dark:text-surface-400 line-clamp-2 sm:line-clamp-3 leading-relaxed m-0"
       >
-        {{ producto().descripcion }}
+        {{ producto.descripcion }}
       </p>
     </div>
 
@@ -105,15 +126,15 @@
         <div class="flex flex-col">
           <span class="text-[9px] text-surface-400 uppercase font-bold tracking-wider">Precio</span>
           <span class="text-lg font-extrabold text-surface-900 dark:text-surface-0">
-            {{ producto().precio | currency: '$' }}
+            {{ producto.precio | currency: '$' }}
           </span>
         </div>
 
-        @if (producto().cantidad_disponible > 0) {
+        @if (producto.cantidad_disponible > 0) {
           <button
             pButton
             class="button pButton-rounded pButton-sm bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-3.5 py-2 border-none transition-colors text-xs whitespace-nowrap"
-            (click)="enviarAlCarrito(producto())"
+            (click)="enviarAlCarrito(producto)"
             [disabled]="!this.userStore.esConsumidor()"
           >
             <svg data-p-icon="cart-plus" />
@@ -137,18 +158,18 @@
 @if (layout() === 'list') {
   <p-card
     class="h-full flex flex-col border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 shadow-xs transition-all duration-200 rounded-2xl overflow-hidden group [&>.p-card]:h-full [&>.p-card]:flex [&>.p-card]:flex-col [&>.p-card-body]:flex-1 [&>.p-card-body]:flex [&>.p-card-body]:flex-col [&>.p-card-body]:justify-between"
-    [class.opacity-60]="!producto().activo"
-    [class.hover:shadow-md]="producto().activo"
+    [class.opacity-60]="!producto.activo"
+    [class.hover:shadow-md]="producto.activo"
   >
     <div class="flex flex-col sm:flex-row items-stretch gap-6 p-2 sm:p-4">
       <div
         class="w-full sm:w-56 aspect-video sm:aspect-square bg-surface-50 dark:bg-surface-950 rounded-xl shrink-0 relative transition-all duration-300"
-        [class.grayscale]="!producto().activo"
+        [class.grayscale]="!producto.activo"
       >
         <div class="w-full h-full rounded-xl overflow-hidden relative">
-          <app-foto-carrusel [fotos]="producto().fotos" [altText]="producto().nombre" />
+          <app-foto-carrusel [fotos]="producto.fotos" [altText]="producto.nombre" />
 
-          @if (!producto().activo) {
+          @if (!producto.activo) {
             <div
               class="absolute inset-0 bg-surface-900/20 backdrop-blur-[1px] flex items-center justify-center pointer-events-none z-10"
             >
@@ -170,15 +191,15 @@
           </div>
         }
 
-        @if (producto().etiquetas && producto().etiquetas.length > 0) {
+        @if (producto.etiquetas && producto.etiquetas.length > 0) {
           <div
             class="sm:hidden absolute bottom-0 right-3 translate-y-1/2 flex items-center justify-end gap-1.5 z-20"
           >
-            @for (id_etiqueta of producto().etiquetas.slice(0, 6); track id_etiqueta) {
+            @for (id_etiqueta of producto.etiquetas.slice(0, 6); track id_etiqueta) {
               <img
                 [src]="cdnUrl() + '/etiquetas/' + id_etiqueta + '.webp'"
-                [alt]="producto().etiquetas?.[$index] || id_etiqueta"
-                [pTooltip]="(producto().etiquetas?.[$index] || '').replace('-', ' ') | titlecase"
+                [alt]="producto.etiquetas?.[$index] || id_etiqueta"
+                [pTooltip]="(producto.etiquetas?.[$index] || '').replace('-', ' ') | titlecase"
                 tooltipPosition="bottom"
                 class="w-9 h-9 rounded-full shadow-md border-2 border-surface-0 dark:border-surface-900 bg-surface-0 dark:bg-surface-900 object-cover shrink-0"
               />
@@ -189,13 +210,13 @@
 
       <div class="flex-1 w-full flex flex-col justify-between text-left py-0.5 pt-4 sm:pt-0">
         <div>
-          @if (producto().etiquetas && producto().etiquetas.length > 0) {
+          @if (producto.etiquetas && producto.etiquetas.length > 0) {
             <div class="hidden sm:flex items-center gap-1.5 mb-2.5 flex-wrap">
-              @for (id_etiqueta of producto().etiquetas.slice(0, 6); track id_etiqueta) {
+              @for (id_etiqueta of producto.etiquetas.slice(0, 6); track id_etiqueta) {
                 <img
                   [src]="cdnUrl() + '/etiquetas/' + id_etiqueta + '.webp'"
-                  [alt]="producto().etiquetas?.[$index] || id_etiqueta"
-                  [pTooltip]="(producto().etiquetas?.[$index] || '').replace('-', ' ') | titlecase"
+                  [alt]="producto.etiquetas?.[$index] || id_etiqueta"
+                  [pTooltip]="(producto.etiquetas?.[$index] || '').replace('-', ' ') | titlecase"
                   tooltipPosition="top"
                   class="w-7 h-7 rounded-full border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 object-cover shrink-0"
                 />
@@ -205,13 +226,13 @@
 
           <h3
             class="text-lg font-bold text-surface-900 dark:text-surface-0 mb-1 capitalize m-0 leading-tight"
-            [class.text-surface-400]="!producto().activo"
+            [class.text-surface-400]="!producto.activo"
           >
             <a
-              [routerLink]="['/consumidor', 'productos', producto().productor, producto().producto]"
+              [routerLink]="['/consumidor', 'productos', producto.productor, producto.producto]"
               class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors no-underline text-inherit cursor-pointer"
             >
-              {{ producto().nombre }}
+              {{ producto.nombre }}
             </a>
           </h3>
 
@@ -219,21 +240,21 @@
             <span
               class="text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400 uppercase"
             >
-              Productor: {{ producto().productor }}
+              Productor: {{ producto.productor }}
             </span>
 
             <p-tag
               [value]="
-                !producto().activo
+                !producto.activo
                   ? 'Desactivado'
-                  : producto().cantidad_disponible > 0
-                    ? 'Stock: ' + producto().cantidad_disponible
+                  : producto.cantidad_disponible > 0
+                    ? 'Stock: ' + producto.cantidad_disponible
                     : 'Agotado'
               "
               [severity]="
-                !producto().activo
+                !producto.activo
                   ? 'secondary'
-                  : producto().cantidad_disponible > 0
+                  : producto.cantidad_disponible > 0
                     ? 'success'
                     : 'danger'
               "
@@ -243,7 +264,7 @@
           <p
             class="text-sm text-surface-500 dark:text-surface-400 line-clamp-2 sm:line-clamp-3 leading-relaxed m-0"
           >
-            {{ producto().descripcion }}
+            {{ producto.descripcion }}
           </p>
         </div>
       </div>
@@ -258,16 +279,16 @@
             >Precio</span
           >
           <span class="text-2xl font-black text-surface-900 dark:text-surface-0">
-            {{ producto().precio | currency: '$' }}
+            {{ producto.precio | currency: '$' }}
           </span>
         </div>
 
-        @if (producto().cantidad_disponible > 0) {
+        @if (producto.cantidad_disponible > 0) {
           <button
             pButton
             icon="pi pi-shopping-cart"
             class="button pButton-rounded bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2.5 border-none transition-colors text-sm whitespace-nowrap w-auto sm:w-full"
-            (click)="enviarAlCarrito(producto())"
+            (click)="enviarAlCarrito(producto)"
             [disabled]="!this.userStore.esConsumidor()"
           >
             Agregar
