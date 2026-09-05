@@ -103,7 +103,7 @@ export abstract class BaseReadRepository<T extends DatosBase> {
       const idxRadio = values.length;
       const parteDistancia = `
           ,ST_Distance(
-            UB.point::geography,
+            UB.punto::geography,
             ST_SetSRID(ST_MakePoint($${idxLng}, $${idxLat}), 4326)::geography
           ) AS distancia
         `;

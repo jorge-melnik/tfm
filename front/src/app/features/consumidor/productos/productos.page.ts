@@ -15,6 +15,7 @@ import { DialogService } from '@shared/services/dialog.service';
 import { ProductosFilter } from '@shared/components/productos-filter/productos.filter';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
 import { Filter } from '@primeicons/angular';
+import { Ubicacion } from '@shared/types/ubicacion';
 
 @Component({
   selector: 'app-home-consumidor',
@@ -50,6 +51,7 @@ export class ProductosPage implements OnInit {
   public categoria = signal<string | undefined>(undefined);
   public subcategoria = signal<string | undefined>(undefined);
   public etiquetas = signal<string[]>([]);
+  public ubicacion = signal<Ubicacion | null>(null);
 
   public departamento = signal<string | undefined>(undefined);
   public localidad = signal<string | undefined>(undefined);
@@ -66,6 +68,7 @@ export class ProductosPage implements OnInit {
       sort: this.paginationStore.sortField(),
       sort_direction: this.paginationStore.sortOrder() === -1 ? 'DESC' : 'ASC',
       busqueda: this.busqueda(),
+      ubicacion: this.ubicacion(),
     }),
     loader: async ({ params }) => {
       const {
@@ -79,6 +82,7 @@ export class ProductosPage implements OnInit {
         sort,
         sort_direction,
         busqueda,
+        ubicacion,
       } = params;
       const queryParams: ApiQueryParams = {};
       const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
@@ -93,6 +97,11 @@ export class ProductosPage implements OnInit {
       if (departamento) queryParams['departamento'] = departamento;
       if (localidad) queryParams['localidad'] = localidad;
       if (busqueda) queryParams['busqueda'] = busqueda;
+      if (ubicacion) {
+        queryParams['latitud'] = ubicacion.latitud;
+        queryParams['longitud'] = ubicacion.longitud;
+        queryParams['distancia'] = 2000000;
+      }
 
       try {
         const response = await this._productoService.getBy({ queryParams, pagination });

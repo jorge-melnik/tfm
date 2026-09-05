@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS ubicaciones (
     nombre CITEXT NOT NULL CHECK (
         char_length(nombre) BETWEEN 2 AND 32
     ),
-    ubicacion CITEXT UNIQUE CHECK (
+    ubicacion CITEXT CHECK (
         char_length(ubicacion) BETWEEN 2 AND 32
         AND ubicacion ~ '^[a-zA-Z0-9-]+$' 
     ),
@@ -58,7 +58,8 @@ CREATE TABLE IF NOT EXISTS ubicaciones (
     fecha_creacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 
-    UNIQUE(nombre, id_usuario) -- Nombre no diferencia el case porque es tipo CITEXT
+    UNIQUE(nombre, id_usuario),     -- Nombre no diferencia el case porque es tipo CITEXT
+    UNIQUE(ubicacion, id_usuario)   -- idem anterior
 );
 
 CREATE INDEX IF NOT EXISTS idx_ubicaciones_punto ON ubicaciones USING GIST (punto);

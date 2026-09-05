@@ -71,6 +71,17 @@
       placeholder="Localidad"
     />
 
+    <p-select
+      name="ubicacion"
+      [options]="this.ubicaciones()"
+      [(ngModel)]="this.ubicacionSeleccionada"
+      optionLabel="nombre"
+      appendTo="body"
+      class="w-full"
+      [showClear]="true"
+      placeholder="Cercano a"
+    />
+
     <!-- <button
             pButton
             icon="pi pi-filter-slash"

@@ -75,3 +75,8 @@ export interface UbicacionIdeUy {
   ranking: number;
   state: number;
 }
+
+export interface Coordenadas {
+  latitud: number;
+  longitud: number;
+}

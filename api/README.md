@@ -23,4 +23,7 @@ Para ejecutar en desarrollo usamos tsx. Esta librería no necesita transpilar a 
 - Recuersos que devuelven colecciones que necesitan paginación deben especificar queryString de forma obligatoria.
 
 ## Slugs
+
 - Entidades que tienen un atributo slug_entidad, usarán dicho slug para los GET. Para los demás métodos se seguirá usando el id_entidad.
+
+//TODO: No está paysandú en las localidades?
