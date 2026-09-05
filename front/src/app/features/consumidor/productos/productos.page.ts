@@ -52,6 +52,7 @@ export class ProductosPage implements OnInit {
   public subcategoria = signal<string | undefined>(undefined);
   public etiquetas = signal<string[]>([]);
   public ubicacion = signal<Ubicacion | null>(null);
+  public distancia = signal<number | null>(50);
 
   public departamento = signal<string | undefined>(undefined);
   public localidad = signal<string | undefined>(undefined);
@@ -69,6 +70,7 @@ export class ProductosPage implements OnInit {
       sort_direction: this.paginationStore.sortOrder() === -1 ? 'DESC' : 'ASC',
       busqueda: this.busqueda(),
       ubicacion: this.ubicacion(),
+      distancia: this.distancia(),
     }),
     loader: async ({ params }) => {
       const {
@@ -83,6 +85,7 @@ export class ProductosPage implements OnInit {
         sort_direction,
         busqueda,
         ubicacion,
+        distancia,
       } = params;
       const queryParams: ApiQueryParams = {};
       const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
@@ -97,10 +100,10 @@ export class ProductosPage implements OnInit {
       if (departamento) queryParams['departamento'] = departamento;
       if (localidad) queryParams['localidad'] = localidad;
       if (busqueda) queryParams['busqueda'] = busqueda;
-      if (ubicacion) {
+      if (ubicacion && distancia) {
         queryParams['latitud'] = ubicacion.latitud;
         queryParams['longitud'] = ubicacion.longitud;
-        queryParams['distancia'] = 2000000;
+        queryParams['distancia'] = distancia * 1000;
       }
 
       try {

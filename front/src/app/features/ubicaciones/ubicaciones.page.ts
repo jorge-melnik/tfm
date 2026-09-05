@@ -173,8 +173,8 @@ export class UbicacionesPage {
     );
     nuevaUbicacion = {
       ...nuevaUbicacion,
-      latitud: latitud.toFixed(6),
-      longitud: longitud.toFixed(6),
+      latitud,
+      longitud,
     };
 
     this.ubicacionSeleccionada.set(nuevaUbicacion);
@@ -263,8 +263,8 @@ export class UbicacionesPage {
     const coordenadasExtent: number[][] = [];
 
     listaUbicaciones.forEach((u) => {
-      const lat = parseFloat(u.latitud);
-      const lng = parseFloat(u.longitud);
+      const lat = u.latitud;
+      const lng = u.longitud;
 
       if (isNaN(lat) || isNaN(lng)) return;
 

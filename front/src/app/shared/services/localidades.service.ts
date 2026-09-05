@@ -17,7 +17,7 @@ export class LocalidadsService extends BaseService<Localidad> {
     const direcciones = await firstValueFrom(this.http.get<UbicacionIdeUy[]>(ideUyUrl));
     const direccion = direcciones.find((d) => d.type.toLowerCase() == 'CALLEyPORTAL'.toLowerCase());
     console.log({ direccion });
-    if (!direccion) return ubicacionVacia;
+    if (!direccion) return { ...ubicacionVacia, latitud, longitud };
     const localidad = await this.getById(direccion.localidad, {
       departamento: direccion.departamento,
       localidad: direccion.localidad,
@@ -26,6 +26,8 @@ export class LocalidadsService extends BaseService<Localidad> {
     const ubicacion = {
       ...ubicacionVacia,
       ...localidad,
+      latitud,
+      longitud,
       direccion: direccion.address,
       // codigo_postal: direccion.postalCode,
     };

@@ -89,12 +89,7 @@ export abstract class BaseReadRepository<T extends DatosBase> {
           .join(' AND ');
     }
 
-    const countQuery = `SELECT COUNT(*)::INT as total FROM (${this.baseQuery} ${condiciones}) AS count_query`;
-    const countValues = [...values];
-    let pageParseado = 1;
-    let limitParseado = 10;
-
-    let query = `${this.baseQuery} ${condiciones}`;
+    let query = `${this.baseQuery} `;
 
     if (latitud && longitud && distancia) {
       values.push(parseFloat(latitud), parseFloat(longitud), parseFloat(distancia));
@@ -108,8 +103,13 @@ export abstract class BaseReadRepository<T extends DatosBase> {
           ) AS distancia
         `;
       query = query.replace('--CALCULO_DISTANCIA_AQUI', parteDistancia);
-      query += ' AND distancia <= $' + idxRadio;
+      condiciones += ' AND distancia <= $' + idxRadio;
     }
+    query += condiciones;
+    const countQuery = `SELECT COUNT(*)::INT as total FROM (${query}) AS count_query`;
+    const countValues = [...values];
+    let pageParseado = 1;
+    let limitParseado = 10;
 
     if (limit && page) {
       const direction = sort_direction?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'; //Así safamos de codigo no deseado en order direction

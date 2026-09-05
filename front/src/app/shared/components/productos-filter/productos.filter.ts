@@ -16,10 +16,11 @@ import { Coordenadas, Departamento, Localidad, Ubicacion } from '@shared/types/u
 import { SortOption } from '@shared/types/util';
 import { Select } from 'primeng/select';
 import { SelectButton } from 'primeng/selectbutton';
+import { SliderModule } from 'primeng/slider';
 
 @Component({
   selector: 'app-productos-filter',
-  imports: [FormsModule, Select, SelectButton],
+  imports: [FormsModule, Select, SelectButton, SliderModule],
   templateUrl: './productos.filter.html',
   providers: [UbicacionActual],
   styleUrl: './productos.filter.css',
@@ -51,6 +52,7 @@ export class ProductosFilter {
   public localidadSeleccionada = model<string | undefined>(undefined);
 
   public ubicacionSeleccionada = model<Ubicacion | null>();
+  public distanciaSeleccionada = model<number | null>();
 
   public layout = model.required<'grid' | 'list' | 'table'>(); // Estado del diseño (tarjeta o lista)
 
