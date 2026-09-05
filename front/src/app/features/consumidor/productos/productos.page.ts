@@ -119,6 +119,23 @@ export class ProductosPage implements OnInit {
     },
   });
 
+  public readonly totalRecords = computed(() => {
+    return this.productosResource.value()?.meta?.total ?? 0;
+  });
+
+  readonly textoPaginacion = computed(() => {
+    const total = this.totalRecords();
+    if (total === 0) return 'No se encontraron productos';
+
+    const first = this.paginationStore.first();
+    const limit = this.paginationStore.limit();
+
+    const desde = first + 1;
+    const hasta = Math.min(first + limit, total);
+
+    return `Mostrando ${desde} a ${hasta} de ${total} productos`;
+  });
+
   public layout = signal<'grid' | 'list'>('grid'); // Estado del diseño (tarjeta o lista)
 
   ngOnInit() {
