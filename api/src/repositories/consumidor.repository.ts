@@ -137,6 +137,22 @@ export class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
     `;
     await this.executor.query(consulta, [item.id_producto, item.id_consumidor]);
   }
+
+  async addFavorito(id_consumidor: string, id_producto: number) {
+    const consulta = `
+      INSERT INTO favoritos(id_consumidor,id_producto) 
+      VALUES ($1,$2)
+      ON CONFLICT (id_consumidor,id_producto) DO NOTHING
+    `;
+    await this.executor.query(consulta, [id_consumidor, id_producto]);
+  }
+
+  async removeFavorito(id_consumidor: string, id_producto: number) {
+    const consulta = `
+      DELETE FROM favoritos WHERE id_consumidor=$1 AND id_producto=$2
+    `;
+    await this.executor.query(consulta, [id_consumidor, id_producto]);
+  }
 }
 
 export const consumidorRepository = new ConsumidorRepositoryClass();

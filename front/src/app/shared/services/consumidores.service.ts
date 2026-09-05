@@ -9,6 +9,21 @@ import { firstValueFrom } from 'rxjs';
 export class ConsumidoresService extends BaseService<Consumidor> {
   protected override serviceUrl: string = `${environment.apiUrl}/consumidores`;
 
+  public async addFavorito(id_consumidor: string, username: string, id_producto: number) {
+    const url = `${this.serviceUrl}/${username}/favoritos`;
+    await firstValueFrom(
+      this.http.post(url, {
+        id_consumidor,
+        id_producto,
+      }),
+    );
+  }
+
+  public async removeFavorito(username: string, id_producto: number) {
+    const url = `${this.serviceUrl}/${username}/favoritos/${id_producto}`;
+    await firstValueFrom(this.http.delete(url));
+  }
+
   public async setFotoPerfil(username: string, foto: File | null): Promise<void> {
     const baseUrl = `${this.serviceUrl}/${username}/foto`;
     if (!foto) {

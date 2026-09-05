@@ -42,6 +42,7 @@ export interface Producto {
   departamento?: string;
   localidad?: string;
   distancia?: number;
+  favorito?: boolean;
 }
 
 export interface ImagenSlot {

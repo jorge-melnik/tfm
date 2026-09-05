@@ -10,7 +10,15 @@ import { ItemCarrito } from '@shared/types/item-carrito';
 import { UserStore } from '@shared/services/stores/user.store';
 import { MenuItem } from 'primeng/api';
 import { Menu } from 'primeng/menu';
-import { Ban, CartPlus, EllipsisV, MapMarker, ShoppingCart } from '@primeicons/angular';
+import {
+  Ban,
+  CartPlus,
+  EllipsisV,
+  Heart,
+  HeartFill,
+  MapMarker,
+  ShoppingCart,
+} from '@primeicons/angular';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -29,6 +37,8 @@ import { RouterLink } from '@angular/router';
     Ban,
     DecimalPipe,
     MapMarker,
+    Heart,
+    HeartFill,
   ],
   templateUrl: './producto.card.html',
   styleUrl: './producto.card.css',
@@ -46,6 +56,7 @@ export class ProductoCard {
   borrarProducto = output<Producto>();
   desactivarProducto = output<Producto>();
   activarProducto = output<Producto>();
+  favoritoProducto = output<Producto>();
 
   itemsProductor = computed<MenuItem[]>(() => {
     const prod = this.producto();
@@ -78,6 +89,11 @@ export class ProductoCard {
     ];
   });
 
+  public enviarCambioFavorito(producto: Producto) {
+    this.favoritoProducto.emit(producto);
+
+    console.log('enviado enviarCambioFavorito');
+  }
   enviarAlCarrito(producto: Producto) {
     this.agregarAlCarrito.emit({
       id_productor: producto.id_productor,

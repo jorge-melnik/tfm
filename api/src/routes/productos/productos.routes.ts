@@ -23,12 +23,14 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
           latitud: Type.Optional(Type.Number()),
           longitud: Type.Optional(Type.Number()),
           distancia: Type.Optional(Type.Number()),
+          favorito: Type.Optional(Type.Boolean()),
         }),
       ]),
     },
-    // onRequest: [fastify.authenticate], //FIXME descomentar.
+    onRequest: [fastify.authenticate],
     handler: async (req, reply) => {
-      fastify.log.info({ query: req.query });
+      const filtro: any = req.query;
+      filtro.id_consumidor_autenticado = req.user.id_usuario;
       return productoRepository.getBy(req.query); //Paginado
     },
   });

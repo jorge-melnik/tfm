@@ -68,6 +68,8 @@ export const keysPaginacion = ['page', 'limit', 'sort', 'sort_direction'];
 
 export const keysCercania = ['latitud', 'longitud', 'distancia'];
 
+export const keysFavoritos = ['id_consumidor_autenticado']; //favorito mismo entra como cualquier otra.
+
 export type DeAcaQueryString = Static<typeof DeAcaQueryString>;
 
 export default fp(async (fastify: FastifyInstance) => {
