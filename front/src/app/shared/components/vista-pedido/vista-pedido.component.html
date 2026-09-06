@@ -21,14 +21,31 @@
         [severity]="obtenerSeveridadEstado(pedido.estado_pedido)"
       />
       <button
-        pButton
         type="button"
+        pButton
         severity="secondary"
-        size="small"
         (click)="this.emitirVerMensajes(pedido)"
+        iconOnly
+        rounded
+        variant="text"
+        class="relative !overflow-visible inline-flex items-center justify-center rounded-xl"
       >
-        <svg data-p-icon="comments" class="w-4 h-4 mr-1"></svg>
-        Mensajes
+        <svg data-p-icon="comments"></svg>
+        @if (userStore.esConsumidor() && pedido.mensajes_no_leidos_consumidor > 0) {
+          <p-badge
+            [value]="pedido.mensajes_no_leidos_consumidor"
+            severity="contrast"
+            class="absolute -top-1 -right-1 pointer-events-none scale-90"
+          />
+        }
+
+        @if (userStore.esProductor() && pedido.mensajes_no_leidos_productor > 0) {
+          <p-badge
+            [value]="pedido.mensajes_no_leidos_productor"
+            severity="contrast"
+            class="absolute -top-1 -right-1 pointer-events-none scale-90"
+          />
+        }
       </button>
       @if (pedido.estado_pedido === 'PAGADO') {
         <button

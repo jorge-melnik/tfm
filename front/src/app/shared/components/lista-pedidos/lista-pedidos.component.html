@@ -45,7 +45,7 @@
   <ng-template #list let-items>
     <div class="space-y-4 pt-4">
       @for (pedido of items; track pedido.id_pedido) {
-        <app-vista-pedido [pedido]="pedido" />
+        <app-vista-pedido [pedido]="pedido" (verMensajes)="this.onVerMensajes($event)" />
       }
     </div>
   </ng-template>

@@ -49,6 +49,7 @@ export class ComprasService extends BaseService<Compra> {
     id_pedido: number,
     mensaje: string,
   ): Promise<Mensaje> {
+    //TODO: Estos métodos no diferencian si es un mensaje del productor o del consumidor. Tenemos rutas distintas.
     const url = `${this.buildUrl({ username })}/${id_compra}/pedidos/${id_pedido}/mensajes`;
     return firstValueFrom(this.http.post<Mensaje>(url, { mensaje }));
   }

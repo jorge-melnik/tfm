@@ -50,13 +50,13 @@
 
   <div class="space-y-4">
     @if (this.pedidos(); as pedidos) {
-      <app-lista-pedidos
+      <app-lista-pedidos-productor
         [pedidos]="this.pedidos()"
         [(estadoSeleccionado)]="this.estado_pedido"
         [isLoading]="this.isLoading()"
         [totalRecords]="this.total()"
         titulo="Pedidos realizados"
-      ></app-lista-pedidos>
+      ></app-lista-pedidos-productor>
     }
   </div>
 </div>

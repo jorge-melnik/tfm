@@ -37,6 +37,13 @@ export class PedidosRepositoryClass extends BaseReadRepository<Pedido> {
           AND M.id_emisor != C.id_consumidor 
           AND M.fecha_creacion >= P.fecha_lectura_consumidor
       ) AS mensajes_no_leidos_consumidor
+      , (
+        SELECT COUNT(*) 
+        FROM mensajes M
+        WHERE M.id_pedido = P.id_pedido
+          AND M.id_emisor != P.id_productor 
+          AND M.fecha_creacion >= P.fecha_lectura_productor
+      )>0 AS hay_no_leidos_productor  
       FROM pedidos P
       JOIN public.compras C ON C.id_compra = P.id_compra
       JOIN public.datos_personales DPP ON DPP.id_usuario = P.id_productor
@@ -50,7 +57,8 @@ export class PedidosRepositoryClass extends BaseReadRepository<Pedido> {
       ) IMG ON IMG.id_producto = PRO.id_producto
       GROUP BY P.id_pedido, DPP.username, DPC.username, C.id_consumidor
     )
-    SELECT * FROM MIS_PEDIDOS
+    SELECT MP.*
+    FROM MIS_PEDIDOS MP
     WHERE 1=1
   `;
 

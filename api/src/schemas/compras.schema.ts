@@ -126,6 +126,7 @@ export const Pedido = Type.Object({
   fecha_lectura_consumidor: Type.String({ format: 'date-time' }),
   mensajes_no_leidos_productor: Type.Number(),
   mensajes_no_leidos_consumidor: Type.Number(),
+  hay_no_leidos_productor: Type.Boolean(),
 });
 
 export const ProductoPedido = Type.Object({

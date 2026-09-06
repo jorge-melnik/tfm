@@ -29,6 +29,11 @@ export interface Pedido {
   estado_pedido: EstadoPedidoType;
   subtotal_pedido: string;
   productos: PedidoProducto[];
+  mensajes_no_leidos_productor: number;
+  mensajes_no_leidos_consumidor: number;
+  fecha_lectura_productor: string;
+  fecha_lectura_consumidor: string;
+  hay_no_leidos_productor: boolean;
 }
 
 export interface Mensaje {
