@@ -34,41 +34,6 @@ const rutasProductorPedidos: FastifyPluginAsyncTypebox = async (fastify, opts): 
       return pedidosRepository.getBy({ productor: req.params.productor, ...req.query });
     },
   });
-
-  fastify.patch('/:id_pedido', {
-    schema: {
-      tags: ['Productores'],
-      summary: 'READ pedidos productor',
-      description: `
-        Devuelve el listado completo de pedidos del productor.
-      `,
-      params: Type.Object({
-        productor: Productor.properties.username,
-        id_pedido: Pedido.properties.id_pedido,
-      }),
-      body: Type.Object({
-        estado_pedido: EstadoPedido,
-      }),
-      response: {
-        200: DeAcaListResponse(Pedido),
-        404: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
-      },
-    },
-    onRequest: [fastify.authenticate],
-    preHandler: async function (req: any, rep) {
-      const { productor, id_pedido } = req.params;
-      const pedido: Pedido = await pedidosRepository.getOneBy({ productor, id_pedido });
-      req.pedido = pedido;
-      if (!pedido) throw new DeAcaNotFound();
-    },
-    handler: async function (req: any, reply) {
-      const pedido: Pedido = req.pedido;
-      const { id_productor, id_pedido } = pedido;
-      const { estado_pedido } = req.body;
-      await pedidosRepository.cambiarEstado(id_productor, id_pedido, estado_pedido);
-    },
-  });
 };
 
 export default rutasProductorPedidos;

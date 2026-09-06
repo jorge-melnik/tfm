@@ -39,6 +39,15 @@ export const consumidorRoutes: Routes = [
             (m) => m.ComprasPagarPage,
           ),
       },
+
+      {
+        path: ':id_compra/pedidos/:id_pedido',
+        title: 'Finalizar compra',
+        loadComponent: () =>
+          import('@features/consumidor/compras/pedidos/detalle-pedido/detalle-pedido.page').then(
+            (m) => m.DetallePedidoPage,
+          ),
+      },
       {
         path: 'productor/:username',
         pathMatch: 'full',

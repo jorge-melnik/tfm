@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
+import { hasRoleGuard } from '@core/guard/has-role-guard';
 import { AuthService } from '@shared/services/auth.service';
 import { UserStore } from '@shared/services/stores/user.store';
 
@@ -9,12 +10,14 @@ export const productorRoutes: Routes = [
     title: 'Mis Datos',
     loadComponent: () =>
       import('@features/productor/mis-datos/mis-datos.page').then((m) => m.MisDatosPage),
+    canActivate: [hasRoleGuard('PRODUCTOR')],
   },
   {
     path: 'mis-datos/ubicaciones',
     title: 'Mis Datos',
     loadComponent: () =>
       import('@features/ubicaciones/ubicaciones.page').then((m) => m.UbicacionesPage),
+    canActivate: [hasRoleGuard('PRODUCTOR')],
   },
   {
     path: ':username',
@@ -22,12 +25,14 @@ export const productorRoutes: Routes = [
       {
         path: '',
         title: 'Dashboard Productor',
+        canActivateChild: [hasRoleGuard('PRODUCTOR')],
         loadComponent: () => import('@features/productor/home/home.page').then((m) => m.HomePage),
       },
 
       {
         path: 'productos',
         title: 'Listar Productos',
+        canActivateChild: [hasRoleGuard('PRODUCTOR')],
         loadComponent: () =>
           import('@features/productor/productos/productos-productor-list/productos-productor.page').then(
             (m) => m.ProductosPage,
@@ -36,6 +41,7 @@ export const productorRoutes: Routes = [
       {
         path: 'productos/crear',
         title: 'Crear Producto',
+        canActivateChild: [hasRoleGuard('PRODUCTOR')],
         loadComponent: () =>
           import('@features/productor/productos/productos-productor-create/productos-productor-create.page').then(
             (m) => m.ProductosProductorCreatePage,
@@ -52,6 +58,7 @@ export const productorRoutes: Routes = [
       {
         path: 'productos/:producto/editar',
         title: 'Editar Producto',
+        canActivateChild: [hasRoleGuard('PRODUCTOR')],
         loadComponent: () =>
           import('@features/productor/productos/productos-productor-edit/productos-productor-edit.page').then(
             (m) => m.ProductosProductorEditPage,
@@ -61,6 +68,7 @@ export const productorRoutes: Routes = [
       {
         path: 'pedidos',
         title: 'pedidos',
+        canActivateChild: [hasRoleGuard('PRODUCTOR')],
         loadComponent: () =>
           import('@features/productor/pedidos/pedidos.page').then((m) => m.PedidosPage),
       },
@@ -68,6 +76,7 @@ export const productorRoutes: Routes = [
       {
         path: 'consultas',
         title: 'Consultas',
+        canActivateChild: [hasRoleGuard('PRODUCTOR')],
         loadComponent: () =>
           import('@features/productor/consultas/consultas.page').then((m) => m.ConsultasPage),
       },
@@ -75,6 +84,7 @@ export const productorRoutes: Routes = [
       {
         path: 'consultas/preguntas',
         title: 'Preguntas',
+        canActivateChild: [hasRoleGuard('PRODUCTOR')],
         loadComponent: () =>
           import('@features/productor/consultas/preguntas/preguntas.page').then(
             (m) => m.PreguntasPage,

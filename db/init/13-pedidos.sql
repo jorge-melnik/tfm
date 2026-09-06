@@ -11,6 +11,9 @@ CREATE TABLE pedidos (
     fecha_listo_para_entrega TIMESTAMP WITH TIME ZONE,  -- la llena un trigger
     fecha_entregado TIMESTAMP WITH TIME ZONE,           -- la llena un trigger
     
+    fecha_lectura_productor TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fecha_lectura_consumidor TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
     UNIQUE (id_productor, id_pedido) -- para usar como FK en la entidad pedido_productos
 );
 
@@ -29,6 +32,15 @@ CREATE TABLE pedido_productos (
     -- para asegurarnos que el productor es el mismo en pedido y producto usamos FK compuestas.
     CONSTRAINT pedido_productos_pedido_fk FOREIGN KEY (id_productor, id_pedido) REFERENCES pedidos(id_productor, id_pedido) ON DELETE CASCADE ON UPDATE RESTRICT,
     CONSTRAINT pedio_productos_producto_fk FOREIGN KEY (id_productor, id_producto) REFERENCES productos(id_productor, id_producto) ON DELETE CASCADE
+);
+
+-- tabla para contener los mensajes sobre un pedido
+CREATE TABLE IF NOT EXISTS mensajes (
+    id_mensaje BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id_pedido INTEGER NOT NULL REFERENCES pedidos(id_pedido) ON DELETE CASCADE,
+    id_emisor UUID NOT NULL REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+    mensaje CITEXT NOT NULL,
+    fecha_creacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -------------------------------------------------------------------
