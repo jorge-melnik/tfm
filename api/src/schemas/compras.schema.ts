@@ -2,6 +2,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { Consumidor } from './consumidores.schema.js';
 import { Productor } from './productores.schema.js';
 import { ImagenProducto, Producto } from './producto.schema.js';
+import { format } from 'node:path';
 
 export const EstadoPedido = Type.Union(
   [
@@ -121,6 +122,10 @@ export const Pedido = Type.Object({
   estado_pedido: EstadoPedido,
   subtotal_pedido: Type.Number(),
   productos: Type.Array(PedidoProducto),
+  fecha_lectura_productor: Type.String({ format: 'date-time' }),
+  fecha_lectura_consumidor: Type.String({ format: 'date-time' }),
+  mensajes_no_leidos_productor: Type.Number(),
+  mensajes_no_leidos_consumidor: Type.Number(),
 });
 
 export const ProductoPedido = Type.Object({
@@ -131,6 +136,16 @@ export const ProductoPedido = Type.Object({
   precio_unitario: Producto.properties.precio,
   subtotal: Producto.properties.precio,
   producto: Producto.properties.nombre,
+});
+
+export const Mensaje = Type.Object({
+  id_mensaje: Type.Integer(),
+  id_pedido: Pedido.properties.id_pedido,
+  id_emisor: Consumidor.properties.id_consumidor,
+  mensaje: Type.String(),
+  fecha_creacion: Type.String({ format: 'date-time' }),
+
+  emisor: Consumidor.properties.username,
 });
 
 export type Compra = Static<typeof Compra>;
@@ -145,3 +160,5 @@ export type MedioPago = Static<typeof MedioPago>;
 
 export type EstadoPago = Static<typeof EstadoPago>;
 export type PagoTransferencia = Static<typeof PagoTransferencia>;
+
+export type Mensaje = Static<typeof Mensaje>;

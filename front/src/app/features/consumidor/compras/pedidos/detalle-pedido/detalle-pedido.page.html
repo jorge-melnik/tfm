@@ -1,0 +1,123 @@
+@let pedido = this.pedidoResource.value();
+
+<div class="max-w-5xl mx-auto p-4 md:p-6 space-y-6">
+  <!-- SECCIÓN SUPERIOR: Detalle del Pedido -->
+  @if (pedidoResource.isLoading()) {
+    <div
+      class="p-8 text-center text-surface-400 bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700"
+    >
+      <i class="pi pi-spin pi-spinner text-2xl mb-2"></i>
+      <p class="m-0 text-sm">Cargando información del pedido...</p>
+    </div>
+  } @else if (pedidoResource.error()) {
+    <div
+      class="p-4 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 rounded-xl text-rose-600 dark:text-rose-400 text-sm"
+    >
+      Ocurrió un error al cargar el pedido. Intenta nuevamente más tarde.
+    </div>
+  } @else if (pedido) {
+    <!-- Reutilización del componente de vista de pedido -->
+    <app-vista-pedido [pedido]="pedido" />
+  }
+
+  <!-- SECCIÓN INFERIOR: Chat de Mensajes -->
+  <div
+    class="border border-surface-200 dark:border-surface-700 rounded-xl bg-surface-0 dark:bg-surface-900 shadow-sm flex flex-col h-[550px] overflow-hidden"
+  >
+    <!-- Header del Chat -->
+    <div
+      class="p-4 border-b border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-800/50 flex items-center justify-between"
+    >
+      <div class="flex items-center gap-2">
+        <svg data-p-icon="comments" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></svg>
+        <h2 class="text-base font-bold text-surface-900 dark:text-surface-0 m-0">
+          Mensajes del Pedido
+        </h2>
+      </div>
+      <span class="text-xs text-surface-400 font-medium">
+        {{ mensajes().length }} {{ mensajes().length === 1 ? 'mensaje' : 'mensajes' }}
+      </span>
+    </div>
+
+    <!-- Cuerpo / Historial de Mensajes -->
+    <div class="flex-1 overflow-y-auto p-4 space-y-4 bg-surface-50/50 dark:bg-surface-950/30">
+      @if (mensajesResource.isLoading()) {
+        <div class="h-full flex items-center justify-center text-surface-400 text-sm">
+          <i class="pi pi-spin pi-spinner text-lg mr-2"></i> Cargando chat...
+        </div>
+      } @else if (mensajesResource.error()) {
+        <div class="h-full flex items-center justify-center text-rose-500 text-sm">
+          Error al cargar las interacciones.
+        </div>
+      } @else {
+        @for (msg of mensajes(); track msg.id_mensaje) {
+          @let esMio = msg.emisor === this.userStore.user()?.username;
+
+          <div
+            class="flex flex-col max-w-[80%] md:max-w-[70%]"
+            [class.ml-auto]="esMio"
+            [class.items-end]="esMio"
+            [class.mr-auto]="!esMio"
+            [class.items-start]="!esMio"
+          >
+            <span class="text-[10px] font-semibold text-surface-400 mb-1 px-1">
+              {{ esMio ? 'Tú' : msg.emisor }}
+            </span>
+
+            <div
+              class="p-3.5 rounded-2xl text-sm leading-relaxed shadow-2xs wrap-break-word"
+              [class.bg-emerald-600]="esMio"
+              [class.text-white]="esMio"
+              [class.rounded-br-xs]="esMio"
+              [class.bg-surface-100]="!esMio"
+              [class.dark:bg-surface-800]="!esMio"
+              [class.text-surface-900]="!esMio"
+              [class.dark:text-surface-0]="!esMio"
+              [class.rounded-bl-xs]="!esMio"
+            >
+              {{ msg.mensaje }}
+            </div>
+
+            <!-- Timestamp -->
+            <span class="text-[9px] text-surface-400 mt-1 px-1">
+              {{ msg.fecha_creacion | date: 'dd/MM HH:mm' }}
+            </span>
+          </div>
+        } @empty {
+          <div
+            class="h-full flex flex-col items-center justify-center text-surface-400 text-sm gap-2"
+          >
+            <svg data-p-icon="comments" class="w-10 h-10 opacity-30"></svg>
+            <p class="m-0">No hay mensajes registrados sobre este pedido.</p>
+            <span class="text-xs text-surface-500"
+              >Inicia la conversación para resolver dudas con la contraparte.</span
+            >
+          </div>
+        }
+      }
+    </div>
+
+    <div
+      class="p-3 border-t border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 flex gap-2"
+    >
+      <input
+        #mensajeInput
+        type="text"
+        pInputText
+        class="flex-1 text-sm rounded-xl"
+        placeholder="Escribe una consulta sobre el pedido..."
+        (keyup.enter)="enviarMensaje(mensajeInput.value); mensajeInput.value = ''"
+      />
+      <button
+        pButton
+        type="button"
+        severity="success"
+        class="rounded-xl px-4"
+        (click)="enviarMensaje(mensajeInput.value); mensajeInput.value = ''"
+      >
+        <svg data-p-icon="send" class="w-4 h-4"></svg>
+        <span class="hidden sm:inline ml-1">Enviar</span>
+      </button>
+    </div>
+  </div>
+</div>

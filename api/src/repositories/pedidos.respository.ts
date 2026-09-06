@@ -22,6 +22,21 @@ export class PedidosRepositoryClass extends BaseReadRepository<Pedido> {
           'imagenes', COALESCE(IMG.imagenes, '[]'::json)
         )
       ) AS productos 
+      ,(
+        SELECT COUNT(*) 
+        FROM mensajes M
+        WHERE M.id_pedido = P.id_pedido
+          AND M.id_emisor != P.id_productor 
+          AND M.fecha_creacion >= P.fecha_lectura_productor
+      ) AS mensajes_no_leidos_productor
+      -- No hacemos otro join para estos porque me duplica filas.
+      ,(
+        SELECT COUNT(*) 
+        FROM mensajes M
+        WHERE M.id_pedido = P.id_pedido
+          AND M.id_emisor != C.id_consumidor 
+          AND M.fecha_creacion >= P.fecha_lectura_consumidor
+      ) AS mensajes_no_leidos_consumidor
       FROM pedidos P
       JOIN public.compras C ON C.id_compra = P.id_compra
       JOIN public.datos_personales DPP ON DPP.id_usuario = P.id_productor
@@ -121,6 +136,26 @@ export class PedidosRepositoryClass extends BaseReadRepository<Pedido> {
       throw new DeAcaBadRequest(
         'No existe el pedido o no se encuentra en un estado válido para dicha acción.',
       );
+  }
+
+  public async productorLeyoMensajes(id_pedido: number) {
+    const consulta = `
+      UPDATE pedidos
+      SET fecha_lectura_productor = CURRENT_TIMESTAMP
+      WHERE id_pedido = $1
+      ;
+    `;
+    await this.executor.query(consulta, [id_pedido]);
+  }
+
+  public async consumidorLeyoMensajes(id_pedido: number) {
+    const consulta = `
+      UPDATE pedidos
+      SET fecha_lectura_consumidor = CURRENT_TIMESTAMP
+      WHERE id_pedido = $1
+      ;
+    `;
+    await this.executor.query(consulta, [id_pedido]);
   }
 }
 

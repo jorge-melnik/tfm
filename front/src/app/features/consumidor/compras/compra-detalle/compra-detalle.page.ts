@@ -18,7 +18,8 @@ import {
 import { UserStore } from '@shared/services/stores/user.store';
 import { ComprasService } from '@shared/services/compras.service';
 import { environment } from '@env/environment';
-import { PedidoCard } from '@shared/components/pedido-card/pedido.card';
+import { VistaPedidoComponent } from '@shared/components/vista-pedido/vista-pedido.component';
+import { Pedido } from '@shared/types/pedido';
 @Component({
   selector: 'app-compra-detalle',
   imports: [
@@ -27,12 +28,11 @@ import { PedidoCard } from '@shared/components/pedido-card/pedido.card';
     RouterLink,
     ButtonModule,
     TagModule,
-
     CreditCard,
     MapMarker,
     InfoCircle,
     ExclamationCircle,
-    PedidoCard,
+    VistaPedidoComponent,
   ],
   templateUrl: './compra-detalle.page.html',
   styleUrl: './compra-detalle.page.css',
@@ -90,5 +90,16 @@ export class CompraDetallePage {
       default:
         return 'info';
     }
+  }
+
+  public onVerMensajes(pedido: Pedido) {
+    this._router.navigate([
+      '/',
+      'consumidor',
+      'compras',
+      pedido.id_compra,
+      'pedidos',
+      pedido.id_pedido,
+    ]);
   }
 }

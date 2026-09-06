@@ -1,3 +1,4 @@
+@let pedido = this.pedido();
 <div
   class="mb-3 p-5 border border-surface-200 dark:border-surface-700 rounded-xl bg-surface-0 dark:bg-surface-900 shadow-sm space-y-4"
 >
@@ -6,21 +7,30 @@
   >
     <div class="flex items-center gap-3">
       <span class="font-bold text-lg text-surface-900 dark:text-surface-0">
-        Pedido #{{ pedido().id_pedido }}
+        Pedido #{{ pedido.id_pedido }}
       </span>
       <span class="text-xs text-surface-400">|</span>
       <span class="text-xs text-surface-500 dark:text-surface-400">
-        Compra: #{{ pedido().id_compra }}
+        Compra: #{{ pedido.id_compra }}
       </span>
     </div>
 
     <div class="flex items-center gap-3">
       <p-tag
-        [value]="pedido().estado_pedido"
-        [severity]="obtenerSeveridadEstado(pedido().estado_pedido)"
+        [value]="pedido.estado_pedido"
+        [severity]="obtenerSeveridadEstado(pedido.estado_pedido)"
       />
-
-      @if (pedido().estado_pedido === 'PAGADO') {
+      <button
+        pButton
+        type="button"
+        severity="secondary"
+        size="small"
+        (click)="this.emitirVerMensajes(pedido)"
+      >
+        <svg data-p-icon="comments" class="w-4 h-4 mr-1"></svg>
+        Mensajes
+      </button>
+      @if (pedido.estado_pedido === 'PAGADO') {
         <button
           pButton
           label="Marcar Listo"
@@ -31,7 +41,7 @@
           <svg data-p-icon="check" class="w-4 h-4 mr-1"></svg>
           Marcar para Entrega
         </button>
-      } @else if (pedido().estado_pedido === 'LISTO PARA ENTREGA') {
+      } @else if (pedido.estado_pedido === 'LISTO PARA ENTREGA') {
         <button
           pButton
           label="Marcar Entregado"
@@ -53,19 +63,19 @@
       <i class="pi pi-user text-primary text-xs shrink-0"></i>
       <span class="text-surface-500 dark:text-surface-400">Consumidor:</span>
       <span class="font-semibold text-surface-900 dark:text-surface-0">
-        {{ pedido().consumidor }}
+        {{ pedido.consumidor }}
       </span>
     </div>
 
     <div class="flex items-center gap-1.5">
       <svg data-p-icon="shop" class="w-4 h-4 text-primary shrink-0"></svg>
       <span class="text-surface-500 dark:text-surface-400">Productor:</span>
-      {{ pedido().productor }}
+      {{ pedido.productor }}
     </div>
   </div>
 
   <div class="divide-y divide-surface-200 dark:divide-surface-800">
-    @for (prod of pedido().productos; track prod.nombre) {
+    @for (prod of pedido.productos; track prod.nombre) {
       <div class="py-3 flex items-center justify-between gap-4 first:pt-0 last:pb-0">
         <div class="flex items-center gap-3">
           <div
@@ -95,6 +105,6 @@
     class="pt-3 border-t border-surface-200 dark:border-surface-800 flex justify-end items-center gap-2"
   >
     <span class="text-sm text-surface-600 dark:text-surface-400">Total del Pedido:</span>
-    <span class="text-base font-bold text-primary">{{ pedido().subtotal_pedido | currency }}</span>
+    <span class="text-base font-bold text-primary">{{ pedido.subtotal_pedido | currency }}</span>
   </div>
 </div>

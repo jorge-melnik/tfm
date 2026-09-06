@@ -4,17 +4,20 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { EstadoPedido, EstadoPedidoType, Pedido } from '@shared/types/pedido';
 import { FotoCarrusel } from '../foto-carrusel/foto.carrusel';
-import { Check, Send } from '@primeicons/angular';
+import { Check, Comments, Send } from '@primeicons/angular';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-vista-pedido',
-  imports: [CurrencyPipe, ButtonModule, TagModule, FotoCarrusel, Check, Send],
+  imports: [CurrencyPipe, ButtonModule, TagModule, FotoCarrusel, Check, Send, Comments],
   templateUrl: './vista-pedido.component.html',
   styleUrl: './vista-pedido.component.css',
 })
 export class VistaPedidoComponent {
   public pedido = input.required<Pedido>();
   public cambiarEstado = output<{ pedido: Pedido; estado_pedido: EstadoPedidoType }>();
+
+  public readonly verMensajes = output<Pedido>();
 
   public onCambiarEstado(estado_pedido: EstadoPedidoType) {
     this.cambiarEstado.emit({ pedido: this.pedido(), estado_pedido });
@@ -38,5 +41,9 @@ export class VistaPedidoComponent {
       default:
         return 'secondary';
     }
+  }
+
+  emitirVerMensajes(pedido: Pedido) {
+    this.verMensajes.emit(pedido);
   }
 }

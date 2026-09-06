@@ -63,7 +63,10 @@
         @if (pedidosResource.value(); as pedidos) {
           @for (pedido of pedidosResource.value()?.data; track pedido.id_pedido) {
             <div class="gap-6">
-              <app-pedido-card [pedido]="pedido"></app-pedido-card>
+              <app-vista-pedido
+                [pedido]="pedido"
+                (verMensajes)="this.onVerMensajes($event)"
+              ></app-vista-pedido>
             </div>
           }
         }

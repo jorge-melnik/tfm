@@ -4,7 +4,7 @@ import { Compra } from '@shared/types/compra';
 import { environment } from '@env/environment';
 import { firstValueFrom } from 'rxjs';
 import { PagoTransferencia } from '@shared/types/pago';
-import { Pedido } from '@shared/types/pedido';
+import { Mensaje, Pedido } from '@shared/types/pedido';
 import { PaginatedResponse } from '@shared/types/api.types';
 
 @Service()
@@ -31,6 +31,36 @@ export class ComprasService extends BaseService<Compra> {
   public getPedidos(username: string, id_compra: number): Promise<PaginatedResponse<Pedido>> {
     const url = `${this.buildUrl({ username })}/${id_compra}/pedidos`;
     return firstValueFrom(this.http.get<PaginatedResponse<Pedido>>(url));
+  }
+
+  public getPedido(username: string, id_compra: number, id_pedido: number): Promise<Pedido> {
+    const url = `${this.buildUrl({ username })}/${id_compra}/pedidos/${id_pedido}`;
+    return firstValueFrom(this.http.get<Pedido>(url));
+  }
+
+  public getMensajes(username: string, id_compra: number, id_pedido: number): Promise<Mensaje[]> {
+    const url = `${this.buildUrl({ username })}/${id_compra}/pedidos/${id_pedido}/mensajes`;
+    return firstValueFrom(this.http.get<Mensaje[]>(url));
+  }
+
+  public async addMensaje(
+    username: string,
+    id_compra: number,
+    id_pedido: number,
+    mensaje: string,
+  ): Promise<Mensaje> {
+    const url = `${this.buildUrl({ username })}/${id_compra}/pedidos/${id_pedido}/mensajes`;
+    return firstValueFrom(this.http.post<Mensaje>(url, { mensaje }));
+  }
+
+  public async removeMensaje(
+    username: string,
+    id_compra: number,
+    id_pedido: number,
+    id_mensaje: number,
+  ) {
+    const url = `${this.buildUrl({ username })}/${id_compra}/pedidos/${id_pedido}/mensajes/${id_mensaje}`;
+    await firstValueFrom(this.http.delete(url));
   }
 
   public procesarTransferencia(username: string, id_compra: number, pago: PagoTransferencia) {

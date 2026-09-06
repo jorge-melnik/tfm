@@ -30,3 +30,12 @@ export interface Pedido {
   subtotal_pedido: string;
   productos: PedidoProducto[];
 }
+
+export interface Mensaje {
+  id_mensaje: number;
+  id_pedido: number;
+  id_emisor: string;
+  mensaje: string;
+  fecha_creacion: string;
+  emisor: string; //username del emisor
+}
