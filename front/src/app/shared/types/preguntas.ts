@@ -24,7 +24,7 @@ export interface PreguntaPost {
 
 export interface Pregunta extends PreguntaPost {
   id_pregunta: number;
-  id_productor: number;
+  id_productor: string;
   id_producto: number;
   consumidor: string; // username
   producto: string;
