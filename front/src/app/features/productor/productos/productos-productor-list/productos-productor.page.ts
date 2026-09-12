@@ -162,4 +162,10 @@ export class ProductosPage implements OnInit {
       this._dialogService.addError(error.message);
     }
   }
+
+  public onTitleClick(producto: Producto) {
+    console.log('onTitleClick', producto.producto);
+    const base = this._userStore.esProductor() ? '/productor' : '/consumidor/productores';
+    this._router.navigate([base, producto.productor, 'productos', producto.producto]);
+  }
 }

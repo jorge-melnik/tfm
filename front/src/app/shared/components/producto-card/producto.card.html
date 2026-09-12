@@ -76,7 +76,7 @@
         [class.text-surface-400]="!producto.activo"
       >
         <a
-          [routerLink]="['/productor', producto.productor, 'productos', producto.producto]"
+          (click)="this.titleClick.emit(producto)"
           class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors no-underline text-inherit cursor-pointer"
         >
           {{ producto.nombre }}
@@ -272,7 +272,7 @@
             [class.text-surface-400]="!producto.activo"
           >
             <a
-              [routerLink]="['/consumidor', 'productos', producto.productor, producto.producto]"
+              (click)="this.titleClick.emit(producto)"
               class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors no-underline text-inherit cursor-pointer"
             >
               {{ producto.nombre }}

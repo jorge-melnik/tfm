@@ -1,4 +1,4 @@
-import { Component, computed, inject, model, OnInit, resource, signal } from '@angular/core';
+import { Component, computed, inject, input, model, OnInit, resource, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
@@ -49,6 +49,7 @@ export class ProductosPage implements OnInit {
 
   mostrarFiltro = signal<boolean>(false);
 
+  public username = input<string>(); //username del productor, cuando vemos los productos de un productor.
   //Signals para filtros.
   public busqueda = signal<string>('');
   public categoria = signal<string | undefined>(undefined);
@@ -77,6 +78,7 @@ export class ProductosPage implements OnInit {
       ubicacion: this.ubicacion(),
       distancia: this.distancia(),
       favorito: this.favorito(),
+      username: this.username(),
     }),
     loader: async ({ params }) => {
       const {
@@ -93,6 +95,7 @@ export class ProductosPage implements OnInit {
         ubicacion,
         distancia,
         favorito,
+        username,
       } = params;
       const queryParams: ApiQueryParams = {};
       const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
@@ -112,6 +115,7 @@ export class ProductosPage implements OnInit {
         queryParams['longitud'] = ubicacion.longitud;
         queryParams['distancia'] = distancia * 1000;
       }
+      if (username) queryParams['productor'] = username;
       console.log({ favorito });
       if (favorito !== undefined && favorito !== null) queryParams['favorito'] = favorito!;
 
@@ -194,5 +198,11 @@ export class ProductosPage implements OnInit {
       await this._consumidoresService.removeFavorito(user.username, producto.id_producto);
     }
     this.productosResource.reload();
+  }
+
+  public onTitleClick(producto: Producto) {
+    console.log('onTitleClick', producto.producto);
+    const base = this._userStore.esProductor() ? '/productor' : '/consumidor/productores';
+    this._router.navigate([base, producto.productor, 'productos', producto.producto]);
   }
 }

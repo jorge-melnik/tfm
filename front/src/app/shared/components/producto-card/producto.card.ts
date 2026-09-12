@@ -101,4 +101,6 @@ export class ProductoCard {
       cantidad: 1,
     });
   }
+
+  public titleClick = output<Producto>();
 }

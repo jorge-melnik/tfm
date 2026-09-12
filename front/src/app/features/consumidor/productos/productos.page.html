@@ -58,6 +58,7 @@
             [cdnUrl]="this.cdnUrl"
             (agregarAlCarrito)="this.carritoService.agregarAlCarrito(producto)"
             (favoritoProducto)="onCambiaFavorito($event)"
+            (titleClick)="this.onTitleClick($event)"
           />
         }
       </div>
@@ -74,6 +75,7 @@
             [cdnUrl]="this.cdnUrl"
             (agregarAlCarrito)="this.carritoService.agregarAlCarrito($event)"
             (favoritoProducto)="onCambiaFavorito($event)"
+            (titleClick)="this.onTitleClick($event)"
           />
         }
       </div>
