@@ -1,4 +1,4 @@
-import { DeAcaBadRequest } from '@errors/response.errors.js';
+import { BadRequestError } from '@errors/response.errors.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { PreguntasRepository } from '@repositories/preguntas.repository.js';
 import { productorRepository } from '@repositories/productor.repository.js';
@@ -34,7 +34,7 @@ const preguntasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
       const { productor } = req.params;
       const { username } = req.user;
       console.log({ username, productor });
-      if (req.user.username != productor) throw new DeAcaBadRequest('Solo puedes acceder a tus preguntas');
+      if (req.user.username != productor) throw new BadRequestError('Solo puedes acceder a tus preguntas');
     },
     handler: async (req, reply) => {
       const productor = await productorRepository.getOneBy({ username: req.params.productor }); //No aseguramos que existe el productor.

@@ -43,7 +43,8 @@ export class CarritoPage implements OnInit {
     try {
       await this._carritoService.removeItem(item);
     } catch (error: any) {
-      this._dialogService.addError('No se pudo eliminar el item del carrito.');
+      const mensaje = error.error ? error.error.message : error.message;
+      this._dialogService.addError(mensaje);
     }
   }
 
@@ -51,8 +52,8 @@ export class CarritoPage implements OnInit {
     try {
       await this._carritoService.updateItem(item);
     } catch (error: any) {
-      console.error(error);
-      this._dialogService.addError('No se pudo actualizar el item del carrito.');
+      const mensaje = error.error ? error.error.message : error.message;
+      this._dialogService.addError(mensaje);
     }
   }
 
@@ -70,7 +71,8 @@ export class CarritoPage implements OnInit {
       this._carritoService.recargarCarrito();
       this._router.navigate(['consumidor', 'compras', compra.id_compra]);
     } catch (error: any) {
-      this._dialogService.addError(error.message);
+      const mensaje = error.error ? error.error.message : error.message;
+      this._dialogService.addError(mensaje);
     }
   }
 }

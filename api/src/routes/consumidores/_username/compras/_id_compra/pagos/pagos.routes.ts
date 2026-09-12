@@ -1,4 +1,4 @@
-import { DeAcaBadRequest, DeAcaForbidden } from '@errors/response.errors.js';
+import { BadRequestError, ForbiddenError } from '@errors/response.errors.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { comprasRepository } from '@repositories/compras.respository.js';
 import { Compra, Pago, PagoTransferencia } from '@schemas/compras.schema.js';
@@ -56,9 +56,9 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
         id_consumidor: req.user.id_usuario, //esto ya chequea que la compra sea del usuario autenticado.
       });
       if (compra.estado_compra !== 'PAGANDO') {
-        throw new DeAcaForbidden('La compra se encuentra en estado ' + compra.estado_compra);
+        throw new ForbiddenError('La compra se encuentra en estado ' + compra.estado_compra);
       }
-      if (compra.tiene_pago_pendiente) throw new DeAcaBadRequest('Compra con pago pendiente.');
+      if (compra.tiene_pago_pendiente) throw new BadRequestError('Compra con pago pendiente.');
       (req as any).compra = compra;
     },
     handler: async function (req, rep) {

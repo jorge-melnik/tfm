@@ -1,6 +1,6 @@
 import { Compra, CompraPOST, Pago, Pedido } from '@schemas/compras.schema.js';
 import { BaseReadRepository } from './base.read.repository.js';
-import { DeAcaForbidden } from '@errors/response.errors.js';
+import { ForbiddenError } from '@errors/response.errors.js';
 
 /**
  * Repository para Compras. Extiende BaseReadRepository. Por lo que no cuenta con métodos, add, update, etc.
@@ -69,7 +69,7 @@ export class ComprasRepositoryClass extends BaseReadRepository<Compra> {
     `;
 
     const { rows } = await this.executor.query(consulta, [id_usuario, direccion_envio, contacto_receptor]);
-    if (rows.length === 0) throw new DeAcaForbidden('Tu carrito está vacío.');
+    if (rows.length === 0) throw new ForbiddenError('Tu carrito está vacío.');
     return rows[0];
   }
 
@@ -93,7 +93,7 @@ export class ComprasRepositoryClass extends BaseReadRepository<Compra> {
     id_compra: number,
     pago: Pick<Pago, 'id_compra' | 'id_externo' | 'metodo_pago' | 'estado_pago' | 'respuesta_raw'>,
   ): Promise<void> {
-    if (id_compra !== pago.id_compra) throw new DeAcaForbidden('No coincide el id_compra.');
+    if (id_compra !== pago.id_compra) throw new ForbiddenError('No coincide el id_compra.');
     const consulta = `
       INSERT INTO public.pagos(id_compra,id_externo, metodo_pago,estado_pago,respuesta_raw)
       VALUES($1,$2,$3,$4,$5)

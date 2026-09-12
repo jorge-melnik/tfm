@@ -30,8 +30,8 @@ CREATE TABLE pedido_productos (
     PRIMARY KEY (id_productor, id_pedido, id_producto),
 
     -- para asegurarnos que el productor es el mismo en pedido y producto usamos FK compuestas.
-    CONSTRAINT pedido_productos_pedido_fk FOREIGN KEY (id_productor, id_pedido) REFERENCES pedidos(id_productor, id_pedido) ON DELETE CASCADE ON UPDATE RESTRICT,
-    CONSTRAINT pedio_productos_producto_fk FOREIGN KEY (id_productor, id_producto) REFERENCES productos(id_productor, id_producto) ON DELETE CASCADE
+    CONSTRAINT pedido_productos_pedido_fk FOREIGN KEY (id_productor, id_pedido) REFERENCES pedidos(id_productor, id_pedido) ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT pedido_productos_producto_fk FOREIGN KEY (id_productor, id_producto) REFERENCES productos(id_productor, id_producto) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- tabla para contener los mensajes sobre un pedido

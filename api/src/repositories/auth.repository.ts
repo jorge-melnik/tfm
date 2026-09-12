@@ -1,6 +1,6 @@
 import { myPool } from '@database/pool.js';
 import type { QueryResult } from 'pg';
-import { DeAcaInternal, DeAcaNotFound, DeAcaUnAuthenticated } from '@errors/response.errors.js';
+import { InternalError, NotFoundError, UnAuthenticatedError } from '@errors/response.errors.js';
 import { Profile, RegisterSchema, Rol, TokenPayload, User } from '@schemas/auth.schema.js';
 import { productorRepository } from './productor.repository.js';
 import { consumidorRepository } from './consumidor.repository.js';
@@ -23,7 +23,7 @@ class AuthRepositoryClass {
     const { rows }: QueryResult<TokenPayload> = await myPool.query(query, [email, password]);
 
     if (rows.length !== 1) {
-      throw new DeAcaUnAuthenticated();
+      throw new UnAuthenticatedError();
     }
     return rows[0];
   }
@@ -43,7 +43,7 @@ class AuthRepositoryClass {
     const { rows }: QueryResult<TokenPayload> = await myPool.query(query, [username, password]);
 
     if (rows.length !== 1) {
-      throw new DeAcaUnAuthenticated();
+      throw new UnAuthenticatedError();
     }
     return rows[0];
   }
@@ -61,7 +61,7 @@ class AuthRepositoryClass {
 
     const { rows }: QueryResult<Profile> = await myPool.query(query, [id_usuario]);
     if (rows.length === 0) {
-      throw new DeAcaNotFound('Usuario con id_usuario ' + id_usuario);
+      throw new NotFoundError('Usuario con id_usuario ' + id_usuario);
     }
     return rows[0];
   }
@@ -81,7 +81,7 @@ class AuthRepositoryClass {
     ]);
 
     //TODO: Si no existe refresh token, hay que borrar todas las sesiones por seguridad
-    if (rows.length === 0) throw new DeAcaUnAuthenticated('RT no valido.');
+    if (rows.length === 0) throw new UnAuthenticatedError('RT no valido.');
   }
 
   /**
@@ -152,7 +152,7 @@ class AuthRepositoryClass {
       await client.query('COMMIT;'); //Confirmar transacción
     } catch (error: any) {
       await client.query('ROLLBACK;');
-      throw new DeAcaInternal(error.message);
+      throw new InternalError(error.message);
     } finally {
       client.release();
     }

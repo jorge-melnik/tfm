@@ -49,7 +49,7 @@ export class ProductosPage implements OnInit {
 
   mostrarFiltro = signal<boolean>(false);
 
-  public username = input<string>(); //username del productor, cuando vemos los productos de un productor.
+  public productor = input<string>(); //username del productor, cuando vemos los productos de un productor.
   //Signals para filtros.
   public busqueda = signal<string>('');
   public categoria = signal<string | undefined>(undefined);
@@ -78,7 +78,7 @@ export class ProductosPage implements OnInit {
       ubicacion: this.ubicacion(),
       distancia: this.distancia(),
       favorito: this.favorito(),
-      username: this.username(),
+      productor: this.productor(),
     }),
     loader: async ({ params }) => {
       const {
@@ -95,7 +95,7 @@ export class ProductosPage implements OnInit {
         ubicacion,
         distancia,
         favorito,
-        username,
+        productor,
       } = params;
       const queryParams: ApiQueryParams = {};
       const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
@@ -115,7 +115,7 @@ export class ProductosPage implements OnInit {
         queryParams['longitud'] = ubicacion.longitud;
         queryParams['distancia'] = distancia * 1000;
       }
-      if (username) queryParams['productor'] = username;
+      if (productor) queryParams['productor'] = productor;
       console.log({ favorito });
       if (favorito !== undefined && favorito !== null) queryParams['favorito'] = favorito!;
 
@@ -126,7 +126,8 @@ export class ProductosPage implements OnInit {
 
         return response;
       } catch (error: any) {
-        this._dialogService.addError(error.message);
+        const mensaje = error.error ? error.error.message : error.message;
+        this._dialogService.addError(mensaje);
         return { data: [], meta: { total: 0 } };
       }
     },

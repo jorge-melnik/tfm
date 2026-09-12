@@ -1,4 +1,4 @@
-import { DeAcaNotFound } from '@errors/response.errors.js';
+import { NotFoundError } from '@errors/response.errors.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { mensajesRepository } from '@repositories/mensajes.repository.js';
 import { pedidosRepository } from '@repositories/pedidos.respository.js';
@@ -62,7 +62,7 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       const { productor, id_pedido } = req.params;
       const pedido: Pedido = await pedidosRepository.getOneBy({ productor, id_pedido });
       req.pedido = pedido;
-      if (!pedido) throw new DeAcaNotFound();
+      if (!pedido) throw new NotFoundError();
     },
     handler: async function (req: any, reply) {
       const pedido: Pedido = req.pedido;

@@ -42,7 +42,9 @@ export class EtiquetasStore {
       try {
         return this._categoriaService.getAll();
       } catch (error: any) {
-        this._dialogService.addError(error.message);
+        //FIXME: No corresponde try catch aquí... osi ?
+        const mensaje = error.error ? error.error.message : error.message;
+        this._dialogService.addError(mensaje);
         return [] as Categoria[];
       }
     },
@@ -57,7 +59,9 @@ export class EtiquetasStore {
         if (!categoria) return this._subcategoriaService.getAll();
         return this._categoriaService.getSubcategorias(categoria);
       } catch (error: any) {
-        this._dialogService.addError(error.message);
+        //FIXME: Sacar try catch?
+        const mensaje = error.error ? error.error.message : error.message;
+        this._dialogService.addError(mensaje);
         return [] as Subcategoria[];
       }
     },
@@ -79,7 +83,9 @@ export class EtiquetasStore {
         //No hay ninguno de los slug
         return this._etiquetasService.getAll();
       } catch (error: any) {
-        this._dialogService.addError(error.message);
+        //FIXME: Sacar try catch?
+        const mensaje = error.error ? error.error.message : error.message;
+        this._dialogService.addError(mensaje);
         return [] as Etiqueta[];
       }
     },

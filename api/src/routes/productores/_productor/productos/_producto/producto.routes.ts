@@ -73,6 +73,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
     handler: async function (req, reply) {
       reply.code(204);
       const producto = await productoRepository.getOneBy({ producto: req.params.producto });
+      fastify.log.info({ producto });
       await productoRepository.remove(producto.id_producto);
     },
   });

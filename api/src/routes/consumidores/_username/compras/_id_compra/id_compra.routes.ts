@@ -1,4 +1,4 @@
-import { DeAcaForbidden } from '@errors/response.errors.js';
+import { ForbiddenError } from '@errors/response.errors.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { comprasRepository } from '@repositories/compras.respository.js';
 import { Compra, MedioPago } from '@schemas/compras.schema.js';
@@ -56,7 +56,7 @@ const idCompraRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
         id_consumidor: req.user.id_usuario, //Con este dato ya nos aseguramos que la compra sea del consumidor.
       });
       if (compra.estado_compra !== 'PAGANDO')
-        throw new DeAcaForbidden('La compra está en estado ' + compra.estado_compra);
+        throw new ForbiddenError('La compra está en estado ' + compra.estado_compra);
     },
     handler: async function (req, rep) {
       return MEDIOS_PAGO_DISPONIBLES;

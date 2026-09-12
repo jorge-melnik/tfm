@@ -1,7 +1,7 @@
 import { Profile } from '@schemas/auth.schema.js';
 import { BaseRepository } from './base.repository.js';
 import { UbicacionPost } from '@schemas/usuarios.schema.js';
-import { DeAcaNotFound } from '@errors/response.errors.js';
+import { NotFoundError } from '@errors/response.errors.js';
 
 export class UsuariosRepositoryClass extends BaseRepository<Profile> {
   protected readonly tableName = 'usuarios';
@@ -99,7 +99,7 @@ export class UsuariosRepositoryClass extends BaseRepository<Profile> {
 
     const res = await this.executor.query(consulta, values);
 
-    if (res.rowCount === 0) throw new DeAcaNotFound();
+    if (res.rowCount === 0) throw new NotFoundError();
 
     return res.rows[0];
   }
@@ -111,7 +111,7 @@ export class UsuariosRepositoryClass extends BaseRepository<Profile> {
       RETURNING id_ubicacion;
     `;
     const res = await this.executor.query(consulta, [id_usuario, ubicacion]);
-    if (res.rowCount === 0) throw new DeAcaNotFound();
+    if (res.rowCount === 0) throw new NotFoundError();
   }
 }
 

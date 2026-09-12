@@ -1,7 +1,7 @@
 import { Carrito, Consumidor, ItemCarrito } from '@schemas/consumidores.schema.js';
 import { BaseRepository } from './base.repository.js';
 import { AdicionalesProductor } from '@schemas/usuarios.schema.js';
-import { DeAcaInternal } from '@errors/response.errors.js';
+import { InternalError } from '@errors/response.errors.js';
 
 export class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
   protected readonly tableName = 'consumidores';
@@ -21,7 +21,7 @@ export class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
   }
 
   override async activate(id: string | number): Promise<void> {
-    throw new DeAcaInternal(
+    throw new InternalError(
       'Para activar productor en consumidor usar el método activarProductor de consumidor repository.',
     );
   }
@@ -46,7 +46,7 @@ export class ConsumidorRepositoryClass extends BaseRepository<Consumidor> {
     const params = [id_productor, productor.presentacion];
     const res = await this.executor.query(query, params);
     if (res.rows.length === 0) {
-      throw new DeAcaInternal(`No es posible hacer ese cambio.`);
+      throw new InternalError(`No es posible hacer ese cambio.`);
     }
   }
 

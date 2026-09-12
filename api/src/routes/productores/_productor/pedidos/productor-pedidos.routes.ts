@@ -1,4 +1,4 @@
-import { DeAcaNotFound } from '@errors/response.errors.js';
+import { NotFoundError } from '@errors/response.errors.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { pedidosRepository } from '@repositories/pedidos.respository.js';
 import { EstadoPedido, Pedido } from '@schemas/compras.schema.js';

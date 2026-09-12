@@ -70,8 +70,10 @@ export class ProductosFilter {
       try {
         return this._categoriaService.getAll();
       } catch (error: any) {
-        this._dialogService.addError(error.message);
+        const mensaje = error.error ? error.error.message : error.message;
+        this._dialogService.addError(mensaje);
         return [] as Categoria[];
+        //FIXME: No corresponde try catch aquí.
       }
     },
   });
@@ -85,7 +87,8 @@ export class ProductosFilter {
         if (!categoria) return this._subcategoriaService.getAll();
         return this._categoriaService.getSubcategorias(categoria);
       } catch (error: any) {
-        this._dialogService.addError(error.message);
+        const mensaje = error.error ? error.error.message : error.message;
+        this._dialogService.addError(mensaje);
         return [] as Subcategoria[];
       }
     },

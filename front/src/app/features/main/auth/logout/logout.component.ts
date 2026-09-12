@@ -18,7 +18,8 @@ export class LogoutComponent implements OnInit {
       this.authService.doLogout();
       this.dialogService.addSuccess('Sesión terminada.');
     } catch (error: any) {
-      this.dialogService.addError(error.error ? error.error.message : error.message);
+      const mensaje = error.error ? error.error.message : error.message;
+      this.dialogService.addError(mensaje);
     }
   }
 }

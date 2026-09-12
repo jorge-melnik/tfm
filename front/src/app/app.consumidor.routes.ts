@@ -49,15 +49,6 @@ export const consumidorRoutes: Routes = [
           ),
       },
       {
-        path: 'productor/:username',
-        pathMatch: 'full',
-        title: 'Ver productor',
-        loadComponent: () =>
-          import('@features/consumidor/compras/productor/productor.page').then(
-            (m) => m.ProductorPage,
-          ),
-      },
-      {
         path: '',
         pathMatch: 'full',
         title: 'Mis Compras',
@@ -73,10 +64,20 @@ export const consumidorRoutes: Routes = [
       import('@features/consumidor/productos/productos.page').then((m) => m.ProductosPage),
   },
   {
-    path: 'productores/:username',
+    path: 'productores/:productor',
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        title: 'Ver productor',
+        loadComponent: () =>
+          import('@features/consumidor/compras/productor/productor.page').then(
+            (m) => m.ProductorPage,
+          ),
+      },
+      {
         path: 'productos',
+        pathMatch: 'full',
         title: 'Productos Productor',
         loadComponent: () =>
           import('@features/consumidor/productos/productos.page').then((m) => m.ProductosPage),

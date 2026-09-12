@@ -20,7 +20,7 @@ export const productorRoutes: Routes = [
     canActivate: [hasRoleGuard('PRODUCTOR')],
   },
   {
-    path: ':username',
+    path: ':productor',
     children: [
       {
         path: '',

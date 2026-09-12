@@ -1,5 +1,5 @@
 import { myPool } from '@database/pool.js';
-import { DeAcaInternal } from '@errors/response.errors.js';
+import { InternalError } from '@errors/response.errors.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { consumidorRepository, ConsumidorRepositoryClass } from '@repositories/consumidor.repository.js';
 import {
@@ -69,7 +69,7 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
         await client.query('COMMIT;');
       } catch (error: any) {
         await client.query('ROLLBACK');
-        throw new DeAcaInternal(error.message);
+        throw new InternalError(error.message);
       } finally {
         client.release(); //Necesitamos el try catch para siempre liberar el client
       }

@@ -118,8 +118,8 @@ export class CarritoService {
         await this.updateItem(itemConConsumidor);
       }
     } catch (error: any) {
-      console.error(error);
-      this._dialogService.addError(error.message);
+      const mensaje = error.error ? error.error.message : error.message;
+      this._dialogService.addError(mensaje);
     }
   }
 }

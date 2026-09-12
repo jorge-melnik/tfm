@@ -1,5 +1,5 @@
 import { myPool } from '@database/pool.js';
-import { DeAcaInternal } from '@errors/response.errors.js';
+import { InternalError } from '@errors/response.errors.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { productoRepository } from '@repositories/producto.repository.js';
 import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
@@ -37,7 +37,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
         await client.query('COMMIT;');
       } catch (error: any) {
         client.query('ROLLBACK');
-        throw new DeAcaInternal(error.message);
+        throw new InternalError(error.message);
       } finally {
         client.release();
       }

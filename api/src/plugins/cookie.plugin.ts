@@ -8,7 +8,7 @@ const apiCookieSecret = process.env.API_COOKIE_SECRET;
  * Plugin para generar y leer cookies
  */
 export default fp(async (fastify: FastifyInstance) => {
-  // if (!apiCookieSecret) throw new DeAcaInternal('No se especificó un API_COOKIE_SECRET adecuado.');
+  // if (!apiCookieSecret) throw new InternalError('No se especificó un API_COOKIE_SECRET adecuado.');
   const options: FastifyCookieOptions = {
     secret: apiCookieSecret,
     parseOptions: {},

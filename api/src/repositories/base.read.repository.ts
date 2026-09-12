@@ -1,5 +1,5 @@
 import { myPool } from '@database/pool.js';
-import { DeAcaBadRequest, DeAcaInternal, DeAcaNotFound } from '@errors/response.errors.js';
+import { BadRequestError, InternalError, NotFoundError } from '@errors/response.errors.js';
 import { DeAcaListResponseType, keysCercania, keysFavoritos, keysPaginacion } from '@schemas/core.schemas.js';
 import { Pool, PoolClient } from 'pg';
 import { DatosBase } from '../types/datos-base.js';
@@ -75,7 +75,7 @@ export abstract class BaseReadRepository<T extends DatosBase> {
         keys
           .map((key, index) => {
             const keySegura = key.replace(/[^a-zA-Z0-9_]/g, ''); //Borramos los caracteres que no son válidos en un nombre de columna.
-            if (!keySegura) throw new DeAcaBadRequest('Clave de filtrado no válida'); //Si la linea anterior dejó un string vacío.
+            if (!keySegura) throw new BadRequestError('Clave de filtrado no válida'); //Si la linea anterior dejó un string vacío.
 
             if (keySegura === 'busqueda') {
               const textoOriginal = values[index] as string;
@@ -151,14 +151,14 @@ export abstract class BaseReadRepository<T extends DatosBase> {
   async getOneBy(filters: Partial<T>): Promise<T> {
     const keys = Object.keys(filters);
 
-    if (keys.length === 0) throw new DeAcaBadRequest('No especificaste el filtro');
+    if (keys.length === 0) throw new BadRequestError('No especificaste el filtro');
 
     const { data } = (await this.getBy({ ...filters, limit: 2, page: 1 })) as { data: T[] };
     if (data.length > 1)
-      throw new DeAcaInternal('Se obtuvo más de un valor con ese filtro. Se esperaba uno.');
+      throw new InternalError('Se obtuvo más de un valor con ese filtro. Se esperaba uno.');
 
     if (data.length === 0) {
-      throw new DeAcaNotFound(`No existe registro con ${JSON.stringify(filters)}`);
+      throw new NotFoundError(`No existe registro con ${JSON.stringify(filters)}`);
     }
     return data[0];
   }
