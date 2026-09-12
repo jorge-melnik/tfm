@@ -20,6 +20,7 @@ import {
   ShoppingCart,
 } from '@primeicons/angular';
 import { RouterLink } from '@angular/router';
+import { Popover } from 'primeng/popover';
 
 @Component({
   selector: 'app-producto-card',
@@ -39,6 +40,7 @@ import { RouterLink } from '@angular/router';
     MapMarker,
     Heart,
     HeartFill,
+    Popover,
   ],
   templateUrl: './producto.card.html',
   styleUrl: './producto.card.css',

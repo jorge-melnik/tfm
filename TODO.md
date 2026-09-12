@@ -75,8 +75,8 @@ Historias:
 - [ ] El sistema crea correctamente la cuenta con perfil productor si los datos son válidos
 - [ ] El sistema informa el resultado del registro (éxito o error)
 
-//TODO: Al ver detalle de producto se cambia de layout.
 //TODO: Al comprar queda sin datos de direccion.
+//TODO: Eliminar producto no funciona. 404.
 //TODO: Con ambos en ver detalle de compra como consumidor ve boton marcar para entrega.
 //TODO: Dashboard del productor no está autenticado.
 //TODO: Marcar para entrega no funciona

@@ -195,7 +195,6 @@
         @for (pregunta of preguntas(); track pregunta.id_pregunta) {
           <app-pregunta-card
             [pregunta]="pregunta"
-            [esPropietario]="true"
             (responder)="this.responderPregunta($event)"
           ></app-pregunta-card>
         } @empty {
