@@ -50,8 +50,6 @@ export class ListaPedidosComponent implements OnInit {
 
   async ngOnInit() {
     this.paginationStore.resetPagination();
-    this.opcionesEstado.set([{ label: 'TODOS', value: null }, ...this.opcionesEstado()]);
-    this.estadoSeleccionado.set('TODOS');
   }
 
   public onVerMensajes(pedido: Pedido) {

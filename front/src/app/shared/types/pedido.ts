@@ -3,6 +3,7 @@ import { ImagenProducto } from './producto';
 // export type EstadoPedido = 'PAGANDO' | 'PAGADO' | 'LISTO PARA ENTREGA' | 'ENTREGADO' | 'CANCELADO';
 
 export const EstadoPedido = {
+  TODOS: 'TODOS',
   PAGANDO: 'PAGANDO',
   PAGADO: 'PAGADO',
   LISTO: 'LISTO PARA ENTREGA',
