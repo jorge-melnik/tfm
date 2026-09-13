@@ -13,6 +13,7 @@ export type Profile = {
 
 export type AdicionalesProductor = {
   presentacion: string;
+  id_ubicacion?: number | null | undefined;
 };
 export type AdicionalesConsumidor = {};
 
