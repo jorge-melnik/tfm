@@ -94,7 +94,7 @@ export class PedidosRepositoryClass extends BaseReadRepository<Pedido> {
     if (estadoPedido === 'LISTO PARA ENTREGA') return this.marcarListoParaEntrega(id_productor, id_pedido);
 
     if (estadoPedido === 'ENTREGADO') return this.marcarEntregado(id_productor, id_pedido);
-    //TODO: Considererar otros cambios de estado manual. Faltaría CANCELADO
+    //FIXME: Considererar otros cambios de estado manual. Faltaría CANCELADO
     throw new BadRequestError(
       'No se permite cambiar el pedido a estado ' + estadoPedido + ' en el estado actual.',
     );

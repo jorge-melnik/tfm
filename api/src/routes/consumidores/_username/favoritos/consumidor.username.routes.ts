@@ -55,5 +55,3 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
 };
 
 export default rutasConsumidorPorUsername;
-//TODO: Necesario esta ruta?
-//Mejor hacer un /admin/usuarios y ya.

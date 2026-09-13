@@ -76,3 +76,4 @@ Historias:
 - [ ] El sistema informa el resultado del registro (éxito o error)
 
 // Ubicaciones y refresh_tokens deberían estar asociadas a datos personales. Así se borra al eliminar cuenta
+// TODO: Falta completar página de pagos consumidor. Quizas una para el productor?

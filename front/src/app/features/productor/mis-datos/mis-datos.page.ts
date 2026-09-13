@@ -117,7 +117,6 @@ export class MisDatosPage implements OnInit {
     const { username } = productor;
     try {
       await this.productoresService.update(username, productor, { username: productor.username });
-      //TODO.Aca dar de alta la foto. Llamar a presinged y luego actualizar
       const foto = this.fotoArchivo();
       if (foto) {
         //FIXME: Por ahora no se puede simplemente borrar la foto de perfil.

@@ -22,7 +22,6 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
     },
     onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
-      //FIXME: Eventualmente esto no conviene que devuelva TODO. paginar.
       return comprasRepository.getBy({ username: req.params.username });
     },
   });
@@ -47,8 +46,6 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
     handler: async function (req, rep) {
       rep.code(201);
       const compraCreada: Compra = await comprasRepository.createFromCarrito(req.user.id_usuario, req.body);
-      //TODO: Dar de alta la compra con los datos del carrito y retornarla.
-      //TODO: Si no hay productos en el carrito se retorna error.
       return comprasRepository.getOneBy({ id_compra: compraCreada.id_compra });
     },
   });

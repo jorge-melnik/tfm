@@ -83,7 +83,6 @@ export class QuieroVenderComponent {
       id_ubicacion: this.model().id_ubicacion,
     });
     this._dialogService.addSuccess('¡Felicidades! Ahora eres un productor.');
-    //TODO: recargar el usuario para que se actualice el rol en el store
     this._router.navigate(['/productor']);
   }
 }

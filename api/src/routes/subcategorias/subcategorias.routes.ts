@@ -1,3 +1,4 @@
+import { myPool } from '@database/pool.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { subcategoriasRepository } from '@repositories/subcategorias.repository.js';
 import { Subcategoria } from '@schemas/categoria.schema.js';
@@ -20,14 +21,12 @@ const rutasSlugCategoriaSubcategorias: FastifyPluginAsyncTypebox = async (fastif
                 id_categoria: 1,
                 nombre: 'subcategoria 1',
                 slug: 'subcategoria-1',
-                descripcion: 'descripcion de la subcategoria 1',
                 activo: true,
               },
               {
                 id_categoria: 2,
                 nombre: 'subcategoria 2',
                 slug: 'subcategoria-1',
-                descripcion: 'descripcion de la subcategoria 1',
                 activo: true,
               },
             ],
@@ -48,13 +47,14 @@ const rutasSlugCategoriaSubcategorias: FastifyPluginAsyncTypebox = async (fastif
       description: 'Permite crear una nueva subcategoria dentro de la categoría especificada.',
       body: Type.Object(
         {
+          id_categoria: Subcategoria.properties.id_categoria,
           nombre: Subcategoria.properties.nombre,
         },
         {
           description: 'Datos necesarios para crear una nueva subcategoria.',
           examples: [
-            { id_categoria: 1, nombre: 'subcategoria 1', subcategoria: 'subcategoria-1' },
-            { id_categoria: 2, nombre: 'subcategoria 2', subcategoria: 'subcategoria-2' },
+            { id_categoria: 1, nombre: 'subcategoria 1' },
+            { id_categoria: 2, nombre: 'subcategoria 2' },
           ],
         },
       ),
@@ -63,10 +63,15 @@ const rutasSlugCategoriaSubcategorias: FastifyPluginAsyncTypebox = async (fastif
         500: ErrorResponse,
       },
     },
-    // preHandler : TODO: Verificar que el slug del body coincide con el de params
+    onRequest: [fastify.authenticate, fastify.hasAllRoles('ADMIN')],
     handler: async function (req, reply) {
       reply.code(201);
-      return await subcategoriasRepository.add(req.body);
+      const { id_categoria, nombre } = req.body;
+      return subcategoriasRepository.add({
+        id_categoria,
+        nombre,
+        subcategoria: subcategoriasRepository.createSlug(nombre),
+      });
     },
   });
 };
