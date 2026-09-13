@@ -89,7 +89,7 @@ export class MisDatosPage implements OnInit {
     const { username } = consumidor;
     try {
       await this.consumidoresService.update(username, consumidor);
-      //TODO.Aca dar de alta la foto. Llamar a presinged y luego actualizar
+      //Aca dar de alta la foto. Llamar a presinged y luego actualizar. TOdo esto lo ahce  en el servicio.
       const foto = this.fotoArchivo();
       if (foto) await this.consumidoresService.setFotoPerfil(username, foto);
 

@@ -39,7 +39,6 @@
     [paginator]="true"
     [rows]="this.paginationStore.limit()"
     [first]="this.paginationStore.first()"
-    /* //TODO: Está feo este totalRecords... hacer un total computed*/
     [totalRecords]="this.productosResource.value()?.meta?.total || 0"
     [lazy]="true"
     [rowsPerPageOptions]="this.paginationStore.rowsPerPageOptions()"

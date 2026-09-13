@@ -192,5 +192,6 @@ export class ProductosFilter {
 
   public onDepartamentoChange(departamento: string) {
     this.localidadSeleccionada.set(undefined);
+    this.filtroCambiado.emit();
   }
 }

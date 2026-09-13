@@ -99,6 +99,7 @@
       <p-select
         [options]="this.localidadesResource.value()"
         [(ngModel)]="this.localidadSeleccionada"
+        (onChange)="this.filtroCambiado.emit()"
         optionLabel="nombre"
         optionValue="localidad"
         appendTo="body"
@@ -111,6 +112,7 @@
         name="ubicacion"
         [options]="this.ubicaciones()"
         [(ngModel)]="this.ubicacionSeleccionada"
+        (onChange)="this.filtroCambiado.emit()"
         optionLabel="nombre"
         appendTo="body"
         class="w-full"
@@ -130,6 +132,7 @@
           </div>
           <p-slider
             [(ngModel)]="this.distanciaSeleccionada"
+            (onChange)="this.filtroCambiado.emit()"
             [min]="10"
             [max]="1000"
             [step]="50"

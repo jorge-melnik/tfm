@@ -1,4 +1,14 @@
-import { Component, computed, inject, input, model, OnInit, resource, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  linkedSignal,
+  model,
+  OnInit,
+  resource,
+  signal,
+} from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
@@ -56,6 +66,14 @@ export class ProductosPage implements OnInit {
   public subcategoria = signal<string | undefined>(undefined);
   public etiquetas = signal<string[]>([]);
   public ubicacion = signal<Ubicacion | null>(null);
+  public latitud = linkedSignal({
+    source: this.ubicacion,
+    computation: (ubicacion) => ubicacion?.latitud,
+  });
+  public longitud = linkedSignal({
+    source: this.ubicacion,
+    computation: (ubicacion) => ubicacion?.longitud,
+  });
   public distancia = signal<number | null>(50);
 
   public favorito = signal<boolean | null>(null);
@@ -75,7 +93,8 @@ export class ProductosPage implements OnInit {
       sort: this.paginationStore.sortField(),
       sort_direction: this.paginationStore.sortOrder() === -1 ? 'DESC' : 'ASC',
       busqueda: this.busqueda(),
-      ubicacion: this.ubicacion(),
+      latitud: this.latitud(),
+      longitud: this.longitud(),
       distancia: this.distancia(),
       favorito: this.favorito(),
       productor: this.productor(),
@@ -92,17 +111,14 @@ export class ProductosPage implements OnInit {
         sort,
         sort_direction,
         busqueda,
-        ubicacion,
+        latitud,
+        longitud,
         distancia,
         favorito,
         productor,
       } = params;
       const queryParams: ApiQueryParams = {};
       const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
-      // if (limit) pagination['limit'] = limit;
-      // if (page) pagination['page'] = page;
-      // if (sort) pagination['sort'] = sort;
-      // if (sort_direction) pagination['sort_direction'] = sort_direction;
 
       if (categoria) queryParams['categoria'] = categoria;
       if (subcategoria) queryParams['subcategoria'] = subcategoria;
@@ -110,9 +126,9 @@ export class ProductosPage implements OnInit {
       if (departamento) queryParams['departamento'] = departamento;
       if (localidad) queryParams['localidad'] = localidad;
       if (busqueda) queryParams['busqueda'] = busqueda;
-      if (ubicacion && distancia) {
-        queryParams['latitud'] = ubicacion.latitud;
-        queryParams['longitud'] = ubicacion.longitud;
+      if (latitud && longitud && distancia) {
+        queryParams['latitud'] = latitud;
+        queryParams['longitud'] = longitud;
         queryParams['distancia'] = distancia * 1000;
       }
       if (productor) queryParams['productor'] = productor;
@@ -154,10 +170,36 @@ export class ProductosPage implements OnInit {
 
   ngOnInit() {
     const queryParams = this._route.snapshot.queryParamMap;
+
     if (!this.paginationStore.page()) this.paginationStore.setPage(1);
+
+    const departamento = queryParams.get('departamento');
+    if (departamento) this.departamento.set(departamento);
+
     const etiquetas = queryParams.getAll('etiquetas');
-    console.log({ etiquetas });
-    if (!etiquetas) this.etiquetas.set(etiquetas);
+    if (etiquetas) this.etiquetas.set(etiquetas);
+
+    const categoria = queryParams.get('categoria');
+    if (categoria) this.categoria.set(categoria);
+
+    const subcategoria = queryParams.get('subcategoria');
+    if (subcategoria) this.subcategoria.set(subcategoria);
+
+    const busqueda = queryParams.get('busqueda');
+    if (busqueda) this.busqueda.set(busqueda);
+
+    const distancia = queryParams.get('distancia');
+    const latitud = queryParams.get('latitud');
+    const longitud = queryParams.get('longitud');
+    // if (distancia && latitud && longitud) {
+    //   this.distancia.set(parseInt(distancia));
+    //   this.latitud.set(parseFloat(latitud));
+    //   this.longitud.set(parseFloat(longitud));
+    // }
+
+    const localidad = queryParams.get('localidad');
+    if (localidad) this.localidad.set(localidad);
+
     //TODO: faltan busqueda, limit, etc.
   }
 
@@ -167,12 +209,24 @@ export class ProductosPage implements OnInit {
     const subcategoria = this.subcategoria();
     const etiquetas = this.etiquetas();
     const busqueda = this.busqueda();
+    const departamento = this.departamento();
+    const localidad = this.localidad();
+    const latitud = this.latitud();
+    const longitud = this.longitud();
+    const distancia = this.distancia();
 
     const queryParams: ApiQueryParams = {};
     if (categoria) queryParams['categoria'] = categoria;
     if (subcategoria) queryParams['subcategoria'] = subcategoria;
     if (etiquetas?.length > 0) queryParams['etiquetas'] = etiquetas;
     if (busqueda) queryParams['busqueda'] = busqueda;
+    if (departamento) queryParams['departamento'] = departamento;
+    if (localidad) queryParams['localidad'] = localidad;
+    if (latitud && longitud && distancia) {
+      queryParams['distancia'] = distancia;
+      queryParams['latitud'] = latitud;
+      queryParams['longitud'] = longitud;
+    }
 
     this._router.navigate([], {
       relativeTo: this._route,
