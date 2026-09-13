@@ -47,7 +47,7 @@
           />
         }
       </button>
-      @if (pedido.estado_pedido === 'PAGADO') {
+      @if (pedido.estado_pedido === 'PAGADO' && this.userStore.esProductor()) {
         <button
           pButton
           label="Marcar Listo"

@@ -13,7 +13,7 @@ import { ListaPedidosComponent } from '@shared/components/lista-pedidos/lista-pe
   styleUrl: './pedidos.page.css',
 })
 export class PedidosPage {
-  public readonly username = input.required<string>();
+  public readonly productor = input.required<string>();
   public readonly paginationStore = inject(PaginationStore);
   private readonly _pedidosService = inject(PedidosService);
 
@@ -28,7 +28,7 @@ export class PedidosPage {
 
   private readonly pedidosResource = resource({
     params: () => {
-      const productor = this.username();
+      const productor = this.productor();
       const estado_pedido = this.estado_pedido();
       if (!productor) return undefined;
       return {
@@ -71,7 +71,7 @@ export class PedidosPage {
   }
 
   public async onCambiarEstadoPedido(event: { pedido: Pedido; estado_pedido: EstadoPedidoType }) {
-    const productor = this.username();
+    const productor = this.productor();
     if (!productor) return;
 
     const { pedido, estado_pedido } = event;
