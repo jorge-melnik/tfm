@@ -101,7 +101,6 @@ export class RegisterPage {
 
     try {
       const creado: Profile = await this._authService.register(usuario);
-      //TODO.Aca dar de alta la foto. Llamar a presinged y luego actualizar
       const foto = this.fotoArchivo();
       if (foto) {
         await this._profileService.setFotoPerfil(username, this.selectedRoles()[0], foto);

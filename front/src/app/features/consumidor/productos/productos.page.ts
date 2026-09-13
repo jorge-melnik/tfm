@@ -259,7 +259,7 @@ export class ProductosPage implements OnInit {
     const localidad = queryParams.get('localidad');
     if (localidad) this.localidad.set(localidad);
 
-    //TODO: faltan busqueda, limit, etc.
+    //Faltan busqueda, limit, etc. Pero no parecen tan útiles.
   }
 
   public queryParamsChange() {

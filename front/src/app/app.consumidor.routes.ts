@@ -32,6 +32,12 @@ export const consumidorRoutes: Routes = [
           ),
       },
       {
+        path: ':id_compra/pagos',
+        title: 'Pagos compra',
+        loadComponent: () =>
+          import('@features/consumidor/compras/pagos/pagos.page').then((m) => m.PagosPage),
+      },
+      {
         path: ':id_compra/pagar',
         title: 'Finalizar compra',
         loadComponent: () =>
@@ -39,7 +45,6 @@ export const consumidorRoutes: Routes = [
             (m) => m.ComprasPagarPage,
           ),
       },
-
       {
         path: ':id_compra/pedidos/:id_pedido',
         title: 'Finalizar compra',

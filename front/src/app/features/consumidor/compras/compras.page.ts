@@ -7,13 +7,13 @@ import { ApiQueryParams, PathParams } from '@shared/types/api.types';
 import { DataView, DataViewPageEvent } from 'primeng/dataview';
 import { ButtonModule } from 'primeng/button';
 import { Tag } from 'primeng/tag';
-import { CreditCard, InfoCircle } from '@primeicons/angular';
+import { CreditCard, Dollar, InfoCircle } from '@primeicons/angular';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
 
 @Component({
   selector: 'app-compras',
-  imports: [DataView, ButtonModule, Tag, CreditCard, InfoCircle, RouterLink],
+  imports: [DataView, ButtonModule, Tag, CreditCard, InfoCircle, RouterLink, Dollar],
   templateUrl: './compras.page.html',
 
   styleUrl: './compras.page.css',
