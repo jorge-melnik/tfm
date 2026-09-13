@@ -25,9 +25,12 @@ import { DialogService } from '@shared/services/dialog.service';
 import { ProductosFilter } from '@shared/components/productos-filter/productos.filter';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
 import { Filter } from '@primeicons/angular';
-import { Ubicacion } from '@shared/types/ubicacion';
+import { Coordenadas, Ubicacion } from '@shared/types/ubicacion';
 import { Producto } from '@shared/types/producto';
 import { ConsumidoresService } from '@shared/services/consumidores.service';
+import { LocalidadsService } from '@shared/services/localidades.service';
+import { UbicacionActual } from '@shared/services/stores/ubicacion-actual';
+import { UsuariosService } from '@shared/services/usuarios.service.ts';
 
 @Component({
   selector: 'app-home-consumidor',
@@ -41,6 +44,7 @@ import { ConsumidoresService } from '@shared/services/consumidores.service';
     ProductosFilter,
     Filter,
   ],
+  providers: [UbicacionActual],
   templateUrl: './productos.page.html',
   styleUrl: './productos.page.css',
 })
@@ -51,9 +55,14 @@ export class ProductosPage implements OnInit {
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
   private readonly _carritoService = inject(CarritoService);
+  private readonly _usuarioService = inject(UsuariosService);
   private readonly _userStore = inject(UserStore);
   private readonly _dialogService = inject(DialogService);
   private readonly _consumidoresService = inject(ConsumidoresService);
+  private readonly _localidadesService = inject(LocalidadsService);
+  public readonly ubicacionActualStore = inject(UbicacionActual);
+  public readonly userStore = inject(UserStore);
+  public readonly localidadesService = inject(LocalidadsService);
 
   public cdnUrl = environment.cdnUrl;
 
@@ -65,15 +74,14 @@ export class ProductosPage implements OnInit {
   public categoria = signal<string | undefined>(undefined);
   public subcategoria = signal<string | undefined>(undefined);
   public etiquetas = signal<string[]>([]);
-  public ubicacion = signal<Ubicacion | null>(null);
-  public latitud = linkedSignal({
-    source: this.ubicacion,
-    computation: (ubicacion) => ubicacion?.latitud,
-  });
-  public longitud = linkedSignal({
-    source: this.ubicacion,
-    computation: (ubicacion) => ubicacion?.longitud,
-  });
+  public ubicacion = computed(() =>
+    this.ubicaciones().find((u) => u.nombre === this.nombreUbicacionSeleccionada()),
+  );
+  public nombreUbicacionSeleccionada = signal<string | null>(null);
+
+  public latitud = computed(() => this.ubicacion()?.latitud);
+  public longitud = computed(() => this.ubicacion()?.longitud);
+
   public distancia = signal<number | null>(50);
 
   public favorito = signal<boolean | null>(null);
@@ -149,6 +157,44 @@ export class ProductosPage implements OnInit {
     },
   });
 
+  private ubicacionAdicionalInicial = signal<Ubicacion | null>(null);
+
+  private ubicacionesResource = resource({
+    params: () => {
+      const user = this.userStore.user();
+      if (!user) return undefined;
+      const username = user.username;
+      const ubicacionActual: Coordenadas | null = this.ubicacionActualStore.ubicacion();
+      const ubicacionAdicionalInicial = this.ubicacionAdicionalInicial();
+      return {
+        ubicacionAdicionalInicial,
+        username,
+        latitud: ubicacionActual?.latitud,
+        longitud: ubicacionActual?.longitud,
+      };
+    },
+    loader: async ({ params }) => {
+      const { ubicacionAdicionalInicial, username, latitud, longitud } = params;
+      const ubicaciones = await this._usuarioService.getUbicaciones(username);
+      if (latitud && longitud) {
+        const nuevaUbicacion = await this.localidadesService.getNuevaUbicacionFromCoordenada(
+          latitud,
+          longitud,
+        );
+        nuevaUbicacion.nombre = 'Ubicación actual';
+        ubicaciones.push(nuevaUbicacion);
+      }
+      if (ubicacionAdicionalInicial) {
+        ubicaciones.push(ubicacionAdicionalInicial);
+      }
+      return ubicaciones;
+    },
+  });
+
+  public ubicaciones = computed(() => {
+    return this.ubicacionesResource.value() || [];
+  });
+
   public readonly totalRecords = computed(() => {
     return this.productosResource.value()?.meta?.total ?? 0;
   });
@@ -168,7 +214,7 @@ export class ProductosPage implements OnInit {
 
   public layout = signal<'grid' | 'list'>('grid'); // Estado del diseño (tarjeta o lista)
 
-  ngOnInit() {
+  async ngOnInit() {
     const queryParams = this._route.snapshot.queryParamMap;
 
     if (!this.paginationStore.page()) this.paginationStore.setPage(1);
@@ -188,14 +234,27 @@ export class ProductosPage implements OnInit {
     const busqueda = queryParams.get('busqueda');
     if (busqueda) this.busqueda.set(busqueda);
 
+    const ubicacion = queryParams.get('ubicacion');
     const distancia = queryParams.get('distancia');
     const latitud = queryParams.get('latitud');
     const longitud = queryParams.get('longitud');
-    // if (distancia && latitud && longitud) {
-    //   this.distancia.set(parseInt(distancia));
-    //   this.latitud.set(parseFloat(latitud));
-    //   this.longitud.set(parseFloat(longitud));
-    // }
+    //FIXME: Faltaría crear una ubicación ficticia para que quede seleccionada
+
+    if (distancia) {
+      if (latitud && longitud) {
+        const ubicacion = await this._localidadesService.getNuevaUbicacionFromCoordenada(
+          parseFloat(latitud),
+          parseFloat(longitud),
+        );
+        ubicacion.nombre = 'Coordenadas URL';
+        this.ubicacionAdicionalInicial.set(ubicacion);
+        this.nombreUbicacionSeleccionada.set(ubicacion.nombre);
+      } else if (ubicacion) {
+        this.nombreUbicacionSeleccionada.set(ubicacion);
+      }
+
+      this.distancia.set(parseInt(distancia));
+    }
 
     const localidad = queryParams.get('localidad');
     if (localidad) this.localidad.set(localidad);
@@ -214,6 +273,7 @@ export class ProductosPage implements OnInit {
     const latitud = this.latitud();
     const longitud = this.longitud();
     const distancia = this.distancia();
+    const ubicacion = this.nombreUbicacionSeleccionada();
 
     const queryParams: ApiQueryParams = {};
     if (categoria) queryParams['categoria'] = categoria;
@@ -222,10 +282,14 @@ export class ProductosPage implements OnInit {
     if (busqueda) queryParams['busqueda'] = busqueda;
     if (departamento) queryParams['departamento'] = departamento;
     if (localidad) queryParams['localidad'] = localidad;
-    if (latitud && longitud && distancia) {
+    if (ubicacion && latitud && longitud && distancia) {
+      if (ubicacion === 'Ubicación actual' || ubicacion === 'Coordenadas URL') {
+        queryParams['latitud'] = latitud;
+        queryParams['longitud'] = longitud;
+      } else {
+        queryParams['ubicacion'] = ubicacion;
+      }
       queryParams['distancia'] = distancia;
-      queryParams['latitud'] = latitud;
-      queryParams['longitud'] = longitud;
     }
 
     this._router.navigate([], {

@@ -23,12 +23,13 @@
         [(etiquetasSeleccionadas)]="this.etiquetas"
         [(departamentoSeleccionado)]="this.departamento"
         [(localidadSeleccionada)]="this.localidad"
-        [(ubicacionSeleccionada)]="this.ubicacion"
+        [(ubicacionSeleccionada)]="this.nombreUbicacionSeleccionada"
         [(distanciaSeleccionada)]="this.distancia"
         [(layout)]="this.layout"
         [(filtroBusqueda)]="this.busqueda"
         [(favoritoSeleccionado)]="this.favorito"
         (filtroCambiado)="this.queryParamsChange()"
+        [ubicaciones]="this.ubicaciones()"
       ></app-productos-filter>
     </div>
   }
