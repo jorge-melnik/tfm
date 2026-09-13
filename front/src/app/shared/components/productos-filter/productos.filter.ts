@@ -31,8 +31,7 @@ export class ProductosFilter {
   private readonly _etiquetasService = inject(EtiquetasService);
   private readonly _dialogService = inject(DialogService);
   private readonly _usuarioService = inject(UsuariosService);
-  private readonly userStore = inject(UserStore);
-  public esProductor = this.userStore.esProductor;
+  public readonly userStore = inject(UserStore);
   public readonly paginationStore = inject(PaginationStore);
   public readonly departamentosService = inject(DepartamentosService);
   public readonly localidadesService = inject(LocalidadsService);
@@ -40,7 +39,7 @@ export class ProductosFilter {
 
   opcionesLayout = computed(() => {
     const base = ['grid', 'list'];
-    return this.esProductor() ? [...base, 'table'] : base;
+    return this.userStore.esProductor() ? [...base, 'table'] : base;
   });
 
   readonly opcionesFavoritos = [

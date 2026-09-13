@@ -19,20 +19,22 @@
           ></i>
         </ng-template>
       </p-selectbutton>
-      <p-selectbutton
-        [options]="opcionesFavoritos"
-        [(ngModel)]="this.favoritoSeleccionado"
-        optionLabel="label"
-        optionValue="value"
-        [allowEmpty]="true"
-      >
-        <ng-template let-item pTemplate="item">
-          <div class="flex items-center gap-1.5 px-1 text-xs">
-            <svg [attr.data-p-icon]="item.icon" class="w-3.5 h-3.5 shrink-0" />
-            <span>{{ item.label }}</span>
-          </div>
-        </ng-template>
-      </p-selectbutton>
+      @if (this.userStore.esConsumidor()) {
+        <p-selectbutton
+          [options]="opcionesFavoritos"
+          [(ngModel)]="this.favoritoSeleccionado"
+          optionLabel="label"
+          optionValue="value"
+          [allowEmpty]="true"
+        >
+          <ng-template let-item pTemplate="item">
+            <div class="flex items-center gap-1.5 px-1 text-xs">
+              <svg [attr.data-p-icon]="item.icon" class="w-3.5 h-3.5 shrink-0" />
+              <span>{{ item.label }}</span>
+            </div>
+          </ng-template>
+        </p-selectbutton>
+      }
     </div>
 
     <p-select
@@ -81,58 +83,60 @@
       [showClear]="true"
     />
 
-    <p-select
-      [options]="this.departamentosResource.value()"
-      [(ngModel)]="this.departamentoSeleccionado"
-      (onChange)="this.onDepartamentoChange($event.value)"
-      optionLabel="nombre"
-      optionValue="departamento"
-      appendTo="body"
-      class="w-full"
-      [showClear]="true"
-      placeholder="Departamento"
-    />
+    @if (this.userStore.esConsumidor()) {
+      <p-select
+        [options]="this.departamentosResource.value()"
+        [(ngModel)]="this.departamentoSeleccionado"
+        (onChange)="this.onDepartamentoChange($event.value)"
+        optionLabel="nombre"
+        optionValue="departamento"
+        appendTo="body"
+        class="w-full"
+        [showClear]="true"
+        placeholder="Departamento"
+      />
 
-    <p-select
-      [options]="this.localidadesResource.value()"
-      [(ngModel)]="this.localidadSeleccionada"
-      optionLabel="nombre"
-      optionValue="localidad"
-      appendTo="body"
-      class="w-full"
-      [showClear]="true"
-      placeholder="Localidad"
-    />
+      <p-select
+        [options]="this.localidadesResource.value()"
+        [(ngModel)]="this.localidadSeleccionada"
+        optionLabel="nombre"
+        optionValue="localidad"
+        appendTo="body"
+        class="w-full"
+        [showClear]="true"
+        placeholder="Localidad"
+      />
 
-    <p-select
-      name="ubicacion"
-      [options]="this.ubicaciones()"
-      [(ngModel)]="this.ubicacionSeleccionada"
-      optionLabel="nombre"
-      appendTo="body"
-      class="w-full"
-      [showClear]="true"
-      placeholder="Cercano a"
-    />
+      <p-select
+        name="ubicacion"
+        [options]="this.ubicaciones()"
+        [(ngModel)]="this.ubicacionSeleccionada"
+        optionLabel="nombre"
+        appendTo="body"
+        class="w-full"
+        [showClear]="true"
+        placeholder="Cercano a"
+      />
 
-    @if (this.ubicacionSeleccionada()) {
-      <div
-        class="flex flex-col justify-center px-3 py-1.5 border rounded-md bg-surface-0 dark:bg-surface-900 border-surface-300 dark:border-surface-700 h-[42px] w-full gap-1"
-      >
+      @if (this.ubicacionSeleccionada()) {
         <div
-          class="flex justify-between items-center text-xs text-surface-600 dark:text-surface-400"
+          class="flex flex-col justify-center px-3 py-1.5 border rounded-md bg-surface-0 dark:bg-surface-900 border-surface-300 dark:border-surface-700 h-[42px] w-full gap-1"
         >
-          <span>Distancia:</span>
-          <span class="font-bold text-primary">{{ this.distanciaSeleccionada() }} km</span>
+          <div
+            class="flex justify-between items-center text-xs text-surface-600 dark:text-surface-400"
+          >
+            <span>Distancia:</span>
+            <span class="font-bold text-primary">{{ this.distanciaSeleccionada() }} km</span>
+          </div>
+          <p-slider
+            [(ngModel)]="this.distanciaSeleccionada"
+            [min]="10"
+            [max]="1000"
+            [step]="50"
+            class="w-full"
+          />
         </div>
-        <p-slider
-          [(ngModel)]="this.distanciaSeleccionada"
-          [min]="10"
-          [max]="1000"
-          [step]="50"
-          class="w-full"
-        />
-      </div>
+      }
     }
 
     <div class="relative w-full">

@@ -76,6 +76,4 @@ Historias:
 - [ ] El sistema informa el resultado del registro (éxito o error)
 
 //TODO: Al comprar queda sin datos de direccion.
-//TODO: Dashboard del productor no está autenticado.
-//TODO: Vista productos del productor esta hecha pate.
 // Ubicaciones y refresh_tokens deberían estar asociadas a datos personales. Así se borra al eliminar cuenta
