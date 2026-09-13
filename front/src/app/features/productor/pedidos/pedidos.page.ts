@@ -1,4 +1,4 @@
-import { Component, input, resource, inject, computed, signal } from '@angular/core';
+import { Component, input, resource, inject, computed, signal, OnInit } from '@angular/core';
 import { PedidosService } from '@shared/services/pedidos.service';
 import { ApiQueryParams } from '@shared/types/api.types';
 import { EstadoPedido, EstadoPedidoType, Pedido } from '@shared/types/pedido';
@@ -12,7 +12,7 @@ import { ListaPedidosComponent } from '@shared/components/lista-pedidos/lista-pe
   templateUrl: './pedidos.page.html',
   styleUrl: './pedidos.page.css',
 })
-export class PedidosPage {
+export class PedidosPage implements OnInit {
   public readonly productor = input.required<string>();
   public readonly paginationStore = inject(PaginationStore);
   private readonly _pedidosService = inject(PedidosService);
@@ -65,6 +65,10 @@ export class PedidosPage {
   });
 
   public isLoading = computed(() => this.pedidosResource.isLoading());
+
+  async ngOnInit(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
 
   public onFiltroChange() {
     this.paginationStore.setPage(0);

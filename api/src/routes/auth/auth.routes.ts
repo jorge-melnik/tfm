@@ -250,7 +250,6 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
         500: DeAcaErrorResponse,
       },
     },
-    // preHandler : TODO: verificar que roles coincida con consumidor y productor
     preHandler: async function (req, rep) {
       if (!req.body.roles || req.body.roles.length === 0) {
         throw new BadRequestError('Debe seleccionar al menos un rol.');

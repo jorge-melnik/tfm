@@ -108,8 +108,6 @@ export class ComprasRepositoryClass extends BaseReadRepository<Compra> {
     ]);
   }
 
-  //TODO: Falta trigger para que se actualice el estado_compra en base al estado_pago
-
   async aprobarPago(id_compra: number, id_pago: string): Promise<void> {
     const consulta = `
       UPDATE public.pagos 

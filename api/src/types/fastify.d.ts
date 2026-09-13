@@ -25,6 +25,13 @@ declare module 'fastify' {
     hasSomeRol: (roles: Rol[] | Rol) => (req: FastifyRequest, reply: FastifyReply) => Promise<void>;
 
     /**
+     *
+     * @param rol Hook que auteriza en base a si el usuario logueado tiene determinado rol y además es el dueño de recurso.
+     * @returns
+     */
+    selfWithRole: (rol: Rol) => (req: FastifyRequest, reply: FastifyReply) => Promise<void>;
+
+    /**
      * Hook que asegura la consistencia de datos comparando que los campos especificados en la URL (`req.params`)
      * existan y tengan el mismo valor en el cuerpo (`req.body`).
      * @throws {BadRequestError} Si los valores no coinciden o faltan propiedades en el body.

@@ -1,7 +1,6 @@
-import { NotFoundError } from '@errors/response.errors.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { pedidosRepository } from '@repositories/pedidos.respository.js';
-import { EstadoPedido, Pedido } from '@schemas/compras.schema.js';
+import { Pedido } from '@schemas/compras.schema.js';
 import { DeAcaErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
 import { Productor } from '@schemas/productores.schema.js';
 
@@ -29,7 +28,7 @@ const rutasProductorPedidos: FastifyPluginAsyncTypebox = async (fastify, opts): 
       },
     },
     onRequest: [fastify.authenticate],
-    preHandler: async function (req, rep) {},
+    preHandler: [fastify.selfWithRole('PRODUCTOR')],
     handler: async function (req, reply) {
       return pedidosRepository.getBy({ productor: req.params.productor, ...req.query });
     },

@@ -1,7 +1,7 @@
 import { myPool } from '@database/pool.js';
 import { InternalError } from '@errors/response.errors.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
-import { consumidorRepository, ConsumidorRepositoryClass } from '@repositories/consumidor.repository.js';
+import { consumidorRepository } from '@repositories/consumidor.repository.js';
 import {
   datosPersonalesRepository,
   DatosPersonalessRepositoryClass,
@@ -25,9 +25,9 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
         500: DeAcaErrorResponse,
       },
     },
-    // onRequest : //FIXME: Solo para admin.
+    onRequest: [fastify.authenticate],
+    preHandler: [fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
-      //FIXME: Eventualmente esto no conviene que devuelva TODO. paginar.
       return consumidorRepository.getOneBy({ username: req.params.username });
     },
   });
@@ -46,7 +46,8 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
         500: DeAcaErrorResponse,
       },
     },
-    // preHandler : //FIXME: fastify.seModificaASiMismo
+    onRequest: [fastify.authenticate],
+    preHandler: [fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
       reply.code(204);
       const { username } = req.params;
@@ -57,7 +58,7 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
       try {
         // const prodRepoWT: ConsumidorRepositoryClass = consumidorRepository.withTransaction(client);
         const dpRepoWT: DatosPersonalessRepositoryClass = datosPersonalesRepository.withTransaction(client);
-        // TODO: Está feo ese datosPersonalesRepository, lo que sea que haga se podría repetir en el consumidor y productor repository?
+        // FIXME: Está feo ese datosPersonalesRepository, lo que sea que haga se podría repetir en el consumidor y productor repository?
         await client.query('BEGIN;');
         // await prodRepoWT.update(id_consumidor, {}); //Actualizo datos específicos del consumidor
         await dpRepoWT.update(id_consumidor, {
@@ -89,7 +90,8 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
         500: DeAcaErrorResponse,
       },
     },
-    // preHandler : //FIXME: fastify.seModificaASiMismo
+    onRequest: [fastify.authenticate],
+    preHandler: [fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
       reply.code(204);
       const usuario = await datosPersonalesRepository.getOneBy({ username: req.params.username });
@@ -99,5 +101,3 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
 };
 
 export default rutasConsumidorPorUsername;
-//TODO: Necesario esta ruta?
-//Mejor hacer un /admin/usuarios y ya.

@@ -80,8 +80,12 @@ class AuthRepositoryClass {
       encoded,
     ]);
 
-    //TODO: Si no existe refresh token, hay que borrar todas las sesiones por seguridad
-    if (rows.length === 0) throw new UnAuthenticatedError('RT no valido.');
+    if (rows.length === 0) {
+      //Si no existe refresh token, hay que borrar todas las sesiones por seguridad
+      const borrarQuery = 'DELETE FROM public.refresh_tokens WHERE id_usuario=$1';
+      await myPool.query(borrarQuery, [decoded.id_usuario]);
+      throw new UnAuthenticatedError('RT no valido.');
+    }
   }
 
   /**
