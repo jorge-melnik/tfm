@@ -75,7 +75,6 @@ export class CompraDetallePage {
     this._router.navigate(['/pagar', compra.id_compra]);
   }
 
-  //TODO: Mover este método a algún servicio o función global o environment
   public obtenerSeveridadEstado(
     estado: string,
   ): 'success' | 'warn' | 'danger' | 'info' | 'secondary' {

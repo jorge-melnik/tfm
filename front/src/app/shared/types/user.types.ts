@@ -1,3 +1,5 @@
+import { Ubicacion } from './ubicacion';
+
 export type Rol = 'PRODUCTOR' | 'CONSUMIDOR' | 'ADMIN';
 export type TipoLogin = 'email' | 'username';
 
@@ -38,6 +40,7 @@ export interface Productor {
   celular: string;
   foto_url?: string;
   presentacion: string;
+  ubicacion?: Ubicacion;
 }
 export interface Consumidor {
   id_consumidor: string;

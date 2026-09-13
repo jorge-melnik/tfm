@@ -75,5 +75,4 @@ Historias:
 - [ ] El sistema crea correctamente la cuenta con perfil productor si los datos son válidos
 - [ ] El sistema informa el resultado del registro (éxito o error)
 
-//TODO: Al comprar queda sin datos de direccion.
 // Ubicaciones y refresh_tokens deberían estar asociadas a datos personales. Así se borra al eliminar cuenta

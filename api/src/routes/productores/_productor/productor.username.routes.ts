@@ -24,7 +24,7 @@ const productorUsernameRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
         500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
+    onRequest: [fastify.authenticate],
     handler: async function (req, reply) {
       return productorRepository.getOneBy({ username: req.params.productor });
     },

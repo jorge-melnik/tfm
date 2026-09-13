@@ -19,6 +19,7 @@ const rutasProductorPedidos: FastifyPluginAsyncTypebox = async (fastify, opts): 
         DeAcaQueryString,
         Type.Object({
           estado_pedido: Type.Optional(Type.String()),
+          consumidor: Type.Optional(Type.String()),
         }),
       ]),
       response: {
@@ -27,7 +28,7 @@ const rutasProductorPedidos: FastifyPluginAsyncTypebox = async (fastify, opts): 
         500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
+    onRequest: [fastify.authenticate],
     handler: async function (req, reply) {
       return pedidosRepository.getBy({ productor: req.params.productor, ...req.query });
     },

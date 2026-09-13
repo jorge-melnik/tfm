@@ -107,7 +107,6 @@ export class CarritoPage implements OnInit {
         contacto_receptor: contacto,
       };
 
-      //TODO: Falta agregar direccion envio y contacto en el formulario
       const compra = await this._comprasService.create(datos, { username });
       this._carritoService.recargarCarrito();
       this.contacto_receptor.set('');

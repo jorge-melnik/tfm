@@ -22,6 +22,7 @@ import { UserStore } from '@shared/services/stores/user.store';
     Send,
     Comments,
     Badge,
+    RouterLink,
   ],
   templateUrl: './vista-pedido.component.html',
   styleUrl: './vista-pedido.component.css',

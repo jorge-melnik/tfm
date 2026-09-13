@@ -20,25 +20,27 @@ import { PaginationStore } from '@shared/services/stores/pagination.store';
 export class ProductorPage {
   private _pedidosService = inject(PedidosService);
   public readonly paginationStore = inject(PaginationStore);
-  private _userStore = inject(UserStore);
+  public userStore = inject(UserStore);
 
   public estado_pedido = signal<EstadoPedidoType | 'TODOS'>('TODOS');
 
-  public username = input.required<string>();
+  public productor = input.required<string>();
 
   private readonly productorResource = httpResource<Productor>(
-    () => `${environment.apiUrl}/productores/${this._userStore.user()?.username}`,
+    () => `${environment.apiUrl}/productores/${this.productor()}`,
   );
 
   public productorData = computed(() => this.productorResource.value());
 
   private readonly pedidosResource = resource({
     params: () => {
-      const productor = this.username();
+      const productor = this.productor();
+      const consumidor = this.userStore.user()?.username;
       const estado_pedido = this.estado_pedido();
-      if (!productor) return undefined;
+      if (!productor || !consumidor) return undefined;
       return {
         productor,
+        consumidor,
         estado_pedido,
         limit: this.paginationStore.limit(),
         page: this.paginationStore.page(),
@@ -47,13 +49,12 @@ export class ProductorPage {
       };
     },
     loader: async ({ params }) => {
-      const { productor, estado_pedido, limit, page, sort, sort_direction } = params;
+      const { productor, consumidor, estado_pedido, limit, page, sort, sort_direction } = params;
 
       const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
-      const queryParams: ApiQueryParams = { productor };
-      console.log({ estado_pedido });
+      const queryParams: ApiQueryParams = { productor, consumidor }; //Ninguno de los dos puede ser null.
       if (estado_pedido && estado_pedido !== 'TODOS') queryParams['estado_pedido'] = estado_pedido;
-      console.log({ queryParams });
+
       return this._pedidosService.getBy({ queryParams, pathParams: { productor }, pagination });
     },
   });
