@@ -75,6 +75,7 @@ export class PedidosPage implements OnInit {
   }
 
   public async onCambiarEstadoPedido(event: { pedido: Pedido; estado_pedido: EstadoPedidoType }) {
+    console.log('onCambiarEstadoPedido');
     const productor = this.productor();
     if (!productor) return;
 

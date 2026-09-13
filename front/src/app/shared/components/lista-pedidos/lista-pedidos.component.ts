@@ -57,4 +57,9 @@ export class ListaPedidosComponent implements OnInit {
     if (!user) return;
     this._router.navigate(['/', 'productor', user.username, 'consultas', 'chats']);
   }
+
+  public cambiaEstadoPedido = output<{ pedido: Pedido; estado_pedido: EstadoPedidoType }>();
+  public onCambiarEstadoPedido(cambio: { pedido: Pedido; estado_pedido: EstadoPedidoType }) {
+    this.cambiaEstadoPedido.emit(cambio);
+  }
 }
