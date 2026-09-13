@@ -10,7 +10,7 @@ import {
 
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
 
@@ -29,9 +29,10 @@ const productoImagenesRoutes: FastifyPluginAsyncTypebox = async (fastify, opts):
       body: Type.Array(ImagenProducto),
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
+    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
     handler: async (req, reply) => {
       reply.code(204);
       const producto = await productoRepository.getOneBy({ producto: req.params.producto });
@@ -55,7 +56,10 @@ const productoImagenesRoutes: FastifyPluginAsyncTypebox = async (fastify, opts):
         200: Type.Array(PresignedUrl, { minItems: 1, maxItems: 5 }),
       },
     },
-    onRequest: [fastify.authenticate], //FIXME: Solo para productor chequeando que es su producto?
+    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
+    preHandler: async (req, reply) => {
+      await productoRepository.getOneBy({ producto: req.params.producto });
+    },
     handler: async (req, reply) => {
       const { productor, producto } = req.params;
       const archivos = req.body;

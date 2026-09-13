@@ -1,7 +1,7 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { subcategoriasRepository } from '@repositories/subcategorias.repository.js';
 import { Subcategoria } from '@schemas/categoria.schema.js';
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 
 const rutasSlugCategoriaSubcategorias: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
@@ -33,7 +33,7 @@ const rutasSlugCategoriaSubcategorias: FastifyPluginAsyncTypebox = async (fastif
             ],
           ],
         }),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
     handler: async function (req, reply) {
@@ -60,7 +60,7 @@ const rutasSlugCategoriaSubcategorias: FastifyPluginAsyncTypebox = async (fastif
       ),
       response: {
         201: Subcategoria,
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
     // preHandler : TODO: Verificar que el slug del body coincide con el de params

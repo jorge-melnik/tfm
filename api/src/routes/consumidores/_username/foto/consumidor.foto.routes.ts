@@ -2,7 +2,7 @@ import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { PresignedUrl, RequestPresignedUrlSchema } from '@schemas/producto.schema.js';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 import { Consumidor } from '@schemas/consumidores.schema.js';
 import { consumidorRepository } from '@repositories/consumidor.repository.js';
 import { datosPersonalesRepository } from '@repositories/datos-personales.respository.js';
@@ -21,10 +21,10 @@ const consumidorFotoRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): P
       body: Type.Object({ foto_url: Consumidor.properties.foto_url }),
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate], //FIXME: Solo para si mismo
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async (req, reply) => {
       reply.code(204);
       const usuario = await consumidorRepository.getOneBy({ username: req.params.username });
@@ -45,7 +45,7 @@ const consumidorFotoRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): P
         200: Type.Array(PresignedUrl, { minItems: 1, maxItems: 5 }),
       },
     },
-    onRequest: [fastify.authenticate], //FIXME: Solo para consumidor chequeando que es su propio perfil?
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async (req, reply) => {
       const { username } = req.params;
       const item = req.body;

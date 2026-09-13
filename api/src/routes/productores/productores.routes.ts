@@ -1,7 +1,7 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { productorRepository } from '@repositories/productor.repository.js';
 
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 import { Productor } from '@schemas/productores.schema.js';
 
 const productoresRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -14,10 +14,10 @@ const productoresRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Prom
       `,
       response: {
         200: Type.Array(Productor, { description: 'Listado de productores.' }),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // onRequest : //FIXME: Solo para admin.
+    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
     handler: async function (req, reply) {
       //FIXME: Eventualmente esto no conviene que devuelva //TODO: paginar.
       return productorRepository.getAll();

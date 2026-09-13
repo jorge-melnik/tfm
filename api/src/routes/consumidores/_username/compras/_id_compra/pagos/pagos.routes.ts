@@ -3,7 +3,7 @@ import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { comprasRepository } from '@repositories/compras.respository.js';
 import { Compra, Pago, PagoTransferencia } from '@schemas/compras.schema.js';
 import { Consumidor } from '@schemas/consumidores.schema.js';
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 import { getProcesadorDePago } from '@services/pagos/factory.js';
 
 const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -20,11 +20,11 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
       }),
       response: {
         200: Type.Array(Pago, { description: 'Listado de consumidores.' }),
-        404: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        404: ErrorResponse,
+        500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     preHandler: async function (req, rep) {
       await comprasRepository.getOneBy({
         id_compra: req.params.id_compra,
@@ -49,7 +49,7 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
       }),
       body: PagoTransferencia,
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     preHandler: async function (req, rep) {
       const compra = await comprasRepository.getOneBy({
         id_compra: req.params.id_compra,

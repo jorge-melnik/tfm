@@ -21,7 +21,7 @@ const idCompraRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
         200: Compra,
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, rep) {
       console.log({
         id_compra: req.params.id_compra,
@@ -49,7 +49,7 @@ const idCompraRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
         200: Type.Array(MedioPago),
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     preHandler: async function (req, rep) {
       const compra: Compra = await comprasRepository.getOneBy({
         id_compra: req.params.id_compra,

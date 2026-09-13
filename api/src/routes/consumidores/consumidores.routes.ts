@@ -2,7 +2,7 @@
 // import { consumidorRepository } from '@repositories/consumidor.repository.js';
 // import { Consumidor } from '@schemas/consumidores.schema.js';
 
-// import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+// import { ErrorResponse } from '@schemas/core.schemas.js';
 
 // const rutasConsumidores: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
 //   fastify.get('/', {
@@ -14,7 +14,7 @@
 //       `,
 //       response: {
 //         200: Type.Array(Consumidor, { description: 'Listado de consumidores.' }),
-//         500: DeAcaErrorResponse,
+//         500: ErrorResponse,
 //       },
 //     },
 //     // onRequest : //FIXME: Solo para admin.

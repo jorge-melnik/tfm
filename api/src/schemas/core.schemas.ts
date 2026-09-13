@@ -22,14 +22,14 @@ export type DeAcaListResponseType<T> = {
   data: T[];
   meta: RawResponse['meta']; // Hereda automáticamente la estructura exacta de 'meta' de TypeBox
 };
-export const DeAcaErrorResponse = Type.Object(
+export const ErrorResponse = Type.Object(
   {
     statusCode: Type.Integer(),
     code: Type.Optional(Type.String()),
     error: Type.String(),
     message: Type.String(),
   },
-  { $id: 'DeAcaErrorResponse' },
+  { $id: 'ErrorResponse' },
 );
 
 const SortDirection = Type.Union(
@@ -73,5 +73,5 @@ export const keysFavoritos = ['id_consumidor_autenticado']; //favorito mismo ent
 export type DeAcaQueryString = Static<typeof DeAcaQueryString>;
 
 export default fp(async (fastify: FastifyInstance) => {
-  // fastify.addSchema(DeAcaErrorResponse);
+  // fastify.addSchema(ErrorResponse);
 });

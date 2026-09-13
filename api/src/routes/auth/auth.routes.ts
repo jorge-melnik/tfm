@@ -13,7 +13,7 @@ import {
   TokenSchema,
   User,
 } from '@schemas/auth.schema.js';
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 import { FastifyReply } from 'fastify';
 import { CookieSerializeOptions } from '@fastify/cookie';
 import { AdicionalesConsumidor, AdicionalesProductor } from '@schemas/usuarios.schema.js';
@@ -62,8 +62,8 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       body: LoginEmailSchema,
       response: {
         200: TokenSchema,
-        401: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        401: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     handler: async function (req, rep) {
@@ -80,8 +80,8 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       body: LoginUsernameSchema,
       response: {
         200: TokenSchema,
-        401: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        401: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     handler: async function (req, rep) {
@@ -98,8 +98,8 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       security: [{ bearerAuth: [] }],
       response: {
         200: ProfileSchema,
-        401: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        401: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     onRequest: [fastify.authenticate],
@@ -117,8 +117,8 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       body: AdicionalesProductor,
       response: {
         200: ProfileSchema,
-        401: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        401: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     onRequest: [fastify.authenticate],
@@ -138,8 +138,8 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       body: AdicionalesConsumidor,
       response: {
         200: ProfileSchema,
-        401: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        401: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     onRequest: [fastify.authenticate],
@@ -163,8 +163,8 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       }),
       response: {
         204: Type.Null(),
-        401: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        401: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     onRequest: [fastify.authenticate],
@@ -195,7 +195,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
         'Permite obtener un nuevo access_token con un refresh token válido. A su vez, se realiza refresh token rotation.',
       response: {
         200: TokenSchema,
-        401: DeAcaErrorResponse,
+        401: ErrorResponse,
       },
       security: [{ cookieAuth: [] }],
     },
@@ -246,8 +246,8 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       body: RegisterSchema,
       response: {
         200: TokenSchema,
-        401: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        401: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     preHandler: async function (req, rep) {

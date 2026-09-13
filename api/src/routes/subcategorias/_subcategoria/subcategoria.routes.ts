@@ -1,7 +1,7 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { subcategoriasRepository } from '@repositories/subcategorias.repository.js';
 import { Subcategoria } from '@schemas/categoria.schema.js';
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 
 const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
@@ -15,8 +15,8 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       }),
       response: {
         200: Subcategoria,
-        404: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        404: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     handler: async function (req, reply) {
@@ -45,8 +45,8 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       ),
       response: {
         204: Type.Null(),
-        404: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        404: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     handler: async function (req, reply) {
@@ -68,8 +68,8 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       }),
       response: {
         204: Type.Null(),
-        404: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        404: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     handler: async function (req, reply) {
@@ -93,7 +93,7 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       response: {
         // 200: Categoria,
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
     // preHandler : //FIXME: Solo admin

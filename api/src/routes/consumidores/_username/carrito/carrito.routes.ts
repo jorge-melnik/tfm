@@ -1,7 +1,7 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { consumidorRepository } from '@repositories/consumidor.repository.js';
 import { Carrito, Consumidor, ItemCarrito } from '@schemas/consumidores.schema.js';
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 import { Producto } from '@schemas/producto.schema.js';
 
 const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -15,7 +15,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
       params: Type.Object({ username: Consumidor.properties.username }),
       response: {
         200: Carrito,
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
     // onRequest : //FIXME: Solo para si mismo
@@ -35,7 +35,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
       params: Type.Object({ username: Consumidor.properties.username }),
       response: {
         200: Type.Array(ItemCarrito, { description: 'Listado de ItemCarrito.' }),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
     // onRequest : //FIXME: Solo para si mismo
@@ -62,7 +62,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
       }),
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
     // onRequest : //FIXME: Solo para consumidor autenticado.
@@ -93,7 +93,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
       }),
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
     // onRequest : //FIXME: Solo para consumidor autenticado.
@@ -117,7 +117,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
       }),
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
     onRequest: [fastify.authenticate], //FIXME: Solo para consumidor autenticado.

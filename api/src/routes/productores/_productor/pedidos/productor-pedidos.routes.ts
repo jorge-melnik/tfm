@@ -1,7 +1,7 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { pedidosRepository } from '@repositories/pedidos.respository.js';
 import { Pedido } from '@schemas/compras.schema.js';
-import { DeAcaErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
+import { ErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
 import { Productor } from '@schemas/productores.schema.js';
 
 const rutasProductorPedidos: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -23,12 +23,11 @@ const rutasProductorPedidos: FastifyPluginAsyncTypebox = async (fastify, opts): 
       ]),
       response: {
         200: DeAcaListResponse(Pedido),
-        404: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        404: ErrorResponse,
+        500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate],
-    preHandler: [fastify.selfWithRole('PRODUCTOR')],
+    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
     handler: async function (req, reply) {
       return pedidosRepository.getBy({ productor: req.params.productor, ...req.query });
     },

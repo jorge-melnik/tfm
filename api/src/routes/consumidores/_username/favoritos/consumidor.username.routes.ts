@@ -2,7 +2,7 @@ import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { consumidorRepository } from '@repositories/consumidor.repository.js';
 import { Consumidor } from '@schemas/consumidores.schema.js';
 
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 import { Producto } from '@schemas/producto.schema.js';
 
 const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -20,11 +20,10 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
       }),
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate],
-    // preHandler : //FIXME: fastify.seModificaASiMismo
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
       reply.code(204);
       await consumidorRepository.addFavorito(req.body.id_consumidor, req.body.id_producto);
@@ -44,11 +43,10 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
       }),
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate],
-    // preHandler : //FIXME: fastify.seModificaASiMismo.
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
       reply.code(204);
       await consumidorRepository.removeFavorito(req.user.id_usuario, req.params.id_producto);

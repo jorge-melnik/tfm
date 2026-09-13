@@ -115,7 +115,7 @@ export class ComprasRepositoryClass extends BaseReadRepository<Compra> {
       WHERE id_compra = $1 AND id_pago=$2 AND estado_pago = 'PENDIENTE' -- Solo se puede confirmar si está pendiente
       ;
     `;
-    await this.executor.query(consulta, [id_compra, id_pago]); //FIXME: Si es posible tener los dos mejor.
+    await this.executor.query(consulta, [id_compra, id_pago]);
   }
 
   async cancelarPago(id_compra: number, id_pago: string): Promise<void> {
@@ -125,7 +125,7 @@ export class ComprasRepositoryClass extends BaseReadRepository<Compra> {
       WHERE id_compra = $1 AND id_pago=$2 AND estado_pago = 'PENDIENTE' -- Solo se puede confirmar si está pendiente
       ;
     `;
-    await this.executor.query(consulta, [id_compra, id_pago]); //FIXME: Si es posible tener los dos mejor.
+    await this.executor.query(consulta, [id_compra, id_pago]);
   }
 
   async rechazarPago(id_compra: number, id_pago: string): Promise<void> {
@@ -135,7 +135,7 @@ export class ComprasRepositoryClass extends BaseReadRepository<Compra> {
       WHERE id_compra = $1 AND id_pago=$2 AND estado_pago = 'PENDIENTE' -- Solo se puede confirmar si está pendiente
       ;
     `;
-    await this.executor.query(consulta, [id_compra, id_pago]); //FIXME: Si es posible tener los dos mejor.
+    await this.executor.query(consulta, [id_compra, id_pago]);
   }
 }
 

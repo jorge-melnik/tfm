@@ -3,7 +3,7 @@ import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { PreguntasRepository } from '@repositories/preguntas.repository.js';
 import { productorRepository } from '@repositories/productor.repository.js';
 
-import { DeAcaErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
+import { ErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
 import { EstadoPregunta, Pregunta, PreguntaPost, Respuesta } from '@schemas/pregunta.schema.js';
 import { Producto } from '@schemas/producto.schema.js';
 
@@ -26,10 +26,10 @@ const preguntasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
       ]),
       response: {
         200: DeAcaListResponse(Pregunta),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate], //FIXME descomentar.
+    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
     preHandler: async function (req, reply) {
       const { productor } = req.params;
       const { username } = req.user;

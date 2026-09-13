@@ -2,7 +2,7 @@ import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { PreguntasRepository } from '@repositories/preguntas.repository.js';
 import { productoRepository } from '@repositories/producto.repository.js';
 
-import { DeAcaErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
+import { ErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
 import { EstadoPregunta, Pregunta, PreguntaPost, Respuesta } from '@schemas/pregunta.schema.js';
 import { Producto } from '@schemas/producto.schema.js';
 
@@ -27,10 +27,10 @@ const preguntasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
       ]),
       response: {
         200: DeAcaListResponse(Pregunta),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate], //FIXME descomentar.
+    onRequest: [fastify.authenticate],
     handler: async (req, reply) => {
       const { productor, producto } = req.params;
       const elProducto = await productoRepository.getOneBy({ productor, producto });
@@ -53,10 +53,10 @@ const preguntasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
       body: PreguntaPost,
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate, fastify.hasAllRoles('CONSUMIDOR')],
     preHandler: async function (req, reply) {
       const { productor, producto } = req.params;
       const { id_producto } = req.body;
@@ -81,10 +81,10 @@ const preguntasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
       body: Type.Pick(Respuesta, ['contenido']),
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
     preHandler: async function (req, reply) {
       const { productor, producto } = req.params;
       console.log({ productor, producto, id_pregunta: req.params.id_pregunta });

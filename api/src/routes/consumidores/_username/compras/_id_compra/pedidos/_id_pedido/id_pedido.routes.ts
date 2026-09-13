@@ -3,7 +3,7 @@ import { mensajesRepository } from '@repositories/mensajes.repository.js';
 import { pedidosRepository } from '@repositories/pedidos.respository.js';
 import { Mensaje, Pedido } from '@schemas/compras.schema.js';
 import { Consumidor } from '@schemas/consumidores.schema.js';
-import { DeAcaErrorResponse, DeAcaListResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 
 const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
@@ -20,12 +20,13 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       }),
       response: {
         200: Pedido,
-        404: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        404: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     onRequest: [fastify.authenticate],
     preHandler: async function (req, rep) {
+      fastify.selfWithRole('CONSUMIDOR');
       await pedidosRepository.getBy({
         id_compra: req.params.id_compra,
         id_consumidor: req.user.id_usuario,
@@ -51,12 +52,13 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       response: {
         // 200: Type.Array(Pedido, { description: 'Listado de pedidos.' }),
         200: Type.Array(Mensaje),
-        404: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        404: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     onRequest: [fastify.authenticate],
     preHandler: async function (req, rep) {
+      fastify.selfWithRole('CONSUMIDOR');
       await pedidosRepository.getOneBy({
         id_compra: req.params.id_compra,
         id_pedido: req.params.id_pedido,
@@ -87,12 +89,11 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       }),
       response: {
         200: Mensaje,
-        404: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        404: ErrorResponse,
+        500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate],
-
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     preHandler: async function (req, rep) {
       await pedidosRepository.getOneBy({
         id_compra: req.params.id_compra,
@@ -124,11 +125,11 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       }),
       response: {
         204: Type.Null(),
-        404: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        404: ErrorResponse,
+        500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
       return mensajesRepository.remove(req.params.id_mensaje);
     },

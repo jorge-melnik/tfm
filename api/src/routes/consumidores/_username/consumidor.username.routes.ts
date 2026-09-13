@@ -8,7 +8,7 @@ import {
 } from '@repositories/datos-personales.respository.js';
 import { Consumidor } from '@schemas/consumidores.schema.js';
 
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 import { DatosPersonales } from '@schemas/usuarios.schema.js';
 
 const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -22,7 +22,7 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
       }),
       response: {
         200: Consumidor,
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
     onRequest: [fastify.authenticate],
@@ -43,11 +43,10 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
       body: Consumidor,
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate],
-    preHandler: [fastify.selfWithRole('CONSUMIDOR')],
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
       reply.code(204);
       const { username } = req.params;
@@ -87,11 +86,10 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
       params: Type.Object({ username: Consumidor.properties.username }),
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate],
-    preHandler: [fastify.selfWithRole('CONSUMIDOR')],
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
       reply.code(204);
       const usuario = await datosPersonalesRepository.getOneBy({ username: req.params.username });
