@@ -25,7 +25,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       },
     },
     onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
-    // preHandler : //FIXME: fastify.seModificaASiMismo y el coincide id_productor en body y params. Params coincide con body o bad Request
+    // preHandler : //id_productor en body y params. Params coincide con body o bad Request
     handler: async function (req, reply) {
       const { id_producto, ids_borrar, ids_agregar } = req.body;
 

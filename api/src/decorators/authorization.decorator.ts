@@ -44,7 +44,7 @@ export default fp(async (fastify: FastifyInstance) => {
     };
   });
 
-  fastify.decorate('selfWithRole', (rol: Rol) => {
+  fastify.decorate('selfWithRole', (rol: Rol | null = null) => {
     return async (req: FastifyRequest, reply: FastifyReply) => {
       const { user, params } = req as any;
 
@@ -53,7 +53,8 @@ export default fp(async (fastify: FastifyInstance) => {
         throw new ForbiddenError('No tenés permisos para acceder a este recurso');
       }
 
-      if (!user.roles.includes(rol)) {
+      if (rol && !user.roles.includes(rol)) {
+        //Si se especificó rol, el usuario tiene que contenerlo
         fastify.log.warn('El usuario no tiene alguno de los roles necesarios: ' + rol);
         throw new ForbiddenError('No tenés permisos para acceder a este recurso');
       }

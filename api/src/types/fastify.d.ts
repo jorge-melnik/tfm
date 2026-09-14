@@ -29,7 +29,7 @@ declare module 'fastify' {
      * @param rol Hook que auteriza en base a si el usuario logueado tiene determinado rol y además es el dueño de recurso.
      * @returns
      */
-    selfWithRole: (rol: Rol) => (req: FastifyRequest, reply: FastifyReply) => Promise<void>;
+    selfWithRole: (rol: Rol | null) => (req: FastifyRequest, reply: FastifyReply) => Promise<void>;
 
     /**
      * Hook que asegura la consistencia de datos comparando que los campos especificados en la URL (`req.params`)

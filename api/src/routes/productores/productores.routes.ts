@@ -19,8 +19,7 @@
 //     },
 //     onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
 //     handler: async function (req, reply) {
-//       //FIXME: Eventualmente esto no conviene que devuelva //TODO: paginar.
-//       return productorRepository.getAll();
+//       return productorRepository.getAll(); // PAGINAR?
 //     },
 //   });
 // };

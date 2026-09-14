@@ -19,6 +19,7 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
         500: ErrorResponse,
       },
     },
+    onRequest: [fastify.authenticate],
     handler: async function (req, reply) {
       return subcategoriasRepository.getOneBy({
         subcategoria: req.params.subcategoria,
@@ -49,6 +50,7 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
         500: ErrorResponse,
       },
     },
+    onRequest: [fastify.authenticate, fastify.hasAllRoles('ADMIN')],
     handler: async function (req, reply) {
       reply.code(204);
       const subcategoria = await subcategoriasRepository.getOneBy({
@@ -72,6 +74,7 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
         500: ErrorResponse,
       },
     },
+    onRequest: [fastify.authenticate, fastify.hasAllRoles('ADMIN')],
     handler: async function (req, reply) {
       reply.code(204);
       const subcategoria = await subcategoriasRepository.getOneBy({
@@ -96,7 +99,7 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
         500: ErrorResponse,
       },
     },
-    // preHandler : //FIXME: Solo admin
+    onRequest: [fastify.authenticate, fastify.hasAllRoles('ADMIN')],
     handler: async function (req, reply) {
       reply.code(204);
       const subcategoria = await subcategoriasRepository.getOneBy({

@@ -18,8 +18,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
         500: ErrorResponse,
       },
     },
-    // onRequest : //FIXME: Solo para si mismo
-    onRequest: [fastify.authenticate], //FIXME: Solo para consumidor autenticado.
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
       return consumidorRepository.getCarrito(req.user.id_usuario);
     },
@@ -38,8 +37,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
         500: ErrorResponse,
       },
     },
-    // onRequest : //FIXME: Solo para si mismo
-    onRequest: [fastify.authenticate], //FIXME: Solo para consumidor autenticado.
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
       return consumidorRepository.getProductosCarrito(req.user.id_usuario);
     },
@@ -65,7 +63,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
         500: ErrorResponse,
       },
     },
-    // onRequest : //FIXME: Solo para consumidor autenticado.
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     //preHandler: Coincide params con body y con usuario logueado
     handler: async function (req, reply) {
       reply.code(204);
@@ -96,7 +94,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
         500: ErrorResponse,
       },
     },
-    // onRequest : //FIXME: Solo para consumidor autenticado.
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     //preHandler: Coincide params con body y con usuario logueado
     handler: async function (req, reply) {
       reply.code(204);
@@ -120,7 +118,7 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
         500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate], //FIXME: Solo para consumidor autenticado.
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     //preHandler: Coincide params con body y con usuario logueado
     handler: async function (req, reply) {
       reply.code(204);

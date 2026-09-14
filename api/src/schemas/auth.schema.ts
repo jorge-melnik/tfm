@@ -70,7 +70,7 @@ export const TokenPayloadSchema = Type.Object({
     description: 'Roles con los que cuenta el usuario actualmente.',
   }),
   // rol_actual: RolLiteral,
-  //FIXME: Considerar si incluir rol_actual
+  //FIXME: Considerar si incluir rol_actual. En cada cambio de rol actual habría que actualizar los tokens.
 });
 export const UserSchema = Type.Object(
   {
