@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, model, output, resource } from '@angular/core';
+import { Component, computed, inject, input, model, output, resource, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CategoriasService } from '@shared/services/categorias.service';
 import { DepartamentosService } from '@shared/services/departamentos.service';
@@ -22,7 +22,7 @@ import { SliderModule } from 'primeng/slider';
   selector: 'app-productos-filter',
   imports: [FormsModule, Select, SelectButton, SliderModule],
   templateUrl: './productos.filter.html',
-  providers: [UbicacionActual],
+
   styleUrl: './productos.filter.css',
 })
 export class ProductosFilter {
@@ -30,17 +30,14 @@ export class ProductosFilter {
   private readonly _subcategoriaService = inject(SubcategoriasService);
   private readonly _etiquetasService = inject(EtiquetasService);
   private readonly _dialogService = inject(DialogService);
-  private readonly _usuarioService = inject(UsuariosService);
-  private readonly userStore = inject(UserStore);
-  public esProductor = this.userStore.esProductor;
+  public readonly userStore = inject(UserStore);
   public readonly paginationStore = inject(PaginationStore);
   public readonly departamentosService = inject(DepartamentosService);
   public readonly localidadesService = inject(LocalidadsService);
-  public readonly ubicacionActualStore = inject(UbicacionActual);
 
   opcionesLayout = computed(() => {
     const base = ['grid', 'list'];
-    return this.esProductor() ? [...base, 'table'] : base;
+    return this.userStore.esProductor() ? [...base, 'table'] : base;
   });
 
   readonly opcionesFavoritos = [
@@ -49,6 +46,7 @@ export class ProductosFilter {
     { label: 'No favoritos', value: false },
   ];
 
+  public ubicaciones = model<Ubicacion[]>([]);
   public filtroBusqueda = model<string>('');
   public categoriaSeleccionada = model<string | undefined>(undefined);
   public subcategoriaSeleccionada = model<string | undefined>(undefined);
@@ -57,7 +55,7 @@ export class ProductosFilter {
   public departamentoSeleccionado = model<string | undefined>(undefined);
   public localidadSeleccionada = model<string | undefined>(undefined);
 
-  public ubicacionSeleccionada = model<Ubicacion | null>();
+  public ubicacionSeleccionada = model<string | null>();
   public distanciaSeleccionada = model<number | null>();
 
   public favoritoSeleccionado = model<boolean | null>();
@@ -70,8 +68,10 @@ export class ProductosFilter {
       try {
         return this._categoriaService.getAll();
       } catch (error: any) {
-        this._dialogService.addError(error.message);
+        const mensaje = error.error ? error.error.message : error.message;
+        this._dialogService.addError(mensaje);
         return [] as Categoria[];
+        //FIXME: No corresponde try catch aquí.
       }
     },
   });
@@ -85,7 +85,8 @@ export class ProductosFilter {
         if (!categoria) return this._subcategoriaService.getAll();
         return this._categoriaService.getSubcategorias(categoria);
       } catch (error: any) {
-        this._dialogService.addError(error.message);
+        const mensaje = error.error ? error.error.message : error.message;
+        this._dialogService.addError(mensaje);
         return [] as Subcategoria[];
       }
     },
@@ -134,35 +135,6 @@ export class ProductosFilter {
     },
   });
 
-  private ubicacionesResource = resource({
-    params: () => {
-      const user = this.userStore.user();
-      if (!user) return undefined;
-      const username = user.username;
-      const ubicacionActual: Coordenadas | null = this.ubicacionActualStore.ubicacion();
-
-      return { username, latitud: ubicacionActual?.latitud, longitud: ubicacionActual?.longitud };
-    },
-    loader: async ({ params }) => {
-      const { username, latitud, longitud } = params;
-      const ubicaciones = await this._usuarioService.getUbicaciones(username);
-      if (latitud && longitud) {
-        const nuevaUbicacion = await this.localidadesService.getNuevaUbicacionFromCoordenada(
-          latitud,
-          longitud,
-        );
-        nuevaUbicacion.nombre = 'Ubicación actual';
-        ubicaciones.push(nuevaUbicacion);
-      }
-      return ubicaciones;
-    },
-  });
-
-  public ubicaciones = computed(() => {
-    const ubicaciones: Ubicacion[] = this.ubicacionesResource.value() || [];
-    return ubicaciones;
-  });
-
   public sortOptions: SortOption[] = [
     { label: 'Menor a mayor precio', value: 'precio' },
     { label: 'Mayor a menor precio', value: '!precio' },
@@ -190,5 +162,6 @@ export class ProductosFilter {
 
   public onDepartamentoChange(departamento: string) {
     this.localidadSeleccionada.set(undefined);
+    this.filtroCambiado.emit();
   }
 }

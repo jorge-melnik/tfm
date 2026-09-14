@@ -2,7 +2,7 @@ import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { categoriasRepository } from '@repositories/categorias.repository.js';
 import { subcategoriasRepository } from '@repositories/subcategorias.repository.js';
 import { Categoria, Etiqueta, Subcategoria } from '@schemas/categoria.schema.js';
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 
 const categoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
@@ -15,10 +15,11 @@ const categoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promi
       }),
       response: {
         200: Categoria,
-        404: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        404: ErrorResponse,
+        500: ErrorResponse,
       },
     },
+    onRequest: [fastify.authenticate],
     handler: async function (req, reply) {
       return categoriasRepository.getOneBy({ categoria: req.params.categoria });
     },
@@ -49,10 +50,11 @@ const categoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promi
       }),
       response: {
         204: Type.Null(),
-        404: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        404: ErrorResponse,
+        500: ErrorResponse,
       },
     },
+    onRequest: [fastify.authenticate, fastify.hasAllRoles('ADMIN')],
     handler: async function (req, reply) {
       reply.code(204);
       const categoria = await categoriasRepository.getOneBy({ categoria: req.params.categoria });
@@ -70,10 +72,11 @@ const categoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promi
       }),
       response: {
         204: Type.Null(),
-        404: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        404: ErrorResponse,
+        500: ErrorResponse,
       },
     },
+    onRequest: [fastify.authenticate, fastify.hasAllRoles('ADMIN')],
     handler: async function (req, reply) {
       reply.code(204);
       const categoria = await categoriasRepository.getOneBy({ categoria: req.params.categoria });
@@ -92,10 +95,10 @@ const categoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promi
       body: Type.Object({ activo: Type.Boolean() }), //FIXME: Con fotos y video?
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // preHandler : //FIXME: Solo admin
+    onRequest: [fastify.authenticate, fastify.hasAllRoles('ADMIN')],
     handler: async function (req, reply) {
       reply.code(204);
       const categoria = await categoriasRepository.getOneBy({ categoria: req.params.categoria });
@@ -117,9 +120,10 @@ const categoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promi
       }),
       response: {
         200: Type.Array(Subcategoria),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
+    onRequest: [fastify.authenticate],
     handler: async function (req, reply) {
       return (await subcategoriasRepository.getBy({ categoria: req.params.categoria })).data;
     },
@@ -144,9 +148,10 @@ const categoriasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promi
             ],
           ],
         }),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
+    onRequest: [fastify.authenticate],
     handler: async function (req, reply) {
       return categoriasRepository.getEtiquetas(req.params.categoria);
     },

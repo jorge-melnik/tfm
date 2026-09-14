@@ -24,7 +24,7 @@ export class PedidosService extends BaseService<Pedido> {
   }
 
   public async addMensaje(productor: string, id_pedido: number, mensaje: string): Promise<Mensaje> {
-    //TODO: Estos métodos no diferencian si es un mensaje del productor o del consumidor. Tenemos rutas distintas.
+    //Estos métodos no diferencian si es un mensaje del productor o del consumidor. Tenemos rutas distintas.
     const url = `${this.buildUrl({ productor })}/${id_pedido}/mensajes`;
     return firstValueFrom(this.http.post<Mensaje>(url, { mensaje }));
   }

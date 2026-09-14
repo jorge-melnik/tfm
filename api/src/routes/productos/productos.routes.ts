@@ -14,7 +14,8 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
       querystring: Type.Intersect([
         DeAcaQueryString,
         Type.Object({
-          username: Type.Optional(Type.String()),
+          // username: Type.Optional(Type.String()), No recuerdo en que caso se usaría.
+          productor: Type.Optional(Type.String()),
           id_productor: Type.Optional(Type.String()),
           etiquetas: Type.Optional(Type.Array(Type.String())),
           categoria: Type.Optional(Type.String()),

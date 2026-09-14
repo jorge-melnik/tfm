@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin';
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { DeAcaForbidden } from '@errors/response.errors.js';
+import { ForbiddenError } from '@errors/response.errors.js';
 import { Rol } from '@schemas/auth.schema.js';
 
 export default fp(async (fastify: FastifyInstance) => {
@@ -11,13 +11,13 @@ export default fp(async (fastify: FastifyInstance) => {
 
       if (!user || !user.roles || !Array.isArray(user.roles)) {
         fastify.log.warn('El usuario no posee roles asignados en el token');
-        throw new DeAcaForbidden('No tenés permisos para acceder a este recurso');
+        throw new ForbiddenError('No tenés permisos para acceder a este recurso');
       }
 
       for (const rol of rolesArray) {
         if (!user.roles.includes(rol)) {
           fastify.log.warn('El usuario no tiene alguno de los roles necesarios: ' + rol);
-          throw new DeAcaForbidden('No tenés permisos para acceder a este recurso');
+          throw new ForbiddenError('No tenés permisos para acceder a este recurso');
         }
       }
     };
@@ -30,7 +30,7 @@ export default fp(async (fastify: FastifyInstance) => {
 
       if (!user || !user.roles || !Array.isArray(user.roles)) {
         fastify.log.warn('El usuario no posee roles asignados en el token');
-        throw new DeAcaForbidden('No tenés permisos para acceder a este recurso');
+        throw new ForbiddenError('No tenés permisos para acceder a este recurso');
       }
 
       let tienePermiso = false;
@@ -40,7 +40,29 @@ export default fp(async (fastify: FastifyInstance) => {
           break;
         }
       }
-      if (!tienePermiso) throw new DeAcaForbidden('No tenés permisos para acceder a este recurso');
+      if (!tienePermiso) throw new ForbiddenError('No tenés permisos para acceder a este recurso');
+    };
+  });
+
+  fastify.decorate('selfWithRole', (rol: Rol | null = null) => {
+    return async (req: FastifyRequest, reply: FastifyReply) => {
+      const { user, params } = req as any;
+
+      if (!user || !user.roles || !Array.isArray(user.roles)) {
+        fastify.log.warn('El usuario no posee roles asignados en el token');
+        throw new ForbiddenError('No tenés permisos para acceder a este recurso');
+      }
+
+      if (rol !== null && !user.roles.includes(rol)) {
+        //Si se especificó rol, el usuario tiene que contenerlo
+        fastify.log.warn('El usuario no tiene alguno de los roles necesarios: ' + rol);
+        throw new ForbiddenError('No tenés permisos para acceder a este recurso');
+      }
+      const duenio = params?.username || params.productor || params.consumidor;
+      if (duenio !== user.username) {
+        fastify.log.warn('El usuario no es duenio del recurso');
+        throw new ForbiddenError('No tenés permisos para acceder a este recurso. No eres su dueño.');
+      }
     };
   });
 });

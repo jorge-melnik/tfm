@@ -51,7 +51,8 @@ export abstract class AdminBasePage<T> extends CrudPage<T> {
       this.resource.reload();
       return res;
     } catch (error: any) {
-      this._dialogService.addError(error.message);
+      const mensaje = error.error ? error.error.message : error.message;
+      this._dialogService.addError(mensaje);
     }
   }
 }

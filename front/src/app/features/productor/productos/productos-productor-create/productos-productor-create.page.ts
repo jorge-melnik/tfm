@@ -47,7 +47,8 @@ export class ProductosProductorCreatePage {
       await this._productosService.setImagenes(productor, creado.producto, slots);
       this.volver();
     } catch (error: any) {
-      this._dialogService.addError(error.message);
+      const mensaje = error.error ? error.error.message : error.message;
+      this._dialogService.addError(mensaje);
     }
   }
 

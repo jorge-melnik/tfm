@@ -1,4 +1,4 @@
-import { DeAcaBadRequest, DeAcaNotFound } from '@errors/response.errors.js';
+import { BadRequestError, NotFoundError } from '@errors/response.errors.js';
 import { BaseReadRepository } from './base.read.repository.js';
 import { DatosBase } from '../types/datos-base.js';
 
@@ -26,11 +26,11 @@ export abstract class BaseRepository<T extends DatosBase> extends BaseReadReposi
   }
 
   async remove(id: string | number): Promise<void> {
-    const query = `DELETE FROM ${this.tableName} WHERE ${this.idName} = $1`;
+    const query = `DELETE FROM "${this.tableName}" WHERE "${this.idName}" = $1`;
     const res = await this.executor.query(query, [id]);
 
     if (res.rowCount === 0) {
-      throw new DeAcaNotFound(`No se encontró el registro con ${this.idName}: ${id} para eliminar.`);
+      throw new NotFoundError(`No se encontró el registro con ${this.idName}: ${id} para eliminar.`);
     }
   }
 
@@ -43,7 +43,7 @@ export abstract class BaseRepository<T extends DatosBase> extends BaseReadReposi
     const res = await this.executor.query(query, [id]);
 
     if (res.rowCount === 0) {
-      throw new DeAcaNotFound(`No se encontró el registro con ${this.idName}: ${id} activo para desactivar.`);
+      throw new NotFoundError(`No se encontró el registro con ${this.idName}: ${id} activo para desactivar.`);
     }
   }
 
@@ -57,7 +57,7 @@ export abstract class BaseRepository<T extends DatosBase> extends BaseReadReposi
     const res = await this.executor.query(query, [id]);
 
     if (res.rowCount === 0) {
-      throw new DeAcaNotFound(`No se encontró el registro con ${this.idName}: ${id} inactivo para activar.`);
+      throw new NotFoundError(`No se encontró el registro con ${this.idName}: ${id} inactivo para activar.`);
     }
   }
 
@@ -67,7 +67,7 @@ export abstract class BaseRepository<T extends DatosBase> extends BaseReadReposi
     const keys = Object.keys(data).filter(
       (key) => key != this.idName && key != 'activo' && !key.startsWith('slug_'),
     ); //Los idName no se actualizan. //FIXME: Esto puede traer problemas
-    if (keys.length === 0) throw new DeAcaBadRequest('No hay datos para actualizar');
+    if (keys.length === 0) throw new BadRequestError('No hay datos para actualizar');
 
     const sets = keys.map((key, i) => `${key} = $${i + 1}`).join(', ');
     const values = keys.map((key) => (data as any)[key]); // 👈 importante
@@ -82,7 +82,7 @@ export abstract class BaseRepository<T extends DatosBase> extends BaseReadReposi
     const res = await this.executor.query(query, [...values, id]);
 
     if (res.rows.length === 0) {
-      throw new DeAcaNotFound(`No se pudo actualizar: registro con ${this.idName} ${id} no existe.`);
+      throw new NotFoundError(`No se pudo actualizar: registro con ${this.idName} ${id} no existe.`);
     }
   }
 

@@ -13,13 +13,13 @@ import {
   TokenSchema,
   User,
 } from '@schemas/auth.schema.js';
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 import { FastifyReply } from 'fastify';
 import { CookieSerializeOptions } from '@fastify/cookie';
 import { AdicionalesConsumidor, AdicionalesProductor } from '@schemas/usuarios.schema.js';
 import { productorRepository } from '@repositories/productor.repository.js';
 import { consumidorRepository } from '@repositories/consumidor.repository.js';
-import { DeAcaBadRequest } from '@errors/response.errors.js';
+import { BadRequestError } from '@errors/response.errors.js';
 
 //Para manejar las mismas opciones en ambas rutas
 const accessTokenOptions = {
@@ -46,7 +46,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
     const accessToken = fastify.jwt.sign(payload, accessTokenOptions);
     const refreshToken = fastify.jwt.sign(payload, refreshTokenOptions); //No importa que AT y RT tengan el mismo id, RT es de único uso.
     const user: User = fastify.jwt.decode(refreshToken) as User; //No verifica que sea válido, pero no importa, recién lo generamos
-    // if (!user) throw new DeAcaInternal('Error al generar refresh token.'); //Esto es inalcanzable.
+    // if (!user) throw new InternalError('Error al generar refresh token.'); //Esto es inalcanzable.
 
     await authRepository.addRefreshToken(user, refreshToken);
 
@@ -62,8 +62,8 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       body: LoginEmailSchema,
       response: {
         200: TokenSchema,
-        401: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        401: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     handler: async function (req, rep) {
@@ -80,8 +80,8 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       body: LoginUsernameSchema,
       response: {
         200: TokenSchema,
-        401: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        401: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     handler: async function (req, rep) {
@@ -98,8 +98,8 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       security: [{ bearerAuth: [] }],
       response: {
         200: ProfileSchema,
-        401: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        401: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     onRequest: [fastify.authenticate],
@@ -117,8 +117,8 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       body: AdicionalesProductor,
       response: {
         200: ProfileSchema,
-        401: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        401: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     onRequest: [fastify.authenticate],
@@ -138,8 +138,8 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       body: AdicionalesConsumidor,
       response: {
         200: ProfileSchema,
-        401: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        401: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     onRequest: [fastify.authenticate],
@@ -163,15 +163,15 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       }),
       response: {
         204: Type.Null(),
-        401: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        401: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     onRequest: [fastify.authenticate],
     preValidation: async (req, rep) => {
       //Paso a mayúsculas el rol de params
-      if (!req.params) throw new DeAcaBadRequest('Falta params');
-      if (!req.params.rol) throw new DeAcaBadRequest('Falta rol');
+      if (!req.params) throw new BadRequestError('Falta params');
+      if (!req.params.rol) throw new BadRequestError('Falta rol');
       const rol: Rol = req.params.rol.toUpperCase() as Rol;
       req.params.rol = rol;
     },
@@ -195,7 +195,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
         'Permite obtener un nuevo access_token con un refresh token válido. A su vez, se realiza refresh token rotation.',
       response: {
         200: TokenSchema,
-        401: DeAcaErrorResponse,
+        401: ErrorResponse,
       },
       security: [{ cookieAuth: [] }],
     },
@@ -246,17 +246,16 @@ const authRoutes: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => 
       body: RegisterSchema,
       response: {
         200: TokenSchema,
-        401: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        401: ErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // preHandler : TODO: verificar que roles coincida con consumidor y productor
     preHandler: async function (req, rep) {
       if (!req.body.roles || req.body.roles.length === 0) {
-        throw new DeAcaBadRequest('Debe seleccionar al menos un rol.');
+        throw new BadRequestError('Debe seleccionar al menos un rol.');
       }
       if (!req.body.consumidor && !req.body.productor) {
-        throw new DeAcaBadRequest(
+        throw new BadRequestError(
           'Debes especificar los adicionales del productor y/o consumidor según corresponda.',
         );
       }

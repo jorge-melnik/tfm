@@ -1,4 +1,4 @@
-import { Component, input, resource, inject, computed, signal } from '@angular/core';
+import { Component, input, resource, inject, computed, signal, OnInit } from '@angular/core';
 import { PedidosService } from '@shared/services/pedidos.service';
 import { ApiQueryParams } from '@shared/types/api.types';
 import { EstadoPedido, EstadoPedidoType, Pedido } from '@shared/types/pedido';
@@ -12,8 +12,8 @@ import { ListaPedidosComponent } from '@shared/components/lista-pedidos/lista-pe
   templateUrl: './pedidos.page.html',
   styleUrl: './pedidos.page.css',
 })
-export class PedidosPage {
-  public readonly username = input.required<string>();
+export class PedidosPage implements OnInit {
+  public readonly productor = input.required<string>();
   public readonly paginationStore = inject(PaginationStore);
   private readonly _pedidosService = inject(PedidosService);
 
@@ -28,7 +28,7 @@ export class PedidosPage {
 
   private readonly pedidosResource = resource({
     params: () => {
-      const productor = this.username();
+      const productor = this.productor();
       const estado_pedido = this.estado_pedido();
       if (!productor) return undefined;
       return {
@@ -66,12 +66,17 @@ export class PedidosPage {
 
   public isLoading = computed(() => this.pedidosResource.isLoading());
 
+  async ngOnInit(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+
   public onFiltroChange() {
     this.paginationStore.setPage(0);
   }
 
   public async onCambiarEstadoPedido(event: { pedido: Pedido; estado_pedido: EstadoPedidoType }) {
-    const productor = this.username();
+    console.log('onCambiarEstadoPedido');
+    const productor = this.productor();
     if (!productor) return;
 
     const { pedido, estado_pedido } = event;

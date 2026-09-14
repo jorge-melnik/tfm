@@ -43,12 +43,62 @@
           </div>
         }
 
+        <!-- Menú Popover Productor (Grid) -->
         @if (this.userStore.esProductor()) {
           <div class="absolute top-2.5 left-2.5 z-30">
-            <button pButton type="button" (click)="menuGrid.toggle($event)" pTooltip="Opciones">
+            <button pButton type="button" (click)="popoverGrid.toggle($event)" pTooltip="Opciones">
               <svg data-p-icon="ellipsis-v" />
             </button>
-            <p-menu #menuGrid [model]="itemsProductor()" [popup]="true" appendTo="body" />
+            <p-popover #popoverGrid>
+              <div class="flex flex-col min-w-44 gap-1 p-1">
+                <button
+                  type="button"
+                  (click)="this.editarProducto.emit(producto); popoverGrid.hide()"
+                  class="flex items-center gap-2 px-3 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-md transition-colors w-full text-left bg-transparent border-none cursor-pointer"
+                >
+                  <i class="pi pi-eye text-base"></i>
+                  <span>Ver detalle</span>
+                </button>
+
+                <button
+                  type="button"
+                  (click)="this.editarProducto.emit(producto); popoverGrid.hide()"
+                  class="flex items-center gap-2 px-3 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-md transition-colors w-full text-left bg-transparent border-none cursor-pointer"
+                >
+                  <i class="pi pi-pencil text-base"></i>
+                  <span>Editar</span>
+                </button>
+
+                <button
+                  type="button"
+                  (click)="
+                    producto.activo
+                      ? this.desactivarProducto.emit(producto)
+                      : this.activarProducto.emit(producto);
+                    popoverGrid.hide()
+                  "
+                  class="flex items-center gap-2 px-3 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-md transition-colors w-full text-left bg-transparent border-none cursor-pointer"
+                >
+                  <i
+                    [class]="
+                      producto.activo ? 'pi pi-ban text-base' : 'pi pi-check-circle text-base'
+                    "
+                  ></i>
+                  <span>{{ producto.activo ? 'Desactivar' : 'Activar' }}</span>
+                </button>
+
+                <div class="border-t border-surface-200 dark:border-surface-700 my-1"></div>
+
+                <button
+                  type="button"
+                  (click)="this.borrarProducto.emit(producto); popoverGrid.hide()"
+                  class="flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-md transition-colors w-full text-left bg-transparent border-none cursor-pointer font-medium"
+                >
+                  <i class="pi pi-trash text-base"></i>
+                  <span>Eliminar</span>
+                </button>
+              </div>
+            </p-popover>
           </div>
         }
 
@@ -76,7 +126,7 @@
         [class.text-surface-400]="!producto.activo"
       >
         <a
-          [routerLink]="['/productor', producto.productor, 'productos', producto.producto]"
+          (click)="this.titleClick.emit(producto)"
           class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors no-underline text-inherit cursor-pointer"
         >
           {{ producto.nombre }}
@@ -173,6 +223,7 @@
     </ng-template>
   </p-card>
 }
+
 @if (layout() === 'list') {
   <p-card
     class="h-full flex flex-col border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 shadow-xs transition-all duration-200 rounded-2xl overflow-hidden group [&>.p-card]:h-full [&>.p-card]:flex [&>.p-card]:flex-col [&>.p-card-body]:flex-1 [&>.p-card-body]:flex [&>.p-card-body]:flex-col [&>.p-card-body]:justify-between"
@@ -222,13 +273,62 @@
           </button>
         }
 
-        <!-- Menú de Opciones para Productor -->
+        <!-- Menú Popover Productor (List) -->
         @if (this.userStore.esProductor()) {
           <div class="absolute top-2.5 left-2.5 z-30">
-            <button pButton type="button" (click)="menuList.toggle($event)" pTooltip="Opciones">
+            <button pButton type="button" (click)="popoverList.toggle($event)" pTooltip="Opciones">
               <svg data-p-icon="ellipsis-v" />
             </button>
-            <p-menu #menuList [model]="itemsProductor()" [popup]="true" appendTo="body" />
+            <p-popover #popoverList>
+              <div class="flex flex-col min-w-44 gap-1 p-1">
+                <button
+                  type="button"
+                  (click)="this.verProducto.emit(producto); popoverList.hide()"
+                  class="flex items-center gap-2 px-3 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-md transition-colors w-full text-left bg-transparent border-none cursor-pointer"
+                >
+                  <i class="pi pi-eye text-base"></i>
+                  <span>Ver detalle</span>
+                </button>
+
+                <button
+                  type="button"
+                  (click)="this.editarProducto.emit(producto); popoverList.hide()"
+                  class="flex items-center gap-2 px-3 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-md transition-colors w-full text-left bg-transparent border-none cursor-pointer"
+                >
+                  <i class="pi pi-pencil text-base"></i>
+                  <span>Editar</span>
+                </button>
+
+                <button
+                  type="button"
+                  (click)="
+                    producto.activo
+                      ? this.desactivarProducto.emit(producto)
+                      : this.activarProducto.emit(producto);
+                    popoverList.hide()
+                  "
+                  class="flex items-center gap-2 px-3 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-md transition-colors w-full text-left bg-transparent border-none cursor-pointer"
+                >
+                  <i
+                    [class]="
+                      producto.activo ? 'pi pi-ban text-base' : 'pi pi-check-circle text-base'
+                    "
+                  ></i>
+                  <span>{{ producto.activo ? 'Desactivar' : 'Activar' }}</span>
+                </button>
+
+                <div class="border-t border-surface-200 dark:border-surface-700 my-1"></div>
+
+                <button
+                  type="button"
+                  (click)="this.borrarProducto.emit(producto); popoverList.hide()"
+                  class="flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-md transition-colors w-full text-left bg-transparent border-none cursor-pointer font-medium"
+                >
+                  <i class="pi pi-trash text-base"></i>
+                  <span>Eliminar</span>
+                </button>
+              </div>
+            </p-popover>
           </div>
         }
 
@@ -272,7 +372,7 @@
             [class.text-surface-400]="!producto.activo"
           >
             <a
-              [routerLink]="['/consumidor', 'productos', producto.productor, producto.producto]"
+              (click)="this.titleClick.emit(producto)"
               class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors no-underline text-inherit cursor-pointer"
             >
               {{ producto.nombre }}

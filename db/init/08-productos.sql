@@ -60,12 +60,13 @@ EXECUTE FUNCTION fn_actualizar_fecha_actualizacion();
 -------------------------------------------------------------------
 ------------- RULE para softdelete de productos -------------------
 -------------------------------------------------------------------
-CREATE OR REPLACE RULE r_productos_soft_delete AS
-ON DELETE TO productos
-DO INSTEAD
-    UPDATE productos
-    SET fecha_eliminacion = CURRENT_TIMESTAMP
-    WHERE id_producto = OLD.id_producto AND fecha_eliminacion IS NULL;
+-- esta no va sino nunca se puede borrar, aún si no tiene relaciones.
+-- CREATE OR REPLACE RULE r_productos_soft_delete AS
+-- ON DELETE TO productos
+-- DO INSTEAD
+--     UPDATE productos
+--     SET fecha_eliminacion = CURRENT_TIMESTAMP
+--     WHERE id_producto = OLD.id_producto AND fecha_eliminacion IS NULL;
 
 -------------------------------------------------------------------
 -------- TRIGGER PARA inmutabilidad de productos.producto ---------

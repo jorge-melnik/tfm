@@ -1,6 +1,6 @@
 import { Productor } from '@schemas/productores.schema.js';
 import { BaseRepository } from './base.repository.js';
-import { DeAcaInternal } from '@errors/response.errors.js';
+import { InternalError } from '@errors/response.errors.js';
 import { AdicionalesConsumidor } from '@schemas/usuarios.schema.js';
 
 export class ProductorRepositoryClass extends BaseRepository<Productor> {
@@ -9,11 +9,26 @@ export class ProductorRepositoryClass extends BaseRepository<Productor> {
   protected readonly slugName?: string = 'producto'; //No ponemos acá para que no intente generarlo. Pero es el username
 
   protected readonly baseQuery = `
-    SELECT P.*, DP.*
-    FROM public.productores P
-    JOIN public.usuarios U ON U.id_usuario = P.id_productor
-    LEFT JOIN public.ubicaciones UB ON UB.id_ubicacion = P.id_ubicacion
-    LEFT JOIN public.datos_personales DP ON DP.id_usuario = U.id_usuario
+    WITH MIS_PRODUCTORES AS (
+      SELECT P.*, DP.*, UB_FULL.ubicacion
+      FROM public.productores P
+      JOIN public.usuarios U ON U.id_usuario = P.id_productor
+      LEFT JOIN public.datos_personales DP ON DP.id_usuario = U.id_usuario
+      LEFT JOIN LATERAL (
+        SELECT to_jsonb(u_sub) as ubicacion
+        FROM (
+          SELECT 
+            ub.*,
+            loc.localidad,  
+            dep.departamento
+          FROM public.ubicaciones ub
+          LEFT JOIN public.localidades loc ON loc.id_localidad = ub.id_localidad
+          LEFT JOIN public.departamentos dep ON dep.id_departamento = loc.id_departamento
+          WHERE ub.id_ubicacion = P.id_ubicacion
+        ) u_sub
+      ) UB_FULL ON TRUE
+    )
+    SELECT * FROM MIS_PRODUCTORES 
     WHERE 1=1
   `;
 
@@ -22,7 +37,7 @@ export class ProductorRepositoryClass extends BaseRepository<Productor> {
   }
 
   override async activate(id: string | number): Promise<void> {
-    throw new DeAcaInternal(
+    throw new InternalError(
       'Para activar productor en consumidor usar el método activarConsumidor en productor repository.',
     );
   }
@@ -45,7 +60,7 @@ export class ProductorRepositoryClass extends BaseRepository<Productor> {
       `;
     const res = await this.executor.query(query, [id_consumidor]);
     if (res.rows.length === 0) {
-      throw new DeAcaInternal(`No es posible hacer ese cambio.`);
+      throw new InternalError(`No es posible hacer ese cambio.`);
     }
   }
 }

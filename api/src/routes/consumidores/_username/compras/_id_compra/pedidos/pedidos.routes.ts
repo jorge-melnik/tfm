@@ -3,7 +3,7 @@ import { comprasRepository } from '@repositories/compras.respository.js';
 import { pedidosRepository } from '@repositories/pedidos.respository.js';
 import { Compra, Pedido } from '@schemas/compras.schema.js';
 import { Consumidor } from '@schemas/consumidores.schema.js';
-import { DeAcaErrorResponse, DeAcaListResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse, DeAcaListResponse } from '@schemas/core.schemas.js';
 
 const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
@@ -20,12 +20,13 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       response: {
         // 200: Type.Array(Pedido, { description: 'Listado de pedidos.' }),
         200: DeAcaListResponse(Pedido),
-        404: DeAcaErrorResponse,
-        500: DeAcaErrorResponse,
+        404: ErrorResponse,
+        500: ErrorResponse,
       },
     },
     onRequest: [fastify.authenticate],
     preHandler: async function (req, rep) {
+      fastify.selfWithRole('CONSUMIDOR');
       await comprasRepository.getOneBy({
         id_compra: req.params.id_compra,
         id_consumidor: req.user.id_usuario,

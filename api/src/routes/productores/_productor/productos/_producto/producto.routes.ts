@@ -1,7 +1,7 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { productoRepository } from '@repositories/producto.repository.js';
 
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 import { POSTProducto, Producto } from '@schemas/producto.schema.js';
 
 const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -19,10 +19,10 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       }),
       response: {
         200: Producto,
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // onRequest: [fastify.authenticate], //FIXME descomentar y chequear que es su producto.
+    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
     handler: async (req, reply) => {
       return productoRepository.getOneBy({ productor: req.params.productor, producto: req.params.producto });
     },
@@ -40,11 +40,11 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       body: POSTProducto, //Sin fotos ni videos.
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate],
-    // preHandler : //FIXME: fastify.seModificaASiMismo y el coincide id_productor en body y params
+    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
+    // preHandler : //FIXME:coincide id_productor en body y params
     handler: async function (req, reply) {
       reply.code(204);
       const producto = await productoRepository.getOneBy({
@@ -66,13 +66,15 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       }),
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // preHandler : //FIXME: fastify.seModificaASiMismo y el coincide id_productor en body y params
+    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
+    // preHandler : //FIXME: coincide id_productor en body y params
     handler: async function (req, reply) {
       reply.code(204);
       const producto = await productoRepository.getOneBy({ producto: req.params.producto });
+      fastify.log.info({ producto });
       await productoRepository.remove(producto.id_producto);
     },
   });
@@ -86,13 +88,14 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
         productor: Producto.properties.productor,
         producto: Producto.properties.producto,
       }),
-      body: Type.Object({ activo: Type.Boolean() }), //FIXME: Con fotos y video?
+      body: Type.Object({ activo: Type.Boolean() }),
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // preHandler : //FIXME: fastify.seModificaASiMismo y el coincide id_productor en body y params
+    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
+    // preHandler : //FIXME: coincide id_productor en body y params
     handler: async function (req, reply) {
       reply.code(204);
       const producto = await productoRepository.getOneBy({ producto: req.params.producto });

@@ -2,7 +2,6 @@ import { Static, Type } from '@sinclair/typebox';
 import { Consumidor } from './consumidores.schema.js';
 import { Productor } from './productores.schema.js';
 import { ImagenProducto, Producto } from './producto.schema.js';
-import { format } from 'node:path';
 
 export const EstadoPedido = Type.Union(
   [

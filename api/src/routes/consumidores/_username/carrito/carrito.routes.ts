@@ -1,7 +1,7 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { consumidorRepository } from '@repositories/consumidor.repository.js';
 import { Carrito, Consumidor, ItemCarrito } from '@schemas/consumidores.schema.js';
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 import { Producto } from '@schemas/producto.schema.js';
 
 const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -15,11 +15,10 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
       params: Type.Object({ username: Consumidor.properties.username }),
       response: {
         200: Carrito,
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // onRequest : //FIXME: Solo para si mismo
-    onRequest: [fastify.authenticate], //FIXME: Solo para consumidor autenticado.
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
       return consumidorRepository.getCarrito(req.user.id_usuario);
     },
@@ -35,11 +34,10 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
       params: Type.Object({ username: Consumidor.properties.username }),
       response: {
         200: Type.Array(ItemCarrito, { description: 'Listado de ItemCarrito.' }),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // onRequest : //FIXME: Solo para si mismo
-    onRequest: [fastify.authenticate], //FIXME: Solo para consumidor autenticado.
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
       return consumidorRepository.getProductosCarrito(req.user.id_usuario);
     },
@@ -62,10 +60,10 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
       }),
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // onRequest : //FIXME: Solo para consumidor autenticado.
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     //preHandler: Coincide params con body y con usuario logueado
     handler: async function (req, reply) {
       reply.code(204);
@@ -93,10 +91,10 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
       }),
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // onRequest : //FIXME: Solo para consumidor autenticado.
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     //preHandler: Coincide params con body y con usuario logueado
     handler: async function (req, reply) {
       reply.code(204);
@@ -117,10 +115,10 @@ const rutasCarrito: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<v
       }),
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate], //FIXME: Solo para consumidor autenticado.
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     //preHandler: Coincide params con body y con usuario logueado
     handler: async function (req, reply) {
       reply.code(204);

@@ -122,7 +122,8 @@ export class ProductosTable implements OnInit {
       this.productoSeleccionado.set({ ...this._productoService.getProductoVacio() });
       this.cambioUnProducto.emit(productoActualizado);
     } catch (error: any) {
-      this._dialogService.addError(error.message);
+      const mensaje = error.error ? error.error.message : error.message;
+      this._dialogService.addError(mensaje);
     }
   }
 
@@ -144,7 +145,8 @@ export class ProductosTable implements OnInit {
   //     await this._productoService.update(productoActualizado.id_producto, productoActualizado,pathParams);
   //     this.cambioUnProducto.emit(productoActualizado);
   //   } catch (error: any) {
-  //     this._dialogService.addError(error.message);
+  // const mensaje = error.error ? error.error.message : error.message;
+  // this._dialogService.addError(mensaje);
   //   }
   // }
 }

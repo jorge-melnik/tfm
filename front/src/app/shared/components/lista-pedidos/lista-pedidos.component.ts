@@ -50,13 +50,16 @@ export class ListaPedidosComponent implements OnInit {
 
   async ngOnInit() {
     this.paginationStore.resetPagination();
-    this.opcionesEstado.set([{ label: 'TODOS', value: null }, ...this.opcionesEstado()]);
-    this.estadoSeleccionado.set('TODOS');
   }
 
   public onVerMensajes(pedido: Pedido) {
     const user = this.userStore.user();
     if (!user) return;
     this._router.navigate(['/', 'productor', user.username, 'consultas', 'chats']);
+  }
+
+  public cambiaEstadoPedido = output<{ pedido: Pedido; estado_pedido: EstadoPedidoType }>();
+  public onCambiarEstadoPedido(cambio: { pedido: Pedido; estado_pedido: EstadoPedidoType }) {
+    this.cambiaEstadoPedido.emit(cambio);
   }
 }

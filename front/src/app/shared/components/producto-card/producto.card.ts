@@ -20,6 +20,7 @@ import {
   ShoppingCart,
 } from '@primeicons/angular';
 import { RouterLink } from '@angular/router';
+import { Popover } from 'primeng/popover';
 
 @Component({
   selector: 'app-producto-card',
@@ -30,15 +31,14 @@ import { RouterLink } from '@angular/router';
     TagModule,
     FotoCarrusel,
     TooltipModule,
-    Menu,
     EllipsisV,
-    RouterLink,
     CartPlus,
     Ban,
     DecimalPipe,
     MapMarker,
     Heart,
     HeartFill,
+    Popover,
   ],
   templateUrl: './producto.card.html',
   styleUrl: './producto.card.css',
@@ -101,4 +101,6 @@ export class ProductoCard {
       cantidad: 1,
     });
   }
+
+  public titleClick = output<Producto>();
 }

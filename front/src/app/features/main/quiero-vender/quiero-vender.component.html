@@ -38,6 +38,24 @@
           }
         }
       </div>
+      <div class="flex flex-col md:flex-row gap-4">
+        <p-floatlabel variant="on" class="w-full">
+          <p-select
+            id="ubicacion"
+            class="w-full"
+            name="id_ubicacion"
+            [options]="this.ubicaciones()"
+            optionValue="id_ubicacion"
+            optionLabel="nombre"
+            [formField]="this.loginForm.id_ubicacion!"
+          >
+          </p-select>
+          <label for="ubicacion">Ubicacion producción</label>
+        </p-floatlabel>
+        <button type="button" class="w-full" pButton routerLink="/consumidor/mis-datos/ubicaciones">
+          Editar Ubicaciones
+        </button>
+      </div>
 
       <button pButton type="submit" class="w-full" [disabled]="!this.loginForm().valid()">
         Ingresar

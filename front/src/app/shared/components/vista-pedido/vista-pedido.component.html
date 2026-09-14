@@ -47,7 +47,7 @@
           />
         }
       </button>
-      @if (pedido.estado_pedido === 'PAGADO') {
+      @if (pedido.estado_pedido === 'PAGADO' && this.userStore.esProductor()) {
         <button
           pButton
           label="Marcar Listo"
@@ -58,7 +58,8 @@
           <svg data-p-icon="check" class="w-4 h-4 mr-1"></svg>
           Marcar para Entrega
         </button>
-      } @else if (pedido.estado_pedido === 'LISTO PARA ENTREGA') {
+      }
+      @if (pedido.estado_pedido === 'LISTO PARA ENTREGA' && this.userStore.esProductor()) {
         <button
           pButton
           label="Marcar Entregado"
@@ -87,7 +88,11 @@
     <div class="flex items-center gap-1.5">
       <svg data-p-icon="shop" class="w-4 h-4 text-primary shrink-0"></svg>
       <span class="text-surface-500 dark:text-surface-400">Productor:</span>
-      {{ pedido.productor }}
+      @if (this.userStore.esConsumidor()) {
+        <a [routerLink]="`/consumidor/productores/${pedido.productor}`">{{ pedido.productor }}</a>
+      } @else {
+        {{ pedido.productor }}
+      }
     </div>
   </div>
 

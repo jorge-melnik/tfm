@@ -2,14 +2,14 @@ import fp from 'fastify-plugin';
 import jwt from '@fastify/jwt';
 import type { FastifyJWTOptions } from '@fastify/jwt';
 import type { FastifyInstance } from 'fastify';
-import { DeAcaInternal } from '@errors/response.errors.js';
+import { InternalError } from '@errors/response.errors.js';
 
 const apiJwtSecret = process.env.API_JWT_SECRET;
 /**
  * Este plugin permite firmar y verificar tokens JWT
  */
 export default fp(async (fastify: FastifyInstance) => {
-  if (!apiJwtSecret) throw new DeAcaInternal('No se especificó un API_JWT_SECRET adecuado.');
+  if (!apiJwtSecret) throw new InternalError('No se especificó un API_JWT_SECRET adecuado.');
   const options: FastifyJWTOptions = {
     secret: apiJwtSecret,
     sign: {

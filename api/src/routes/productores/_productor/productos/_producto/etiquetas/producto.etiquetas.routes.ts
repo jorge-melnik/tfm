@@ -1,8 +1,8 @@
 import { myPool } from '@database/pool.js';
-import { DeAcaInternal } from '@errors/response.errors.js';
+import { InternalError } from '@errors/response.errors.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { productoRepository } from '@repositories/producto.repository.js';
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 import { Producto } from '@schemas/producto.schema.js';
 
 const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -21,10 +21,11 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
       }),
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // preHandler : //FIXME: fastify.seModificaASiMismo y el coincide id_productor en body y params. Params coincide con body o bad Request
+    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
+    // preHandler : //id_productor en body y params. Params coincide con body o bad Request
     handler: async function (req, reply) {
       const { id_producto, ids_borrar, ids_agregar } = req.body;
 
@@ -37,7 +38,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
         await client.query('COMMIT;');
       } catch (error: any) {
         client.query('ROLLBACK');
-        throw new DeAcaInternal(error.message);
+        throw new InternalError(error.message);
       } finally {
         client.release();
       }

@@ -7,13 +7,13 @@ import { ApiQueryParams, PathParams } from '@shared/types/api.types';
 import { DataView, DataViewPageEvent } from 'primeng/dataview';
 import { ButtonModule } from 'primeng/button';
 import { Tag } from 'primeng/tag';
-import { CreditCard, InfoCircle } from '@primeicons/angular';
+import { CreditCard, Dollar, InfoCircle } from '@primeicons/angular';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
 
 @Component({
   selector: 'app-compras',
-  imports: [DataView, ButtonModule, Tag, CreditCard, InfoCircle, RouterLink],
+  imports: [DataView, ButtonModule, Tag, CreditCard, InfoCircle, RouterLink, Dollar],
   templateUrl: './compras.page.html',
 
   styleUrl: './compras.page.css',
@@ -33,6 +33,7 @@ export class ComprasPage {
   public sortOrder = signal<number>(0);
   public sortField = signal<string>('');
 
+  //FIXME: No está bueno el try catch en el resource
   private readonly _comprasResource = resource({
     params: () => ({
       username: this.userStore.user()?.username,
@@ -53,7 +54,8 @@ export class ComprasPage {
         const response = await this._comprasService.getBy({ queryParams, pagination, pathParams });
         return response;
       } catch (error: any) {
-        this._dialogService.addError(error.message);
+        const mensaje = error.error ? error.error.message : error.message;
+        this._dialogService.addError(mensaje);
         return { data: [], meta: { total: 0 } };
       }
     },

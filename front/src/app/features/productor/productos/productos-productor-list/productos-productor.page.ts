@@ -98,7 +98,9 @@ export class ProductosPage implements OnInit {
         const response = await this._productoService.getBy({ queryParams, pagination, pathParams });
         return response;
       } catch (error: any) {
-        this._dialogService.addError(error.message);
+        const mensaje = error.error ? error.error.message : error.message;
+        this._dialogService.addError(mensaje);
+        //FIXME: Horrible este try aca.
         throw error;
       }
     },
@@ -141,7 +143,8 @@ export class ProductosPage implements OnInit {
       await this._productoService.desactivar(p.productor, p.producto);
       this.productosResource.reload();
     } catch (error: any) {
-      this._dialogService.addError(error.message);
+      const mensaje = error.error ? error.error.message : error.message;
+      this._dialogService.addError(mensaje);
     }
   }
   async activarProducto(p: Producto) {
@@ -150,7 +153,8 @@ export class ProductosPage implements OnInit {
       await this._productoService.activar(p.productor, p.producto);
       this.productosResource.reload();
     } catch (error: any) {
-      this._dialogService.addError(error.message);
+      const mensaje = error.error ? error.error.message : error.message;
+      this._dialogService.addError(mensaje);
     }
   }
   async borrarProducto(p: Producto) {
@@ -159,7 +163,14 @@ export class ProductosPage implements OnInit {
       await this._productoService.remove(p.producto, { productor: p.productor });
       this.productosResource.reload();
     } catch (error: any) {
-      this._dialogService.addError(error.message);
+      const mensaje = error.error ? error.error.message : error.message;
+      this._dialogService.addError(mensaje);
     }
+  }
+
+  public onTitleClick(producto: Producto) {
+    console.log('onTitleClick', producto.producto);
+    const base = this._userStore.esProductor() ? '/productor' : '/consumidor/productores';
+    this._router.navigate([base, producto.productor, 'productos', producto.producto]);
   }
 }

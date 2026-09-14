@@ -65,7 +65,7 @@ export const routes: Routes = [
     path: 'productor',
     loadComponent: () =>
       import('@shared/layouts/productor/productor.layout').then((m) => m.ProductorLayout),
-    // canActivateChild: [hasRoleGuard('PRODUCTOR' as Rol)], la ruta para ver el producto del productor está acá adentro...
+    canActivateChild: [hasRoleGuard('PRODUCTOR' as Rol)],
     children: [
       {
         path: '',

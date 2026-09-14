@@ -23,12 +23,13 @@
         [(etiquetasSeleccionadas)]="this.etiquetas"
         [(departamentoSeleccionado)]="this.departamento"
         [(localidadSeleccionada)]="this.localidad"
-        [(ubicacionSeleccionada)]="this.ubicacion"
+        [(ubicacionSeleccionada)]="this.nombreUbicacionSeleccionada"
         [(distanciaSeleccionada)]="this.distancia"
         [(layout)]="this.layout"
         [(filtroBusqueda)]="this.busqueda"
         [(favoritoSeleccionado)]="this.favorito"
         (filtroCambiado)="this.queryParamsChange()"
+        [ubicaciones]="this.ubicaciones()"
       ></app-productos-filter>
     </div>
   }
@@ -39,7 +40,6 @@
     [paginator]="true"
     [rows]="this.paginationStore.limit()"
     [first]="this.paginationStore.first()"
-    /* //TODO: Está feo este totalRecords... hacer un total computed*/
     [totalRecords]="this.productosResource.value()?.meta?.total || 0"
     [lazy]="true"
     [rowsPerPageOptions]="this.paginationStore.rowsPerPageOptions()"
@@ -58,6 +58,7 @@
             [cdnUrl]="this.cdnUrl"
             (agregarAlCarrito)="this.carritoService.agregarAlCarrito(producto)"
             (favoritoProducto)="onCambiaFavorito($event)"
+            (titleClick)="this.onTitleClick($event)"
           />
         }
       </div>
@@ -74,6 +75,7 @@
             [cdnUrl]="this.cdnUrl"
             (agregarAlCarrito)="this.carritoService.agregarAlCarrito($event)"
             (favoritoProducto)="onCambiaFavorito($event)"
+            (titleClick)="this.onTitleClick($event)"
           />
         }
       </div>

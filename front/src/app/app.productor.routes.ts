@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
+import { isProductorOwnerGuard } from '@core/guard/-is-self-productor-guard';
 import { hasRoleGuard } from '@core/guard/has-role-guard';
 import { AuthService } from '@shared/services/auth.service';
 import { UserStore } from '@shared/services/stores/user.store';
@@ -20,7 +21,8 @@ export const productorRoutes: Routes = [
     canActivate: [hasRoleGuard('PRODUCTOR')],
   },
   {
-    path: ':username',
+    path: ':productor',
+    canActivateChild: [isProductorOwnerGuard],
     children: [
       {
         path: '',

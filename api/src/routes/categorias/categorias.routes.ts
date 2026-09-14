@@ -1,7 +1,7 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { categoriasRepository } from '@repositories/categorias.repository.js';
 import { Categoria } from '@schemas/categoria.schema.js';
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 
 const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
@@ -31,9 +31,10 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
             ],
           ],
         }),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
+    onRequest: [fastify.authenticate],
     handler: async function (req, reply) {
       return categoriasRepository.getAll();
     },
@@ -59,7 +60,7 @@ const rutasEtiquetas: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
       }),
       response: {
         201: Categoria,
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
     onRequest: [fastify.authenticate, fastify.hasAllRoles(['ADMIN'])],

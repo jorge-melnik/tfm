@@ -1,4 +1,4 @@
-import { DeAcaBadRequest, DeAcaNotFound } from '@errors/response.errors.js';
+import { BadRequestError, NotFoundError } from '@errors/response.errors.js';
 import { BaseRepository } from './base.repository.js';
 import { ImagenProducto, POSTProducto, Producto } from '@schemas/producto.schema.js';
 
@@ -77,7 +77,7 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
    */
   async addEtiquetas(id_producto: number, id_etiquetas: number[]) {
     if (id_etiquetas.length === 0)
-      throw new DeAcaBadRequest('No se indicaron ids de etiquetas a asociar al producto.');
+      throw new BadRequestError('No se indicaron ids de etiquetas a asociar al producto.');
     const query = `
       INSERT INTO public.producto_etiquetas (id_producto, id_etiqueta )
       SELECT $1, id_etiqueta
@@ -97,7 +97,7 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
    */
   async removeEtiquetas(id_producto: number, id_etiquetas: number[]) {
     if (id_etiquetas.length === 0)
-      throw new DeAcaBadRequest('No se indicaron ids de etiquetas a asociar al producto.');
+      throw new BadRequestError('No se indicaron ids de etiquetas a asociar al producto.');
     const query = `
       DELETE FROM public.producto_etiquetas
       WHERE id_producto=$1 AND id_etiqueta =ANY($2::int[])
@@ -164,7 +164,7 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
     ]);
 
     if (res.rows.length === 0) {
-      throw new DeAcaNotFound(`No se pudo crear el producto.`);
+      throw new NotFoundError(`No se pudo crear el producto.`);
     }
 
     return this.getOneBy({ id_producto: res.rows[0].id_producto });
@@ -228,7 +228,7 @@ export class ProductosRepositoryClass extends BaseRepository<Producto> {
     ]);
 
     if (res.rows.length === 0) {
-      throw new DeAcaNotFound(`productor ${productor} con id_producto:${id_producto}`);
+      throw new NotFoundError(`productor ${productor} con id_producto:${id_producto}`);
     }
   }
 

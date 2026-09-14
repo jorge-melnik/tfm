@@ -1,7 +1,7 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { productoRepository } from '@repositories/producto.repository.js';
 
-import { DeAcaErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
+import { ErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
 import { POSTProducto, Producto } from '@schemas/producto.schema.js';
 import { Productor } from '@schemas/productores.schema.js';
 
@@ -27,10 +27,10 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
       ]),
       response: {
         200: DeAcaListResponse(Producto),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // onRequest: [fastify.authenticate], //FIXME descomentar.
+    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
     handler: async (req, reply) => {
       return productoRepository.getBy(req.query); //Paginado
     },
@@ -45,10 +45,11 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
       body: POSTProducto,
       response: {
         201: Producto,
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // preHandler : //FIXME: fastify.seAccedeASiMIsmo y el coincide id_productor en body y params
+    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
+    // preHandler : //FIXME: coincide id_productor en body y params
     handler: async function (req, reply) {
       reply.code(201);
       return productoRepository.add(req.body);

@@ -1,1 +1,57 @@
-<p>consultas works!</p>
+<div class="min-h-[60vh] flex flex-col justify-center items-center px-4 py-8">
+  <div class="w-full max-w-4xl mx-auto space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+      <a
+        [routerLink]="['consultas', 'preguntas']"
+        class="no-underline group bg-surface-0 dark:bg-surface-900 p-6 rounded-2xl border border-surface-200 dark:border-surface-800 shadow-xs hover:border-emerald-500 hover:shadow-md transition-all flex items-center justify-between cursor-pointer w-full"
+      >
+        <div class="space-y-2">
+          <span
+            class="text-xs font-bold text-surface-400 uppercase tracking-wider group-hover:text-emerald-600 transition-colors"
+          >
+            Preguntas Pendientes
+          </span>
+          <div class="text-4xl font-black text-surface-900 dark:text-surface-0">
+            {{ totalPreguntasPendientes() }}
+          </div>
+          <span
+            class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400"
+          >
+            Atender preguntas <i class="pi pi-arrow-right text-[10px]"></i>
+          </span>
+        </div>
+        <div
+          class="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform"
+        >
+          <i class="pi pi-question-circle text-3xl"></i>
+        </div>
+      </a>
+
+      <a
+        [routerLink]="['consultas', 'chats']"
+        class="no-underline group bg-surface-0 dark:bg-surface-900 p-6 rounded-2xl border border-surface-200 dark:border-surface-800 shadow-xs hover:border-emerald-500 hover:shadow-md transition-all flex items-center justify-between cursor-pointer w-full"
+      >
+        <div class="space-y-2">
+          <span
+            class="text-xs font-bold text-surface-400 uppercase tracking-wider group-hover:text-emerald-600 transition-colors"
+          >
+            Conversaciones Pendientes
+          </span>
+          <div class="text-4xl font-black text-surface-900 dark:text-surface-0">
+            {{ totalMensajesPendientes() }}
+          </div>
+          <span
+            class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400"
+          >
+            Ver conversaciones <i class="pi pi-arrow-right text-[10px]"></i>
+          </span>
+        </div>
+        <div
+          class="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform"
+        >
+          <i class="pi pi-comments text-3xl"></i>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>

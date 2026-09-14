@@ -8,7 +8,6 @@ import { PresignedUrl, RequestPresignedUrl } from '@shared/types/producto';
 @Service()
 export class ProfileService {
   private readonly _http = inject(HttpClient);
-  //TODO: Armar base url en base al usuario logueado y su rol actual.
 
   public async setFotoPerfil(username: string, rol_actual: Rol, foto: File): Promise<void> {
     const baseUrl = `${environment.apiUrl}/${rol_actual.toLowerCase()}es/${username}/foto`;

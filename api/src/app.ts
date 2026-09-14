@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import cookiePlugin from '@plugins/cookie.plugin.js';
 import jwtPlugin from '@plugins/jwt.plugin.js';
 import swagger from '@plugins/swagger.js';
+import { PostgresError, transformarErrorPostgres } from '@errors/response.errors.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,6 +39,14 @@ const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void>
     options: opts,
     forceESM: true,
     routeParams: true,
+  });
+
+  fastify.setErrorHandler((error: PostgresError, request, reply) => {
+    fastify.log.info({ error });
+    if (error.schema === 'public') {
+      error = transformarErrorPostgres(error);
+    }
+    throw error;
   });
 };
 

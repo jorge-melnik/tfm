@@ -32,6 +32,12 @@ export const consumidorRoutes: Routes = [
           ),
       },
       {
+        path: ':id_compra/pagos',
+        title: 'Pagos compra',
+        loadComponent: () =>
+          import('@features/consumidor/compras/pagos/pagos.page').then((m) => m.PagosPage),
+      },
+      {
         path: ':id_compra/pagar',
         title: 'Finalizar compra',
         loadComponent: () =>
@@ -39,22 +45,12 @@ export const consumidorRoutes: Routes = [
             (m) => m.ComprasPagarPage,
           ),
       },
-
       {
         path: ':id_compra/pedidos/:id_pedido',
         title: 'Finalizar compra',
         loadComponent: () =>
           import('@features/consumidor/compras/pedidos/detalle-pedido/detalle-pedido.page').then(
             (m) => m.DetallePedidoPage,
-          ),
-      },
-      {
-        path: 'productor/:username',
-        pathMatch: 'full',
-        title: 'Ver productor',
-        loadComponent: () =>
-          import('@features/consumidor/compras/productor/productor.page').then(
-            (m) => m.ProductorPage,
           ),
       },
       {
@@ -67,19 +63,43 @@ export const consumidorRoutes: Routes = [
     ],
   },
   {
-    path: '',
+    path: 'productos',
+    title: 'productos',
+    loadComponent: () =>
+      import('@features/consumidor/productos/productos.page').then((m) => m.ProductosPage),
+  },
+  {
+    path: 'productores/:productor',
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        title: 'Ver productor',
+        loadComponent: () =>
+          import('@features/consumidor/compras/productor/productor.page').then(
+            (m) => m.ProductorPage,
+          ),
+      },
+      {
         path: 'productos',
-        title: 'productos',
+        pathMatch: 'full',
+        title: 'Productos Productor',
         loadComponent: () =>
           import('@features/consumidor/productos/productos.page').then((m) => m.ProductosPage),
       },
       {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: 'productos',
+        path: 'productos/:producto',
+        title: 'Ver Producto',
+        loadComponent: () =>
+          import('@features/productor/productos/productos-productor-view/productos-productor-view.page').then(
+            (m) => m.ProductosProductorViewPage,
+          ),
       },
     ],
+  },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'productos',
   },
 ];

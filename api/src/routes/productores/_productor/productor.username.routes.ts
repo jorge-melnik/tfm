@@ -1,5 +1,5 @@
 import { myPool } from '@database/pool.js';
-import { DeAcaInternal } from '@errors/response.errors.js';
+import { InternalError } from '@errors/response.errors.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import {
   datosPersonalesRepository,
@@ -7,7 +7,7 @@ import {
 } from '@repositories/datos-personales.respository.js';
 import { productorRepository, ProductorRepositoryClass } from '@repositories/productor.repository.js';
 
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 import { Productor } from '@schemas/productores.schema.js';
 
 const productorUsernameRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -21,10 +21,10 @@ const productorUsernameRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
       params: Type.Object({ productor: Productor.properties.username }),
       response: {
         200: Productor,
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // preHandler: //FIXME No se que verificar aca:
+    onRequest: [fastify.authenticate],
     handler: async function (req, reply) {
       return productorRepository.getOneBy({ username: req.params.productor });
     },
@@ -41,10 +41,10 @@ const productorUsernameRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
       body: Productor,
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // preHandler : //FIXME: fastify.seModificaASiMismo
+    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
     handler: async function (req, reply) {
       reply.code(204);
       const { presentacion, nombres, apellidos, email, celular, id_ubicacion } = req.body;
@@ -65,7 +65,7 @@ const productorUsernameRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
         await client.query('COMMIT;');
       } catch (error: any) {
         await client.query('ROLLBACK');
-        throw new DeAcaInternal(error.message);
+        throw new InternalError(error.message);
       } finally {
         client.release(); //Necesitamos el try catch para siempre liberar el client
       }
@@ -82,10 +82,10 @@ const productorUsernameRoutes: FastifyPluginAsyncTypebox = async (fastify, opts)
       params: Type.Object({ productor: Productor.properties.username }),
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // preHandler : //FIXME: fastify.seModificaASiMismo
+    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
     handler: async function (req, reply) {
       reply.code(204);
       const productor = await productorRepository.getOneBy({ username: req.params.productor });

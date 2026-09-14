@@ -1,6 +1,6 @@
 import { EstadoPedido, Pedido, ProductoPedido } from '@schemas/compras.schema.js';
 import { BaseReadRepository } from './base.read.repository.js';
-import { DeAcaBadRequest } from '@errors/response.errors.js';
+import { BadRequestError } from '@errors/response.errors.js';
 
 /**
  * Repository para Pedidos. Extiende BaseReadRepository. Por lo que no cuenta con métodos, add, update, etc.
@@ -94,8 +94,8 @@ export class PedidosRepositoryClass extends BaseReadRepository<Pedido> {
     if (estadoPedido === 'LISTO PARA ENTREGA') return this.marcarListoParaEntrega(id_productor, id_pedido);
 
     if (estadoPedido === 'ENTREGADO') return this.marcarEntregado(id_productor, id_pedido);
-    //TODO: Considererar otros cambios de estado manual.
-    throw new DeAcaBadRequest(
+    //FIXME: Considererar otros cambios de estado manual. Faltaría CANCELADO
+    throw new BadRequestError(
       'No se permite cambiar el pedido a estado ' + estadoPedido + ' en el estado actual.',
     );
   }
@@ -118,7 +118,7 @@ export class PedidosRepositoryClass extends BaseReadRepository<Pedido> {
     const res = await this.executor.query(consulta, [id_productor, id_pedido, estadoActual, nuevoEstado]);
 
     if (res.rowCount === 0)
-      throw new DeAcaBadRequest(
+      throw new BadRequestError(
         'No existe el pedido o no se encuentra en un estado válido para dicha acción.',
       );
   }
@@ -141,7 +141,7 @@ export class PedidosRepositoryClass extends BaseReadRepository<Pedido> {
     const res = await this.executor.query(consulta, [id_productor, id_pedido, estadoActual, nuevoEstado]);
 
     if (res.rowCount === 0)
-      throw new DeAcaBadRequest(
+      throw new BadRequestError(
         'No existe el pedido o no se encuentra en un estado válido para dicha acción.',
       );
   }

@@ -1,14 +1,14 @@
 import { myPool } from '@database/pool.js';
-import { DeAcaInternal } from '@errors/response.errors.js';
+import { InternalError } from '@errors/response.errors.js';
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
-import { consumidorRepository, ConsumidorRepositoryClass } from '@repositories/consumidor.repository.js';
+import { consumidorRepository } from '@repositories/consumidor.repository.js';
 import {
   datosPersonalesRepository,
   DatosPersonalessRepositoryClass,
 } from '@repositories/datos-personales.respository.js';
 import { Consumidor } from '@schemas/consumidores.schema.js';
 
-import { DeAcaErrorResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse } from '@schemas/core.schemas.js';
 import { DatosPersonales } from '@schemas/usuarios.schema.js';
 
 const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -22,12 +22,12 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
       }),
       response: {
         200: Consumidor,
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // onRequest : //FIXME: Solo para admin.
+    onRequest: [fastify.authenticate],
+    preHandler: [fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
-      //FIXME: Eventualmente esto no conviene que devuelva TODO. paginar.
       return consumidorRepository.getOneBy({ username: req.params.username });
     },
   });
@@ -43,10 +43,10 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
       body: Consumidor,
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // preHandler : //FIXME: fastify.seModificaASiMismo
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
       reply.code(204);
       const { username } = req.params;
@@ -57,7 +57,7 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
       try {
         // const prodRepoWT: ConsumidorRepositoryClass = consumidorRepository.withTransaction(client);
         const dpRepoWT: DatosPersonalessRepositoryClass = datosPersonalesRepository.withTransaction(client);
-        // TODO: Está feo ese datosPersonalesRepository, lo que sea que haga se podría repetir en el consumidor y productor repository?
+        // FIXME: Está feo ese datosPersonalesRepository, lo que sea que haga se podría repetir en el consumidor y productor repository?
         await client.query('BEGIN;');
         // await prodRepoWT.update(id_consumidor, {}); //Actualizo datos específicos del consumidor
         await dpRepoWT.update(id_consumidor, {
@@ -69,7 +69,7 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
         await client.query('COMMIT;');
       } catch (error: any) {
         await client.query('ROLLBACK');
-        throw new DeAcaInternal(error.message);
+        throw new InternalError(error.message);
       } finally {
         client.release(); //Necesitamos el try catch para siempre liberar el client
       }
@@ -86,10 +86,10 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
       params: Type.Object({ username: Consumidor.properties.username }),
       response: {
         204: Type.Null(),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // preHandler : //FIXME: fastify.seModificaASiMismo
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
       reply.code(204);
       const usuario = await datosPersonalesRepository.getOneBy({ username: req.params.username });
@@ -99,5 +99,3 @@ const rutasConsumidorPorUsername: FastifyPluginAsyncTypebox = async (fastify, op
 };
 
 export default rutasConsumidorPorUsername;
-//TODO: Necesario esta ruta?
-//Mejor hacer un /admin/usuarios y ya.

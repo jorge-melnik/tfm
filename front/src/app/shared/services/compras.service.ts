@@ -15,8 +15,7 @@ export class ComprasService extends BaseService<Compra> {
   // private readonly _dialog = inject(DialogService);
 
   public getMetodosPagoHabilitados(username: string, id_compra: number) {
-    //TODO:
-    // const url = this.http.get();
+    throw new Error('No implementado');
   }
 
   // public getById(username: string, id_compra: number): Promise<Compra> {
@@ -25,7 +24,7 @@ export class ComprasService extends BaseService<Compra> {
   // }
 
   public getPagos() {
-    //TODO:
+    throw new Error('No implementado');
   }
 
   public getPedidos(username: string, id_compra: number): Promise<PaginatedResponse<Pedido>> {
@@ -49,7 +48,7 @@ export class ComprasService extends BaseService<Compra> {
     id_pedido: number,
     mensaje: string,
   ): Promise<Mensaje> {
-    //TODO: Estos métodos no diferencian si es un mensaje del productor o del consumidor. Tenemos rutas distintas.
+    //Estos métodos no diferencian si es un mensaje del productor o del consumidor. Tenemos rutas distintas.
     const url = `${this.buildUrl({ username })}/${id_compra}/pedidos/${id_pedido}/mensajes`;
     return firstValueFrom(this.http.post<Mensaje>(url, { mensaje }));
   }

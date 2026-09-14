@@ -2,7 +2,7 @@ import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { comprasRepository } from '@repositories/compras.respository.js';
 import { Compra, CompraPOST } from '@schemas/compras.schema.js';
 import { Consumidor } from '@schemas/consumidores.schema.js';
-import { DeAcaErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
+import { ErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
 
 const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
@@ -17,12 +17,11 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
       querystring: DeAcaQueryString,
       response: {
         200: DeAcaListResponse(Compra),
-        500: DeAcaErrorResponse,
+        500: ErrorResponse,
       },
     },
-    // onRequest : //FIXME: Solo para admin.
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
-      //FIXME: Eventualmente esto no conviene que devuelva TODO. paginar.
       return comprasRepository.getBy({ username: req.params.username });
     },
   });
@@ -43,12 +42,10 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
         201: Compra,
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, rep) {
       rep.code(201);
       const compraCreada: Compra = await comprasRepository.createFromCarrito(req.user.id_usuario, req.body);
-      //TODO: Dar de alta la compra con los datos del carrito y retornarla.
-      //TODO: Si no hay productos en el carrito se retorna error.
       return comprasRepository.getOneBy({ id_compra: compraCreada.id_compra });
     },
   });

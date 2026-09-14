@@ -46,7 +46,7 @@ export class ProductosProductorEditPage {
   private readonly _route = inject(ActivatedRoute);
 
   public readonly productoResource = resource({
-    params: () => ({ productor: this.username(), producto: this.producto() }),
+    params: () => ({ productor: this.productor(), producto: this.producto() }),
     loader: async ({ params }) => {
       const { productor, producto } = params;
       return this._productosService.getById(producto, { productor });
@@ -54,13 +54,13 @@ export class ProductosProductorEditPage {
   });
   // public readonly etiquetasStore = inject(EtiquetasStore);
 
-  public username = input.required<string>();
+  public productor = input.required<string>();
   public producto = input.required<string>();
 
   public slots = signal<ImagenSlot[]>([]);
 
   public async guardarProducto(productoModificado: Producto) {
-    const productor = this.username();
+    const productor = this.productor();
     const producto = this.producto();
     console.log({ productoModificado });
     try {
@@ -69,7 +69,8 @@ export class ProductosProductorEditPage {
       await this._productosService.setImagenes(productor, producto, slots);
       this.volver();
     } catch (error: any) {
-      this._dialogService.addError(error.message);
+      const mensaje = error.error ? error.error.message : error.message;
+      this._dialogService.addError(mensaje);
     }
   }
 

@@ -111,6 +111,8 @@ export class SubcategoriasPage extends AdminBasePage<Subcategoria> {
     if (!data.id_etiquetas) return;
 
     await this._subcategoriaService.setEtiquetas(subcategoria.subcategoria, data.id_etiquetas);
+
+    this.subcategoriasResource.reload();
   }
 
   protected async updateSubcategoria(data: Partial<Subcategoria>): Promise<void> {
@@ -118,6 +120,7 @@ export class SubcategoriasPage extends AdminBasePage<Subcategoria> {
     await super.update(data);
     if (!data.id_etiquetas) return;
     await this._subcategoriaService.setEtiquetas(data.subcategoria, data.id_etiquetas);
+    this.subcategoriasResource.reload();
   }
 
   protected override async remove(data: Subcategoria): Promise<void> {

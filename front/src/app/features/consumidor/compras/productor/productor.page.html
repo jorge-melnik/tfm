@@ -28,9 +28,12 @@
         </h1>
         <p class="text-sm text-surface-500 flex items-center gap-1">
           <i class="pi pi-map-marker text-xs"></i>
-          Salto, Uruguay
-          <!-- //TODO: Deshardcodear localidad -->
+          {{ this.productorData()?.ubicacion?.direccion }}
+          {{ this.productorData()?.ubicacion?.localidad }}
+          {{ this.productorData()?.ubicacion?.departamento }}
         </p>
+        <h2>Presentación</h2>
+        <p>{{ this.productorData()?.presentacion }}</p>
       </div>
     </div>
 
