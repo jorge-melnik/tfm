@@ -53,7 +53,7 @@ export default fp(async (fastify: FastifyInstance) => {
         throw new ForbiddenError('No tenés permisos para acceder a este recurso');
       }
 
-      if (rol && !user.roles.includes(rol)) {
+      if (rol !== null && !user.roles.includes(rol)) {
         //Si se especificó rol, el usuario tiene que contenerlo
         fastify.log.warn('El usuario no tiene alguno de los roles necesarios: ' + rol);
         throw new ForbiddenError('No tenés permisos para acceder a este recurso');

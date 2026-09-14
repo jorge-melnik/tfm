@@ -13,6 +13,7 @@ const rutasUsuarios: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<
         username: Usuario.properties.username,
       }),
     },
+    onRequest: [fastify.authenticate],
     handler: async function (req, reply) {
       const { username } = req.params;
       return await usuariosRepository.getOneBy({ username });
@@ -30,7 +31,7 @@ const rutasUsuarios: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<
         username: Usuario.properties.username,
       }),
     },
-    preHandler: [fastify.selfWithRole(null)],
+    onRequest: [fastify.authenticate, fastify.selfWithRole(null)],
     handler: async function (req, reply) {
       const { username } = req.params;
       const usuario = await usuariosRepository.getOneBy({ username });
@@ -50,7 +51,7 @@ const rutasUsuarios: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<
       }),
       body: UbicacionPost,
     },
-    preHandler: [fastify.selfWithRole(null)],
+    onRequest: [fastify.authenticate, fastify.selfWithRole(null)],
     handler: async function (req, reply) {
       reply.code(204);
       const { username } = req.params;
@@ -72,7 +73,7 @@ const rutasUsuarios: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<
       }),
       body: UbicacionPost,
     },
-    preHandler: [fastify.selfWithRole(null)],
+    onRequest: [fastify.authenticate, fastify.selfWithRole(null)],
     handler: async function (req, reply) {
       reply.code(204);
       const { username } = req.params;
@@ -94,7 +95,7 @@ const rutasUsuarios: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<
       }),
       body: UbicacionPost,
     },
-    preHandler: [fastify.selfWithRole(null)],
+    onRequest: [fastify.authenticate, fastify.selfWithRole(null)],
     handler: async function (req, reply) {
       reply.code(204);
       const { username } = req.params;
