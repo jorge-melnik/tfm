@@ -13,6 +13,7 @@ export const routes: Routes = [
       {
         path: '',
         title: 'Home',
+        canActivate: [loggedGuard],
         loadComponent: () => import('@features/main/home/home.page').then((m) => m.HomePage),
       },
       {

@@ -1,8 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { environment } from '@env/environment';
-import { ExclamationTriangle } from '@primeicons/angular';
+import { Trash } from '@primeicons/angular';
 import { AuthService } from '@shared/services/auth.service';
 import { DialogService } from '@shared/services/dialog.service';
 import { UserStore } from '@shared/services/stores/user.store';
@@ -12,7 +11,7 @@ import { Checkbox } from 'primeng/checkbox';
 
 @Component({
   selector: 'app-borrar',
-  imports: [Card, Checkbox, FormsModule, ButtonModule],
+  imports: [Card, Checkbox, FormsModule, ButtonModule, Trash],
   templateUrl: './borrar.page.html',
   styleUrl: './borrar.page.css',
 })

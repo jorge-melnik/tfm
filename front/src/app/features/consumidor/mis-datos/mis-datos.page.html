@@ -28,7 +28,6 @@
                   class="relative group cursor-pointer w-28 h-28"
                   (click)="eliminarFoto(removeFileCallback, $event)"
                 >
-                  <!-- Contenedor del Avatar cargado -->
                   <div class="w-28 h-28 rounded-full p-1 ring-2 ring-primary">
                     <div class="w-full h-full rounded-full overflow-hidden relative shadow-inner">
                       <img
@@ -36,11 +35,10 @@
                         [alt]="files[0].name"
                         class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                       />
-
                       <div
                         class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white"
                       >
-                        <svg data-p-icon="trash" class="w-7 h-7 mb-1 text-red-400"></svg>
+                        <svg data-p-icon="trash" class="mb-1 text-red-400"></svg>
                         <span class="text-xs tracking-wide uppercase">Eliminar</span>
                       </div>
                     </div>

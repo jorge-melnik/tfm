@@ -25,9 +25,9 @@
             tooltipPosition="left"
           >
             @if (producto.favorito) {
-              <svg data-p-icon="heart-fill" class="w-4 h-4" />
+              <svg data-p-icon="heart-fill" />
             } @else {
-              <svg data-p-icon="heart" class="w-4 h-4" />
+              <svg data-p-icon="heart" />
             }
           </button>
         }
@@ -166,7 +166,7 @@
             <span
               class="inline-flex items-center gap-1 text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400 uppercase"
             >
-              <svg data-p-icon="map-marker" class="w-3.5 h-3.5 shrink-0"></svg>
+              <svg data-p-icon="map-marker"></svg>
               {{ producto.localidad || producto.departamento }}
             </span>
             @if (producto.distancia) {
@@ -251,7 +251,6 @@
           }
         </div>
 
-        <!-- Botón de Favorito para Consumidor -->
         @if (this.userStore.esConsumidor()) {
           <button
             type="button"
@@ -266,14 +265,13 @@
             tooltipPosition="left"
           >
             @if (producto.favorito) {
-              <svg data-p-icon="heart-fill" class="w-4 h-4" />
+              <svg data-p-icon="heart-fill" />
             } @else {
-              <svg data-p-icon="heart" class="w-4 h-4" />
+              <svg data-p-icon="heart" />
             }
           </button>
         }
 
-        <!-- Menú Popover Productor (List) -->
         @if (this.userStore.esProductor()) {
           <div class="absolute top-2.5 left-2.5 z-30">
             <button pButton type="button" (click)="popoverList.toggle($event)" pTooltip="Opciones">
@@ -404,13 +402,12 @@
             />
           </div>
 
-          <!-- Ubicación / Distancia agregado en modo List -->
           @if (producto.localidad || producto.departamento || producto.distancia) {
             <div class="flex items-center justify-between w-full gap-2 mb-2.5">
               <span
                 class="inline-flex items-center gap-1 text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400 uppercase"
               >
-                <svg data-p-icon="map-marker" class="w-3.5 h-3.5 shrink-0"></svg>
+                <svg data-p-icon="map-marker"></svg>
                 {{ producto.localidad || producto.departamento }}
               </span>
               @if (producto.distancia) {

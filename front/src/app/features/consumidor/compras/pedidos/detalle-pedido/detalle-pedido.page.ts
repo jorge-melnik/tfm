@@ -7,11 +7,11 @@ import { Pedido } from '@shared/types/pedido';
 import { VistaPedidoComponent } from '@shared/components/vista-pedido/vista-pedido.component';
 import { DatePipe } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
-import { Send } from '@primeicons/angular';
+import { Comments, Send } from '@primeicons/angular';
 
 @Component({
   selector: 'app-detalle-pedido',
-  imports: [VistaPedidoComponent, DatePipe, ButtonModule, Send],
+  imports: [VistaPedidoComponent, DatePipe, ButtonModule, Send, Comments],
   templateUrl: './detalle-pedido.page.html',
   styleUrl: './detalle-pedido.page.css',
 })

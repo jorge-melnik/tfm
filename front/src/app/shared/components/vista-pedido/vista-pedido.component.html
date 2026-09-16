@@ -55,7 +55,7 @@
           size="small"
           (click)="onCambiarEstado('LISTO PARA ENTREGA')"
         >
-          <svg data-p-icon="check" class="w-4 h-4 mr-1"></svg>
+          <svg data-p-icon="check"></svg>
           Marcar para Entrega
         </button>
       }
@@ -67,7 +67,7 @@
           size="small"
           (click)="onCambiarEstado('ENTREGADO')"
         >
-          <svg data-p-icon="send" class="w-4 h-4 mr-1"></svg>
+          <svg data-p-icon="send"></svg>
           Marcar Entregado
         </button>
       }
@@ -86,7 +86,7 @@
     </div>
 
     <div class="flex items-center gap-1.5">
-      <svg data-p-icon="shop" class="w-4 h-4 text-primary shrink-0"></svg>
+      <svg data-p-icon="shop" class="text-primary"></svg>
       <span class="text-surface-500 dark:text-surface-400">Productor:</span>
       @if (this.userStore.esConsumidor()) {
         <a [routerLink]="`/consumidor/productores/${pedido.productor}`">{{ pedido.productor }}</a>

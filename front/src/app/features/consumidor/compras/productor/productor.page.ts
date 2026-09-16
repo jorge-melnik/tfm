@@ -10,10 +10,11 @@ import { environment } from '@env/environment';
 import { ListaPedidosComponent } from '@shared/components/lista-pedidos/lista-pedidos.component';
 import { EstadoPedidoType } from '@shared/types/pedido';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
+import { ArrowLeft } from '@primeicons/angular';
 
 @Component({
   selector: 'app-productor',
-  imports: [RouterLink, Avatar, ListaPedidosComponent],
+  imports: [RouterLink, Avatar, ListaPedidosComponent, ArrowLeft],
   templateUrl: './productor.page.html',
   styleUrl: './productor.page.css',
 })
