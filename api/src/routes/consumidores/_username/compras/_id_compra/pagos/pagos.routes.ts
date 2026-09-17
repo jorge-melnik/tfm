@@ -5,6 +5,8 @@ import { Compra, Pago, PagoTransferencia } from '@schemas/compras.schema.js';
 import { Consumidor } from '@schemas/consumidores.schema.js';
 import { ErrorResponse } from '@schemas/core.schemas.js';
 import { getProcesadorDePago } from '@services/pagos/factory.js';
+import { aceptarTransferencias } from '../../../../../../scripts/simulacion/aceptar-transferencias.js';
+import { myPool } from '@database/pool.js';
 
 const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
@@ -65,13 +67,22 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
       rep.code(201);
       const procesador = getProcesadorDePago('TRANSFERENCIA');
       const procesamiento = await procesador.procesarPago(req.body); //Simula 5s de demora.
-      return comprasRepository.addPago(req.params.id_compra, {
+      const compra = await comprasRepository.addPago(req.params.id_compra, {
         id_compra: req.params.id_compra,
         id_externo: procesamiento.id_externo,
         metodo_pago: 'TRANSFERENCIA',
         estado_pago: procesamiento.estadoPago,
         respuesta_raw: procesamiento.respuestaRaw,
       });
+      const cliente = await myPool.connect();
+      try {
+        await aceptarTransferencias(cliente);
+        return compra;
+      } catch (error: any) {
+        throw error();
+      } finally {
+        cliente.release();
+      }
     },
   });
 };

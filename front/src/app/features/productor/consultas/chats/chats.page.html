@@ -344,45 +344,29 @@
         }
       </div>
 
-      <!-- FOOTER / INPUT -->
       <footer
         class="p-3 border-t border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 flex gap-2 items-center shrink-0"
       >
         <input
-          #chatInput
           type="text"
           pInputText
+          [(ngModel)]="this.chatInput"
           class="flex-1 text-sm rounded-xl"
           placeholder="Escribe un mensaje..."
-          (keyup.enter)="enviarMensaje(chatInput.value); chatInput.value = ''"
+          (keyup.enter)="enviarMensaje()"
         />
         <button
           pButton
           type="button"
           severity="success"
-          class="rounded-xl px-4 shrink-0 flex items-center gap-1.5"
-          [disabled]="!chatInput.value.trim()"
-          (click)="enviarMensaje(chatInput.value); chatInput.value = ''"
+          class="!w-10 !h-10 !rounded-full flex items-center justify-center shrink-0 transition-transform active:scale-95 disabled:opacity-40"
+          [disabled]="!chatInput().trim()"
+          (click)="enviarMensaje()"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="m22 2-7 20-4-9-9-4Z" />
-            <path d="M22 2 11 13" />
-          </svg>
-          <span class="hidden sm:inline text-xs font-semibold">Enviar</span>
+          <svg data-p-icon="send" style="font-size: 1.15rem"></svg>
         </button>
       </footer>
     } @else {
-      <!-- ESTADO VACÍO -->
       <div
         class="h-full flex flex-col items-center justify-center text-surface-400 gap-3 p-6 relative"
       >

@@ -27,7 +27,7 @@ export class UbicacionActual {
       return;
     }
 
-    this.watchId = navigator.geolocation.watchPosition(
+    navigator.geolocation.getCurrentPosition(
       (pos) => {
         this._ubicacion.set({
           latitud: pos.coords.latitude,
@@ -38,9 +38,23 @@ export class UbicacionActual {
       {
         enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 5 * 60 * 1000,
       },
     );
+
+    // this.watchId = navigator.geolocation.watchPosition(
+    //   (pos) => {
+    //     this._ubicacion.set({
+    //       latitud: pos.coords.latitude,
+    //       longitud: pos.coords.longitude,
+    //     });
+    //   },
+    //   (err) => this._error.set(err.message),
+    //   {
+    //     enableHighAccuracy: false,
+    //     timeout: 10000,
+    //     maximumAge: 5 * 60 * 1000,
+    //   },
+    // );
   }
 
   private detenerRastreo(): void {

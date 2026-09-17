@@ -62,6 +62,8 @@ export class ProductosProductorViewPage implements OnInit {
     params: () => {
       const productor = this.productor();
       const producto = this.producto();
+
+      console.log({ producto, productor });
       if (!producto || !productor) return undefined;
 
       return {
@@ -71,6 +73,7 @@ export class ProductosProductorViewPage implements OnInit {
     },
     loader: async ({ params }) => {
       const { producto, productor } = params;
+      console.log('AAAAAAAA: ', { params });
       return this._productosService.getById(producto, { productor });
     },
   });

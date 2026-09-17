@@ -1,5 +1,7 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, inject, input, resource, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Comments, Send } from '@primeicons/angular';
 import { PedidosService } from '@shared/services/pedidos.service';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
 import { UserStore } from '@shared/services/stores/user.store';
@@ -11,7 +13,7 @@ import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-chats',
-  imports: [Badge, Tag, DatePipe, CurrencyPipe, Tooltip],
+  imports: [Badge, Tag, DatePipe, CurrencyPipe, Tooltip, Send, FormsModule],
   templateUrl: './chats.page.html',
   styleUrl: './chats.page.css',
 })
@@ -23,6 +25,8 @@ export class ChatsPage {
   public productor = input.required<string>();
 
   public pedidoSeleccionado = signal<Pedido | null>(null);
+
+  public chatInput = signal<string>('');
 
   public readonly sidebarVisible = signal<boolean>(true);
 
@@ -39,7 +43,7 @@ export class ChatsPage {
         limit: this.paginationStore.limit(),
         page: this.paginationStore.page(),
         sort: this.paginationStore.sortField(),
-        sort_direction: this.paginationStore.sortOrder() === -1 ? 'DESC' : 'ASC',
+        sort_direction: this.paginationStore.sort_direction(),
       };
     },
     loader: async ({ params }) => {
@@ -69,11 +73,12 @@ export class ChatsPage {
     this.pedidoSeleccionado.set(pedido);
   }
 
-  public async enviarMensaje(texto: string): Promise<void> {
+  public async enviarMensaje(): Promise<void> {
+    const texto: string = this.chatInput();
     const ped = this.pedidoSeleccionado();
     const username = this.userStore.user()?.username;
     const mensajeLimpio = texto.trim();
-
+    this.chatInput.set('');
     if (!ped || !username || !mensajeLimpio) return;
 
     await this._pedidosService.addMensaje(username, ped.id_pedido, mensajeLimpio);

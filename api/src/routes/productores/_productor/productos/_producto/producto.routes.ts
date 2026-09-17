@@ -22,7 +22,7 @@ const productorIdUsuarioProductosRoutes: FastifyPluginAsyncTypebox = async (fast
         500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
+    onRequest: [fastify.authenticate],
     handler: async (req, reply) => {
       return productoRepository.getOneBy({ productor: req.params.productor, producto: req.params.producto });
     },

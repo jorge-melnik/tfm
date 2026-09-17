@@ -3,7 +3,7 @@ import { comprasRepository } from '@repositories/compras.respository.js';
 import { pedidosRepository } from '@repositories/pedidos.respository.js';
 import { Compra, Pedido } from '@schemas/compras.schema.js';
 import { Consumidor } from '@schemas/consumidores.schema.js';
-import { ErrorResponse, DeAcaListResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
 
 const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
@@ -17,6 +17,7 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
         username: Consumidor.properties.username,
         id_compra: Compra.properties.id_compra,
       }),
+      querystring: Type.Intersect([DeAcaQueryString, Type.Object({})]),
       response: {
         // 200: Type.Array(Pedido, { description: 'Listado de pedidos.' }),
         200: DeAcaListResponse(Pedido),
@@ -33,7 +34,7 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       });
     },
     handler: async function (req, reply) {
-      return pedidosRepository.getBy({ id_compra: req.params.id_compra });
+      return pedidosRepository.getBy({ id_compra: req.params.id_compra, ...req.query });
     },
   });
 };

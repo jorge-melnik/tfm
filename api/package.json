@@ -12,7 +12,7 @@
     "test": "node --import tsx --test --experimental-test-coverage \"test/**/*.ts\"",
     "testc8": "c8 --all --src ./src --reporter=text --reporter=text-summary node --import tsx --test \"test/**/*.ts\"",
     "start": "node dist/server.js",
-    "aceptar-transferencias": "tsx src/scripts/simulacion/aceptar-transferencias.ts",
+    "aceptar-transferencias": "tsx src/scripts/simulacion/aceptar.ts",
     "etl-ideuy": "tsx src/etl/ideuy/etl.ts"
   },
   "keywords": [

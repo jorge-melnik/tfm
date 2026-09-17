@@ -6,6 +6,7 @@
       <p-selectbutton
         [(ngModel)]="this.layout"
         [options]="this.opcionesLayout()"
+        (onChange)="this.filtroCambiado.emit()"
         [allowEmpty]="false"
       >
         <ng-template #item let-item>
@@ -23,6 +24,7 @@
         <p-selectbutton
           [options]="opcionesFavoritos"
           [(ngModel)]="this.favoritoSeleccionado"
+          (onChange)="this.filtroCambiado.emit()"
           optionLabel="label"
           optionValue="value"
           [allowEmpty]="true"

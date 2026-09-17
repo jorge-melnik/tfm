@@ -5,7 +5,7 @@ import { PaymentProcessor, PaymentResult } from '@types/payment.js';
 
 export class ProcesadorTransferencia implements PaymentProcessor {
   async procesarPago(input: PagoTransferencia): Promise<PaymentResult> {
-    await new Promise((resolve) => setTimeout(resolve, 5000)); //5 segundos para simular la demora.
+    await new Promise((resolve) => setTimeout(resolve, 2000)); //5 segundos para simular la demora.
 
     const { banco, numero_transaccion } = input;
 

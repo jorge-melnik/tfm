@@ -1,10 +1,9 @@
 import {
   Component,
   computed,
+  effect,
   inject,
   input,
-  linkedSignal,
-  model,
   OnInit,
   resource,
   signal,
@@ -54,7 +53,6 @@ export class ProductosPage implements OnInit {
   public readonly carritoService = inject(CarritoService);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
-  private readonly _carritoService = inject(CarritoService);
   private readonly _usuarioService = inject(UsuariosService);
   private readonly _userStore = inject(UserStore);
   private readonly _dialogService = inject(DialogService);

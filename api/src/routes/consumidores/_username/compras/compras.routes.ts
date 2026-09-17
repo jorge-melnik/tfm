@@ -14,7 +14,7 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
       `,
       params: Type.Object({ username: Consumidor.properties.username }),
 
-      querystring: DeAcaQueryString,
+      querystring: Type.Intersect([DeAcaQueryString, Type.Object({})]),
       response: {
         200: DeAcaListResponse(Compra),
         500: ErrorResponse,
@@ -22,7 +22,7 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
     },
     onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
-      return comprasRepository.getBy({ username: req.params.username });
+      return comprasRepository.getBy({ username: req.params.username, ...req.query });
     },
   });
 
