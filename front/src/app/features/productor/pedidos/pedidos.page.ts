@@ -66,9 +66,7 @@ export class PedidosPage implements OnInit {
 
   public isLoading = computed(() => this.pedidosResource.isLoading());
 
-  async ngOnInit(): Promise<void> {
-    throw new Error('Method not implemented.');
-  }
+  async ngOnInit(): Promise<void> {}
 
   public onFiltroChange() {
     this.paginationStore.setPage(0);
