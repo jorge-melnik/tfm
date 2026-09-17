@@ -1,6 +1,20 @@
-import { Component, inject, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+  signal,
+  resource,
+  input,
+  computed,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '@shared/services/auth.service';
+import { PedidosService } from '@shared/services/pedidos.service';
+import { PreguntasService } from '@shared/services/preguntas-service';
+import { PaginationStore } from '@shared/services/stores/pagination.store';
+import { ApiQueryParams } from '@shared/types/api.types';
+import { EstadoPedidoType } from '@shared/types/pedido';
 
 @Component({
   selector: 'app-home-productor',
@@ -11,10 +25,74 @@ import { AuthService } from '@shared/services/auth.service';
 })
 export class HomePage implements OnInit {
   private readonly _authService = inject(AuthService);
-  public totalPreguntasPendientes = signal<number>(0);
-  public totalMensajesPendientes = signal<number>(0);
+  private readonly _pedidosService = inject(PedidosService);
+  private readonly _preguntasService = inject(PreguntasService);
+  public readonly productor = input.required<string>();
+  public readonly paginationStore = inject(PaginationStore);
+
+  public totalPreguntasPendientes = computed(() => this.preguntasResource.value()?.meta.total || 0);
+  public totalMensajesPendientes = computed(
+    () => this.pedidosConChatResource.value()?.meta.total || 0,
+  );
   public totalStockCritico = signal<number>(0);
-  public totalPedidosPendientes = signal<number>(0);
+  public totalPedidosPendientes = computed(() => this.pedidosResource.value()?.meta.total || 0);
+
+  public estadosPedidos = signal<EstadoPedidoType[]>(['PAGADO']);
+
+  private readonly pedidosResource = resource({
+    params: () => {
+      const productor = this.productor();
+      const estadosPedidos = this.estadosPedidos();
+      if (!productor) return undefined;
+      return {
+        productor,
+        estadosPedidos,
+      };
+    },
+    loader: async ({ params }) => {
+      const { productor, estadosPedidos } = params;
+
+      const pagination: ApiQueryParams = { limit: 1, page: 1 };
+      const queryParams: ApiQueryParams = { productor };
+      if (estadosPedidos.length > 0) queryParams['estado_pedido'] = estadosPedidos;
+      console.log({ queryParams });
+      return this._pedidosService.getBy({ queryParams, pathParams: { productor }, pagination });
+    },
+  });
+
+  public readonly pedidosConChatResource = resource({
+    params: () => {
+      const productor = this.productor();
+      if (!productor) return undefined;
+      return {
+        productor,
+      };
+    },
+    loader: async ({ params }) => {
+      const { productor } = params;
+
+      const pagination: ApiQueryParams = { limit: 1, page: 1 };
+      const queryParams: ApiQueryParams = { productor, hay_no_leidos_productor: true };
+      return this._pedidosService.getBy({ queryParams, pathParams: { productor }, pagination });
+    },
+  });
+
+  private preguntasResource = resource({
+    params: () => {
+      const productor = this.productor();
+
+      if (!productor) return undefined;
+
+      return {
+        productor,
+      };
+    },
+    loader: async ({ params }) => {
+      const { productor } = params;
+      const pagination: ApiQueryParams = { limit: 1, page: 1 };
+      return this._preguntasService.getPreguntasPendientesProductor(productor, pagination);
+    },
+  });
 
   async ngOnInit() {}
 }

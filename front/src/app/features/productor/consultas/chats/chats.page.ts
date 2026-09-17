@@ -20,7 +20,7 @@ export class ChatsPage {
   public readonly paginationStore = inject(PaginationStore);
 
   private _pedidosService = inject(PedidosService);
-  public username = input.required<string>();
+  public productor = input.required<string>();
 
   public pedidoSeleccionado = signal<Pedido | null>(null);
 
@@ -32,7 +32,7 @@ export class ChatsPage {
 
   public readonly pedidosResource = resource({
     params: () => {
-      const productor = this.username();
+      const productor = this.productor();
       if (!productor) return undefined;
       return {
         productor,

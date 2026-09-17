@@ -37,11 +37,11 @@ export class PreguntasPage {
   public paginationStore = inject(PaginationStore);
   private _dialogService = inject(DialogService);
 
-  public username = input.required<string>();
+  public productor = input.required<string>();
 
   private preguntasResource = resource({
     params: () => {
-      const productor = this.username();
+      const productor = this.productor();
 
       if (!productor) return undefined;
 
@@ -67,7 +67,7 @@ export class PreguntasPage {
   });
 
   public async responderPregunta(nuevaRespuesta: RespuestaPost) {
-    const productor = this.username();
+    const productor = this.productor();
     const { producto, id_pregunta, contenido } = nuevaRespuesta;
     try {
       await this._preguntasService.responderPregunta(productor, producto, id_pregunta, contenido);
