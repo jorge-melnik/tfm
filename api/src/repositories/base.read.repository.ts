@@ -1,6 +1,6 @@
 import { myPool } from '@database/pool.js';
 import { BadRequestError, InternalError, NotFoundError } from '@errors/response.errors.js';
-import { DeAcaListResponseType, keysCercania, keysFavoritos, keysPaginacion } from '@schemas/core.schemas.js';
+import { ListResponseType, keysCercania, keysFavoritos, keysPaginacion } from '@schemas/core.schemas.js';
 import { Pool, PoolClient } from 'pg';
 import { DatosBase } from '../types/datos-base.js';
 
@@ -54,7 +54,7 @@ export abstract class BaseReadRepository<T extends DatosBase> {
     return res.rows;
   }
 
-  async getBy(routeQuery: any = {}): Promise<DeAcaListResponseType<T>> {
+  async getBy(routeQuery: any = {}): Promise<ListResponseType<T>> {
     const { limit, page, sort, sort_direction, latitud, longitud, distancia, id_consumidor_autenticado } =
       routeQuery;
     const filters: Partial<T> = {};

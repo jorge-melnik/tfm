@@ -1,1 +1,44 @@
-<p>Admin home works!</p>
+<div class="flex flex-col h-full">
+  <main class="grow overflow-y-auto bg-surface-ground p-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-4xl mx-auto">
+      <a
+        pButton
+        [routerLink]="['/admin/categorias']"
+        routerLinkActive="!bg-primary !text-primary-contrast"
+        severity="secondary"
+        [outlined]="true"
+        class="flex flex-col items-center justify-center p-6 gap-3 rounded-xl transition-all h-36 border border-surface-200 dark:border-surface-700 hover:border-primary"
+      >
+        <svg data-p-icon="tag" style="font-size: 2.25rem"></svg>
+
+        <span class="font-semibold text-lg">Categorias</span>
+      </a>
+
+      <a
+        pButton
+        [routerLink]="['/admin/subcategorias']"
+        routerLinkActive="!bg-primary !text-primary-contrast"
+        severity="secondary"
+        [outlined]="true"
+        class="flex flex-col items-center justify-center p-6 gap-3 rounded-xl transition-all h-36 border border-surface-200 dark:border-surface-700 hover:border-primary"
+      >
+        <svg data-p-icon="tag" style="font-size: 2.25rem"></svg>
+
+        <span class="font-semibold text-lg">Subcategorias</span>
+      </a>
+
+      <a
+        pButton
+        [routerLink]="['/admin/etiquetas']"
+        routerLinkActive="!bg-primary !text-primary-contrast"
+        severity="secondary"
+        [outlined]="true"
+        class="flex flex-col items-center justify-center p-6 gap-3 rounded-xl transition-all h-36 border border-surface-200 dark:border-surface-700 hover:border-primary"
+      >
+        <svg data-p-icon="tag" style="font-size: 2.25rem"></svg>
+
+        <span class="font-semibold text-lg">Etiquetas</span>
+      </a>
+    </div>
+  </main>
+</div>

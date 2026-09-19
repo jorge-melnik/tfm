@@ -2,7 +2,7 @@ import fp from 'fastify-plugin';
 import type { FastifyInstance } from 'fastify';
 import { TSchema, Type, Static } from '@sinclair/typebox';
 
-export const DeAcaListResponse = <T extends TSchema>(type: T) =>
+export const ListResponse = <T extends TSchema>(type: T) =>
   Type.Object({
     data: Type.Array(type, {
       description: 'Lista de elementos obtenidos según los datos especificados en request.query',
@@ -16,9 +16,9 @@ export const DeAcaListResponse = <T extends TSchema>(type: T) =>
   });
 
 // O si querés extraerlo 100% dinámico desde TypeBox usando Static:
-type RawResponse = Static<ReturnType<typeof DeAcaListResponse>>;
+type RawResponse = Static<ReturnType<typeof ListResponse>>;
 
-export type DeAcaListResponseType<T> = {
+export type ListResponseType<T> = {
   data: T[];
   meta: RawResponse['meta']; // Hereda automáticamente la estructura exacta de 'meta' de TypeBox
 };
@@ -53,7 +53,7 @@ export const RolLiteral = Type.Union(
   { description: 'Posibles roles del usuario del sistema.' },
 );
 
-export const DeAcaQueryString = Type.Object({
+export const AppQueryString = Type.Object({
   page: Type.Optional(
     Type.Integer({ minimum: 1, default: 1, description: 'Número de página que quiero obtener del total.' }),
   ),
@@ -70,7 +70,7 @@ export const keysCercania = ['latitud', 'longitud', 'distancia'];
 
 export const keysFavoritos = ['id_consumidor_autenticado']; //favorito mismo entra como cualquier otra.
 
-export type DeAcaQueryString = Static<typeof DeAcaQueryString>;
+export type AppQueryString = Static<typeof AppQueryString>;
 
 export default fp(async (fastify: FastifyInstance) => {
   // fastify.addSchema(ErrorResponse);

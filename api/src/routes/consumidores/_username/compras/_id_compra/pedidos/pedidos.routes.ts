@@ -3,7 +3,7 @@ import { comprasRepository } from '@repositories/compras.respository.js';
 import { pedidosRepository } from '@repositories/pedidos.respository.js';
 import { Compra, Pedido } from '@schemas/compras.schema.js';
 import { Consumidor } from '@schemas/consumidores.schema.js';
-import { ErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
+import { ErrorResponse, ListResponse, AppQueryString } from '@schemas/core.schemas.js';
 
 const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
@@ -17,10 +17,10 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
         username: Consumidor.properties.username,
         id_compra: Compra.properties.id_compra,
       }),
-      querystring: Type.Intersect([DeAcaQueryString, Type.Object({})]),
+      querystring: Type.Intersect([AppQueryString, Type.Object({})]),
       response: {
         // 200: Type.Array(Pedido, { description: 'Listado de pedidos.' }),
-        200: DeAcaListResponse(Pedido),
+        200: ListResponse(Pedido),
         404: ErrorResponse,
         500: ErrorResponse,
       },

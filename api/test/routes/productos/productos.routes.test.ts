@@ -10,7 +10,7 @@ import { Productor } from '@schemas/productores.schema.js';
 import assert from 'node:assert';
 import test from 'node:test';
 import { build } from '../../helper.js';
-import { DeAcaNotFound } from '@errors/response.errors.js';
+import { NotFound } from '@errors/response.errors.js';
 
 const baseUrl = '/productos';
 
@@ -184,7 +184,7 @@ test('Producto Repository', async (t) => {
         id_producto: productoB.id_producto,
       }),
       (err: any) => {
-        assert.ok(err instanceof DeAcaNotFound);
+        assert.ok(err instanceof NotFound);
         return true;
       },
     );

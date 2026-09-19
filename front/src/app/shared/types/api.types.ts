@@ -18,7 +18,7 @@ export interface Pagination {
   sort_direction?: 'ASC' | 'DESC';
 }
 
-export interface DeAcaRequestOptions {
+export interface AgroecoRequestOptions {
   pathParams?: PathParams;
   queryParams?: ApiQueryParams;
   pagination?: Pagination;

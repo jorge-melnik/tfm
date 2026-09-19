@@ -1,7 +1,7 @@
 import createError from '@fastify/error';
 
 export const BadRequestError = createError('BADREQUEST', 'Solicitud incorrecta. %s', 400);
-export const UnAuthenticatedError = createError('UNAUTHENTICATED', 'Credenciales inválidas. %s', 401);
+export const UnAuthenticatedErrorError = createError('UnAuthenticatedError', 'Credenciales inválidas. %s', 401);
 export const UnAuthorizedError = createError('UNAUTHORIZED', 'Credenciales inválidas. %s', 401);
 export const NotAuthorizedError = createError('NOTAUTHORIZED', 'No autorizado. %s', 403);
 export const ForbiddenError = createError('FORBIDDEN', 'Solicitud incorrecta. %s', 403);

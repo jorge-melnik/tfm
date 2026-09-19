@@ -2,7 +2,7 @@ import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { comprasRepository } from '@repositories/compras.respository.js';
 import { Compra, CompraPOST } from '@schemas/compras.schema.js';
 import { Consumidor } from '@schemas/consumidores.schema.js';
-import { ErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
+import { ErrorResponse, ListResponse, AppQueryString } from '@schemas/core.schemas.js';
 
 const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
@@ -14,9 +14,9 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
       `,
       params: Type.Object({ username: Consumidor.properties.username }),
 
-      querystring: Type.Intersect([DeAcaQueryString, Type.Object({})]),
+      querystring: Type.Intersect([AppQueryString, Type.Object({})]),
       response: {
-        200: DeAcaListResponse(Compra),
+        200: ListResponse(Compra),
         500: ErrorResponse,
       },
     },

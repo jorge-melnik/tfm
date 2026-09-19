@@ -3,7 +3,7 @@ import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { mensajesRepository } from '@repositories/mensajes.repository.js';
 import { pedidosRepository } from '@repositories/pedidos.respository.js';
 import { EstadoPedido, Mensaje, Pedido } from '@schemas/compras.schema.js';
-import { ErrorResponse, DeAcaListResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse, ListResponse } from '@schemas/core.schemas.js';
 import { Productor } from '@schemas/productores.schema.js';
 
 const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -52,7 +52,7 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
         estado_pedido: EstadoPedido,
       }),
       response: {
-        200: DeAcaListResponse(Pedido),
+        200: ListResponse(Pedido),
         404: ErrorResponse,
         500: ErrorResponse,
       },

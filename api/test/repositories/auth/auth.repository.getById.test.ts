@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import * as assert from 'node:assert';
 import authRepository from '@repositories/auth.repository.js';
-import { DeAcaNotFound } from '@errors/response.errors.js';
+import { NotFound } from '@errors/response.errors.js';
 import { Profile, RegisterSchema } from '@schemas/auth.schema.js';
 
 test('AuthRepository - Profile Suite', async (t) => {
@@ -39,12 +39,12 @@ test('AuthRepository - Profile Suite', async (t) => {
       assert.equal(perfil.username, datosRegistro.username);
     });
 
-    await st.test('Debe lanzar DeAcaNotFound si el id_usuario no existe', async () => {
+    await st.test('Debe lanzar NotFound si el id_usuario no existe', async () => {
       const idInexistente = '00000000-0000-0000-0000-000000000000'; //UUID que no existe.
 
       // Act & Assert
       await assert.rejects(authRepository.getUserById(idInexistente), (err: any) => {
-        assert.ok(err instanceof DeAcaNotFound);
+        assert.ok(err instanceof NotFound);
         return true;
       });
     });

@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "name": "deaca",
+  "name": "agroeco",
   "version": "1.0.0",
   "description": "Api para App De Acá!.",
   "main": "app.ts",

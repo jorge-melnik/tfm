@@ -2,7 +2,7 @@ import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { PreguntasRepository } from '@repositories/preguntas.repository.js';
 import { productoRepository } from '@repositories/producto.repository.js';
 
-import { ErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
+import { ErrorResponse, ListResponse, AppQueryString } from '@schemas/core.schemas.js';
 import { EstadoPregunta, Pregunta, PreguntaPost, Respuesta } from '@schemas/pregunta.schema.js';
 import { Producto } from '@schemas/producto.schema.js';
 
@@ -19,14 +19,14 @@ const preguntasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
         producto: Producto.properties.producto,
       }),
       querystring: Type.Intersect([
-        DeAcaQueryString,
+        AppQueryString,
         Type.Object({
           activo: Type.Optional(Type.Boolean()),
           estado_pregunta: Type.Optional(EstadoPregunta),
         }),
       ]),
       response: {
-        200: DeAcaListResponse(Pregunta),
+        200: ListResponse(Pregunta),
         500: ErrorResponse,
       },
     },

@@ -3,7 +3,7 @@ import * as assert from 'node:assert';
 import { categoriasRepository } from '../../src/repositories/categorias.repository.js';
 import { Categoria } from '@schemas/categoria.schema.js';
 import { subcategoriasRepository } from '@repositories/subcategorias.repository.js';
-import { DeAcaNotFound } from '@errors/response.errors.js';
+import { NotFound } from '@errors/response.errors.js';
 import { etiquetasRepository } from '@repositories/etiquetas.repository.js';
 
 test('Subcategorias Repository', async (t) => {
@@ -54,14 +54,14 @@ test('Subcategorias Repository', async (t) => {
 
   t.test('test deactivate id no existente', async () => {
     await assert.rejects(subcategoriasRepository.deactivate(-1), (err: any) => {
-      assert.ok(err instanceof DeAcaNotFound);
+      assert.ok(err instanceof NotFound);
       return true;
     });
   });
 
   t.test('test activate id no existente', async () => {
     await assert.rejects(subcategoriasRepository.activate(-1), (err: any) => {
-      assert.ok(err instanceof DeAcaNotFound);
+      assert.ok(err instanceof NotFound);
       return true;
     });
   });

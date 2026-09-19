@@ -30,13 +30,13 @@ BEGIN
     -------------------------------------------------------------------------------------------------------------------------
     INSERT INTO usuarios (rol_actual, roles) VALUES ('ADMIN', ARRAY['ADMIN']::ROL[]) RETURNING id_usuario INTO id_administrador;
     INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username, celular,foto_url) 
-        VALUES (id_administrador, 'Admin', 'Sistema', 'admin@deaca.com', 'admin', '+59899111222', '/usuarios/admin/admin.png');
+        VALUES (id_administrador, 'Admin', 'Sistema', 'admin@agroeco.com', 'admin', '+59899111222', '/usuarios/admin/admin.png');
     INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_administrador, crypt('Contraseña', gen_salt('bf', 10)));
     ------------------------------------------------------------------------------------------------------------------------
     -- superadmin: Administrador, productor y consumidor
     -------------------------------------------------------------------------------------------------------------------------
     INSERT INTO usuarios (rol_actual, roles) VALUES ('ADMIN', ARRAY['ADMIN']::ROL[]) RETURNING id_usuario INTO id_superadministrador;
-    INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username, celular,foto_url) VALUES (id_superadministrador, 'superadmin', 'superadmin', 'superadmin@deaca.com', 'superadmin', '+59899111662', '/usuarios/superadmin/superadmin.svg');
+    INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username, celular,foto_url) VALUES (id_superadministrador, 'superadmin', 'superadmin', 'superadmin@agroeco.com', 'superadmin', '+59899111662', '/usuarios/superadmin/superadmin.svg');
     INSERT INTO consumidores (id_consumidor) VALUES (id_superadministrador);
     INSERT INTO carritos (id_consumidor) VALUES (id_superadministrador);
 -- Ubicaciones Superadmin
@@ -54,7 +54,7 @@ BEGIN
     -- productor: Solo productor
     INSERT INTO usuarios (rol_actual, roles) VALUES ('PRODUCTOR', ARRAY['PRODUCTOR']::ROL[]) RETURNING id_usuario INTO id_productor;
     INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username,celular,foto_url) 
-        VALUES (id_productor, 'Juan', 'Huerta', 'juan.productor@email.com','productor', '+59899333444','/usuarios/productor/productor.jpeg');
+        VALUES (id_productor, 'Juan', 'Huerta', 'productor@agroeco.com','productor', '+59899333444','/usuarios/productor/productor.jpeg');
     INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_productor, crypt('Contraseña', gen_salt('bf', 10)));
 
     -- Ubicaciones Productor
@@ -71,7 +71,7 @@ BEGIN
     -- Consumidor: Solo consumidor
     INSERT INTO usuarios (rol_actual, roles) VALUES ('CONSUMIDOR', ARRAY['CONSUMIDOR']::ROL[]) RETURNING id_usuario INTO id_consumidor;
     INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username, celular,foto_url) 
-        VALUES (id_consumidor, 'María', 'Compradora', 'maria.cliente@email.com', 'consumidor' ,'+59899555666', '/usuarios/consumidor/consumidor.jpeg');
+        VALUES (id_consumidor, 'María', 'Compradora', 'consumidor@agroeco.com', 'consumidor' ,'+59899555666', '/usuarios/consumidor/consumidor.jpeg');
     INSERT INTO consumidores (id_consumidor) VALUES (id_consumidor);
     INSERT INTO carritos (id_consumidor) VALUES (id_consumidor);
     INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_consumidor, crypt('Contraseña', gen_salt('bf', 10)));

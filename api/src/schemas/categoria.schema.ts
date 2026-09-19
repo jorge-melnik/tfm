@@ -87,7 +87,7 @@ export const Etiqueta = Type.Object(
   },
 );
 
-// export const CategoriasResponse = Type.Object(DeAcaListResponse(Categoria).properties, {
+// export const CategoriasResponse = Type.Object(ListResponse(Categoria).properties, {
 //   examples: [
 //     {
 //       data: [
@@ -98,7 +98,7 @@ export const Etiqueta = Type.Object(
 //   ],
 // });
 
-// export const SubcategoriasResponse = Type.Object(DeAcaListResponse(Subcategoria).properties, {
+// export const SubcategoriasResponse = Type.Object(ListResponse(Subcategoria).properties, {
 //   examples: [
 //     {
 //       data: [

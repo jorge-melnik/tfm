@@ -60,7 +60,7 @@ test('/auth/login', async (t) => {
 
     // Assert
     assert.equal(res.statusCode, 401);
-    assert.equal(body.code, 'DEACA_UNAUTHENTICATED');
+    assert.equal(body.code, 'AGROECO_UnAuthenticatedError');
   });
 
   await t.test('POST /login/email - Body inválido (TypeBox)', async () => {

@@ -3,7 +3,7 @@ import * as assert from 'node:assert';
 import authRepository from '@repositories/auth.repository.js';
 import { myPool } from '@database/pool.js';
 import { RegisterSchema } from '@schemas/auth.schema.js';
-import { DeAcaInternal } from '@errors/response.errors.js';
+import { InternalError } from '@errors/response.errors.js';
 
 test('register', async (t) => {
   await t.test('Registro de consumidor', async () => {
@@ -162,7 +162,7 @@ test('register', async (t) => {
     await authRepository.register(datosConsumidor); //Este anda.
 
     await assert.rejects(authRepository.register(datosConsumidor), (err: any) => {
-      assert.ok(err instanceof DeAcaInternal);
+      assert.ok(err instanceof InternalError);
       return true;
     });
   });

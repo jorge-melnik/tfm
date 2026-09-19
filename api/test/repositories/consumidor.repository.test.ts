@@ -1,5 +1,5 @@
 import { myPool } from '@database/pool.js';
-import { DeAcaInternal } from '@errors/response.errors.js';
+import { InternalError } from '@errors/response.errors.js';
 import authRepository from '@repositories/auth.repository.js';
 import { categoriasRepository } from '@repositories/categorias.repository.js';
 import { consumidorRepository } from '@repositories/consumidor.repository.js';
@@ -46,7 +46,7 @@ await test('activarConsumidor() y activarProductor() - Casos de error', async (s
         presentacion: 'Segunda vez',
       }),
       (err: any) => {
-        assert.ok(err instanceof DeAcaInternal);
+        assert.ok(err instanceof InternalError);
         return true;
       },
     );
@@ -54,7 +54,7 @@ await test('activarConsumidor() y activarProductor() - Casos de error', async (s
 
   await st.test('Metodo no permitido activate', async () => {
     await assert.rejects(consumidorRepository.activate(id_usuario), (err: any) => {
-      assert.ok(err instanceof DeAcaInternal);
+      assert.ok(err instanceof InternalError);
       return true;
     });
   });
