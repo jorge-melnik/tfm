@@ -50,6 +50,7 @@ import MapBrowserEvent from 'ol/MapBrowserEvent';
 import { LocalidadsService } from '@shared/services/localidades.service';
 import { FormsModule } from '@angular/forms';
 import { Location } from '@angular/common';
+import { DialogService } from '@shared/services/dialog.service';
 
 @Component({
   selector: 'app-ubicaciones',
@@ -81,6 +82,7 @@ export class UbicacionesPage {
   private _usuariosService = inject(UsuariosService);
   public readonly location = inject(Location);
   public userStore = inject(UserStore);
+  public _dialogService = inject(DialogService);
 
   public ubicacionSeleccionada = signal<Ubicacion>(ubicacionVacia);
   public modalEdicionAbierto = signal<boolean>(false);
@@ -143,9 +145,10 @@ export class UbicacionesPage {
   constructor() {
     effect(() => {
       const lista = this.ubicaciones();
-      if (this.map && lista.length > 0) {
-        this.renderizarMarcadores(lista);
-      }
+      // if (this.map && lista.length > 0) {
+      //   this.renderizarMarcadores(lista);
+      // }
+      if (this.map) this.renderizarMarcadores(lista);
     });
   }
 
@@ -372,7 +375,23 @@ export class UbicacionesPage {
     }
   }
 
-  public eliminarUbicacion(ubicacion: Ubicacion): void {
+  public async eliminarUbicacion(ubicacion: Ubicacion): Promise<void> {
     console.log('Eliminar ubicación:', ubicacion);
+    const user = this.userStore.user();
+    if (!user) return;
+
+    try {
+      await this._usuariosService.removeUbicacion(user.username, ubicacion.ubicacion);
+
+      this.ubicacionesResource.reload();
+      this.cerrarModalEdicion();
+      this.cerrarPopup();
+    } catch (error:any) {
+      console.error('Error al procesar la ubicación:', error);
+      const mensaje = error.error ? error.error.message : error.message;
+      this._dialogService.addError(mensaje);
+    } finally {
+      this.guardandoEdicion.set(false);
+    }
   }
 }

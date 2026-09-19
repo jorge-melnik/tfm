@@ -1,7 +1,11 @@
 import createError from '@fastify/error';
 
 export const BadRequestError = createError('BADREQUEST', 'Solicitud incorrecta. %s', 400);
-export const UnAuthenticatedErrorError = createError('UnAuthenticatedError', 'Credenciales inválidas. %s', 401);
+export const UnAuthenticatedErrorError = createError(
+  'UnAuthenticatedError',
+  'Credenciales inválidas. %s',
+  401,
+);
 export const UnAuthorizedError = createError('UNAUTHORIZED', 'Credenciales inválidas. %s', 401);
 export const NotAuthorizedError = createError('NOTAUTHORIZED', 'No autorizado. %s', 403);
 export const ForbiddenError = createError('FORBIDDEN', 'Solicitud incorrecta. %s', 403);
@@ -16,16 +20,18 @@ export function transformarErrorPostgres(error: PostgresError) {
   // "table": "pedido_productos",
   // "constraint": "pedio_productos_producto_fk",
   const elementoProblematico = constraint
-    ?.substring(table?.length || 0)
+    ?.substring((table?.length || 0) + 1)
     .toLowerCase()
+    .replace('_fkey', '')
     .replace('_fk', '')
     .replace('_key', '')
-    .replace('_pk', '');
+    .replace('_pk', '')
+    .replace('id_ubicacion', 'ubicacion');
   switch (error.code) {
     case '23000': //INTEGRITY CONSTRAINT VIOLATION
       return new ConflictError(`El ${elementoProblematico} no se puede borrar.`);
     case '23001': //RESTRICT VIOLATION
-      return new ConflictError(`El ${elementoProblematico} no se puede borrar.`);
+      return new ConflictError(`${elementoProblematico} no se puede borrar.`);
     case '23502': //NOT NULL VIOLATION
       return new BadRequestError(`El campo '${error.column || 'requerido'}' no puede estar vacío.`);
     case '23503': //FOREIGN KEY VIOLATION
@@ -33,7 +39,7 @@ export function transformarErrorPostgres(error: PostgresError) {
         'No se puede completar la acción porque el registro está vinculado a otros datos.',
       );
     case '23505': //UNIQUE VIOLATION
-      return new ConflictError(`Ya existe un ${elementoProblematico} en ${table} .`);
+      return new ConflictError(`Ya existe ${elementoProblematico} en ${table} .`);
     case '23514': //CHECK VIOLATION
       return new BadRequestError('Los datos no cumplen con las reglas de validación del sistema.');
     default:

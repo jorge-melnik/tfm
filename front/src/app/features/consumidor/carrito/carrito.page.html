@@ -35,9 +35,8 @@
         Resumen del pedido
       </h3>
 
-      <div class="flex flex-col gap-3">
-        <form novalidate class="flex flex-col gap-12" (submit)="this.confirmarCompra($event)">
-          <div class="flex flex-col gap-1.5">
+      <form novalidate class="flex flex-col gap-2" (submit)="this.confirmarCompra($event)">
+          <div class="flex flex-col">
             <p-floatlabel variant="on" class="w-full">
               <p-select
                 id="ubicacion"
@@ -48,8 +47,17 @@
                 optionLabel="nombre"
                 [formField]="this.datosEnvioForm.id_ubicacion!"
               >
-                <ng-template pTemplate="empty">
-                  <span class="text-sm p-2 block">No tienes ubicaciones registradas.</span>
+                <ng-template #empty>
+                  <div class="flex flex-col gap-2 p-2 items-start text-sm">
+                    <span class="text-surface-500">No tienes ubicaciones registradas.</span>
+                    <a
+                      [routerLink]="['/consumidor/mis-datos/ubicaciones']"
+                      class="text-primary font-medium hover:underline flex items-center gap-1 text-xs"
+                    >
+                      <svg data-p-icon="plus" style="font-size: 0.85rem"></svg>
+                      <span>Crear nueva ubicación</span>
+                    </a>
+                  </div>
                 </ng-template>
               </p-select>
               <label for="ubicacion">Ubicación de envío</label>
@@ -65,6 +73,8 @@
               }
             } -->
 
+          </div>
+          <div class="flex flex-col">
             <p-floatlabel variant="on" class="w-full">
               <p-iconfield iconPosition="right">
                 <p-inputicon>
@@ -122,7 +132,6 @@
             </button>
           </div>
         </form>
-      </div>
     </div>
   }
 </div>

@@ -93,14 +93,13 @@ const rutasUsuarios: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<
         username: Usuario.properties.username,
         ubicacion: Ubicacion.properties.ubicacion,
       }),
-      body: UbicacionPost,
     },
     onRequest: [fastify.authenticate, fastify.selfWithRole(null)],
     handler: async function (req, reply) {
       reply.code(204);
       const { username } = req.params;
       const usuario = await usuariosRepository.getOneBy({ username });
-      return await usuariosRepository.updateUbicacion(usuario.id_usuario, req.params.ubicacion, req.body);
+      return await usuariosRepository.removeUbicacion(usuario.id_usuario, req.params.ubicacion);
     },
   });
 };

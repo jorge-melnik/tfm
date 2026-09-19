@@ -10,7 +10,7 @@ import { DialogService } from '@shared/services/dialog.service';
 import { ComprasService } from '@shared/services/compras.service';
 import { UserStore } from '@shared/services/stores/user.store';
 import { CompraPOST } from '@shared/types/compra';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { UsuariosService } from '@shared/services/usuarios.service.ts';
 import { Select } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
@@ -44,6 +44,7 @@ type DatosEnvio = {
     Phone,
     InputTextModule,
     FormField,
+    RouterLink,
   ],
   templateUrl: './carrito.page.html',
 
