@@ -157,3 +157,23 @@ AFTER DELETE ON pedidos
 REFERENCING OLD TABLE AS tabla_afectacion
 FOR EACH STATEMENT
 EXECUTE FUNCTION tr_fn_recalcular_total_compra();
+
+
+CREATE OR REPLACE FUNCTION tr_fn_restar_stock_producto()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE public.productos
+    SET cantidad_disponible = cantidad_disponible - NEW.cantidad
+    WHERE id_producto = NEW.id_producto AND cantidad_disponible >= NEW.cantidad;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS tg_pedido_productos_restar_stock ON pedido_productos;
+
+CREATE TRIGGER tg_pedido_productos_restar_stock
+BEFORE INSERT ON pedido_productos
+FOR EACH ROW
+EXECUTE FUNCTION tr_fn_restar_stock_producto();
+--//TODO: También podría hacer otro trigger por si el pedido se cancela.
