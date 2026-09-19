@@ -6,7 +6,7 @@ import { DialogService } from '@shared/services/dialog.service';
 import { ProductosProductorService } from '@shared/services/productos-productor.service';
 import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
 import { UserStore } from '@shared/services/stores/user.store';
-import { ImagenSlot, Producto } from '@shared/types/producto';
+import { ImagenSlot, PostProducto, Producto } from '@shared/types/producto';
 import { Card } from 'primeng/card';
 
 @Component({
@@ -31,7 +31,7 @@ export class ProductosProductorCreatePage {
     this.volver();
   }
 
-  public async guardar(producto: Producto) {
+  public async guardar(producto: PostProducto) {
     console.log('guardar');
     try {
       const productor = this.productor();

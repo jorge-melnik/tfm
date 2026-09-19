@@ -21,7 +21,6 @@ import { form, maxLength, min, minLength, required, FormField } from '@angular/f
     InputIcon,
     Select,
     InputNumber,
-    FormsModule,
     InputText,
     Textarea,
     FormField,
@@ -48,47 +47,53 @@ export class ProductoForm implements OnInit {
   public productoForm = form(this.productoTemporal, (path) => {
     required(path.productor, {
       message: 'No especificaste el productor',
-      when: ({ state }) => state.touched() && state.invalid(),
     });
     required(path.nombre, {
       message: 'No especificaste el nombre',
-      when: ({ state }) => state.touched() && state.invalid(),
+      when: ({ state }) => state.touched(),
     });
-    required(path.descripcion, {
-      message: 'No especificaste la descripción',
-      when: ({ state }) => state.touched() && state.invalid(),
-    });
-    required(path.precio, {
-      message: 'No especificaste el precio',
-      when: ({ state }) => state.touched() && state.invalid(),
-    });
-    required(path.cantidad_disponible, {
-      message: 'No especificaste el stock',
-      when: ({ state }) => state.touched() && state.invalid(),
-    });
-    required(path.subcategoria, {
-      // message: 'No especificaste la subcategoría',when: ({ state }) => state.touched() && state.invalid(),
-    });
-    required(path.etiquetas, {
-      message: 'No especificaste etiquetas',
-      // when: ({ state }) => state.touched() && state.invalid(),
-    });
-    min(path.precio, 1, { message: 'No puedes especificar un precio menor a uno.' });
     minLength(path.nombre, 3, {
       message: 'Incluye por lo menos 3 caracteres',
-      when: ({ state }) => state.touched() && state.invalid(),
+      when: ({ state }) => state.touched(),
     });
 
     maxLength(path.nombre, 35, {
       message: 'Máximo 35 caracteres',
-      when: ({ state }) => state.touched() && state.invalid(),
+      when: ({ state }) => state.touched(),
     });
+    required(path.descripcion, {
+      message: 'No especificaste la descripción',
+      when: ({ state }) => state.touched(),
+    });
+    required(path.precio, {
+      message: 'No especificaste el precio',
+      when: ({ state }) => state.touched(),
+    });
+    required(path.cantidad_disponible, {
+      message: 'No especificaste el stock',
+      when: ({ state }) => state.touched(),
+    });
+
+    min(path.cantidad_disponible, 0, { message: 'No puedes especificar un stock menor a cero.' });
+    required(path.subcategoria, {
+      message: 'No especificaste la subcategoría',
+      when: ({ state }) => state.touched(),
+    });
+    required(path.etiquetas, {
+      message: 'No especificaste etiquetas',
+      when: ({ state }) => state.touched(),
+    });
+    minLength(path.etiquetas, 1, {
+      message: 'Incluye por lo menos 1 etiqueta',
+      when: ({ state }) => state.touched(),
+    });
+    min(path.precio, 1, { message: 'No puedes especificar un precio menor a uno.' });
   });
 
   ngOnInit(): void {
-    this.etiquetasStore.setCategoriaSeleccionada(this.producto().categoria);
-    this.etiquetasStore.setSubcategoriaSeleccionada(this.producto().subcategoria);
-    this.etiquetasStore.setEtiquetasSeleccionadas(this.producto().etiquetas);
+    // this.etiquetasStore.setCategoriaSeleccionada(this.producto().categoria);
+    // this.etiquetasStore.setSubcategoriaSeleccionada(this.producto().subcategoria);
+    // this.etiquetasStore.setEtiquetasSeleccionadas(this.producto().etiquetas);
     this.productoTemporal.set({ ...this.producto() });
   }
 
@@ -99,8 +104,8 @@ export class ProductoForm implements OnInit {
       return;
     }
 
-    const productoActualizado: PostProducto = this.productoTemporal();
+    // const productoActualizado: PostProducto = this.productoForm().value();
 
-    this.guardar.emit(productoActualizado);
+    // this.guardar.emit(productoActualizado);
   }
 }

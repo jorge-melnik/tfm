@@ -11,15 +11,13 @@
     name="categoria"
     #slugCategoria
     [options]="this.etiquetasStore.categorias()"
-    /* [ngModel]="this.etiquetasStore.categoriaSeleccionada()"
-    (ngModelChange)="this.etiquetasStore.setCategoriaSeleccionada($event)" */
+    (onChange)="this.etiquetasStore.setCategoriaSeleccionada($event.value)"
     optionLabel="categoria"
     optionValue="categoria"
     appendTo="body"
     class="w-full"
     [showClear]="true"
     placeholder="Categoría"
-    required
   >
     <ng-template let-categoria #item>
       <div class="flex items-center gap-2">
@@ -33,14 +31,13 @@
     placeholder="Selecciona subcategoría"
     [options]="this.etiquetasStore.subcategorias()"
     [formField]="this.productoForm.subcategoria"
-    /* (ngModelChange)="this.etiquetasStore.setSubcategoriaSeleccionada($event)" */
+    (onChange)="this.etiquetasStore.setSubcategoriaSeleccionada($event.value)"
     optionLabel="nombre"
     optionValue="subcategoria"
     appendTo="body"
     class="w-full"
     [showClear]="true"
     placeholder="Subcategoría"
-    required
   />
 
   <p-select
@@ -48,8 +45,7 @@
     name="etiquetas"
     [options]="this.etiquetasStore.etiquetas()"
     [formField]="this.productoForm.etiquetas"
-    /* [ngModel]="this.etiquetasStore.etiquetasSeleccionadas()" */
-    /* (ngModelChange)="this.etiquetasStore.setEtiquetasSeleccionadas($event)" */
+    (onChange)="this.etiquetasStore.setEtiquetasSeleccionadas($event.value)"
     placeholder="Etiquetas"
     class="w-full"
     display="chip"
@@ -57,7 +53,6 @@
     optionValue="etiqueta"
     appendTo="body"
     [showClear]="true"
-    required
   />
 
   <p-floatlabel variant="on">
@@ -93,10 +88,6 @@
         class="w-full"
         styleClass="w-full"
         [min]="0"
-        decrementButtonClass="p-button-secondary"
-        incrementButtonClass="p-button-secondary"
-        incrementButtonIcon="pi pi-plus"
-        decrementButtonIcon="pi pi-minus"
       />
       <label for="cantidadDisponible">Cantidad Disponible</label>
     </p-floatlabel>
