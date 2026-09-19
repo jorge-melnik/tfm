@@ -16,6 +16,8 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
         Type.Object({
           // username: Type.Optional(Type.String()), No recuerdo en que caso se usaría.
           productor: Type.Optional(Type.String()),
+          departamento: Type.Optional(Type.String()),
+          localidad: Type.Optional(Type.String()),
           id_productor: Type.Optional(Type.String()),
           etiquetas: Type.Optional(Type.Array(Type.String())),
           categoria: Type.Optional(Type.String()),

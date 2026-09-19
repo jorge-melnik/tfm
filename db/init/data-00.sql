@@ -445,6 +445,7 @@ INSERT INTO public.localidades (id_departamento,nombre,localidad,codigo_postal) 
 	 (9,'SAUCE DE PORTEZUELO','sauce-de-portezuelo',20000),
 	 (10,'MONTEVIDEO','montevideo',10000),
 	 (10,'MONTEVIDEO RURAL','montevideo-rural',NULL),
+	 (11,'PAYSANDU','paysandu',NULL),
 	 (13,'AMARILLO','amarillo',41200),
 	 (13,'ARROYO BLANCO','arroyo-blanco',41200),
 	 (13,'CERRILLADA','cerrillada',40000),
