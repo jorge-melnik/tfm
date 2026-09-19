@@ -27,6 +27,7 @@ export interface PostProducto {
   descripcion: string;
   precio: number;
   cantidad_disponible: number;
+  categoria: string;
   subcategoria: string;
   etiquetas: string[];
 }

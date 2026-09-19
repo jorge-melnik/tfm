@@ -4,7 +4,6 @@ import { ProductoForm } from '@shared/components/producto-form/producto.form';
 import { ProductoImagenesSelector } from '@shared/components/producto-imagenes-selector/producto-imagenes-selector';
 import { DialogService } from '@shared/services/dialog.service';
 import { ProductosProductorService } from '@shared/services/productos-productor.service';
-import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
 import { UserStore } from '@shared/services/stores/user.store';
 import { ImagenSlot, PostProducto, Producto } from '@shared/types/producto';
 import { Card } from 'primeng/card';

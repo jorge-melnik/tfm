@@ -4,13 +4,14 @@ import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { Select } from 'primeng/select';
 import { InputNumber } from 'primeng/inputnumber';
-import { FormsModule } from '@angular/forms';
 import { PostProducto, Producto } from '@shared/types/producto';
 import { ButtonModule } from 'primeng/button';
 import { EtiquetasStore } from '@shared/services/stores/etiquetas.store';
 import { InputText } from 'primeng/inputtext';
 import { Textarea } from 'primeng/textarea';
 import { form, maxLength, min, minLength, required, FormField } from '@angular/forms/signals';
+import { Message } from 'primeng/message';
+import { UserStore } from '@shared/services/stores/user.store';
 
 @Component({
   selector: 'app-producto-form',
@@ -24,6 +25,7 @@ import { form, maxLength, min, minLength, required, FormField } from '@angular/f
     InputText,
     Textarea,
     FormField,
+    Message,
   ],
   templateUrl: './producto.form.html',
   styleUrl: './producto.form.css',
@@ -31,6 +33,7 @@ import { form, maxLength, min, minLength, required, FormField } from '@angular/f
 export class ProductoForm implements OnInit {
   public producto = input.required<Producto>();
   public etiquetasStore = inject(EtiquetasStore);
+  public userStore = inject(UserStore);
 
   public guardar = output<PostProducto>();
   public cancelar = output();
@@ -41,6 +44,7 @@ export class ProductoForm implements OnInit {
     descripcion: '',
     precio: 0,
     cantidad_disponible: 0,
+    categoria: '',
     subcategoria: '',
     etiquetas: [],
   });
@@ -75,6 +79,10 @@ export class ProductoForm implements OnInit {
     });
 
     min(path.cantidad_disponible, 0, { message: 'No puedes especificar un stock menor a cero.' });
+    required(path.categoria, {
+      message: 'No especificaste la categoría',
+      when: ({ state }) => state.touched(),
+    });
     required(path.subcategoria, {
       message: 'No especificaste la subcategoría',
       when: ({ state }) => state.touched(),
@@ -91,21 +99,28 @@ export class ProductoForm implements OnInit {
   });
 
   ngOnInit(): void {
-    // this.etiquetasStore.setCategoriaSeleccionada(this.producto().categoria);
-    // this.etiquetasStore.setSubcategoriaSeleccionada(this.producto().subcategoria);
-    // this.etiquetasStore.setEtiquetasSeleccionadas(this.producto().etiquetas);
-    this.productoTemporal.set({ ...this.producto() });
+    this.etiquetasStore.setCategoriaSeleccionada(this.producto().categoria);
+    this.etiquetasStore.setSubcategoriaSeleccionada(this.producto().subcategoria);
+    this.etiquetasStore.setEtiquetasSeleccionadas(this.producto().etiquetas);
+    const producto = {
+      ...this.producto(),
+    };
+    if (!producto.productor) {
+      producto.productor = this.userStore.user()?.username || '';
+    }
+    this.productoTemporal.set(producto);
   }
 
   public guardarProducto(event: Event) {
     event.preventDefault();
+
+    console.log('Emit guardar producto', { producto: this.productoForm().value() });
     if (!this.productoForm().valid()) {
       this.productoForm().markAsTouched();
       return;
     }
+    const productoActualizado: PostProducto = this.productoForm().value();
 
-    // const productoActualizado: PostProducto = this.productoForm().value();
-
-    // this.guardar.emit(productoActualizado);
+    this.guardar.emit(productoActualizado);
   }
 }
