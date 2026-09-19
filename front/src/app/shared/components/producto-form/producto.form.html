@@ -1,15 +1,8 @@
-<form #prodForm="ngForm" class="flex flex-col gap-8" (ngSubmit)="guardarProducto(prodForm)">
+<form class="flex flex-col gap-8" (submit)="guardarProducto($event)">
   <p-floatlabel variant="on">
     <p-iconfield iconPosition="right">
       <p-inputicon class="pi pi-tag" />
-      <input
-        pInputText
-        name="nombre"
-        autocomplete="off"
-        class="w-full"
-        [ngModel]="this.producto().nombre"
-        required
-      />
+      <input pInputText autocomplete="off" class="w-full" [formField]="this.productoForm.nombre" />
       <label for="nombre">Nombre del Producto</label>
     </p-iconfield>
   </p-floatlabel>
@@ -18,8 +11,8 @@
     name="categoria"
     #slugCategoria
     [options]="this.etiquetasStore.categorias()"
-    [ngModel]="this.etiquetasStore.categoriaSeleccionada()"
-    (ngModelChange)="this.etiquetasStore.setCategoriaSeleccionada($event)"
+    /* [ngModel]="this.etiquetasStore.categoriaSeleccionada()"
+    (ngModelChange)="this.etiquetasStore.setCategoriaSeleccionada($event)" */
     optionLabel="categoria"
     optionValue="categoria"
     appendTo="body"
@@ -37,11 +30,11 @@
   </p-select>
 
   <p-select
-    name="subcategoria"
+    placeholder="Selecciona subcategoría"
     [options]="this.etiquetasStore.subcategorias()"
-    [ngModel]="this.etiquetasStore.subcategoriaSeleccionada()"
-    (ngModelChange)="this.etiquetasStore.setSubcategoriaSeleccionada($event)"
-    optionLabel="subcategoria"
+    [formField]="this.productoForm.subcategoria"
+    /* (ngModelChange)="this.etiquetasStore.setSubcategoriaSeleccionada($event)" */
+    optionLabel="nombre"
     optionValue="subcategoria"
     appendTo="body"
     class="w-full"
@@ -54,8 +47,9 @@
     multiple="true"
     name="etiquetas"
     [options]="this.etiquetasStore.etiquetas()"
-    [ngModel]="this.etiquetasStore.etiquetasSeleccionadas()"
-    (ngModelChange)="this.etiquetasStore.setEtiquetasSeleccionadas($event)"
+    [formField]="this.productoForm.etiquetas"
+    /* [ngModel]="this.etiquetasStore.etiquetasSeleccionadas()" */
+    /* (ngModelChange)="this.etiquetasStore.setEtiquetasSeleccionadas($event)" */
     placeholder="Etiquetas"
     class="w-full"
     display="chip"
@@ -69,20 +63,17 @@
   <p-floatlabel variant="on">
     <textarea
       pTextarea
-      name="descripcion"
       rows="3"
       class="w-full resize-none"
-      [ngModel]="this.producto().descripcion"
+      [formField]="this.productoForm.descripcion"
     ></textarea>
     <label for="descripcion">Descripción</label>
   </p-floatlabel>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-    <!-- PRECIO -->
     <p-floatlabel variant="on">
       <p-inputnumber
-        name="precio"
-        [(ngModel)]="this.producto().precio"
+        [formField]="this.productoForm.precio"
         mode="currency"
         currency="UYU"
         locale="es-UY"
@@ -95,8 +86,7 @@
 
     <p-floatlabel variant="on">
       <p-inputnumber
-        name="cantidadDisponible"
-        [ngModel]="this.producto().cantidad_disponible"
+        [formField]="this.productoForm.cantidad_disponible"
         [showButtons]="true"
         buttonLayout="horizontal"
         spinnerMode="horizontal"
