@@ -21,7 +21,6 @@ export function transformarErrorPostgres(error: PostgresError) {
     .replace('_fk', '')
     .replace('_key', '')
     .replace('_pk', '');
-  console.log({ elementoProblematico });
   switch (error.code) {
     case '23000': //INTEGRITY CONSTRAINT VIOLATION
       return new ConflictError(`El ${elementoProblematico} no se puede borrar.`);
