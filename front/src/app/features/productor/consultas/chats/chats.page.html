@@ -274,11 +274,8 @@
       </header>
 
       <div class="flex-1 overflow-y-auto p-4 space-y-3 bg-surface-50/30 dark:bg-surface-950/20">
-        @if (this.pedidoSeleccionado()) {
-          <app-chats-pedido
-            [id_compra]="pedidoActual.id_compra"
-            [id_pedido]="pedidoActual.id_pedido"
-          ></app-chats-pedido>
+        @if (pedidoActual) {
+          <!-- <app-chats-pedido [pedido]="pedidoActual"></app-chats-pedido> -->
         }
       </div>
 

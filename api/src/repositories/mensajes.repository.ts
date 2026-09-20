@@ -4,7 +4,7 @@ import { Mensaje } from '@schemas/compras.schema.js';
 class MensajesRepositoryClass extends BaseRepository<Mensaje> {
   protected readonly tableName = 'mensajes';
   protected readonly idName = 'id_mensaje';
-  protected readonly slugName?: keyof Mensaje = 'mensaje';
+  protected readonly slugName?: keyof Mensaje = 'id_mensaje';
 
   //   export const Mensaje = Type.Object({
   //   id_mensaje: Type.Integer(),

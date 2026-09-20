@@ -106,15 +106,15 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       });
     },
     handler: async function (req, reply) {
-      const mensaje = mensajesRepository.add({
+      const mensaje = await mensajesRepository.add({
         id_pedido: req.params.id_pedido,
         id_emisor: req.user.id_usuario,
         mensaje: req.body.mensaje,
       });
-
-      fastify.log.warn('Consumidor envió mensaje a: ' + fastify.websocketServer?.clients?.size);
+      const loenviado = JSON.stringify(mensaje);
+      fastify.log.warn('Consumidor envió mensaje a: ' + fastify.websocketServer?.clients?.size + ' clientes');
       fastify.websocketServer?.clients?.forEach((cliente) => {
-        cliente.send(JSON.stringify(mensaje));
+        cliente.send(loenviado);
       });
       return mensaje;
     },

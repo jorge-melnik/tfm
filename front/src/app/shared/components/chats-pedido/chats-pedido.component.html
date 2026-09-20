@@ -24,51 +24,40 @@
   <div
     class="flex-1 overflow-y-auto p-2 bg-surface-50/30 dark:bg-surface-950/20 min-h-0 flex flex-col-reverse"
   >
-    @if (mensajesResource.isLoading()) {
-      <div class="h-full flex items-center justify-center text-surface-400 text-sm gap-2">
-        <i class="pi pi-spin pi-spinner text-lg"></i>
-        <span>Cargando chat...</span>
-      </div>
-    } @else if (mensajesResource.error()) {
-      <div class="h-full flex items-center justify-center text-rose-500 dark:text-rose-400 text-sm">
-        Ocurrió un error al cargar las interacciones.
-      </div>
-    } @else {
-      @for (msg of listaMensajes; track msg.id_mensaje) {
-        @let esMio = msg.emisor === miUsuario;
+    @for (msg of listaMensajes; track msg.id_mensaje) {
+      @let esMio = msg.emisor === miUsuario;
 
+      <div
+        class="flex flex-col max-w-[85%] sm:max-w-[75%]"
+        [class]="esMio ? 'ml-auto items-end' : 'mr-auto items-start'"
+      >
         <div
-          class="flex flex-col max-w-[85%] sm:max-w-[75%]"
-          [class]="esMio ? 'ml-auto items-end' : 'mr-auto items-start'"
+          class="px-2 py-1 text-sm leading-relaxed rounded-2xl shadow-2xs break-words"
+          [class]="
+            esMio
+              ? 'bg-emerald-600 text-white rounded-br-xs'
+              : 'bg-surface-100 dark:bg-surface-800 text-surface-900 dark:text-surface-0 rounded-bl-xs'
+          "
         >
-          <div
-            class="px-2 py-1 text-sm leading-relaxed rounded-2xl shadow-2xs break-words"
-            [class]="
-              esMio
-                ? 'bg-emerald-600 text-white rounded-br-xs'
-                : 'bg-surface-100 dark:bg-surface-800 text-surface-900 dark:text-surface-0 rounded-bl-xs'
-            "
-          >
-            {{ msg.mensaje }}
-          </div>
+          {{ msg.mensaje }}
+        </div>
 
-          <span class="text-[9px] text-surface-400 dark:text-surface-500 mt-1 px-1">
-            {{ esMio ? 'Tú' : msg.emisor }} {{ msg.fecha_creacion | date: 'dd/MM HH:mm' }}
-          </span>
-        </div>
-      } @empty {
-        <div
-          class="h-full flex flex-col items-center justify-center text-surface-400 text-sm gap-1.5 text-center p-4"
-        >
-          <svg data-p-icon="comments" class="w-8 h-8 opacity-25 mb-1"></svg>
-          <p class="m-0 font-medium text-surface-600 dark:text-surface-300">
-            Sin mensajes en este pedido
-          </p>
-          <span class="text-xs text-surface-400 max-w-xs">
-            Inicia la conversación para resolver dudas directas sobre el pedido.
-          </span>
-        </div>
-      }
+        <span class="text-[9px] text-surface-400 dark:text-surface-500 mt-1 px-1">
+          {{ esMio ? 'Tú' : msg.emisor }} {{ msg.fecha_creacion | date: 'dd/MM HH:mm' }}
+        </span>
+      </div>
+    } @empty {
+      <div
+        class="h-full flex flex-col items-center justify-center text-surface-400 text-sm gap-1.5 text-center p-4"
+      >
+        <svg data-p-icon="comments" class="w-8 h-8 opacity-25 mb-1"></svg>
+        <p class="m-0 font-medium text-surface-600 dark:text-surface-300">
+          Sin mensajes en este pedido
+        </p>
+        <span class="text-xs text-surface-400 max-w-xs">
+          Inicia la conversación para resolver dudas directas sobre el pedido.
+        </span>
+      </div>
     }
   </div>
   <footer

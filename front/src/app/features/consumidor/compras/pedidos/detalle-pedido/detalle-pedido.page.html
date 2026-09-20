@@ -24,8 +24,8 @@
     <div class="w-full flex flex-col flex-1 min-h-[20rem] max-h-[25rem]">
       <app-chats-pedido
         class="w-full flex-1 flex flex-col min-h-[20rem] max-h-[25rem]"
-        [id_compra]="this.id_compra()"
-        [id_pedido]="this.id_pedido()"
+        [mensajes]="this.mensajes()"
+        (mensajeEmitido)="this.onMensajeEmitido($event)"
       ></app-chats-pedido>
     </div>
   </div>
