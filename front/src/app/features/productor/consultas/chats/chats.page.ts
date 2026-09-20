@@ -10,6 +10,7 @@ import { WebsocketService } from '@shared/services/websocket.service';
 import { ApiQueryParams } from '@shared/types/api.types';
 import { Pedido } from '@shared/types/pedido';
 import { Badge } from 'primeng/badge';
+import { ButtonModule } from 'primeng/button';
 import { Tag } from 'primeng/tag';
 import { Tooltip } from 'primeng/tooltip';
 
@@ -25,6 +26,7 @@ import { Tooltip } from 'primeng/tooltip';
     Comments,
     ShoppingBag,
     Bars,
+    ButtonModule,
   ],
   templateUrl: './chats.page.html',
   styleUrl: './chats.page.css',
@@ -85,7 +87,7 @@ export class ChatsPage {
     },
   });
 
-  public seleccionarPedido(pedido: Pedido): void {
+  public seleccionarPedido(pedido: Pedido | null): void {
     this.pedidoSeleccionado.set(pedido);
   }
 

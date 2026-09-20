@@ -3,30 +3,32 @@
 @let pedidoActual = pedidoSeleccionado();
 @let mensajes = mensajesResource.value() ?? [];
 
-<div class="w-full h-[calc(100vh-4rem)] flex overflow-hidden bg-surface-0 dark:bg-surface-900">
+<!-- Contenedor Principal: Ajuste de alto para evitar scroll exterior -->
+<div class="w-full flex-1 h-full min-h-0 flex overflow-hidden bg-surface-0 dark:bg-surface-900">
+  <!-- Sidebar / Lista de Chats -->
   <aside
-    class="w-full md:w-80 lg:w-96 border-r border-surface-200 dark:border-surface-800 flex flex-col shrink-0 bg-surface-0 dark:bg-surface-900 transition-all h-full"
+    class="w-full md:w-80 lg:w-96 border-r border-surface-200 dark:border-surface-800 flex flex-col shrink-0 bg-surface-0 dark:bg-surface-900 transition-all h-full min-h-0 overflow-hidden"
     [class.max-md:hidden]="pedidoActual"
     [class.md:hidden]="!sidebarVisible()"
   >
     <div
-      class="p-4 border-b border-surface-200 dark:border-surface-800 flex items-center justify-between shrink-0"
+      class="p-3.5 border-b border-surface-200 dark:border-surface-800 flex items-center justify-between shrink-0"
     >
       <div class="flex items-center gap-2">
         <i class="pi pi-comments text-primary text-lg"></i>
         <h2 class="text-base font-bold text-surface-900 dark:text-surface-0 m-0">Chats Activos</h2>
       </div>
 
-      <div class="flex items-center gap-2">
-        <span
-          class="text-xs bg-primary-100 dark:bg-primary-950 text-primary font-semibold px-2.5 py-0.5 rounded-full"
-        >
-          {{ pedidos.length }}
-        </span>
-      </div>
+      <span
+        class="text-xs bg-primary-100 dark:bg-primary-950 text-primary font-semibold px-2.5 py-0.5 rounded-full"
+      >
+        {{ pedidos.length }}
+      </span>
     </div>
 
-    <div class="flex-1 overflow-y-auto divide-y divide-surface-100 dark:divide-surface-800/60">
+    <div
+      class="flex-1 overflow-y-auto divide-y divide-surface-100 dark:divide-surface-800/60 min-h-0"
+    >
       @if (pedidosResource.isLoading()) {
         <div class="p-6 text-center text-surface-400 text-xs">
           <i class="pi pi-spin pi-spinner text-lg mb-2"></i>
@@ -103,12 +105,12 @@
   </aside>
 
   <main
-    class="flex-1 flex flex-col overflow-hidden bg-surface-0 dark:bg-surface-900 h-full"
+    class="flex-1 flex flex-col overflow-hidden bg-surface-0 dark:bg-surface-900 h-full min-h-0"
     [class.max-md:hidden]="!pedidoActual"
   >
     @if (pedidoActual) {
       <header
-        class="p-3 bg-surface-50 dark:bg-surface-800/40 border-b border-surface-200 dark:border-surface-800 flex flex-col gap-2 shrink-0"
+        class="p-3 bg-surface-50 dark:bg-surface-800/40 border-b border-surface-200 dark:border-surface-800 flex flex-col gap-2.5 shrink-0"
       >
         <div class="flex items-center justify-between gap-3">
           <div class="flex items-center gap-2 min-w-0">
@@ -116,20 +118,32 @@
               pButton
               type="button"
               severity="secondary"
-              text
-              rounded
-              class="hidden md:flex shrink-0"
+              variant="text"
+              [rounded]="true"
+              class="hidden md:flex shrink-0 !p-1.5"
               (click)="toggleSidebar()"
               [pTooltip]="sidebarVisible() ? 'Ocultar lista' : 'Mostrar lista'"
               tooltipPosition="bottom"
             >
-              <svg data-p-icon="bars"></svg>
+              <i class="pi pi-bars"></i>
             </button>
 
-            <span class="font-bold text-sm text-surface-900 dark:text-surface-0">
+            <button
+              pButton
+              type="button"
+              severity="secondary"
+              variant="text"
+              [rounded]="true"
+              class="flex md:hidden shrink-0 !p-1.5"
+              (click)="seleccionarPedido(null)"
+            >
+              <i class="pi pi-arrow-left"></i>
+            </button>
+
+            <span class="font-bold text-sm text-surface-900 dark:text-surface-0 shrink-0">
               Pedido #{{ pedidoActual.id_pedido }}
             </span>
-            <span class="text-surface-300 dark:text-surface-600">|</span>
+            <span class="text-surface-300 dark:text-surface-600 shrink-0">|</span>
             <span class="text-xs text-surface-600 dark:text-surface-300 truncate">
               Cliente:
               <strong class="text-surface-900 dark:text-surface-0">{{
@@ -142,35 +156,48 @@
         </div>
 
         <div
-          class="bg-surface-0 dark:bg-surface-900 px-3 py-2 rounded-lg border border-surface-200 dark:border-surface-700/60 text-xs text-surface-600 dark:text-surface-300 flex items-center justify-between gap-2 overflow-x-auto"
+          class="bg-surface-0 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700/60 p-2.5 text-xs text-surface-600 dark:text-surface-300 flex flex-col gap-2"
         >
-          <div class="truncate flex items-center gap-1">
-            <svg data-p-icon="shopping-bag"></svg>
-            <span class="font-medium text-surface-900 dark:text-surface-0 truncate">
-              @for (prod of pedidoActual.productos; track prod.nombre; let last = $last) {
-                {{ prod.cantidad }}x {{ prod.nombre }}{{ !last ? ' • ' : '' }}
-              }
+          <ul class="m-0 p-0 list-none space-y-1.5 max-h-24 overflow-y-auto pr-1">
+            @for (prod of pedidoActual.productos; track prod.nombre) {
+              <li class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <span
+                    class="font-semibold text-surface-700 dark:text-surface-200 bg-surface-100 dark:bg-surface-800 px-1.5 py-0.5 rounded text-[10px] shrink-0"
+                  >
+                    {{ prod.cantidad }}x
+                  </span>
+                  <span class="truncate font-medium text-surface-900 dark:text-surface-100">
+                    {{ prod.nombre }}
+                  </span>
+                </div>
+              </li>
+            }
+          </ul>
+
+          <div
+            class="pt-1.5 border-t border-dashed border-surface-200 dark:border-surface-700/80 flex items-center justify-between text-xs font-bold"
+          >
+            <span class="text-surface-900 dark:text-surface-0">Total</span>
+            <span class="text-primary text-sm">
+              {{ pedidoActual.subtotal_pedido | currency }}
             </span>
-          </div>
-          <div class="shrink-0 font-bold text-primary ml-2">
-            Total: {{ pedidoActual.subtotal_pedido | currency }}
           </div>
         </div>
       </header>
 
-      <div class="flex-1 overflow-y-auto p-4 space-y-3 bg-surface-50/30 dark:bg-surface-950/20">
-        @if (pedidoActual) {
-          <app-chats-pedido
-            [mensajes]="mensajes"
-            (mensajeEmitido)="this.enviarMensaje($event)"
-          ></app-chats-pedido>
-        }
+      <div class="flex-1 min-h-0 overflow-hidden p-3 bg-surface-50/30 dark:bg-surface-950/20">
+        <app-chats-pedido
+          class="w-full h-full block"
+          [mensajes]="mensajes"
+          (mensajeEmitido)="this.enviarMensaje($event)"
+        ></app-chats-pedido>
       </div>
     } @else {
       <div
         class="h-full flex flex-col items-center justify-center text-surface-400 gap-3 p-6 relative"
       >
-        <svg data-p-icon="comments" size="32"></svg>
+        <svg data-p-icon="comments" class="w-10 h-10 opacity-30"></svg>
         <p class="m-0 text-sm font-medium">Selecciona un pedido para ver la conversación</p>
       </div>
     }
