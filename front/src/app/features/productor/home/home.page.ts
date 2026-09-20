@@ -13,6 +13,7 @@ import { AuthService } from '@shared/services/auth.service';
 import { PedidosService } from '@shared/services/pedidos.service';
 import { PreguntasService } from '@shared/services/preguntas-service';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
+import { WebsocketService } from '@shared/services/websocket.service';
 import { ApiQueryParams } from '@shared/types/api.types';
 import { EstadoPedidoType } from '@shared/types/pedido';
 
@@ -20,7 +21,7 @@ import { EstadoPedidoType } from '@shared/types/pedido';
   selector: 'app-home-productor',
   imports: [RouterLink],
   templateUrl: './home.page.html',
-
+  providers: [WebsocketService],
   styleUrl: './home.page.css',
 })
 export class HomePage implements OnInit {

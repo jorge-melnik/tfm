@@ -121,11 +121,12 @@ export abstract class BaseReadRepository<T extends DatosBase> {
     let pageParseado = 1;
     let limitParseado = 10;
 
+    const direction = sort_direction?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'; //Así safamos de codigo no deseado en order direction
+    const sortField = sort || this.idName;
+    const safeSortField = sortField.replace(/[^a-zA-Z0-9_]/g, ''); //Eliminamos todos los caracteres que no son validos en un nombre de columna.
+    query += ` ORDER BY "${safeSortField}" ${direction}`; //Entrecomillamos sortField para que lo tome como una columna y evitar código no deseado
+
     if (limit && page) {
-      const direction = sort_direction?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'; //Así safamos de codigo no deseado en order direction
-      const sortField = sort || this.idName;
-      const safeSortField = sortField.replace(/[^a-zA-Z0-9_]/g, ''); //Eliminamos todos los caracteres que no son validos en un nombre de columna.
-      query += ` ORDER BY "${safeSortField}" ${direction}`; //Entrecomillamos sortField para que lo tome como una columna y evitar código no deseado
       limitParseado = parseInt(limit.toString(), 10) || limitParseado; //Me aseguro que limit no traiga codigo no deseado
       pageParseado = parseInt(page.toString(), 10) || pageParseado; //Me aseguro que page no traiga codigo no deseado
       const offset = (pageParseado - 1) * limitParseado;

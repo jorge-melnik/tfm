@@ -56,17 +56,21 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
         500: ErrorResponse,
       },
     },
-    onRequest: [fastify.authenticate],
-    preHandler: async function (req, rep) {
-      fastify.selfWithRole('CONSUMIDOR');
-      await pedidosRepository.getOneBy({
-        id_compra: req.params.id_compra,
-        id_pedido: req.params.id_pedido,
-        id_consumidor: req.user.id_usuario,
-      });
-    },
+    // onRequest: [fastify.authenticate],
+    // preHandler: async function (req, rep) {
+    //   fastify.selfWithRole('CONSUMIDOR');
+    //   await pedidosRepository.getOneBy({
+    //     id_compra: req.params.id_compra,
+    //     id_pedido: req.params.id_pedido,
+    //     id_consumidor: req.user.id_usuario,
+    //   });
+    // },
     handler: async function (req, reply) {
-      const res = await mensajesRepository.getBy({ id_pedido: req.params.id_pedido });
+      const res = await mensajesRepository.getBy({
+        id_pedido: req.params.id_pedido,
+        sort_direction: 'DESC',
+        sort: 'id_mensaje',
+      });
       await pedidosRepository.consumidorLeyoMensajes(req.params.id_pedido);
       return res.data;
     },
@@ -102,11 +106,17 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       });
     },
     handler: async function (req, reply) {
-      return mensajesRepository.add({
+      const mensaje = mensajesRepository.add({
         id_pedido: req.params.id_pedido,
         id_emisor: req.user.id_usuario,
         mensaje: req.body.mensaje,
       });
+
+      fastify.log.warn('Consumidor envió mensaje a: ' + fastify.websocketServer?.clients?.size);
+      fastify.websocketServer?.clients?.forEach((cliente) => {
+        cliente.send(JSON.stringify(mensaje));
+      });
+      return mensaje;
     },
   });
 

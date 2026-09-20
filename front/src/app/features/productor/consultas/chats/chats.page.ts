@@ -1,10 +1,12 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, inject, input, resource, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Comments, Send } from '@primeicons/angular';
+import { Send } from '@primeicons/angular';
+import { ChatsPedidoComponent } from '@shared/components/chats-pedido/chats-pedido.component';
 import { PedidosService } from '@shared/services/pedidos.service';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
 import { UserStore } from '@shared/services/stores/user.store';
+import { WebsocketService } from '@shared/services/websocket.service';
 import { ApiQueryParams } from '@shared/types/api.types';
 import { Pedido } from '@shared/types/pedido';
 import { Badge } from 'primeng/badge';
@@ -13,13 +15,15 @@ import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-chats',
-  imports: [Badge, Tag, DatePipe, CurrencyPipe, Tooltip, Send, FormsModule],
+  imports: [Badge, Tag, DatePipe, CurrencyPipe, Tooltip, Send, FormsModule, ChatsPedidoComponent],
   templateUrl: './chats.page.html',
   styleUrl: './chats.page.css',
+  providers: [WebsocketService],
 })
 export class ChatsPage {
   public readonly userStore = inject(UserStore);
   public readonly paginationStore = inject(PaginationStore);
+  private readonly _webSocketService = inject(WebsocketService);
 
   private _pedidosService = inject(PedidosService);
   public productor = input.required<string>();
@@ -37,7 +41,11 @@ export class ChatsPage {
   public readonly pedidosResource = resource({
     params: () => {
       const productor = this.productor();
+      const ultimaCompra = this._webSocketService.nuevaCompra();
+
+      const ultimoMensaje = this._webSocketService.nuevoMensaje();
       if (!productor) return undefined;
+
       return {
         productor,
         limit: this.paginationStore.limit(),
@@ -48,7 +56,6 @@ export class ChatsPage {
     },
     loader: async ({ params }) => {
       const { productor, limit, page, sort, sort_direction } = params;
-
       const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
       const queryParams: ApiQueryParams = { productor, hay_no_leidos_productor: true };
       return this._pedidosService.getBy({ queryParams, pathParams: { productor }, pagination });
@@ -59,6 +66,8 @@ export class ChatsPage {
     params: () => {
       const ped = this.pedidoSeleccionado();
       const username = this.userStore.user()?.username;
+
+      const ultimoMensaje = this._webSocketService.nuevoMensaje();
       if (!ped || !username) return undefined;
       return { id_pedido: ped.id_pedido, username };
     },
@@ -68,7 +77,6 @@ export class ChatsPage {
     },
   });
 
-  // 2. Método para seleccionar pedido
   public seleccionarPedido(pedido: Pedido): void {
     this.pedidoSeleccionado.set(pedido);
   }

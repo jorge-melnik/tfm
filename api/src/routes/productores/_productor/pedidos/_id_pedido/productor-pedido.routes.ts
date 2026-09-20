@@ -139,6 +139,11 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       });
 
       await pedidosRepository.productorLeyoMensajes(req.params.id_pedido);
+
+      fastify.log.warn('Mensaje de productor a: ' + fastify.websocketServer?.clients?.size);
+      fastify.websocketServer?.clients?.forEach((cliente) => {
+        cliente.send(JSON.stringify(mensaje));
+      });
       return mensaje;
     },
   });

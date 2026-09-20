@@ -46,6 +46,11 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
     handler: async function (req, rep) {
       rep.code(201);
       const compraCreada: Compra = await comprasRepository.createFromCarrito(req.user.id_usuario, req.body);
+
+      fastify.log.warn('Compra creada a: ' + fastify.websocketServer?.clients?.size);
+      fastify.websocketServer?.clients?.forEach((cliente) => {
+        cliente.send(JSON.stringify(compraCreada));
+      });
       return comprasRepository.getOneBy({ id_compra: compraCreada.id_compra });
     },
   });
