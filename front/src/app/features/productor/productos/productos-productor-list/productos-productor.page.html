@@ -9,6 +9,7 @@
     [(etiquetasSeleccionadas)]="this.etiquetas"
     [(layout)]="this.layout"
     [(filtroBusqueda)]="this.busqueda"
+    (filtroCambiado)="this.paginationStore.setPage(1)"
   ></app-productos-filter>
 
   @if (hayError) {

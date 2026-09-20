@@ -1,7 +1,7 @@
 import { computed, Service, signal } from '@angular/core';
 import { DataViewPageEvent } from 'primeng/dataview';
 import { PaginatorState } from 'primeng/paginator';
-const defaultItemsPorPagina = 4;
+const defaultItemsPorPagina = 8;
 @Service()
 export class PaginationStore {
   private readonly _page = signal<number>(1);

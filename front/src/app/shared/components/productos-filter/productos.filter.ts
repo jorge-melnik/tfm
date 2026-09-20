@@ -17,10 +17,11 @@ import { SortOption } from '@shared/types/util';
 import { Select } from 'primeng/select';
 import { SelectButton } from 'primeng/selectbutton';
 import { SliderModule } from 'primeng/slider';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-productos-filter',
-  imports: [FormsModule, Select, SelectButton, SliderModule],
+  imports: [FormsModule, Select, SelectButton, SliderModule, InputTextModule],
   templateUrl: './productos.filter.html',
 
   styleUrl: './productos.filter.css',
