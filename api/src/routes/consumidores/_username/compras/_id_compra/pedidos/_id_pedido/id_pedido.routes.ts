@@ -111,11 +111,20 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
         id_emisor: req.user.id_usuario,
         mensaje: req.body.mensaje,
       });
-      const loenviado = JSON.stringify(mensaje);
-      fastify.log.warn('Consumidor envió mensaje a: ' + fastify.websocketServer?.clients?.size + ' clientes');
-      fastify.websocketServer?.clients?.forEach((cliente) => {
-        cliente.send(loenviado);
-      });
+
+      try {
+        const loenviado = JSON.stringify(mensaje);
+        fastify.log.warn(
+          'Consumidor envió mensaje a: ' + fastify.websocketServer?.clients?.size + ' clientes',
+        );
+        fastify.websocketServer?.clients?.forEach((cliente) => {
+          cliente.send(loenviado);
+        });
+      } catch (error: any) {
+        fastify.log.error(
+          'Consumidor NO envió mensaje a: ' + fastify.websocketServer?.clients?.size + ' clientes',
+        );
+      }
       return mensaje;
     },
   });

@@ -38,10 +38,12 @@ const preguntasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
     },
     handler: async (req, reply) => {
       const productor = await productorRepository.getOneBy({ username: req.params.productor }); //No aseguramos que existe el productor.
-      return PreguntasRepository.getBy({
+      const pregunta = await PreguntasRepository.getBy({
         ...req.query,
         id_productor: productor.id_productor,
       }); //Paginado
+
+      return pregunta;
     },
   });
 };

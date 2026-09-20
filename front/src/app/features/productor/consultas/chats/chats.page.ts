@@ -1,7 +1,7 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, inject, input, resource, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Bars, Comments, Send, ShoppingBag } from '@primeicons/angular';
+import { ArrowLeft, Bars, Comments, Send, ShoppingBag } from '@primeicons/angular';
 import { ChatsPedidoComponent } from '@shared/components/chats-pedido/chats-pedido.component';
 import { PedidosService } from '@shared/services/pedidos.service';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
@@ -14,6 +14,8 @@ import { ButtonModule } from 'primeng/button';
 import { Tag } from 'primeng/tag';
 import { Tooltip } from 'primeng/tooltip';
 
+import { Location } from '@angular/common';
+
 @Component({
   selector: 'app-chats',
   imports: [
@@ -24,8 +26,7 @@ import { Tooltip } from 'primeng/tooltip';
     FormsModule,
     ChatsPedidoComponent,
     Comments,
-    ShoppingBag,
-    Bars,
+    ArrowLeft,
     ButtonModule,
   ],
   templateUrl: './chats.page.html',
@@ -36,6 +37,8 @@ export class ChatsPage {
   public readonly userStore = inject(UserStore);
   public readonly paginationStore = inject(PaginationStore);
   private readonly _webSocketService = inject(WebsocketService);
+
+  private _location = inject(Location);
 
   private _pedidosService = inject(PedidosService);
   public productor = input.required<string>();
@@ -86,6 +89,10 @@ export class ChatsPage {
       return this._pedidosService.getMensajes(username, id_pedido);
     },
   });
+
+  public volver(): void {
+    this._location.back();
+  }
 
   public seleccionarPedido(pedido: Pedido | null): void {
     this.pedidoSeleccionado.set(pedido);

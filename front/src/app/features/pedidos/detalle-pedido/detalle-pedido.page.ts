@@ -5,6 +5,8 @@ import { VistaPedidoComponent } from '@shared/components/vista-pedido/vista-pedi
 import { ButtonModule } from 'primeng/button';
 import { WebsocketService } from '@shared/services/websocket.service';
 import { ChatsPedidoComponent } from '@shared/components/chats-pedido/chats-pedido.component';
+import { DialogService } from '@shared/services/dialog.service';
+import { PedidosService } from '@shared/services/pedidos.service';
 
 @Component({
   selector: 'app-detalle-pedido',
@@ -15,7 +17,9 @@ import { ChatsPedidoComponent } from '@shared/components/chats-pedido/chats-pedi
 })
 export class DetallePedidoPage {
   private readonly comprasService = inject(ComprasService);
+  private readonly _pedidosService = inject(PedidosService);
   private readonly webSocketService = inject(WebsocketService);
+  private readonly _dialogService = inject(DialogService);
   public userStore = inject(UserStore);
 
   public id_compra = input.required<number>();
@@ -28,12 +32,21 @@ export class DetallePedidoPage {
       const id_pedido = this.id_pedido();
       const id_compra = this.id_compra();
       const username = this.userStore.user()?.username;
-      if (!id_pedido || !id_compra || !username) return undefined;
-      return { id_pedido, id_compra, username };
+      const esConsumidor = this.userStore.esConsumidor();
+      const esProductor = this.userStore.esProductor();
+      if (esConsumidor && !id_compra) return undefined;
+      if (!id_pedido || !username) return undefined;
+      const ultimoMensaje = this.webSocketService.nuevoMensaje();
+      return { id_pedido, id_compra, username, esProductor, esConsumidor };
     },
     loader: async ({ params }) => {
-      const { id_pedido, id_compra, username } = params;
-      return this.comprasService.getPedido(username, id_compra, id_pedido);
+      const { id_pedido, id_compra, username, esProductor, esConsumidor } = params;
+
+      if (esConsumidor && id_compra)
+        return this.comprasService.getPedido(username, id_compra, id_pedido);
+
+      if (esProductor) return this._pedidosService.getById(id_pedido, { productor: username });
+      return null;
     },
   });
 
@@ -45,12 +58,21 @@ export class DetallePedidoPage {
       const id_compra = this.pedido()?.id_compra;
       const username = this.userStore.user()?.username;
       const ultimoMensaje = this.webSocketService.nuevoMensaje();
-      if (!id_pedido || !id_compra || !username) return undefined;
-      return { id_pedido, id_compra, username };
+      const esConsumidor = this.userStore.esConsumidor();
+      const esProductor = this.userStore.esProductor();
+      if (!id_pedido || !username) return undefined;
+      console.log('NO AL UNDEFINED');
+      return { id_pedido, id_compra, username, esProductor, esConsumidor };
     },
     loader: async ({ params }) => {
-      const { id_pedido, id_compra, username } = params;
-      return this.comprasService.getMensajes(username, id_compra, id_pedido);
+      const { id_pedido, id_compra, username, esProductor, esConsumidor } = params;
+
+      if (esConsumidor && id_compra)
+        return this.comprasService.getMensajes(username, id_compra, id_pedido);
+
+      if (esProductor) return this._pedidosService.getMensajes(username, id_pedido);
+
+      return [];
     },
   });
 
@@ -61,6 +83,15 @@ export class DetallePedidoPage {
     const id_compra = this.id_compra();
     const id_pedido = this.id_pedido();
     if (!user) return;
-    await this.comprasService.addMensaje(user.username, id_compra, id_pedido, mensaje);
+    try {
+      if (this.userStore.esConsumidor())
+        await this.comprasService.addMensaje(user.username, id_compra, id_pedido, mensaje);
+
+      if (this.userStore.esProductor())
+        await this._pedidosService.addMensaje(user.username, this.id_pedido(), mensaje);
+    } catch (error: any) {
+      const mensaje = error.error ? error.error.message : error.message;
+      this._dialogService.addError(mensaje);
+    }
   }
 }

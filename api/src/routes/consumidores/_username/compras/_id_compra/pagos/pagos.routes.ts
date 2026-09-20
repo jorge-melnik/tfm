@@ -75,8 +75,19 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
         respuesta_raw: procesamiento.respuestaRaw,
       });
       const cliente = await myPool.connect();
+
+      try {
+        fastify.websocketServer?.clients?.forEach((cliente) => {
+          cliente.send(JSON.stringify(compra));
+        });
+        fastify.log.info('Compra pagada a: ' + fastify.websocketServer?.clients?.size + ' clientes');
+      } catch (error: any) {
+        fastify.log.error('Compra pagada a: ' + fastify.websocketServer?.clients?.size + ' clientes');
+      }
+
       try {
         await aceptarTransferencias(cliente);
+
         return compra;
       } catch (error: any) {
         throw error();

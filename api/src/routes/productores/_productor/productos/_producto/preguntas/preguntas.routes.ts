@@ -63,7 +63,16 @@ const preguntasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
       await productoRepository.getOneBy({ productor, producto, id_producto }); //Nos asegura que existe el producto.
     },
     handler: async function (req, reply) {
-      await PreguntasRepository.add(req.body);
+      const pregunta = await PreguntasRepository.add(req.body);
+
+      try {
+        fastify.log.warn('Pregunta creada a: ' + fastify.websocketServer?.clients?.size);
+        fastify.websocketServer?.clients?.forEach((cliente) => {
+          cliente.send(JSON.stringify(pregunta));
+        });
+      } catch (error: any) {
+        fastify.log.error('Pregunta creada NO SE envió a: ' + fastify.websocketServer?.clients?.size);
+      }
       reply.code(204);
     },
   });
@@ -95,7 +104,16 @@ const preguntasRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
       }); //Nos aseguramos que existe la pregunta, y es del producto.
     },
     handler: async function (req, reply) {
-      await PreguntasRepository.addRespuesta(req.params.id_pregunta, req.body.contenido);
+      const respuesta = await PreguntasRepository.addRespuesta(req.params.id_pregunta, req.body.contenido);
+
+      try {
+        fastify.log.warn('Respuesta creada a: ' + fastify.websocketServer?.clients?.size);
+        fastify.websocketServer?.clients?.forEach((cliente) => {
+          cliente.send(JSON.stringify(respuesta));
+        });
+      } catch (error: any) {
+        fastify.log.error('Respuesta creada NO SE envió a: ' + fastify.websocketServer?.clients?.size);
+      }
       reply.code(204);
     },
   });

@@ -49,7 +49,7 @@ export const consumidorRoutes: Routes = [
         path: ':id_compra/pedidos/:id_pedido',
         title: 'Detalle pedido',
         loadComponent: () =>
-          import('@features/consumidor/compras/pedidos/detalle-pedido/detalle-pedido.page').then(
+          import('@features/pedidos/detalle-pedido/detalle-pedido.page').then(
             (m) => m.DetallePedidoPage,
           ),
       },

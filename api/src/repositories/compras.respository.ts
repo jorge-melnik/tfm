@@ -92,7 +92,7 @@ export class ComprasRepositoryClass extends BaseReadRepository<Compra> {
   async addPago(
     id_compra: number,
     pago: Pick<Pago, 'id_compra' | 'id_externo' | 'metodo_pago' | 'estado_pago' | 'respuesta_raw'>,
-  ): Promise<void> {
+  ): Promise<Compra> {
     if (id_compra !== pago.id_compra) throw new ForbiddenError('No coincide el id_compra.');
     const consulta = `
       INSERT INTO public.pagos(id_compra,id_externo, metodo_pago,estado_pago,respuesta_raw)
@@ -106,6 +106,7 @@ export class ComprasRepositoryClass extends BaseReadRepository<Compra> {
       pago.estado_pago,
       pago.respuesta_raw,
     ]);
+    return this.getOneBy({ id_compra });
   }
 
   async aprobarPago(id_compra: number, id_pago: string): Promise<void> {

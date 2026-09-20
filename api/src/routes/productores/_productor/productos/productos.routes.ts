@@ -52,7 +52,21 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
     // preHandler : //FIXME: coincide id_productor en body y params
     handler: async function (req, reply) {
       reply.code(201);
-      return productoRepository.add(req.body);
+      const producto = await productoRepository.add(req.body);
+
+      try {
+        fastify.log.warn('Producto de productor a: ' + fastify.websocketServer?.clients?.size + ' clientes');
+        fastify.websocketServer?.clients?.forEach((cliente) => {
+          cliente.send(JSON.stringify(producto));
+        });
+      } catch (error: any) {
+        fastify.log.error(
+          'No se pudo enviar producto de productor a: ' +
+            fastify.websocketServer?.clients?.size +
+            ' clientes',
+        );
+      }
+      return producto;
     },
   });
 };

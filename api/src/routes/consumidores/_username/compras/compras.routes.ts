@@ -26,9 +26,6 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
     },
   });
 
-  //POST /, crea nueva compra y eliminar el carrito
-  //body: direccion_envio y contacto_receptor
-
   fastify.post('/', {
     schema: {
       tags: ['Consumidores'],
@@ -47,10 +44,14 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
       rep.code(201);
       const compraCreada: Compra = await comprasRepository.createFromCarrito(req.user.id_usuario, req.body);
 
-      fastify.log.warn('Compra creada a: ' + fastify.websocketServer?.clients?.size);
-      fastify.websocketServer?.clients?.forEach((cliente) => {
-        cliente.send(JSON.stringify(compraCreada));
-      });
+      try {
+        fastify.log.warn('Compra creada a: ' + fastify.websocketServer?.clients?.size);
+        fastify.websocketServer?.clients?.forEach((cliente) => {
+          cliente.send(JSON.stringify(compraCreada));
+        });
+      } catch (error: any) {
+        fastify.log.error('Compra creada NO SE envió a: ' + fastify.websocketServer?.clients?.size);
+      }
       return comprasRepository.getOneBy({ id_compra: compraCreada.id_compra });
     },
   });
