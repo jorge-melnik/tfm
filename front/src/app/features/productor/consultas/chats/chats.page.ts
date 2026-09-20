@@ -1,7 +1,7 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, inject, input, resource, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Send } from '@primeicons/angular';
+import { Bars, Comments, Send, ShoppingBag } from '@primeicons/angular';
 import { ChatsPedidoComponent } from '@shared/components/chats-pedido/chats-pedido.component';
 import { PedidosService } from '@shared/services/pedidos.service';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
@@ -15,7 +15,17 @@ import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-chats',
-  imports: [Badge, Tag, DatePipe, CurrencyPipe, Tooltip, Send, FormsModule, ChatsPedidoComponent],
+  imports: [
+    Badge,
+    Tag,
+    CurrencyPipe,
+    Tooltip,
+    FormsModule,
+    ChatsPedidoComponent,
+    Comments,
+    ShoppingBag,
+    Bars,
+  ],
   templateUrl: './chats.page.html',
   styleUrl: './chats.page.css',
   providers: [WebsocketService],
@@ -30,8 +40,6 @@ export class ChatsPage {
 
   public pedidoSeleccionado = signal<Pedido | null>(null);
 
-  public chatInput = signal<string>('');
-
   public readonly sidebarVisible = signal<boolean>(true);
 
   public toggleSidebar(): void {
@@ -42,7 +50,6 @@ export class ChatsPage {
     params: () => {
       const productor = this.productor();
       const ultimaCompra = this._webSocketService.nuevaCompra();
-
       const ultimoMensaje = this._webSocketService.nuevoMensaje();
       if (!productor) return undefined;
 
@@ -68,6 +75,7 @@ export class ChatsPage {
       const username = this.userStore.user()?.username;
 
       const ultimoMensaje = this._webSocketService.nuevoMensaje();
+      console.log({ ultimoMensaje });
       if (!ped || !username) return undefined;
       return { id_pedido: ped.id_pedido, username };
     },
@@ -81,12 +89,10 @@ export class ChatsPage {
     this.pedidoSeleccionado.set(pedido);
   }
 
-  public async enviarMensaje(): Promise<void> {
-    const texto: string = this.chatInput();
+  public async enviarMensaje(texto: string): Promise<void> {
     const ped = this.pedidoSeleccionado();
     const username = this.userStore.user()?.username;
     const mensajeLimpio = texto.trim();
-    this.chatInput.set('');
     if (!ped || !username || !mensajeLimpio) return;
 
     await this._pedidosService.addMensaje(username, ped.id_pedido, mensajeLimpio);

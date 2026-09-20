@@ -97,7 +97,11 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       });
     },
     handler: async function (req, reply) {
-      const res = await mensajesRepository.getBy({ id_pedido: req.params.id_pedido });
+      const res = await mensajesRepository.getBy({
+        id_pedido: req.params.id_pedido,
+        sort_direction: 'DESC',
+        sort: 'id_mensaje',
+      });
       //El productor marca como leido cada vez que responde.
       return res.data;
     },
@@ -140,7 +144,7 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
 
       await pedidosRepository.productorLeyoMensajes(req.params.id_pedido);
 
-      fastify.log.warn('Mensaje de productor a: ' + fastify.websocketServer?.clients?.size);
+      fastify.log.warn('Mensaje de productor a: ' + fastify.websocketServer?.clients?.size + ' clientes');
       fastify.websocketServer?.clients?.forEach((cliente) => {
         cliente.send(JSON.stringify(mensaje));
       });

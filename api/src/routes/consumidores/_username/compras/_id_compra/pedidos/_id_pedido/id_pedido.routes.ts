@@ -56,15 +56,15 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
         500: ErrorResponse,
       },
     },
-    // onRequest: [fastify.authenticate],
-    // preHandler: async function (req, rep) {
-    //   fastify.selfWithRole('CONSUMIDOR');
-    //   await pedidosRepository.getOneBy({
-    //     id_compra: req.params.id_compra,
-    //     id_pedido: req.params.id_pedido,
-    //     id_consumidor: req.user.id_usuario,
-    //   });
-    // },
+    onRequest: [fastify.authenticate],
+    preHandler: async function (req, rep) {
+      fastify.selfWithRole('CONSUMIDOR');
+      await pedidosRepository.getOneBy({
+        id_compra: req.params.id_compra,
+        id_pedido: req.params.id_pedido,
+        id_consumidor: req.user.id_usuario,
+      });
+    },
     handler: async function (req, reply) {
       const res = await mensajesRepository.getBy({
         id_pedido: req.params.id_pedido,
