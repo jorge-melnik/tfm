@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, resource, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, resource, signal } from '@angular/core';
 import { ComprasService } from '@shared/services/compras.service';
 import { UserStore } from '@shared/services/stores/user.store';
 import { VistaPedidoComponent } from '@shared/components/vista-pedido/vista-pedido.component';
@@ -7,6 +7,7 @@ import { WebsocketService } from '@shared/services/websocket.service';
 import { ChatsPedidoComponent } from '@shared/components/chats-pedido/chats-pedido.component';
 import { DialogService } from '@shared/services/dialog.service';
 import { PedidosService } from '@shared/services/pedidos.service';
+import { EstadoPedidoType, Pedido } from '@shared/types/pedido';
 
 @Component({
   selector: 'app-detalle-pedido',
@@ -27,6 +28,8 @@ export class DetallePedidoPage {
 
   public enviando = signal<boolean>(false);
 
+  private readonly ultimoPedidoValido = signal<Pedido | null>(null);
+
   public readonly pedidoResource = resource({
     params: () => {
       const id_pedido = this.id_pedido();
@@ -36,6 +39,7 @@ export class DetallePedidoPage {
       const esProductor = this.userStore.esProductor();
       if (esConsumidor && !id_compra) return undefined;
       if (!id_pedido || !username) return undefined;
+      const ultimaCompra = this.webSocketService.nuevaCompra();
       const ultimoMensaje = this.webSocketService.nuevoMensaje();
       return { id_pedido, id_compra, username, esProductor, esConsumidor };
     },
@@ -50,7 +54,7 @@ export class DetallePedidoPage {
     },
   });
 
-  public pedido = computed(() => this.pedidoResource.value() || undefined);
+  public pedido = computed(() => this.pedidoResource.value() ?? this.ultimoPedidoValido());
 
   public readonly mensajesResource = resource({
     params: () => {
@@ -78,6 +82,16 @@ export class DetallePedidoPage {
 
   public mensajes = computed(() => this.mensajesResource.value() || []); //FIXME: no está del todo paginado ni ordenado en la api
 
+  constructor() {
+    //FIXME: Esto es horrible.
+    effect(() => {
+      const val = this.pedidoResource.value();
+      if (val) {
+        this.ultimoPedidoValido.set(val);
+      }
+    });
+  }
+
   public async onMensajeEmitido(mensaje: string) {
     const user = this.userStore.user();
     const id_compra = this.id_compra();
@@ -93,5 +107,16 @@ export class DetallePedidoPage {
       const mensaje = error.error ? error.error.message : error.message;
       this._dialogService.addError(mensaje);
     }
+  }
+
+  public async onCambiarEstadoPedido(event: { pedido: Pedido; estado_pedido: EstadoPedidoType }) {
+    console.log('onCambiarEstadoPedido');
+    const productor = this.userStore.user()?.username;
+    if (!productor) return;
+
+    const { pedido, estado_pedido } = event;
+    if (productor !== pedido.productor) return;
+    await this._pedidosService.cambiarEstado(productor, pedido.id_pedido, estado_pedido);
+    // this.pedidoResource.reload();
   }
 }

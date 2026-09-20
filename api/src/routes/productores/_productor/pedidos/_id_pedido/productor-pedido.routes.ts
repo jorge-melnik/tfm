@@ -45,7 +45,7 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
         estado_pedido: EstadoPedido,
       }),
       response: {
-        200: ListResponse(Pedido),
+        200: Pedido,
         404: ErrorResponse,
         500: ErrorResponse,
       },
@@ -62,6 +62,20 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       const { id_productor, id_pedido } = pedido;
       const { estado_pedido } = req.body;
       await pedidosRepository.cambiarEstado(id_productor, id_pedido, estado_pedido);
+      pedido.estado_pedido = req.body.estado_pedido;
+
+      try {
+        fastify.websocketServer?.clients?.forEach((cliente) => {
+          cliente.send(JSON.stringify(pedido));
+        });
+        fastify.log.info('Mensaje de productor a: ' + fastify.websocketServer?.clients?.size + ' clientes');
+      } catch (error: any) {
+        fastify.log.error(
+          'NO se pudo enviar mensaje de productor a: ' + fastify.websocketServer?.clients?.size + ' clientes',
+        );
+      }
+
+      return pedido;
     },
   });
 

@@ -30,6 +30,7 @@ export class HomePage implements OnInit {
   private readonly _preguntasService = inject(PreguntasService);
   public readonly productor = input.required<string>();
   public readonly paginationStore = inject(PaginationStore);
+  private readonly _webSocketService = inject(WebsocketService);
 
   public totalPreguntasPendientes = computed(() => this.preguntasResource.value()?.meta.total || 0);
   public totalMensajesPendientes = computed(
@@ -44,6 +45,7 @@ export class HomePage implements OnInit {
     params: () => {
       const productor = this.productor();
       const estadosPedidos = this.estadosPedidos();
+      const ultimaCompra = this._webSocketService.nuevaCompra();
       if (!productor) return undefined;
       return {
         productor,
@@ -64,6 +66,7 @@ export class HomePage implements OnInit {
   public readonly pedidosConChatResource = resource({
     params: () => {
       const productor = this.productor();
+      const ultimoMensaje = this._webSocketService.nuevoMensaje();
       if (!productor) return undefined;
       return {
         productor,
@@ -82,6 +85,7 @@ export class HomePage implements OnInit {
     params: () => {
       const productor = this.productor();
 
+      const ultimaPregunta = this._webSocketService.nuevaPregunta();
       if (!productor) return undefined;
 
       return {
