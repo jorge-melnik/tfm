@@ -1,13 +1,4 @@
-import {
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  OnInit,
-  resource,
-  signal,
-} from '@angular/core';
+import { Component, computed, inject, input, OnInit, resource, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
@@ -157,40 +148,46 @@ export class ProductosPage implements OnInit {
 
   private ubicacionAdicionalInicial = signal<Ubicacion | null>(null);
 
-  private ubicacionesResource = resource({
+  private ubicacionesUsuario = resource({
+    params: () => {
+      const username = this.userStore.user()?.username;
+      if (!username) return undefined;
+      return { username };
+    },
+    loader: ({ params }) => {
+      const { username } = params;
+      return this._usuarioService.getUbicaciones(username);
+    },
+  });
+
+  private nuevaUbicacionActual = resource({
     params: () => {
       const user = this.userStore.user();
       if (!user) return undefined;
-      const username = user.username;
       const ubicacionActual: Coordenadas | null = this.ubicacionActualStore.ubicacion();
-      const ubicacionAdicionalInicial = this.ubicacionAdicionalInicial();
+      if (!ubicacionActual?.latitud || !ubicacionActual.longitud) return undefined;
       return {
-        ubicacionAdicionalInicial,
-        username,
         latitud: ubicacionActual?.latitud,
         longitud: ubicacionActual?.longitud,
       };
     },
-    loader: async ({ params }) => {
-      const { ubicacionAdicionalInicial, username, latitud, longitud } = params;
-      const ubicaciones = await this._usuarioService.getUbicaciones(username);
-      if (latitud && longitud) {
-        const nuevaUbicacion = await this.localidadesService.getNuevaUbicacionFromCoordenada(
-          latitud,
-          longitud,
-        );
-        nuevaUbicacion.nombre = 'Ubicación actual';
-        ubicaciones.push(nuevaUbicacion);
-      }
-      if (ubicacionAdicionalInicial) {
-        ubicaciones.push(ubicacionAdicionalInicial);
-      }
-      return ubicaciones;
+    loader: ({ params }) => {
+      const { latitud, longitud } = params;
+      return this.localidadesService.getNuevaUbicacionFromCoordenada(latitud, longitud);
     },
   });
 
-  public ubicaciones = computed(() => {
-    return this.ubicacionesResource.value() || [];
+  public ubicaciones = computed<Ubicacion[]>(() => {
+    const ubicacionesUsuario = this.ubicacionesUsuario.value() || [];
+    const nuevaUbicacionActual = this.nuevaUbicacionActual.value();
+    const ubicacionAdicionalInicial = this.ubicacionAdicionalInicial();
+
+    const respuesta = [...ubicacionesUsuario];
+
+    if (nuevaUbicacionActual) respuesta.push(nuevaUbicacionActual);
+    if (ubicacionAdicionalInicial) respuesta.push(ubicacionAdicionalInicial);
+
+    return respuesta;
   });
 
   public readonly totalRecords = computed(() => {
