@@ -1,12 +1,73 @@
 <div class="flex flex-col h-full">
-  <main class="grow overflow-y-auto bg-surface-ground">
-    <ul>
-      <li><a [routerLink]="['admin']">Admin</a></li>
-      <li><a [routerLink]="['consumidor', 'productos']">Consumidor</a></li>
-      <li><a [routerLink]="['productor', this.userStore.user()?.username]">Productor</a></li>
+  <main class="grow overflow-y-auto bg-surface-ground p-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-4xl mx-auto">
+      @if (!userStore.userHasRole('CONSUMIDOR')) {
+        <a
+          pButton
+          [routerLink]="['/quiero/comprar']"
+          routerLinkActive="!bg-primary !text-primary-contrast"
+          severity="secondary"
+          [outlined]="true"
+          class="flex flex-col items-center justify-center p-6 gap-3 rounded-xl transition-all h-36 border border-surface-200 dark:border-surface-700 hover:border-primary"
+        >
+          <svg data-p-icon="tag" style="font-size: 2.25rem"></svg>
 
-      <li><a [routerLink]="['auth', 'login']">Login</a></li>
-      <li><a [routerLink]="['auth', 'register']">Registro</a></li>
-    </ul>
+          <span class="font-semibold text-lg">Quiero Comprar</span>
+        </a>
+      } @else {
+        <a
+          pButton
+          [routerLink]="['consumidor', 'productos']"
+          routerLinkActive="!bg-primary !text-primary-contrast"
+          severity="secondary"
+          [outlined]="true"
+          class="flex flex-col items-center justify-center p-6 gap-3 rounded-xl transition-all h-36 border border-surface-200 dark:border-surface-700 hover:border-primary"
+        >
+          <svg data-p-icon="shopping-cart" style="font-size: 2.25rem"></svg>
+          <span class="font-semibold text-lg">Comprar</span>
+        </a>
+      }
+
+      @if (!userStore.userHasRole('PRODUCTOR')) {
+        <a
+          pButton
+          [routerLink]="['/quiero/vender']"
+          routerLinkActive="!bg-primary !text-primary-contrast"
+          severity="secondary"
+          [outlined]="true"
+          class="flex flex-col items-center justify-center p-6 gap-3 rounded-xl transition-all h-36 border border-surface-200 dark:border-surface-700 hover:border-primary"
+        >
+          <svg data-p-icon="tag" style="font-size: 2.25rem"></svg>
+
+          <span class="font-semibold text-lg">Quiero Vender</span>
+        </a>
+      } @else {
+        <a
+          pButton
+          [routerLink]="['productor', this.userStore.user()?.username]"
+          routerLinkActive="!bg-primary !text-primary-contrast"
+          severity="secondary"
+          [outlined]="true"
+          class="flex flex-col items-center justify-center p-6 gap-3 rounded-xl transition-all h-36 border border-surface-200 dark:border-surface-700 hover:border-primary"
+        >
+          <svg data-p-icon="tag" style="font-size: 2.25rem"></svg>
+          <span class="font-semibold text-lg">Vender</span>
+        </a>
+      }
+
+      @if (this.userStore.userHasRole('ADMIN')) {
+        <a
+          pButton
+          [routerLink]="['admin']"
+          routerLinkActive="!bg-primary !text-primary-contrast"
+          severity="secondary"
+          [outlined]="true"
+          class="flex flex-col items-center justify-center p-6 gap-3 rounded-xl transition-all h-36 border border-surface-200 dark:border-surface-700 hover:border-primary"
+        >
+          <svg data-p-icon="cog" style="font-size: 2.25rem"></svg>
+          <span class="font-semibold text-lg">Administrar</span>
+        </a>
+      }
+    </div>
   </main>
 </div>

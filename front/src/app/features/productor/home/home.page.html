@@ -3,6 +3,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
       <a
         [routerLink]="['pedidos']"
+        [queryParams]="{ estado_pedido: 'PAGADO' }"
         class="no-underline group bg-surface-0 dark:bg-surface-900 p-6 rounded-2xl border border-surface-200 dark:border-surface-800 shadow-xs hover:border-emerald-500 hover:shadow-md transition-all flex items-center justify-between cursor-pointer w-full"
       >
         <div class="space-y-2">

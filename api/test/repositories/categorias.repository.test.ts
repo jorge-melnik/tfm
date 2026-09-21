@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import * as assert from 'node:assert';
 import { categoriasRepository } from '../../src/repositories/categorias.repository.js';
-import { DeAcaBadRequest, DeAcaInternal, DeAcaNotFound } from '@errors/response.errors.js';
+import { BadRequest, InternalError, NotFound } from '@errors/response.errors.js';
 
 test('Categorias Repository', async (t) => {
   t.test('test getAll', async () => {
@@ -79,7 +79,7 @@ test('Categorias Repository', async (t) => {
     //Assert
     const filtroNovalido: any = { '.': '' };
     await assert.rejects(categoriasRepository.getBy(filtroNovalido), (err: any) => {
-      assert.ok(err instanceof DeAcaBadRequest);
+      assert.ok(err instanceof BadRequest);
       return true;
     });
   });
@@ -121,7 +121,7 @@ test('Categorias Repository', async (t) => {
     await categoriasRepository.add(categoria2);
 
     await assert.rejects(categoriasRepository.getOneBy({ activo: true }), (err: any) => {
-      assert.ok(err instanceof DeAcaInternal);
+      assert.ok(err instanceof InternalError);
       return true;
     });
   });
@@ -129,7 +129,7 @@ test('Categorias Repository', async (t) => {
   t.test('test getOneBy sin filtro', async () => {
     //Assert
     await assert.rejects(categoriasRepository.getOneBy({}), (err: any) => {
-      assert.ok(err instanceof DeAcaBadRequest);
+      assert.ok(err instanceof BadRequest);
       return true;
     });
   });
@@ -137,7 +137,7 @@ test('Categorias Repository', async (t) => {
   t.test('test remove no encontrado', async () => {
     //Assert
     await assert.rejects(categoriasRepository.getOneBy({ id_categoria: -1 }), (err: any) => {
-      assert.ok(err instanceof DeAcaNotFound);
+      assert.ok(err instanceof NotFound);
       return true;
     });
   });
@@ -182,7 +182,7 @@ test('Categorias Repository', async (t) => {
   t.test('test update sin filtro', async () => {
     //Assert
     await assert.rejects(categoriasRepository.update(-1, {}), (err: any) => {
-      assert.ok(err instanceof DeAcaBadRequest);
+      assert.ok(err instanceof BadRequest);
       return true;
     });
   });
@@ -190,7 +190,7 @@ test('Categorias Repository', async (t) => {
   t.test('test update inexistente', async () => {
     //Assert
     await assert.rejects(categoriasRepository.update(-1, { nombre: 'Otro nombre' }), (err: any) => {
-      assert.ok(err instanceof DeAcaNotFound);
+      assert.ok(err instanceof NotFound);
       return true;
     });
   });
@@ -210,7 +210,7 @@ test('Categorias Repository', async (t) => {
 
     //Assert
     await assert.rejects(categoriasRepository.update(-1, nuevaCategoria), (err: any) => {
-      assert.ok(err instanceof DeAcaNotFound);
+      assert.ok(err instanceof NotFound);
       return true;
     });
   });
@@ -218,7 +218,7 @@ test('Categorias Repository', async (t) => {
   t.test('test update sin datos', async () => {
     //Assert
     await assert.rejects(categoriasRepository.update(-1, {}), (err: any) => {
-      assert.ok(err instanceof DeAcaBadRequest);
+      assert.ok(err instanceof BadRequest);
       return true;
     });
   });
@@ -244,7 +244,7 @@ test('Categorias Repository', async (t) => {
   t.test('test remove inexistente', async () => {
     //Assert
     await assert.rejects(categoriasRepository.remove(-1), (err: any) => {
-      assert.ok(err instanceof DeAcaNotFound);
+      assert.ok(err instanceof NotFound);
       return true;
     });
   });

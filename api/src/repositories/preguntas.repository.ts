@@ -1,5 +1,6 @@
 import { Pregunta } from '@schemas/pregunta.schema.js';
 import { BaseRepository } from './base.repository.js';
+import { NotFoundError } from '@errors/response.errors.js';
 
 export class PreguntasRepositoryClass extends BaseRepository<Pregunta> {
   protected readonly tableName = 'preguntas';
@@ -31,8 +32,11 @@ export class PreguntasRepositoryClass extends BaseRepository<Pregunta> {
   async addRespuesta(id_pregunta: number, contenido: string) {
     const consulta = `
       INSERT INTO public.respuestas(id_pregunta,contenido) VALUES($1,$2)
+      RETURNING *
     `;
-    await this.executor.query(consulta, [id_pregunta, contenido]);
+    const res = await this.executor.query(consulta, [id_pregunta, contenido]);
+    if (res.rowCount === 0) throw new NotFoundError('');
+    return res.rows[0];
   }
 }
 

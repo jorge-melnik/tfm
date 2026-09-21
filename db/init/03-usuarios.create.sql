@@ -68,7 +68,7 @@ CREATE INDEX IF NOT EXISTS idx_usuarios_roles ON usuarios USING GIN (roles);
 CREATE TABLE IF NOT EXISTS productores (
     id_productor UUID PRIMARY KEY REFERENCES usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE, -- Misma clave que usuarios
     presentacion TEXT NOT NULL,
-    id_ubicacion INTEGER REFERENCES ubicaciones(id_ubicacion) ON DELETE CASCADE,
+    id_ubicacion INTEGER REFERENCES ubicaciones(id_ubicacion) ON DELETE RESTRICT,
     calificacion SMALLINT CHECK (calificacion BETWEEN 1 AND 5), -- //TODO. Hacer trigger para cargar esto en base al promedio de calificaciónes de sus productos
     fecha_creacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,

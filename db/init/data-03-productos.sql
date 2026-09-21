@@ -145,7 +145,7 @@ BEGIN
 
     -- Producto 8: Miel con Panal de Abeja (Subcategoría 4: Miel)
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
-    VALUES (v_id_productor, 4, 'Miel con Panal Artesanal 500g', 'miel-panal-artesanal-500g', 'Frasco premium que incluye un trozo de panal 100% comestible y natural.', 380.00, 10);
+    VALUES (v_id_productor, 4, 'Miel con Panal Artesanal 500g', 'miel-panal-artesanal-500g', 'Frasco premium que incluye un trozo de panal 100% comestible y natural.', 380.00, 20);
     
     INSERT INTO producto_imagenes ( id_producto, posicion, path) VALUES
     ( currval('productos_id_producto_seq'), 1, '/productos/miel_panal.webp');
@@ -167,7 +167,7 @@ BEGIN
 
     -- Producto 10: Humus de Lombriz Líquido (Subcategoría 17: Compost)
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
-    VALUES (v_id_productor, 17, 'Humus Líquido Lixiviado 1L', 'humus-liquido-lixiviado-1l', 'Fertilizante foliar y radicular orgánico de rápida absorción para potenciar tus plantas.', 190.00, 18);
+    VALUES (v_id_productor, 17, 'Humus Líquido Lixiviado 1L', 'humus-liquido-lixiviado-1l', 'Fertilizante foliar y radicular orgánico de rápida absorción para potenciar tus plantas.', 190.00, 22);
     
     INSERT INTO producto_imagenes ( id_producto, posicion, path) VALUES
     ( currval('productos_id_producto_seq'), 1, '/productos/humus_liquido.webp');
@@ -178,7 +178,7 @@ BEGIN
 
     -- Producto 11: Atado de Flores Benéficas (Subcategoría 6: Plantines)
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
-    VALUES (v_id_productor, 6, 'Mix Flores para Huerta (Copetes)', 'mix-flores-huerta-copetes', 'Plantines de copetes y caléndulas, ideales para control biológico de plagas.', 140.00, 15);
+    VALUES (v_id_productor, 6, 'Mix Flores para Huerta (Copetes)', 'mix-flores-huerta-copetes', 'Plantines de copetes y caléndulas, ideales para control biológico de plagas.', 140.00, 25);
     
     INSERT INTO producto_imagenes ( id_producto, posicion, path) VALUES
     ( currval('productos_id_producto_seq'), 1, '/productos/copetes.webp');
@@ -189,7 +189,7 @@ BEGIN
 
     -- Producto 12: Frasco de Polen Seco (Subcategoría 4: Miel)
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
-    VALUES (v_id_productor, 4, 'Polen de Abeja Granulado 150g', 'polen-abeja-granulado-150g', 'Superalimento natural energizante, recolectado en zonas libres de contaminación.', 290.00, 12);
+    VALUES (v_id_productor, 4, 'Polen de Abeja Granulado 150g', 'polen-abeja-granulado-150g', 'Superalimento natural energizante, recolectado en zonas libres de contaminación.', 290.00, 21);
     
     INSERT INTO producto_imagenes ( id_producto, posicion, path) VALUES
     ( currval('productos_id_producto_seq'), 1, '/productos/polen.webp');
@@ -239,7 +239,7 @@ BEGIN
 
     -- Producto 16: Cuenco de Cerámica de Arcilla Local (Subcategoría 15: Cerámica)
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
-    VALUES (v_id_ambos, 15, 'Cuenco de Cerámica Artesanal', 'cuenco-ceramica-artesanal', 'Modelado a mano con arcilla de cañada local, horneado a leña.', 550.00, 8);
+    VALUES (v_id_ambos, 15, 'Cuenco de Cerámica Artesanal', 'cuenco-ceramica-artesanal', 'Modelado a mano con arcilla de cañada local, horneado a leña.', 550.00, 18);
     
     INSERT INTO producto_imagenes ( id_producto, posicion, path) VALUES
     ( currval('productos_id_producto_seq'), 1, '/productos/cuenco1.webp'),
@@ -306,7 +306,7 @@ BEGIN
 
     -- Producto 18: Canasta de Mimbre Mediana (Subcategoría 14: Mimbre)
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
-    VALUES (v_id_ambos, 14, 'Canasta de Mimbre Tejida', 'canasta-mimbre-tejida', 'Canasta reforzada tejida a mano con mimbre natural del río.', 720.00, 5);
+    VALUES (v_id_ambos, 14, 'Canasta de Mimbre Tejida', 'canasta-mimbre-tejida', 'Canasta reforzada tejida a mano con mimbre natural del río.', 720.00, 15);
     
     INSERT INTO producto_imagenes ( id_producto, posicion, path) VALUES
     ( currval('productos_id_producto_seq'), 1, '/productos/canasta.webp');
@@ -318,7 +318,7 @@ BEGIN
 
     -- Producto 19: Chutney de Manzana y Especias (Subcategoría 9: Conservas)
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
-    VALUES (v_id_ambos, 9, 'Chutney de Manzana Agridulce', 'chutney-manzana-agridulce', 'Acompañamiento agridulce elaborado artesanalmente con frutas locales de estación.', 280.00, 12);
+    VALUES (v_id_ambos, 9, 'Chutney de Manzana Agridulce', 'chutney-manzana-agridulce', 'Acompañamiento agridulce elaborado artesanalmente con frutas locales de estación.', 280.00, 22);
     
     INSERT INTO producto_imagenes ( id_producto, posicion, path) VALUES
     ( currval('productos_id_producto_seq'), 1, '/productos/chutney.webp');
@@ -331,7 +331,7 @@ BEGIN
 
     -- Producto 20: Tabla de Picar de Madera Recuperada (Subcategoría 16: Madera)
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
-    VALUES (v_id_ambos, 16, 'Tabla para Picar de Olivo', 'tabla-picar-olivo', 'Tabla rústica confeccionada a mano a partir de maderas caídas y tratada con cera de abejas.', 890.00, 4);
+    VALUES (v_id_ambos, 16, 'Tabla para Picar de Olivo', 'tabla-picar-olivo', 'Tabla rústica confeccionada a mano a partir de maderas caídas y tratada con cera de abejas.', 890.00, 14);
     
     INSERT INTO producto_imagenes ( id_producto, posicion, path) VALUES
     ( currval('productos_id_producto_seq'), 1, '/productos/tabla.webp');
@@ -366,7 +366,7 @@ BEGIN
 
     -- Producto 23: Mate de Madera de Caldén (Subcategoría 16: Madera)
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
-    VALUES (v_id_ambos, 16, 'Mate de Caldén Torneado', 'mate-calden-torneado', 'Mate rústico torneado a mano, curado con aceites vegetales finos.', 420.00, 6);
+    VALUES (v_id_ambos, 16, 'Mate de Caldén Torneado', 'mate-calden-torneado', 'Mate rústico torneado a mano, curado con aceites vegetales finos.', 420.00, 16);
     
     INSERT INTO producto_imagenes ( id_producto, posicion, path) VALUES
     ( currval('productos_id_producto_seq'), 1, '/productos/mate_calden.webp');
@@ -399,7 +399,7 @@ BEGIN
 
     -- Producto 26: Posaplatos de Mimbre Chato (Subcategoría 14: Mimbre)
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
-    VALUES (v_id_ambos, 14, 'Individuales de Mimbre x2', 'individuales-mimbre-x2', 'Set de dos posaplatos individuales tejidos planos con guía de mimbre tierno.', 340.00, 10);
+    VALUES (v_id_ambos, 14, 'Individuales de Mimbre x2', 'individuales-mimbre-x2', 'Set de dos posaplatos individuales tejidos planos con guía de mimbre tierno.', 340.00, 20);
     
     INSERT INTO producto_imagenes ( id_producto, posicion, path) VALUES
     ( currval('productos_id_producto_seq'), 1, '/productos/individuales_mimbre.webp');
@@ -410,7 +410,7 @@ BEGIN
 
     -- Producto 27: Florero Rústico de Gres (Subcategoría 15: Cerámica)
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
-    VALUES (v_id_ambos, 15, 'Florero de Gres Esmaltado', 'florero-gres-esmaltado', 'Cerámica de alta temperatura con esmaltes únicos formulados a base de cenizas.', 680.00, 3);
+    VALUES (v_id_ambos, 15, 'Florero de Gres Esmaltado', 'florero-gres-esmaltado', 'Cerámica de alta temperatura con esmaltes únicos formulados a base de cenizas.', 680.00, 13);
     
     INSERT INTO producto_imagenes ( id_producto, posicion, path) VALUES
     ( currval('productos_id_producto_seq'), 1, '/productos/no_image.webp');
@@ -473,7 +473,7 @@ BEGIN
     
     -- Producto 33: Queso Criollo Estacionado
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
-    VALUES (v_id_ambos, 5, 'Queso Criollo Artesanal kg', 'queso-criollo-artesanal-kg', 'Queso de leche cruda de vacas de pastoreo, madurado de forma natural.', 680.00, 12);
+    VALUES (v_id_ambos, 5, 'Queso Criollo Artesanal kg', 'queso-criollo-artesanal-kg', 'Queso de leche cruda de vacas de pastoreo, madurado de forma natural.', 680.00, 22);
     INSERT INTO producto_imagenes ( id_producto, posicion, path) VALUES ( currval('productos_id_producto_seq'), 1, '/productos/queso_criollo.webp');
     INSERT INTO producto_etiquetas ( id_producto, id_etiqueta) VALUES 
     ( currval('productos_id_producto_seq'), 9), ( currval('productos_id_producto_seq'), 14), ( currval('productos_id_producto_seq'), 10);
@@ -694,7 +694,7 @@ BEGIN
 
     -- Producto Superadmin 4: Tabla de Cortar para Asado
     INSERT INTO productos (id_productor, id_subcategoria, nombre, producto, descripcion, precio, cantidad_disponible)
-    VALUES (v_id_superadmin, 16, 'Tabla para Asado en Madera Dura', 'tabla-asado-madera-dura', 'Tabla rústica de madera maciza trabajada a mano con agarre de cuero.', 920.00, 6);
+    VALUES (v_id_superadmin, 16, 'Tabla para Asado en Madera Dura', 'tabla-asado-madera-dura', 'Tabla rústica de madera maciza trabajada a mano con agarre de cuero.', 920.00, 16);
     
     INSERT INTO producto_imagenes (id_producto, posicion, path) VALUES
     (currval('productos_id_producto_seq'), 1, '/productos/tabla.webp');

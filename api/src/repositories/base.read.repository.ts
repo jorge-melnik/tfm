@@ -1,6 +1,6 @@
 import { myPool } from '@database/pool.js';
 import { BadRequestError, InternalError, NotFoundError } from '@errors/response.errors.js';
-import { DeAcaListResponseType, keysCercania, keysFavoritos, keysPaginacion } from '@schemas/core.schemas.js';
+import { ListResponseType, keysCercania, keysFavoritos, keysPaginacion } from '@schemas/core.schemas.js';
 import { Pool, PoolClient } from 'pg';
 import { DatosBase } from '../types/datos-base.js';
 
@@ -54,7 +54,7 @@ export abstract class BaseReadRepository<T extends DatosBase> {
     return res.rows;
   }
 
-  async getBy(routeQuery: any = {}): Promise<DeAcaListResponseType<T>> {
+  async getBy(routeQuery: any = {}): Promise<ListResponseType<T>> {
     const { limit, page, sort, sort_direction, latitud, longitud, distancia, id_consumidor_autenticado } =
       routeQuery;
     const filters: Partial<T> = {};
@@ -121,11 +121,12 @@ export abstract class BaseReadRepository<T extends DatosBase> {
     let pageParseado = 1;
     let limitParseado = 10;
 
+    const direction = sort_direction?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'; //Así safamos de codigo no deseado en order direction
+    const sortField = sort || this.idName;
+    const safeSortField = sortField.replace(/[^a-zA-Z0-9_]/g, ''); //Eliminamos todos los caracteres que no son validos en un nombre de columna.
+    query += ` ORDER BY "${safeSortField}" ${direction}`; //Entrecomillamos sortField para que lo tome como una columna y evitar código no deseado
+
     if (limit && page) {
-      const direction = sort_direction?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'; //Así safamos de codigo no deseado en order direction
-      const sortField = sort || this.idName;
-      const safeSortField = sortField.replace(/[^a-zA-Z0-9_]/g, ''); //Eliminamos todos los caracteres que no son validos en un nombre de columna.
-      query += ` ORDER BY "${safeSortField}" ${direction}`; //Entrecomillamos sortField para que lo tome como una columna y evitar código no deseado
       limitParseado = parseInt(limit.toString(), 10) || limitParseado; //Me aseguro que limit no traiga codigo no deseado
       pageParseado = parseInt(page.toString(), 10) || pageParseado; //Me aseguro que page no traiga codigo no deseado
       const offset = (pageParseado - 1) * limitParseado;

@@ -55,7 +55,7 @@ export class ListaPedidosComponent implements OnInit {
   public onVerMensajes(pedido: Pedido) {
     const user = this.userStore.user();
     if (!user) return;
-    this._router.navigate(['/', 'productor', user.username, 'consultas', 'chats']);
+    this._router.navigate(['/', 'productor', user.username, 'pedidos', pedido.id_pedido]);
   }
 
   public cambiaEstadoPedido = output<{ pedido: Pedido; estado_pedido: EstadoPedidoType }>();

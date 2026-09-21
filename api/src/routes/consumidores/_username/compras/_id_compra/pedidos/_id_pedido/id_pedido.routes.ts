@@ -66,7 +66,11 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       });
     },
     handler: async function (req, reply) {
-      const res = await mensajesRepository.getBy({ id_pedido: req.params.id_pedido });
+      const res = await mensajesRepository.getBy({
+        id_pedido: req.params.id_pedido,
+        sort_direction: 'DESC',
+        sort: 'id_mensaje',
+      });
       await pedidosRepository.consumidorLeyoMensajes(req.params.id_pedido);
       return res.data;
     },
@@ -102,11 +106,26 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       });
     },
     handler: async function (req, reply) {
-      return mensajesRepository.add({
+      const mensaje = await mensajesRepository.add({
         id_pedido: req.params.id_pedido,
         id_emisor: req.user.id_usuario,
         mensaje: req.body.mensaje,
       });
+
+      try {
+        const loenviado = JSON.stringify(mensaje);
+        fastify.log.warn(
+          'Consumidor envió mensaje a: ' + fastify.websocketServer?.clients?.size + ' clientes',
+        );
+        fastify.websocketServer?.clients?.forEach((cliente) => {
+          cliente.send(loenviado);
+        });
+      } catch (error: any) {
+        fastify.log.error(
+          'Consumidor NO envió mensaje a: ' + fastify.websocketServer?.clients?.size + ' clientes',
+        );
+      }
+      return mensaje;
     },
   });
 

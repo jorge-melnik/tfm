@@ -1,7 +1,7 @@
 import { computed, Service, signal } from '@angular/core';
 import { DataViewPageEvent } from 'primeng/dataview';
 import { PaginatorState } from 'primeng/paginator';
-const defaultItemsPorPagina = 4;
+const defaultItemsPorPagina = 8;
 @Service()
 export class PaginationStore {
   private readonly _page = signal<number>(1);
@@ -20,6 +20,8 @@ export class PaginationStore {
   public sortOrder = this._sortOrder.asReadonly();
   public sortField = this._sortField.asReadonly();
   public rowsPerPageOptions = this._rowsPerPageOptions.asReadonly();
+
+  public sort_direction = computed(() => (this.sortOrder() === -1 ? 'DESC' : 'ASC'));
 
   public resetPagination() {
     this._limit.set(defaultItemsPorPagina);
@@ -48,7 +50,6 @@ export class PaginationStore {
     const rows = event.rows ?? defaultItemsPorPagina;
     const first = event.first ?? 1;
 
-    console.log('PAGE CHANGE');
     this.setLimit(rows);
 
     const nuevaPagina = Math.floor(first / rows) + 1;

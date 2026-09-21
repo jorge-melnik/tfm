@@ -2,7 +2,7 @@ import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { comprasRepository } from '@repositories/compras.respository.js';
 import { Compra, CompraPOST } from '@schemas/compras.schema.js';
 import { Consumidor } from '@schemas/consumidores.schema.js';
-import { ErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
+import { ErrorResponse, ListResponse, AppQueryString } from '@schemas/core.schemas.js';
 
 const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
@@ -14,20 +14,17 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
       `,
       params: Type.Object({ username: Consumidor.properties.username }),
 
-      querystring: DeAcaQueryString,
+      querystring: Type.Intersect([AppQueryString, Type.Object({})]),
       response: {
-        200: DeAcaListResponse(Compra),
+        200: ListResponse(Compra),
         500: ErrorResponse,
       },
     },
     onRequest: [fastify.authenticate, fastify.selfWithRole('CONSUMIDOR')],
     handler: async function (req, reply) {
-      return comprasRepository.getBy({ username: req.params.username });
+      return comprasRepository.getBy({ username: req.params.username, ...req.query });
     },
   });
-
-  //POST /, crea nueva compra y eliminar el carrito
-  //body: direccion_envio y contacto_receptor
 
   fastify.post('/', {
     schema: {
@@ -46,6 +43,15 @@ const rutasComprasUsername: FastifyPluginAsyncTypebox = async (fastify, opts): P
     handler: async function (req, rep) {
       rep.code(201);
       const compraCreada: Compra = await comprasRepository.createFromCarrito(req.user.id_usuario, req.body);
+
+      try {
+        fastify.log.warn('Compra creada a: ' + fastify.websocketServer?.clients?.size);
+        fastify.websocketServer?.clients?.forEach((cliente) => {
+          cliente.send(JSON.stringify(compraCreada));
+        });
+      } catch (error: any) {
+        fastify.log.error('Compra creada NO SE envió a: ' + fastify.websocketServer?.clients?.size);
+      }
       return comprasRepository.getOneBy({ id_compra: compraCreada.id_compra });
     },
   });

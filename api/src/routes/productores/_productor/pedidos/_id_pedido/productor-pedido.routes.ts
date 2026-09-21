@@ -3,7 +3,7 @@ import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { mensajesRepository } from '@repositories/mensajes.repository.js';
 import { pedidosRepository } from '@repositories/pedidos.respository.js';
 import { EstadoPedido, Mensaje, Pedido } from '@schemas/compras.schema.js';
-import { ErrorResponse, DeAcaListResponse } from '@schemas/core.schemas.js';
+import { ErrorResponse, ListResponse } from '@schemas/core.schemas.js';
 import { Productor } from '@schemas/productores.schema.js';
 
 const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
@@ -16,7 +16,6 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
         `,
       params: Type.Object({
         productor: Productor.properties.username,
-        id_compra: Pedido.properties.id_compra,
         id_pedido: Pedido.properties.id_pedido,
       }),
       response: {
@@ -26,14 +25,8 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       },
     },
     onRequest: [fastify.authenticate, fastify.selfWithRole('PRODUCTOR')],
-    preHandler: async function (req, rep) {
-      await pedidosRepository.getBy({
-        id_compra: req.params.id_compra,
-        id_consumidor: req.user.id_usuario,
-      });
-    },
     handler: async function (req, reply) {
-      return pedidosRepository.getOneBy({ id_compra: req.params.id_compra, id_pedido: req.params.id_pedido });
+      return pedidosRepository.getOneBy({ id_pedido: req.params.id_pedido });
     },
   });
 
@@ -52,7 +45,7 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
         estado_pedido: EstadoPedido,
       }),
       response: {
-        200: DeAcaListResponse(Pedido),
+        200: Pedido,
         404: ErrorResponse,
         500: ErrorResponse,
       },
@@ -69,6 +62,20 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       const { id_productor, id_pedido } = pedido;
       const { estado_pedido } = req.body;
       await pedidosRepository.cambiarEstado(id_productor, id_pedido, estado_pedido);
+      pedido.estado_pedido = req.body.estado_pedido;
+
+      try {
+        fastify.websocketServer?.clients?.forEach((cliente) => {
+          cliente.send(JSON.stringify(pedido));
+        });
+        fastify.log.info('Mensaje de productor a: ' + fastify.websocketServer?.clients?.size + ' clientes');
+      } catch (error: any) {
+        fastify.log.error(
+          'NO se pudo enviar mensaje de productor a: ' + fastify.websocketServer?.clients?.size + ' clientes',
+        );
+      }
+
+      return pedido;
     },
   });
 
@@ -97,7 +104,11 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       });
     },
     handler: async function (req, reply) {
-      const res = await mensajesRepository.getBy({ id_pedido: req.params.id_pedido });
+      const res = await mensajesRepository.getBy({
+        id_pedido: req.params.id_pedido,
+        sort_direction: 'DESC',
+        sort: 'id_mensaje',
+      });
       //El productor marca como leido cada vez que responde.
       return res.data;
     },
@@ -139,6 +150,17 @@ const rutasPedidosCompra: FastifyPluginAsyncTypebox = async (fastify, opts): Pro
       });
 
       await pedidosRepository.productorLeyoMensajes(req.params.id_pedido);
+
+      try {
+        fastify.websocketServer?.clients?.forEach((cliente) => {
+          cliente.send(JSON.stringify(mensaje));
+        });
+        fastify.log.info('Mensaje de productor a: ' + fastify.websocketServer?.clients?.size + ' clientes');
+      } catch (error: any) {
+        fastify.log.error(
+          'NO se pudo enviar mensaje de productor a: ' + fastify.websocketServer?.clients?.size + ' clientes',
+        );
+      }
       return mensaje;
     },
   });

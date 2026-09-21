@@ -4,7 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { EstadoPedido, EstadoPedidoType, Pedido } from '@shared/types/pedido';
 import { FotoCarrusel } from '../foto-carrusel/foto.carrusel';
-import { Check, Comments, Send } from '@primeicons/angular';
+import { Check, Comments, Send, Shop } from '@primeicons/angular';
 import { RouterLink } from '@angular/router';
 import { OverlayBadgeModule } from 'primeng/overlaybadge';
 import { Badge } from 'primeng/badge';
@@ -23,6 +23,7 @@ import { UserStore } from '@shared/services/stores/user.store';
     Comments,
     Badge,
     RouterLink,
+    Shop,
   ],
   templateUrl: './vista-pedido.component.html',
   styleUrl: './vista-pedido.component.css',

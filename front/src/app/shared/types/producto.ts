@@ -21,6 +21,17 @@ export interface PresignedUrl {
   contentType: string;
 }
 
+export interface PostProducto {
+  productor: string;
+  nombre: string;
+  descripcion: string;
+  precio: number;
+  cantidad_disponible: number;
+  categoria: string;
+  subcategoria: string;
+  etiquetas: string[];
+}
+
 export interface Producto {
   id_productor: string;
   id_producto: number;

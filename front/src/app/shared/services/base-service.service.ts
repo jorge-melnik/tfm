@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { DeAcaRequestOptions, PaginatedResponse, PathParams } from '@shared/types/api.types';
+import { AgroecoRequestOptions, PaginatedResponse, PathParams } from '@shared/types/api.types';
 import { CrudServiceInterface } from '@shared/types/crud-base';
 import { firstValueFrom } from 'rxjs';
 
@@ -42,7 +42,7 @@ export abstract class BaseService<T> implements CrudServiceInterface<T> {
    * @param options
    * @returns
    */
-  async getBy(options?: DeAcaRequestOptions): Promise<PaginatedResponse<T>> {
+  async getBy(options?: AgroecoRequestOptions): Promise<PaginatedResponse<T>> {
     let params = new HttpParams();
     if (options?.pagination) {
       if (!options?.pagination) throw new Error('Tienes que especificar la paginación.');

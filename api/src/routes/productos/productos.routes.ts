@@ -1,7 +1,7 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { productoRepository } from '@repositories/producto.repository.js';
 
-import { DeAcaQueryString } from '@schemas/core.schemas.js';
+import { AppQueryString } from '@schemas/core.schemas.js';
 
 const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
   fastify.get('/', {
@@ -12,10 +12,12 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
         Devuelve el listado completo de productos registrados. 
       `,
       querystring: Type.Intersect([
-        DeAcaQueryString,
+        AppQueryString,
         Type.Object({
           // username: Type.Optional(Type.String()), No recuerdo en que caso se usaría.
           productor: Type.Optional(Type.String()),
+          departamento: Type.Optional(Type.String()),
+          localidad: Type.Optional(Type.String()),
           id_productor: Type.Optional(Type.String()),
           etiquetas: Type.Optional(Type.Array(Type.String())),
           categoria: Type.Optional(Type.String()),

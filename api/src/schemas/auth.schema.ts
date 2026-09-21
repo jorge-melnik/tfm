@@ -22,15 +22,15 @@ export const LoginEmailSchema = Type.Omit(LoginSchema, ['username'], {
   $id: 'LoginEmail',
   examples: [
     {
-      email: 'admin@deaca.com',
+      email: 'admin@agroeco.com',
       password: 'Contraseña',
     },
     {
-      email: 'productor@deaca.com',
+      email: 'productor@agroeco.com',
       password: 'Contraseña',
     },
     {
-      email: 'consumidor@deaca.com',
+      email: 'consumidor@agroeco.com',
       password: 'Contraseña',
     },
   ],

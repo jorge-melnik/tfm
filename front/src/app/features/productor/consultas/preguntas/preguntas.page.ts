@@ -31,17 +31,17 @@ import { DialogService } from '@shared/services/dialog.service';
   templateUrl: './preguntas.page.html',
   styleUrl: './preguntas.page.css',
 })
-export class PreguntasPage {
+export class PreguntasPage implements OnInit {
   private _preguntasService = inject(PreguntasService);
   private _userStore = inject(UserStore);
   public paginationStore = inject(PaginationStore);
   private _dialogService = inject(DialogService);
 
-  public username = input.required<string>();
+  public productor = input.required<string>();
 
   private preguntasResource = resource({
     params: () => {
-      const productor = this.username();
+      const productor = this.productor();
 
       if (!productor) return undefined;
 
@@ -66,8 +66,12 @@ export class PreguntasPage {
     return this.preguntasResource.value()?.meta.total || 0;
   });
 
+  ngOnInit(): void {
+    this.paginationStore.resetPagination();
+  }
+
   public async responderPregunta(nuevaRespuesta: RespuestaPost) {
-    const productor = this.username();
+    const productor = this.productor();
     const { producto, id_pregunta, contenido } = nuevaRespuesta;
     try {
       await this._preguntasService.responderPregunta(productor, producto, id_pregunta, contenido);

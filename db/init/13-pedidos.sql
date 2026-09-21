@@ -157,3 +157,39 @@ AFTER DELETE ON pedidos
 REFERENCING OLD TABLE AS tabla_afectacion
 FOR EACH STATEMENT
 EXECUTE FUNCTION tr_fn_recalcular_total_compra();
+
+
+CREATE OR REPLACE FUNCTION tr_fn_restar_stock_producto()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_stock_actual INT;
+BEGIN
+    -- Obtener la cantidad disponible para verificar si da
+    SELECT cantidad_disponible 
+    INTO v_stock_actual
+    FROM public.productos
+    WHERE id_producto = NEW.id_producto
+    FOR UPDATE;
+
+    -- Si el producto no existe o la cantidad es insuficiente, hacer fallar la transacción
+    IF v_stock_actual IS NULL THEN
+        RAISE EXCEPTION 'El producto con ID % no existe.', NEW.id_producto;
+    ELSIF v_stock_actual < NEW.cantidad THEN
+        RAISE EXCEPTION 'Stock insuficiente para el producto ID %. Disponible: %, Solicitado: %', 
+            NEW.id_producto, v_stock_actual, NEW.cantidad;
+    END IF;
+
+    -- Ahora si descontar el stock.
+    UPDATE public.productos
+    SET cantidad_disponible = cantidad_disponible - NEW.cantidad
+    WHERE id_producto = NEW.id_producto;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tg_pedido_productos_restar_stock
+BEFORE INSERT ON pedido_productos
+FOR EACH ROW
+EXECUTE FUNCTION tr_fn_restar_stock_producto();
+--//TODO: También podría hacer otro trigger por si el pedido se cancela.

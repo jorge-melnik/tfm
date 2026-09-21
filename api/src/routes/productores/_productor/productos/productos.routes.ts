@@ -1,7 +1,7 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
 import { productoRepository } from '@repositories/producto.repository.js';
 
-import { ErrorResponse, DeAcaListResponse, DeAcaQueryString } from '@schemas/core.schemas.js';
+import { ErrorResponse, ListResponse, AppQueryString } from '@schemas/core.schemas.js';
 import { POSTProducto, Producto } from '@schemas/producto.schema.js';
 import { Productor } from '@schemas/productores.schema.js';
 
@@ -15,7 +15,7 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
       `,
       params: Type.Object({ productor: Productor.properties.username }),
       querystring: Type.Intersect([
-        DeAcaQueryString,
+        AppQueryString,
         Type.Object({
           productor: Type.Optional(Type.String()),
           id_productor: Type.Optional(Type.String()),
@@ -26,7 +26,7 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
         }),
       ]),
       response: {
-        200: DeAcaListResponse(Producto),
+        200: ListResponse(Producto),
         500: ErrorResponse,
       },
     },
@@ -52,7 +52,21 @@ const productosRoutes: FastifyPluginAsyncTypebox = async (fastify, opts): Promis
     // preHandler : //FIXME: coincide id_productor en body y params
     handler: async function (req, reply) {
       reply.code(201);
-      return productoRepository.add(req.body);
+      const producto = await productoRepository.add(req.body);
+
+      try {
+        fastify.log.warn('Producto de productor a: ' + fastify.websocketServer?.clients?.size + ' clientes');
+        fastify.websocketServer?.clients?.forEach((cliente) => {
+          cliente.send(JSON.stringify(producto));
+        });
+      } catch (error: any) {
+        fastify.log.error(
+          'No se pudo enviar producto de productor a: ' +
+            fastify.websocketServer?.clients?.size +
+            ' clientes',
+        );
+      }
+      return producto;
     },
   });
 };

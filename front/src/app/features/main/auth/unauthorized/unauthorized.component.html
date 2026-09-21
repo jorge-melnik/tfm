@@ -1,1 +1,48 @@
-<p>unauthorized works!</p>
+<div class="min-h-screen flex items-center justify-center bg-surface-50 dark:bg-surface-950 p-4">
+  <p-card class="w-full max-w-md shadow-lg border-none">
+    <div class="flex flex-col items-center text-center p-4">
+      <div
+        class="w-20 h-20 rounded-full bg-red-100 dark:bg-red-950/50 flex items-center justify-center mb-6"
+      >
+        <svg data-p-icon="exclamation-triangle" size="32" color="red"></svg>
+      </div>
+
+      <span class="text-xs font-semibold uppercase tracking-wider text-red-500 mb-1"
+        >Error 403</span
+      >
+      <h1 class="text-2xl font-bold text-surface-900 dark:text-surface-0 mb-3">
+        Acceso no autorizado
+      </h1>
+
+      <p class="text-surface-600 dark:text-surface-400 mb-8 leading-relaxed">
+        No tienes los permisos necesarios para acceder a este apartado. Si crees que se trata de un
+        error, puedes cerrar la sesión actual e ingresar con otra cuenta.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-3 w-full">
+        <button
+          pButton
+          type="button"
+          severity="danger"
+          class="w-full flex items-center justify-center gap-2"
+          (click)="onLogoutAndLogin()"
+        >
+          <svg data-p-icon="sign-out"></svg>
+          <span>Cerrar sesión</span>
+        </button>
+
+        <button
+          pButton
+          type="button"
+          severity="secondary"
+          [outlined]="true"
+          class="w-full flex items-center justify-center gap-2"
+          (click)="goHome()"
+        >
+          <svg data-p-icon="home"></svg>
+          <span>Volver al inicio</span>
+        </button>
+      </div>
+    </div>
+  </p-card>
+</div>

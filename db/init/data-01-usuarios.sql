@@ -7,6 +7,7 @@ DECLARE
     id_ambos UUID;
 
     v_id_localidad_salto INTEGER;
+    v_id_localidad_paysandu INTEGER;
     v_id_localidad_artigas INTEGER;
 
     v_id_ubicacion_superadmin INTEGER;
@@ -25,18 +26,24 @@ BEGIN
     WHERE UPPER(d.nombre) = 'ARTIGAS' AND UPPER(l.nombre) = 'ARTIGAS'
     LIMIT 1;
 
+    SELECT l.id_localidad INTO v_id_localidad_paysandu
+    FROM localidades l
+    JOIN departamentos d ON l.id_departamento = d.id_departamento
+    WHERE UPPER(d.departamento) = 'PAYSANDU' AND UPPER(l.localidad) = 'PAYSANDU'
+    LIMIT 1;
+
     ------------------------------------------------------------------------------------------------------------------------
     -- admin: Solo ADMIN
     -------------------------------------------------------------------------------------------------------------------------
     INSERT INTO usuarios (rol_actual, roles) VALUES ('ADMIN', ARRAY['ADMIN']::ROL[]) RETURNING id_usuario INTO id_administrador;
     INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username, celular,foto_url) 
-        VALUES (id_administrador, 'Admin', 'Sistema', 'admin@deaca.com', 'admin', '+59899111222', '/usuarios/admin/admin.png');
+        VALUES (id_administrador, 'Admin', 'Sistema', 'admin@agroeco.com', 'admin', '+59899111222', '/usuarios/admin/admin.png');
     INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_administrador, crypt('Contraseña', gen_salt('bf', 10)));
     ------------------------------------------------------------------------------------------------------------------------
     -- superadmin: Administrador, productor y consumidor
     -------------------------------------------------------------------------------------------------------------------------
     INSERT INTO usuarios (rol_actual, roles) VALUES ('ADMIN', ARRAY['ADMIN']::ROL[]) RETURNING id_usuario INTO id_superadministrador;
-    INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username, celular,foto_url) VALUES (id_superadministrador, 'superadmin', 'superadmin', 'superadmin@deaca.com', 'superadmin', '+59899111662', '/usuarios/superadmin/superadmin.svg');
+    INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username, celular,foto_url) VALUES (id_superadministrador, 'superadmin', 'superadmin', 'superadmin@agroeco.com', 'superadmin', '+59899111662', '/usuarios/superadmin/superadmin.svg');
     INSERT INTO consumidores (id_consumidor) VALUES (id_superadministrador);
     INSERT INTO carritos (id_consumidor) VALUES (id_superadministrador);
 -- Ubicaciones Superadmin
@@ -45,7 +52,7 @@ BEGIN
         RETURNING id_ubicacion INTO v_id_ubicacion_superadmin
     ;-- SALTO
     INSERT INTO ubicaciones (id_usuario, id_localidad, nombre, ubicacion, direccion, comentarios, latitud, longitud) 
-        VALUES (id_superadministrador, v_id_localidad_artigas, 'Local Paysandú', 'superadmin-loc-2', 'Av. España 430', 'APTO PAYSANDU', -32.31637463376413, -58.08884698512548) 
+        VALUES (id_superadministrador, v_id_localidad_paysandu, 'Local Paysandú', 'superadmin-loc-2', 'Av. España 430', 'APTO PAYSANDU', -32.31637463376413, -58.08884698512548) 
     ;-- PAYSANDU
 
     INSERT INTO productores (id_productor, presentacion,id_ubicacion) VALUES (id_superadministrador, 'Productor artesanal de cosas.', v_id_ubicacion_superadmin);
@@ -54,16 +61,16 @@ BEGIN
     -- productor: Solo productor
     INSERT INTO usuarios (rol_actual, roles) VALUES ('PRODUCTOR', ARRAY['PRODUCTOR']::ROL[]) RETURNING id_usuario INTO id_productor;
     INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username,celular,foto_url) 
-        VALUES (id_productor, 'Juan', 'Huerta', 'juan.productor@email.com','productor', '+59899333444','/usuarios/productor/productor.jpeg');
+        VALUES (id_productor, 'Juan', 'Huerta', 'productor@agroeco.com','productor', '+59899333444','/usuarios/productor/productor.jpeg');
     INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_productor, crypt('Contraseña', gen_salt('bf', 10)));
 
     -- Ubicaciones Productor
     INSERT INTO ubicaciones (id_usuario, id_localidad, nombre, ubicacion, direccion, comentarios, latitud, longitud)
-        VALUES (id_productor, v_id_localidad_salto, 'HUERTA', 'huerta', 'Camino Departamental Km 12', 'Producción de hortalizas', -32.333556818498074, -58.01283505601679) 
+        VALUES (id_productor, v_id_localidad_paysandu, 'HUERTA', 'huerta', 'Camino Departamental Km 12', 'Producción de hortalizas', -32.333556818498074, -58.01283505601679) 
         RETURNING id_ubicacion INTO v_id_ubicacion_productor
     ; -- PAYSANDU
     INSERT INTO ubicaciones (id_usuario, id_localidad, nombre, ubicacion, direccion, comentarios, latitud, longitud)
-        VALUES (id_productor, v_id_localidad_salto, 'CASA', 'casa', 'Avenida Barbieri 820', 'mi casucha', -32.319840143358064, -58.080780099872364)
+        VALUES (id_productor, v_id_localidad_paysandu, 'CASA', 'casa', 'Avenida Barbieri 820', 'mi casucha', -32.319840143358064, -58.080780099872364)
     ; -- PAYSANDU
 
     INSERT INTO productores (id_productor, presentacion, id_ubicacion) VALUES (id_productor, 'Productor de hortalizas orgánicas y miel pura de campo.',v_id_ubicacion_productor);
@@ -71,7 +78,7 @@ BEGIN
     -- Consumidor: Solo consumidor
     INSERT INTO usuarios (rol_actual, roles) VALUES ('CONSUMIDOR', ARRAY['CONSUMIDOR']::ROL[]) RETURNING id_usuario INTO id_consumidor;
     INSERT INTO datos_personales (id_usuario, nombres, apellidos, email, username, celular,foto_url) 
-        VALUES (id_consumidor, 'María', 'Compradora', 'maria.cliente@email.com', 'consumidor' ,'+59899555666', '/usuarios/consumidor/consumidor.jpeg');
+        VALUES (id_consumidor, 'María', 'Compradora', 'consumidor@agroeco.com', 'consumidor' ,'+59899555666', '/usuarios/consumidor/consumidor.jpeg');
     INSERT INTO consumidores (id_consumidor) VALUES (id_consumidor);
     INSERT INTO carritos (id_consumidor) VALUES (id_consumidor);
     INSERT INTO credenciales (id_usuario, password_hash) VALUES (id_consumidor, crypt('Contraseña', gen_salt('bf', 10)));
@@ -79,7 +86,7 @@ BEGIN
         VALUES (id_consumidor, v_id_localidad_salto, 'CASA', 'casa', 'Camino Departamental Km 12', '', -31.395785119683822, -57.96021209841166) 
     ; -- SALTO
     INSERT INTO ubicaciones (id_usuario, id_localidad, nombre, ubicacion, direccion, comentarios, latitud, longitud)
-        VALUES (id_consumidor, v_id_localidad_salto, 'ABUELA', 'abuela', 'Avenida Solari 820', '', -32.322466081974916, -58.087187638403044)
+        VALUES (id_consumidor, v_id_localidad_paysandu, 'ABUELA', 'abuela', 'Avenida Solari 820', '', -32.322466081974916, -58.087187638403044)
     ; -- PAYSANDU
 
     -- ambos: Productor y consumidor

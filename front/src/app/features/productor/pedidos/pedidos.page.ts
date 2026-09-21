@@ -5,19 +5,26 @@ import { EstadoPedido, EstadoPedidoType, Pedido } from '@shared/types/pedido';
 import { FormsModule } from '@angular/forms';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
 import { ListaPedidosComponent } from '@shared/components/lista-pedidos/lista-pedidos.component';
+import { WebsocketService } from '@shared/services/websocket.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-pedidos',
   imports: [FormsModule, ListaPedidosComponent],
   templateUrl: './pedidos.page.html',
   styleUrl: './pedidos.page.css',
+  providers: [WebsocketService],
 })
 export class PedidosPage implements OnInit {
   public readonly productor = input.required<string>();
   public readonly paginationStore = inject(PaginationStore);
   private readonly _pedidosService = inject(PedidosService);
+  private readonly _webSocketService = inject(WebsocketService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
-  public estado_pedido = signal<EstadoPedidoType | 'TODOS'>('TODOS');
+  public estado_pedido = input<EstadoPedidoType | undefined>();
+  public estado_pedidoSeleccionado = signal<EstadoPedidoType | 'TODOS'>('TODOS');
 
   public opcionesEstado = signal(
     Object.entries(EstadoPedido).map(([label, value]) => ({
@@ -29,7 +36,9 @@ export class PedidosPage implements OnInit {
   private readonly pedidosResource = resource({
     params: () => {
       const productor = this.productor();
-      const estado_pedido = this.estado_pedido();
+      const estado_pedido = this.estado_pedidoSeleccionado();
+      const nuevaCompra = this._webSocketService.nuevaCompra();
+      const nuevoMensaje = this._webSocketService.nuevoMensaje();
       if (!productor) return undefined;
       return {
         productor,
@@ -45,7 +54,7 @@ export class PedidosPage implements OnInit {
 
       const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
       const queryParams: ApiQueryParams = { productor };
-      console.log({ estado_pedido });
+
       if (estado_pedido && estado_pedido !== 'TODOS') queryParams['estado_pedido'] = estado_pedido;
       console.log({ queryParams });
       return this._pedidosService.getBy({ queryParams, pathParams: { productor }, pagination });
@@ -67,7 +76,10 @@ export class PedidosPage implements OnInit {
   public isLoading = computed(() => this.pedidosResource.isLoading());
 
   async ngOnInit(): Promise<void> {
-    throw new Error('Method not implemented.');
+    const estadoInicial = this.estado_pedido();
+    if (!estadoInicial) return;
+    this.estado_pedidoSeleccionado.set(estadoInicial);
+    this.router.navigate([]);
   }
 
   public onFiltroChange() {

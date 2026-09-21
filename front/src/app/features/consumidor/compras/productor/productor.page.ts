@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, resource, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, resource, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Avatar } from 'primeng/avatar';
 import { ApiQueryParams } from '@shared/types/api.types';
@@ -10,14 +10,15 @@ import { environment } from '@env/environment';
 import { ListaPedidosComponent } from '@shared/components/lista-pedidos/lista-pedidos.component';
 import { EstadoPedidoType } from '@shared/types/pedido';
 import { PaginationStore } from '@shared/services/stores/pagination.store';
+import { ArrowLeft } from '@primeicons/angular';
 
 @Component({
   selector: 'app-productor',
-  imports: [RouterLink, Avatar, ListaPedidosComponent],
+  imports: [RouterLink, Avatar, ListaPedidosComponent, ArrowLeft],
   templateUrl: './productor.page.html',
   styleUrl: './productor.page.css',
 })
-export class ProductorPage {
+export class ProductorPage implements OnInit {
   private _pedidosService = inject(PedidosService);
   public readonly paginationStore = inject(PaginationStore);
   public userStore = inject(UserStore);
@@ -72,4 +73,8 @@ export class ProductorPage {
   });
 
   public isLoading = computed(() => this.pedidosResource.isLoading());
+
+  ngOnInit(): void {
+    this.paginationStore.resetPagination();
+  }
 }

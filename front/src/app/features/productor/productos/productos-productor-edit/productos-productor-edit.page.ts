@@ -15,7 +15,7 @@ import { DialogService } from '@shared/services/dialog.service';
 import { SelectModule } from 'primeng/select';
 import { ProductoForm } from '@shared/components/producto-form/producto.form';
 import { ProductosProductorService } from '@shared/services/productos-productor.service';
-import { ImagenSlot, Producto } from '@shared/types/producto';
+import { ImagenSlot, PostProducto, Producto } from '@shared/types/producto';
 import { ProductoImagenesSelector } from '@shared/components/producto-imagenes-selector/producto-imagenes-selector';
 
 @Component({
@@ -59,7 +59,7 @@ export class ProductosProductorEditPage {
 
   public slots = signal<ImagenSlot[]>([]);
 
-  public async guardarProducto(productoModificado: Producto) {
+  public async guardarProducto(productoModificado: PostProducto) {
     const productor = this.productor();
     const producto = this.producto();
     console.log({ productoModificado });

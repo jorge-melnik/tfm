@@ -8,7 +8,6 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { RouterLink } from '@angular/router';
 import { SelectButtonModule } from 'primeng/selectbutton';
-import { FormsModule } from '@angular/forms';
 import { InputPasswordModule } from 'primeng/inputpassword';
 import { Key } from '@primeicons/angular/key';
 import { Eye, EyeSlash, Phone, Envelope, IdCard, Camera, Trash } from '@primeicons/angular';
@@ -18,7 +17,20 @@ import { DialogService } from '@shared/services/dialog.service';
 import { AuthService } from '@shared/services/auth.service';
 import { FileUpload } from 'primeng/fileupload';
 import { ProfileService } from '@shared/services/profile.service';
+import { form, minLength, required, validate, FormField } from '@angular/forms/signals';
+import { Message } from 'primeng/message';
 
+type RegisterLocalType = {
+  nombres: string;
+  apellidos: string;
+  celular: string;
+  roles: Rol[];
+  presentacion: string;
+  username: string;
+  email: string;
+  password: string;
+  password2: string;
+};
 @Component({
   selector: 'app-register',
   imports: [
@@ -32,9 +44,7 @@ import { ProfileService } from '@shared/services/profile.service';
     CardModule,
     RouterLink,
     SelectButtonModule,
-    FormsModule,
     InputPasswordModule,
-    FormsModule,
     RouterLink,
     Key,
     Eye,
@@ -45,6 +55,8 @@ import { ProfileService } from '@shared/services/profile.service';
     Trash,
     Camera,
     FileUpload,
+    FormField,
+    Message,
   ],
   templateUrl: './register.page.html',
 
@@ -55,8 +67,6 @@ export class RegisterPage {
   private _authService = inject(AuthService);
   private _profileService = inject(ProfileService);
 
-  public selectedRoles = signal<Rol[]>([]);
-
   public mask = signal<boolean>(true);
 
   public roleOptions = [
@@ -64,38 +74,89 @@ export class RegisterPage {
     { label: 'Vender', value: 'PRODUCTOR', icon: 'eye' },
   ];
 
-  public nombres = signal<string>('');
-  public apellidos = signal<string>('');
-  public celular = signal<string>('');
-  public presentacion = signal<string>('');
-  public username = signal<string>('');
-  public email = signal<string>('');
-  public password = signal<string>('');
-  public password2 = signal<string>('');
+  public registerModel = signal<RegisterLocalType>({
+    nombres: '',
+    apellidos: '',
+    celular: '',
+    presentacion: '',
+    username: '',
+    email: '',
+    password: '',
+    password2: '',
+    roles: [],
+  });
+
+  public registerForm = form(this.registerModel, (path) => {
+    required(path.nombres, {
+      message: 'Especifica el nombre',
+    });
+    required(path.apellidos, {
+      message: 'Especifica el apellido',
+    });
+    required(path.celular, {
+      message: 'Especifica el celular',
+    });
+    required(path.username, {
+      message: 'Especifica el username',
+    });
+
+    minLength(path.username, 5, {
+      message: 'Largo mínimo 5 letras',
+    });
+    required(path.email, {
+      message: 'Especifica el email',
+    });
+    required(path.password, {
+      message: 'Especifica el nombre',
+    });
+    required(path.password2, {
+      message: 'Repite el password',
+    });
+    minLength(path.roles, 1, {
+      message: 'Selecciona al menos CONSUMIDOR o PRODUCTOR',
+    });
+    validate(path.presentacion, () => {
+      const tieneRolProductor = this.registerModel().roles.includes('PRODUCTOR');
+      const presentacionValue = this.registerModel().presentacion?.trim();
+      if (tieneRolProductor && !presentacionValue) {
+        return {
+          kind: 'required',
+          message: 'La presentación es requerida para los productores.',
+        };
+      }
+      return null;
+    });
+  });
 
   fotoArchivo = signal<File | null>(null);
   fotoPreviewUrl = signal<string | null>(null);
 
-  public async guardar() {
+  public async guardar(event: Event) {
+    event.preventDefault();
     console.log('guardar');
-    const username = this.username();
+    if (this.registerForm().invalid()) {
+      console.log('invalida');
+      this.registerForm().markAsTouched();
+      return;
+    }
 
+    console.log('valido');
     const usuario: RegistroType = {
-      nombres: this.nombres(),
-      apellidos: this.apellidos(),
-      celular: this.celular(),
-      username: this.username(),
-      email: this.email(),
-      password: this.password(),
-      password2: this.password2(),
-      roles: this.selectedRoles(),
+      nombres: this.registerForm.nombres().value(),
+      apellidos: this.registerForm.apellidos().value(),
+      celular: this.registerForm.celular().value(),
+      username: this.registerForm.username().value(),
+      email: this.registerForm.email().value(),
+      password: this.registerForm.password().value(),
+      password2: this.registerForm.password2().value(),
+      roles: this.registerForm.roles().value(),
     };
-    if (this.selectedRoles().includes('PRODUCTOR'))
+    if (usuario.roles.includes('PRODUCTOR'))
       usuario.productor = {
-        presentacion: this.presentacion(),
+        presentacion: this.registerForm.presentacion().value(),
       };
 
-    if (this.selectedRoles().includes('CONSUMIDOR')) usuario.consumidor = {};
+    if (usuario.roles.includes('CONSUMIDOR')) usuario.consumidor = {};
 
     console.log({ usuario });
 
@@ -103,7 +164,7 @@ export class RegisterPage {
       const creado: Profile = await this._authService.register(usuario);
       const foto = this.fotoArchivo();
       if (foto) {
-        await this._profileService.setFotoPerfil(username, this.selectedRoles()[0], foto);
+        await this._profileService.setFotoPerfil(usuario.username, usuario.roles[0], foto);
       }
       await this._authService.goToUserHome();
     } catch (error: any) {

@@ -7,7 +7,7 @@
       </div>
     </ng-template>
 
-    <form #registerForm (ngSubmit)="this.guardar()" class="flex flex-col gap-6">
+    <form novalidate (submit)="this.guardar($event)" class="flex flex-col gap-3">
       <div class="flex flex-col items-center justify-center gap-2 mb-4">
         <p-fileupload
           #fu
@@ -22,7 +22,6 @@
             content: { class: 'p-0!' },
           }"
         >
-          <!-- Muestra la foto cuando YA SE SELECCIONÓ un archivo -->
           <ng-template #content let-files let-removeFileCallback="removeFileCallback">
             @if (files?.length > 0) {
               <div class="flex flex-col items-center justify-center gap-2">
@@ -42,7 +41,7 @@
                       <div
                         class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white"
                       >
-                        <svg data-p-icon="trash" class="w-7 h-7 mb-1 text-red-400"></svg>
+                        <svg data-p-icon="trash" class="mb-1 text-red-400"></svg>
                         <span class="text-xs tracking-wide uppercase">Eliminar</span>
                       </div>
                     </div>
@@ -68,7 +67,7 @@
                   <div
                     class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
                   >
-                    <svg data-p-icon="camera" class="w-6 h-6 text-white"></svg>
+                    <svg data-p-icon="camera" class="text-white"></svg>
                   </div>
                 </div>
               </div>
@@ -85,33 +84,45 @@
         <label class="font-semibold text-color-secondary ml-1">¿Qué deseas hacer?</label>
         <p-select-button
           [options]="roleOptions"
-          [(ngModel)]="selectedRoles"
+          [formField]="this.registerForm.roles"
           optionLabel="label"
           optionValue="value"
-          name="roleSelector"
+          id="roles"
           [multiple]="true"
-          required
           styleClass="w-full flex custom-select-button"
         >
         </p-select-button>
       </div>
-      @if (this.selectedRoles().includes('PRODUCTOR')) {
-        <p-floatlabel variant="on" class="w-full">
-          <textarea
-            rows="5"
-            cols="30"
-            pTextarea
-            name="presentacion"
-            autocomplete="off"
-            class="w-full"
-            [(ngModel)]="this.presentacion"
-            placeholder="Escribe una presentación general de tus productos y tu proceso de producción."
-          ></textarea>
-          <label for="presentacion">Presentación</label>
-        </p-floatlabel>
+      @if (this.registerForm.roles().value().includes('PRODUCTOR')) {
+        <div class="flex flex-col w-full">
+          <p-floatlabel variant="on" class="w-full">
+            <textarea
+              rows="5"
+              cols="30"
+              pTextarea
+              id="presentacion"
+              autocomplete="off"
+              class="w-full"
+              [class.p-invalid]="
+                registerForm.presentacion().touched() && registerForm.presentacion().invalid()
+              "
+              [formField]="this.registerForm.presentacion"
+            ></textarea>
+            <label for="presentacion">Presentación</label>
+          </p-floatlabel>
+          @if (
+            this.registerForm.presentacion().touched() && this.registerForm.presentacion().invalid()
+          ) {
+            @for (error of this.registerForm.presentacion().errors(); track error.kind) {
+              <p-message severity="error" size="small" variant="simple">{{
+                error.message
+              }}</p-message>
+            }
+          }
+        </div>
       }
 
-      <div class="flex flex-col md:flex-row gap-4">
+      <div class="flex flex-col">
         <p-floatlabel variant="on" class="w-full">
           <p-iconfield iconPosition="right">
             <p-inputicon>
@@ -119,15 +130,26 @@
             </p-inputicon>
             <input
               pInputText
-              name="nombres"
+              id="nombres"
               autocomplete="off"
               class="w-full"
-              [(ngModel)]="this.nombres"
+              [class.p-invalid]="
+                registerForm.nombres().touched() && registerForm.nombres().invalid()
+              "
+              [formField]="this.registerForm.nombres"
             />
             <label for="nombres">Nombres</label>
           </p-iconfield>
+          @if (this.registerForm.nombres().touched() && this.registerForm.nombres().invalid()) {
+            @for (error of this.registerForm.nombres().errors(); track error.kind) {
+              <p-message severity="error" size="small" variant="simple">{{
+                error.message
+              }}</p-message>
+            }
+          }
         </p-floatlabel>
-
+      </div>
+      <div class="flex flex-col">
         <p-floatlabel variant="on" class="w-full">
           <p-iconfield iconPosition="right">
             <p-inputicon>
@@ -135,34 +157,52 @@
             </p-inputicon>
             <input
               pInputText
-              name="apellidos"
+              id="apellidos"
               autocomplete="off"
               class="w-full"
-              [(ngModel)]="this.apellidos"
+              [class.p-invalid]="
+                registerForm.apellidos().touched() && registerForm.apellidos().invalid()
+              "
+              [formField]="this.registerForm.apellidos"
             />
             <label for="apellidos">Apellidos</label>
           </p-iconfield>
         </p-floatlabel>
+        @if (this.registerForm.apellidos().touched() && this.registerForm.apellidos().invalid()) {
+          @for (error of this.registerForm.apellidos().errors(); track error.kind) {
+            <p-message severity="error" size="small" variant="simple">{{
+              error.message
+            }}</p-message>
+          }
+        }
       </div>
-
-      <p-floatlabel variant="on">
-        <p-iconfield iconPosition="right">
-          <p-inputicon>
-            <svg data-p-icon="envelope"></svg>
-          </p-inputicon>
-          <input
-            pInputText
-            name="email"
-            type="email"
-            autocomplete="off"
-            class="w-full"
-            [(ngModel)]="this.email"
-          />
-          <label for="email">Email</label>
-        </p-iconfield>
-      </p-floatlabel>
-
-      <div class="flex flex-col md:flex-row gap-3">
+      <div class="flex flex-col">
+        <p-floatlabel variant="on">
+          <p-iconfield iconPosition="right">
+            <p-inputicon>
+              <svg data-p-icon="envelope"></svg>
+            </p-inputicon>
+            <input
+              pInputText
+              id="email"
+              type="email"
+              autocomplete="off"
+              class="w-full"
+              [class.p-invalid]="registerForm.email().touched() && registerForm.email().invalid()"
+              [formField]="this.registerForm.email"
+            />
+            <label for="email">Email</label>
+          </p-iconfield>
+        </p-floatlabel>
+        @if (this.registerForm.email().touched() && this.registerForm.email().invalid()) {
+          @for (error of this.registerForm.email().errors(); track error.kind) {
+            <p-message severity="error" size="small" variant="simple">{{
+              error.message
+            }}</p-message>
+          }
+        }
+      </div>
+      <div class="flex flex-col">
         <p-floatlabel variant="on" class="w-full">
           <p-iconfield iconPosition="right">
             <p-inputicon>
@@ -170,16 +210,27 @@
             </p-inputicon>
             <input
               pInputText
-              name="username"
+              id="username"
               autocomplete="off"
               class="w-full"
+              [class.p-invalid]="
+                registerForm.username().touched() && registerForm.username().invalid()
+              "
               placeholder="No se podrá cambiar"
-              [(ngModel)]="this.username"
+              [formField]="this.registerForm.username"
             />
             <label for="username">Username</label>
           </p-iconfield>
         </p-floatlabel>
-
+        @if (this.registerForm.username().touched() && this.registerForm.username().invalid()) {
+          @for (error of this.registerForm.username().errors(); track error.kind) {
+            <p-message severity="error" size="small" variant="simple">{{
+              error.message
+            }}</p-message>
+          }
+        }
+      </div>
+      <div class="flex flex-col">
         <p-floatlabel variant="on" class="w-full">
           <p-iconfield iconPosition="right">
             <p-inputicon>
@@ -187,18 +238,29 @@
             </p-inputicon>
             <input
               pInputText
-              name="celular"
+              id="celular"
               type="tel"
+              placeholder="+59800000000"
               autocomplete="off"
               class="w-full"
-              [(ngModel)]="this.celular"
+              [class.p-invalid]="
+                registerForm.celular().touched() && registerForm.celular().invalid()
+              "
+              [formField]="this.registerForm.celular"
             />
             <label for="celular">Celular</label>
           </p-iconfield>
         </p-floatlabel>
+        @if (this.registerForm.celular().touched() && this.registerForm.celular().invalid()) {
+          @for (error of this.registerForm.celular().errors(); track error.kind) {
+            <p-message severity="error" size="small" variant="simple">{{
+              error.message
+            }}</p-message>
+          }
+        }
       </div>
 
-      <div class="flex flex-col md:flex-row gap-4">
+      <div class="flex flex-col">
         <p-floatlabel variant="on">
           <p-iconfield iconPosition="right">
             <p-inputicon>
@@ -206,12 +268,15 @@
             </p-inputicon>
             <input
               pInputPassword
-              name="password"
+              id="password"
               autocomplete="off"
               class="w-full"
+              [class.p-invalid]="
+                registerForm.password().touched() && registerForm.password().invalid()
+              "
               [mask]="this.mask()"
-              [(ngModel)]="this.password"
-            /><label for="username">Contraseña</label>
+              [formField]="this.registerForm.password"
+            /><label for="password">Contraseña</label>
 
             <p-inputicon (click)="this.mask.set(!mask)" style="cursor: pointer">
               @if (mask) {
@@ -222,7 +287,15 @@
             </p-inputicon>
           </p-iconfield>
         </p-floatlabel>
-
+        @if (this.registerForm.password().touched() && this.registerForm.password().invalid()) {
+          @for (error of this.registerForm.password().errors(); track error.kind) {
+            <p-message severity="error" size="small" variant="simple">{{
+              error.message
+            }}</p-message>
+          }
+        }
+      </div>
+      <div class="flex flex-col">
         <p-floatlabel variant="on">
           <p-iconfield iconPosition="right">
             <p-inputicon>
@@ -230,11 +303,14 @@
             </p-inputicon>
             <input
               pInputPassword
-              name="password2"
+              id="password2"
               autocomplete="off"
               class="w-full"
+              [class.p-invalid]="
+                registerForm.password2().touched() && registerForm.password2().invalid()
+              "
               [mask]="this.mask()"
-              [(ngModel)]="this.password2"
+              [formField]="this.registerForm.password2"
             /><label for="username">Repetir contraseña</label>
 
             <p-inputicon (click)="this.mask.set(!mask)" style="cursor: pointer">
@@ -246,9 +322,24 @@
             </p-inputicon>
           </p-iconfield>
         </p-floatlabel>
+        @if (this.registerForm.password2().touched() && this.registerForm.password2().invalid()) {
+          @for (error of this.registerForm.password2().errors(); track error.kind) {
+            <p-message severity="error" size="small" variant="simple">{{
+              error.message
+            }}</p-message>
+          }
+        }
       </div>
 
-      <button pButton class="w-full" severity="primary">Registrarme</button>
+      <button
+        type="submit"
+        pButton
+        class="w-full"
+        severity="primary"
+        [disabled]="this.registerForm().invalid()"
+      >
+        Registrarme
+      </button>
     </form>
 
     <ng-template #footer>

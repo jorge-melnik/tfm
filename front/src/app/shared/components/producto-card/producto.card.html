@@ -25,9 +25,9 @@
             tooltipPosition="left"
           >
             @if (producto.favorito) {
-              <svg data-p-icon="heart-fill" class="w-4 h-4" />
+              <svg data-p-icon="heart-fill" />
             } @else {
-              <svg data-p-icon="heart" class="w-4 h-4" />
+              <svg data-p-icon="heart" />
             }
           </button>
         }
@@ -106,13 +106,13 @@
           <div
             class="absolute bottom-0 left-3 right-3 translate-y-[40%] flex items-center justify-end gap-2 z-20 overflow-visible"
           >
-            @for (id_etiqueta of producto.etiquetas.slice(0, 6); track id_etiqueta) {
+            @for (etiqueta of producto.etiquetas; track etiqueta) {
               <img
-                [src]="cdnUrl() + '/etiquetas/' + id_etiqueta + '.webp'"
-                [alt]="producto.etiquetas?.[$index] || id_etiqueta"
+                [src]="cdnUrl() + '/etiquetas/' + etiqueta + '.webp'"
+                [alt]="producto.etiquetas?.[$index] || etiqueta"
                 [pTooltip]="(producto.etiquetas?.[$index] || '').replace('-', ' ') | titlecase"
                 tooltipPosition="bottom"
-                class="w-10 h-10 sm:w-11 sm:h-11 rounded-full shadow-lg border-2 border-surface-0 dark:border-surface-900 bg-surface-0 dark:bg-surface-900 object-cover shrink-0"
+                class="w-10 sm:w-11"
               />
             }
           </div>
@@ -166,7 +166,7 @@
             <span
               class="inline-flex items-center gap-1 text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400 uppercase"
             >
-              <svg data-p-icon="map-marker" class="w-3.5 h-3.5 shrink-0"></svg>
+              <svg data-p-icon="map-marker"></svg>
               {{ producto.localidad || producto.departamento }}
             </span>
             @if (producto.distancia) {
@@ -251,7 +251,6 @@
           }
         </div>
 
-        <!-- Botón de Favorito para Consumidor -->
         @if (this.userStore.esConsumidor()) {
           <button
             type="button"
@@ -266,14 +265,13 @@
             tooltipPosition="left"
           >
             @if (producto.favorito) {
-              <svg data-p-icon="heart-fill" class="w-4 h-4" />
+              <svg data-p-icon="heart-fill" />
             } @else {
-              <svg data-p-icon="heart" class="w-4 h-4" />
+              <svg data-p-icon="heart" />
             }
           </button>
         }
 
-        <!-- Menú Popover Productor (List) -->
         @if (this.userStore.esProductor()) {
           <div class="absolute top-2.5 left-2.5 z-30">
             <button pButton type="button" (click)="popoverList.toggle($event)" pTooltip="Opciones">
@@ -332,18 +330,17 @@
           </div>
         }
 
-        <!-- Etiquetas para Mobile -->
         @if (producto.etiquetas && producto.etiquetas.length > 0) {
           <div
             class="sm:hidden absolute bottom-0 right-3 translate-y-1/2 flex items-center justify-end gap-1.5 z-20"
           >
-            @for (id_etiqueta of producto.etiquetas.slice(0, 6); track id_etiqueta) {
+            @for (etiquetas of producto.etiquetas; track etiquetas) {
               <img
-                [src]="cdnUrl() + '/etiquetas/' + id_etiqueta + '.webp'"
-                [alt]="producto.etiquetas?.[$index] || id_etiqueta"
+                [src]="cdnUrl() + '/etiquetas/' + etiquetas + '.webp'"
+                [alt]="producto.etiquetas?.[$index] || etiquetas"
                 [pTooltip]="(producto.etiquetas?.[$index] || '').replace('-', ' ') | titlecase"
                 tooltipPosition="bottom"
-                class="w-9 h-9 rounded-full shadow-md border-2 border-surface-0 dark:border-surface-900 bg-surface-0 dark:bg-surface-900 object-cover shrink-0"
+                class="w-10 sm:w-11"
               />
             }
           </div>
@@ -352,16 +349,15 @@
 
       <div class="flex-1 w-full flex flex-col justify-between text-left py-0.5 pt-4 sm:pt-0">
         <div>
-          <!-- Etiquetas para Desktop -->
           @if (producto.etiquetas && producto.etiquetas.length > 0) {
             <div class="hidden sm:flex items-center gap-1.5 mb-2.5 flex-wrap">
-              @for (id_etiqueta of producto.etiquetas.slice(0, 6); track id_etiqueta) {
+              @for (etiqueta of producto.etiquetas; track etiqueta) {
                 <img
-                  [src]="cdnUrl() + '/etiquetas/' + id_etiqueta + '.webp'"
-                  [alt]="producto.etiquetas?.[$index] || id_etiqueta"
+                  [src]="cdnUrl() + '/etiquetas/' + etiqueta + '.webp'"
+                  [alt]="producto.etiquetas?.[$index] || etiqueta"
                   [pTooltip]="(producto.etiquetas?.[$index] || '').replace('-', ' ') | titlecase"
                   tooltipPosition="top"
-                  class="w-7 h-7 rounded-full border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 object-cover shrink-0"
+                  class="w-10 sm:w-11"
                 />
               }
             </div>
@@ -404,13 +400,12 @@
             />
           </div>
 
-          <!-- Ubicación / Distancia agregado en modo List -->
           @if (producto.localidad || producto.departamento || producto.distancia) {
             <div class="flex items-center justify-between w-full gap-2 mb-2.5">
               <span
                 class="inline-flex items-center gap-1 text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400 uppercase"
               >
-                <svg data-p-icon="map-marker" class="w-3.5 h-3.5 shrink-0"></svg>
+                <svg data-p-icon="map-marker"></svg>
                 {{ producto.localidad || producto.departamento }}
               </span>
               @if (producto.distancia) {

@@ -50,12 +50,17 @@ export class ProductorRepositoryClass extends BaseRepository<Productor> {
    */
   async activarConsumidor(id_consumidor: string, consumidor: AdicionalesConsumidor) {
     const query = `
-        INSERT into public.consumidores (id_consumidor) 
-        VALUES($1)
-        ON CONFLICT (id_consumidor) DO UPDATE                -- si ya existe 
-        SET fecha_eliminacion = NULL
-        WHERE consumidores.fecha_eliminacion IS NOT NULL  -- Solo si estaba desactivado.
-        RETURNING id_consumidor
+        WITH NUEVO_CONSUMIDOR AS(
+          INSERT into public.consumidores (id_consumidor) VALUES($1)
+          ON CONFLICT (id_consumidor) DO UPDATE                -- si ya existe 
+          SET fecha_eliminacion = NULL
+          WHERE consumidores.fecha_eliminacion IS NOT NULL  -- Solo si estaba desactivado.
+          RETURNING id_consumidor
+        ),
+        NUEVO_CARRITO AS (
+          INSERT INTO public.carritos(id_consumidor) VALUES($1) ON CONFLICT (id_consumidor) DO NOTHING
+        )
+        SELECT id_consumidor FROM NUEVO_CONSUMIDOR
         ;
       `;
     const res = await this.executor.query(query, [id_consumidor]);

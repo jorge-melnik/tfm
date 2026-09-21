@@ -5,13 +5,11 @@
     layout="list"
     [paginator]="true"
     [rows]="paginationStore.limit()"
-    [first]="first()"
+    [first]="this.paginationStore.first()"
     [totalRecords]="total()"
     [lazy]="true"
-    [rowsPerPageOptions]="[6, 12, 24]"
+    [rowsPerPageOptions]="this.paginationStore.rowsPerPageOptions()"
     (onPage)="this.paginationStore.onPageChange($event)"
-    [sortField]="sortField()"
-    [sortOrder]="sortOrder()"
   >
     <ng-template #header>
       <div class="flex justify-between items-center">

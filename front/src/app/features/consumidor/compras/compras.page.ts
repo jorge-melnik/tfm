@@ -1,4 +1,4 @@
-import { Component, inject, resource, computed, signal } from '@angular/core';
+import { Component, inject, resource, computed, signal, OnInit } from '@angular/core';
 import { ComprasService } from '@shared/services/compras.service';
 import { DialogService } from '@shared/services/dialog.service';
 import { PreferenciasStore } from '@shared/services/stores/preferencias.store';
@@ -18,7 +18,7 @@ import { PaginationStore } from '@shared/services/stores/pagination.store';
 
   styleUrl: './compras.page.css',
 })
-export class ComprasPage {
+export class ComprasPage implements OnInit {
   private readonly _comprasService = inject(ComprasService);
   public readonly paginationStore = inject(PaginationStore);
   public readonly userStore = inject(UserStore);
@@ -26,25 +26,19 @@ export class ComprasPage {
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
 
-  public page = signal<number>(1);
-
-  public first = computed(() => ((this.page() || 1) - 1) * this.paginationStore.limit());
-  public sortKey = signal<string>('');
-  public sortOrder = signal<number>(0);
-  public sortField = signal<string>('');
-
   //FIXME: No está bueno el try catch en el resource
   private readonly _comprasResource = resource({
     params: () => ({
       username: this.userStore.user()?.username,
       limit: this.paginationStore.limit(),
-      page: this.page(),
-      sort: this.sortField(),
-      sort_direction: this.sortOrder() === -1 ? 'DESC' : 'ASC',
+      page: this.paginationStore.page(),
+      sort: this.paginationStore.sortField(),
+      sort_direction: 'DESC',
     }),
     loader: async ({ params }) => {
       const { limit, page, sort, sort_direction, username } = params;
-      console.log({ username });
+
+      console.log({ limit, page, sort, sort_direction });
       if (!username) return { data: [], meta: { total: 0 } };
       const queryParams: ApiQueryParams = {};
       const pagination: ApiQueryParams = { limit, page, sort, sort_direction };
@@ -75,5 +69,9 @@ export class ComprasPage {
     this._router.navigate([id_compra, 'pagar'], {
       relativeTo: this._route,
     });
+  }
+
+  async ngOnInit(): Promise<void> {
+    this.paginationStore.resetPagination();
   }
 }

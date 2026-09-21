@@ -6,6 +6,7 @@
       <p-selectbutton
         [(ngModel)]="this.layout"
         [options]="this.opcionesLayout()"
+        (onChange)="this.filtroCambiado.emit()"
         [allowEmpty]="false"
       >
         <ng-template #item let-item>
@@ -23,13 +24,13 @@
         <p-selectbutton
           [options]="opcionesFavoritos"
           [(ngModel)]="this.favoritoSeleccionado"
+          (onChange)="this.filtroCambiado.emit()"
           optionLabel="label"
           optionValue="value"
           [allowEmpty]="true"
         >
           <ng-template let-item pTemplate="item">
             <div class="flex items-center gap-1.5 px-1 text-xs">
-              <svg [attr.data-p-icon]="item.icon" class="w-3.5 h-3.5 shrink-0" />
               <span>{{ item.label }}</span>
             </div>
           </ng-template>
@@ -145,6 +146,7 @@
 
     <div class="relative w-full">
       <input
+        pInputText
         type="text"
         [(ngModel)]="this.filtroBusqueda"
         (ngModelChange)="this.filtroCambiado.emit()"

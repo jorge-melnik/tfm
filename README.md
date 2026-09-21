@@ -1,87 +1,31 @@
-# tfm
+# Agroeco
 
-- Tecnologías libres.
-- Dockerizar
-- Responsiva
-- Desplegar en AWS.
-- Información del proveedor (mapa?)
-- Llevar a google maps?
-- Videos del proveedor explicando lo que hace.
+Agroeco pretende ser una plataforma web de tipo marketplace para compraventa directa entre productores agroecológicos o en transición y sus consumidores. Actualmente es una SPA.
 
-- Hablar por la propia aplicación con el proveedor/cliente.
-- Historial de compras.
-- Historial de ventas
-- Clientes que me han consultado.
-- Subir productos.
-- Panel de administración.
-- Zoneless
-- SSR (seo para web)
-- PWA
-- Capacitor para app nativa con webview (no importa el ceo)
-- Web Push y PushNotification nativas según corresponda. provide: NotificationService, useClass: Capacitor.isNativePlatform() ? NativePushService : WebPushService Inyección de Dependencia (D de SOLID)
-- Tanto en web, pwd y nativa van a funcionar las notificaciones
-- withComponent Input binding
-- Validadores compatibles con FormsModule y ReactiveFormsModule. Funcion pura + directiva (forms module) seguramente sean compatibles con signals forms.
-- Tema claro y oscuro
-- Componentes con primeng
-- Checklist de OWASP
-- Refresh token rotation
-- CapacitorHttp para versión nativa.
-- Cors: https prod, https desa, capacitor://localhost para ios y http://localhost para android
-- Login: user y pass, red social. 3 formas distintas para user y pass, red social web y red social nativo. En red social no siempre hay email. Strategy pattern?
-- Pagos: PagosWeb o bamboopayments. "stripe"
-- CDN para imágenes. (upload desde angular?)
-- Concurrencia al comprar últimos productos del stock.
-- Devops para generar todos los builds.
-- Websockets para actualizar listado de productos, stock y mensajes
+## Configurar
 
-- Escribir la semana del 14.
+Una vez clonado el proyecto localmente, en la raíz del proyecto debemos crear un archivo .env copiando el contenido de .env.example y corrigiendo o completando los valores necesarios.
 
-- La primera vez que entra a "vender" completa datos adicionales.
-- Al consumidor se le exige la dirección antes de confirmar la primera compra.
-- Tiempo de entrega (demora,o espera).
-- Productor se hace cargo del envío o consumidor se hace cargo del envío. Al menos una.
-- Preguntar cosas en el producto. Se ve fecha y pregunta. No importa quien. Solo contesta el productor.
-- Solo se ven los datos básicos del productor. username, descripción, foto,
-- Iniciar sesión con email o username
-- Contacto a proveedor es un chat asociado al productor (y consumidor)
-- Que la dirección contenga departamento y localidad. Coordenada solo si hay compra confirmada y quiere recibirla.
-- Video opcional para el producto.
-- Reviews y valoraciones.
-- Cesta que incluya distintos proveedores
-- Suscripción a notificaciones. Pregunta, pedido enviado, etc. Gestionar eso.
-- Considerar direcciones en plural si no complica.
-- Gestión de etiquetas (agroecológico, en transición, local artesanal). Definir para que categorías son válidas.
-- Gestión de categorías y subcategorías:
-  Verduras, frutas, huevos, miel, lácteos artesanales: Alimentos frescos
-  • Plantines, hierbas medicinales, semillas criollas: Plantas y semillas
-  • Conservas, fermentados, jabones naturales, tinturas: Productos elaborados
-  • Bambú, mimbre, cerámica, madera: Artesanías de materiales naturales
-  • Compost, lombricultura, insumos agroecológicos: Otros productos regenerativos
-- Busquedas con filtros y esas cosas.
-- La primera vez que quieras vender se activa el perfil vendedor para siempre.
-- Productor que marque que días envía (si realiza envíos). O que días (y horario) se puede pasar a levantar.
-- Para departamentos, direcciones y localidades, usar ideuy?
+Cabe aclarar, que para las funcionalidades que requieren subir imágenes es necesario tener configurado un bucket S3 y un CDN de cloudfront. Una vez creados dichos servicios en el .env debemos asociar los datos de configuración de AWS.
 
--- Podemos usar CITEXT cuando son textos UNIQUE
+El proyecto está preparado para ejecutarse con docker compose. Por lo que recomendamos tener docker instalado localmente.
 
-Reunión 15/4:
-Clasificar los requerimientos según prioridad.
-Alta Indispensables para el MVP
-Media Deseables para el MVP
-Baja Puede quedar para más adelante.
+También existen datos de prueba que se cargarán automáticamente en la base de datos creada con docker.
 
-Redactar los requisitos no funcionales.
+## Ejecutar
 
-Considerar validar el productor. ¿Para que tenga un tick?
+Para ejecutar el proyecto, simplemente debemos levantar el archivo docker-compose.yaml ejecutando ` docker compose up -d`.
 
-Dejar pagos para último. Considerar simular el pago.
+## Detener
 
-Revisar calificaciones (clasificar prioridad baja igual):
+Para detener el proyecto ejecutar `docker compose down -v` si queremos también borrar los volúmenes creados y los datos generados (no borra el bucket ni el contenido) o sin el parámetro `-v` para que no borre los volúmenes ni los datos.
 
-- Evaluar producto. Unica evaluación que puede cambiar. Esta así.
-- Evaluar proveedor al q le compre alguna vez. Única evaluación que puede cambiar. ¿mejor que evaluar pedido y promediar?
-- ¿Evaluar consumidor?
+# Proyectos
 
-- Falta ver pedidos realizados a un productor (siendo consumidor) cuando ve la info del productor
-- No olvidarse del checklist de OWASP
+Este repositorio consta de varios "proyectos".
+
+- api: Proyecto fastify para la api restful con documentación swagger
+- db: Script iniciales para crear la base de datos y para cargar datos de prueba.
+- front: Proyecto con angular y primeng para el frontend.
+- proxy: Configuración de un reverse proxy. Entre otros nos permite evitar los problemas de cors.
+- terraform: Proyecto terraform con las configuraciones utilizadas para construir el bucket S3 y el CDN de cloudfront. Se puede usar este proyecto (configurando las credenciales de aws en consola) para crear la infra de aws necesaria.

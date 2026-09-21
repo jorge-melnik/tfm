@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import * as assert from 'node:assert';
 import authRepository from '@repositories/auth.repository.js';
-import { DeAcaUnAuthenticated } from '@errors/response.errors.js';
+import { UnAuthenticatedError } from '@errors/response.errors.js';
 
 test('AuthRepository - Login Suite', async (t) => {
   await t.test('emailLogin()', async (st) => {
@@ -52,7 +52,7 @@ test('AuthRepository - Login Suite', async (t) => {
 
       // Act & Assert
       await assert.rejects(authRepository.emailLogin(email, 'PasswordEquivocado'), (err: any) => {
-        assert.ok(err instanceof DeAcaUnAuthenticated);
+        assert.ok(err instanceof UnAuthenticatedError);
         return true;
       });
     });
@@ -61,7 +61,7 @@ test('AuthRepository - Login Suite', async (t) => {
       // Act & Assert
 
       await assert.rejects(authRepository.emailLogin('no-existe@test.com', 'CualquierPass.1'), (err: any) => {
-        assert.ok(err instanceof DeAcaUnAuthenticated);
+        assert.ok(err instanceof UnAuthenticatedError);
         return true;
       });
     });
@@ -115,7 +115,7 @@ test('AuthRepository - Login Suite', async (t) => {
 
       // Act & Assert
       await assert.rejects(authRepository.usernameLogin(username, 'PasswordEquivocado'), (err: any) => {
-        assert.ok(err instanceof DeAcaUnAuthenticated);
+        assert.ok(err instanceof UnAuthenticatedError);
         return true;
       });
     });
@@ -123,7 +123,7 @@ test('AuthRepository - Login Suite', async (t) => {
     await st.test('Login que falla por username inexistente', async () => {
       // Act & Assert
       await assert.rejects(authRepository.usernameLogin('no-existe-user', 'CualquierPass.1'), (err: any) => {
-        assert.ok(err instanceof DeAcaUnAuthenticated);
+        assert.ok(err instanceof UnAuthenticatedError);
         return true;
       });
     });

@@ -76,6 +76,15 @@ export const productorRoutes: Routes = [
       },
 
       {
+        path: 'pedidos/:id_pedido',
+        title: 'Detalle pedido',
+        loadComponent: () =>
+          import('@features/pedidos/detalle-pedido/detalle-pedido.page').then(
+            (m) => m.DetallePedidoPage,
+          ),
+      },
+
+      {
         path: 'consultas',
         title: 'Consultas',
         canActivateChild: [hasRoleGuard('PRODUCTOR')],

@@ -13,8 +13,8 @@ export class EtiquetasStore {
   private readonly _etiquetasService = inject(EtiquetasService);
   private readonly _dialogService = inject(DialogService);
 
-  private readonly _categoriaSeleccionada = signal<string | undefined>(undefined);
-  private readonly _subcategoriaSeleccionada = signal<string | undefined>(undefined);
+  private readonly _categoriaSeleccionada = signal<string | null>(null);
+  private readonly _subcategoriaSeleccionada = signal<string | null>(null);
   private readonly _etiquetasSeleccionadas = signal<string[]>([]);
 
   public categoriaSeleccionada = this._categoriaSeleccionada.asReadonly();
@@ -91,10 +91,10 @@ export class EtiquetasStore {
     },
   });
 
-  public setCategoriaSeleccionada(categoria: string | undefined) {
+  public setCategoriaSeleccionada(categoria: string | null) {
     this._categoriaSeleccionada.set(categoria);
   }
-  public setSubcategoriaSeleccionada(subcategoria: string | undefined) {
+  public setSubcategoriaSeleccionada(subcategoria: string | null) {
     this._subcategoriaSeleccionada.set(subcategoria);
   }
   public setEtiquetasSeleccionadas(etiquetas: string[]) {

@@ -14,7 +14,7 @@ export interface Localidad {
 
 export type Ubicacion = {
   id_usuario: string;
-  id_ubicacion?: string;
+  id_ubicacion: number | null;
   id_departamento: number;
   id_localidad: number;
   localidad: string;
@@ -32,7 +32,7 @@ export type UbicacionPost = Omit<Ubicacion, 'id_ubicacion' | 'localidad' | 'id_u
 
 export const ubicacionVacia: Ubicacion = {
   id_usuario: '',
-  id_ubicacion: undefined,
+  id_ubicacion: null,
   id_localidad: 0,
   id_departamento: 0,
   localidad: '',

@@ -6,7 +6,7 @@ declare module 'fastify' {
     /**
      * Valida que la petición incluya un token JWT válido en el header `Authorization: Bearer <token>`.
      * Decodifica el payload y lo inyecta automáticamente en `request.user`.
-     * @throws {UnAuthenticatedError} Si no hay header, no empieza con 'Bearer ' o el token expiró/es inválido.
+     * @throws {UnAuthenticatedErrorError} Si no hay header, no empieza con 'Bearer ' o el token expiró/es inválido.
      */
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
 

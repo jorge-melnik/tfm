@@ -3,7 +3,7 @@ import { BaseService } from './base-service.service';
 import { environment } from '@env/environment';
 import { EstadoPregunta, Pregunta } from '@shared/types/preguntas';
 import { firstValueFrom } from 'rxjs';
-import { DeAcaRequestOptions, PaginatedResponse, Pagination } from '@shared/types/api.types';
+import { AgroecoRequestOptions, PaginatedResponse, Pagination } from '@shared/types/api.types';
 import { HttpParams } from '@angular/common/http';
 
 @Service()
