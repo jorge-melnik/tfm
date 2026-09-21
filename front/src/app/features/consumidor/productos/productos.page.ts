@@ -215,7 +215,7 @@ export class ProductosPage implements OnInit {
   async ngOnInit() {
     const queryParams = this._route.snapshot.queryParamMap;
 
-    if (!this.paginationStore.page()) this.paginationStore.setPage(1);
+    this.paginationStore.setPage(1);
 
     const departamento = queryParams.get('departamento');
     if (departamento) this.departamento.set(departamento);

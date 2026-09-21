@@ -105,7 +105,7 @@ export class ProductosPage implements OnInit {
   public layout = signal<'grid' | 'list' | 'table'>('table'); // Estado del diseño (tarjeta o lista)
 
   ngOnInit(): void {
-    this.paginationStore.setPage(1);
+    this.paginationStore.resetPagination();
   }
 
   public cambioUnProducto(producto: Producto) {

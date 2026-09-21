@@ -31,7 +31,7 @@ import { DialogService } from '@shared/services/dialog.service';
   templateUrl: './preguntas.page.html',
   styleUrl: './preguntas.page.css',
 })
-export class PreguntasPage {
+export class PreguntasPage implements OnInit {
   private _preguntasService = inject(PreguntasService);
   private _userStore = inject(UserStore);
   public paginationStore = inject(PaginationStore);
@@ -65,6 +65,10 @@ export class PreguntasPage {
   public totalPreguntas = computed<number>(() => {
     return this.preguntasResource.value()?.meta.total || 0;
   });
+
+  ngOnInit(): void {
+    this.paginationStore.resetPagination();
+  }
 
   public async responderPregunta(nuevaRespuesta: RespuestaPost) {
     const productor = this.productor();

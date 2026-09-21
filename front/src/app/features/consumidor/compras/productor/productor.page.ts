@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, resource, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, resource, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Avatar } from 'primeng/avatar';
 import { ApiQueryParams } from '@shared/types/api.types';
@@ -18,7 +18,7 @@ import { ArrowLeft } from '@primeicons/angular';
   templateUrl: './productor.page.html',
   styleUrl: './productor.page.css',
 })
-export class ProductorPage {
+export class ProductorPage implements OnInit {
   private _pedidosService = inject(PedidosService);
   public readonly paginationStore = inject(PaginationStore);
   public userStore = inject(UserStore);
@@ -73,4 +73,8 @@ export class ProductorPage {
   });
 
   public isLoading = computed(() => this.pedidosResource.isLoading());
+
+  ngOnInit(): void {
+    this.paginationStore.resetPagination();
+  }
 }

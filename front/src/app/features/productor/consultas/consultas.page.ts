@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, resource, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, resource, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '@shared/services/auth.service';
 import { PedidosService } from '@shared/services/pedidos.service';
@@ -14,7 +14,7 @@ import { ApiQueryParams } from '@shared/types/api.types';
   styleUrl: './consultas.page.css',
   providers: [WebsocketService],
 })
-export class ConsultasPage {
+export class ConsultasPage implements OnInit {
   private readonly _pedidosService = inject(PedidosService);
   private readonly _preguntasService = inject(PreguntasService);
   public readonly productor = input.required<string>();
@@ -62,4 +62,8 @@ export class ConsultasPage {
       return this._preguntasService.getPreguntasPendientesProductor(productor, pagination);
     },
   });
+
+  ngOnInit(): void {
+    this.paginationStore.resetPagination();
+  }
 }

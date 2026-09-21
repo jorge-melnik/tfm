@@ -1,18 +1,8 @@
-import {
-  Component,
-  inject,
-  OnInit,
-  ChangeDetectionStrategy,
-  signal,
-  resource,
-  input,
-  computed,
-} from '@angular/core';
+import { Component, inject, OnInit, signal, resource, input, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '@shared/services/auth.service';
 import { PedidosService } from '@shared/services/pedidos.service';
 import { PreguntasService } from '@shared/services/preguntas-service';
-import { PaginationStore } from '@shared/services/stores/pagination.store';
 import { WebsocketService } from '@shared/services/websocket.service';
 import { ApiQueryParams } from '@shared/types/api.types';
 import { EstadoPedidoType } from '@shared/types/pedido';
@@ -29,7 +19,6 @@ export class HomePage implements OnInit {
   private readonly _pedidosService = inject(PedidosService);
   private readonly _preguntasService = inject(PreguntasService);
   public readonly productor = input.required<string>();
-  public readonly paginationStore = inject(PaginationStore);
   private readonly _webSocketService = inject(WebsocketService);
 
   public totalPreguntasPendientes = computed(() => this.preguntasResource.value()?.meta.total || 0);
